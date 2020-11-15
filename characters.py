@@ -34,3 +34,6 @@ class BartCassidy(Character):
 class BlackJack(Character):
     def __init__(self):
         super().__init__("Black Jack", max_lives=4)
+
+def all_characters():
+    return [BartCassidy(), BlackJack()]

@@ -1,11 +1,12 @@
-import cards
+from typing import List, Set, Dict, Tuple, Optional
 import random
+import cards
 
 class Deck:
     def __init__(self):
         super().__init__()
-        self.cards = cards.get_starting_deck()
-        self.scrap_pile = []
+        self.cards: List[cards.Card] = random.shuffle(cards.get_starting_deck())
+        self.scrap_pile: List[cards.Card] = []
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
