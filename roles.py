@@ -13,8 +13,7 @@ class Role(ABC):
 
 class Sheriff(Role):
     def __init__(self):
-        super().__init__("Sceriffo", +1)
-        self.goal = "Elimina tutti i Fuorilegge e il Rinnegato!"
+        super().__init__("Sceriffo", "Elimina tutti i Fuorilegge e il Rinnegato!", health_mod=+1)
         self.max_players = 1
 
     def on_player_death(self, alive_players: list):
@@ -25,8 +24,7 @@ class Sheriff(Role):
 
 class Vice(Role):
     def __init__(self):
-        super().__init__("Vice")
-        self.goal = "Proteggi lo Sceriffo! Elimina tutti i Fuorilegge e il Rinnegato!"
+        super().__init__("Vice", "Proteggi lo Sceriffo! Elimina tutti i Fuorilegge e il Rinnegato!")
         self.max_players = 2
     
     def on_player_death(self, alive_players: list):
@@ -36,8 +34,7 @@ class Vice(Role):
 
 class Outlaw(Role):
     def __init__(self):
-        super().__init__("Fuorilegge")
-        self.goal = "Elimina lo Sceriffo!"
+        super().__init__("Fuorilegge", "Elimina lo Sceriffo!")
         self.max_players = 3
 
     def on_player_death(self, alive_players: list):
@@ -47,8 +44,7 @@ class Outlaw(Role):
 
 class Renegade(Role):
     def __init__(self):
-        super().__init__("Rinnegato")
-        self.goal = "Rimani l'ultimo personaggio in gioco!"
+        super().__init__("Rinnegato", "Rimani l'ultimo personaggio in gioco!")
         self.max_players = 1
 
     def on_player_death(self, alive_players: list):

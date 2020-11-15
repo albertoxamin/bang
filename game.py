@@ -16,13 +16,15 @@ class Game:
     def add_player(self, player: players.Player):
         player.join_game(self)
         self.players.append(player)
+        print(f'Added player {player.id} to game')
     
     def choose_characters(self):
-        char_cards = random.sample(all_characters(), len(self.players))
+        char_cards = random.sample(all_characters(), len(self.players)*2)
         for i in range(len(self.players)):
             self.players[i].set_available_character(char_cards[i*2:i*2+2])
 
     def start_game(self):
+        print('GAME IS STARING')
         if self.started:
             return
         self.started = True
@@ -43,6 +45,11 @@ class Game:
                 self.players[i].hand.append(self.deck.draw())
         self.play_turn()
 
+    def get_visible_players(self, player):
+        i = self.players.index(player)
+        sight = player.get_sight()
+        return [self.players[j] for j in range(len(self.players)) if i != j and min(abs(i-j)-1, abs(i-len(self.players)-j))+players[j].get_visibility() <= sight]
+
     def play_turn(self):
         self.players[self.turn].play_turn()
 
@@ -50,3 +57,15 @@ class Game:
         self.turn = (self.turn + 1) % len(self.players)
         self.play_turn()
 
+
+game = Game()
+p1 = players.Player('p1')
+game.add_player(p1)
+p2 = players.Player('p2')
+game.add_player(p2)
+p3 = players.Player('p3')
+game.add_player(p3)
+game.start_game()
+for p in game.players:
+    p.set_character(random.choice(p.available_characters))
+game.distribute_roles()
