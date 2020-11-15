@@ -198,6 +198,3 @@ def get_starting_deck() -> List[Card]:
         Saloon(Suit.HEARTS, 5),
         WellsFargo(Suit.HEARTS, 3),
     ]
-
-print('hi')
-print(len(get_starting_deck()))
