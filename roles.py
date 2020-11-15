@@ -27,7 +27,7 @@ class Vice(Role):
     def __init__(self, name):
         super().__init__(name)
         self.goal = "Proteggi lo Sceriffo! Elimina tutti i Fuorilegge e il Rinnegato!"
-        self.max_players = 1
+        self.max_players = 2
     
     def on_player_death(self, alive_players: list):
         if not any([type(p.role) == Outlaw or type(p.role) == Renegade for p in alive_players]):
