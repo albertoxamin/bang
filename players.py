@@ -23,7 +23,7 @@ class Player:
 
     def set_role(self, role: roles.Role):
         self.role = role
-        print(f'I {self.id} am a {role.name}')
+        print(f'I {self.id} am a {role.name}, my goal is "{role.goal}"')
 
     def set_character(self, character: characters.Character):
         self.available_characters = []
@@ -46,6 +46,7 @@ class Player:
         self.has_played_bang = False
         print(f'I {self.id} was notified that it is my turn')
         print(f'lives: {self.lives}/{self.max_lives} hand: {[str(c) for c in self.hand]}')
+        print(f'I {self.id} can see {[p.get_public_description() for p in self.game.get_visible_players(self)]}')
 
     def get_playable_cards(self):
         playable_cards = []
@@ -58,6 +59,11 @@ class Player:
             else:
                 playable_cards.append(i)
         return playable_cards
+
+    def get_public_description(self):
+        s = f"{self.id} {'Sheriff ⭐️' if type(self.role) == roles.Sheriff else ''} ({self.lives}/{self.max_lives} ⁍) {len(self.hand)} Cards in hand, "
+        s += f"equipment {[str(c) for c in self.equipment]}"
+        return s
 
     def play_card(self, hand_index: int, againts=None):
         if not (0 <= hand_index < len(self.hand)):
