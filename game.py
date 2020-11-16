@@ -16,7 +16,7 @@ class Game:
     def add_player(self, player: players.Player):
         player.join_game(self)
         self.players.append(player)
-        print(f'Added player {player.id} to game')
+        print(f'Added player {player.name} to game')
     
     def choose_characters(self):
         char_cards = random.sample(all_characters(), len(self.players)*2)
@@ -48,7 +48,10 @@ class Game:
     def get_visible_players(self, player):
         i = self.players.index(player)
         sight = player.get_sight()
-        return [self.players[j] for j in range(len(self.players)) if i != j and min(abs(i-j)-1, abs(i-len(self.players)-j))+self.players[j].get_visibility() <= sight]
+        return [self.players[j] for j in range(len(self.players)) if i != j and min(abs(i - j) - 1, abs(i - len(self.players) - j)) + self.players[j].get_visibility() <= sight]
+
+    def next_player(self):
+        return self.players[(self.turn + 1) % len(self.players)]
 
     def play_turn(self):
         self.players[self.turn].play_turn()

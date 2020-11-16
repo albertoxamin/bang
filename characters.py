@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod 
 
 class Character(ABC):
-    def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0):
+    def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0, pick_mod: int = 0):
         super().__init__()
         self.name = name
         self.max_lives = max_lives
         self.sight_mod = 0
         self.visibility_mod = 0
+        self.pick_mod = 0
 
     # @abstractmethod
     # def on_hurt(self, dmg: int):
@@ -57,7 +58,7 @@ class KitCarlson(Character):
 
 class LuckyDuke(Character):
     def __init__(self):
-        super().__init__("Lucky Duke", max_lives=4)
+        super().__init__("Lucky Duke", max_lives=4, pick_mod=1)
 
 class PaulRegret(Character):
     def __init__(self):
