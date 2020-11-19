@@ -6,8 +6,9 @@ from deck import Deck
 import roles
 
 class Game:
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
+        self.name = name
         self.players: List[players.Player] = []
         self.deck: Deck = None
         self.started = False
@@ -61,14 +62,14 @@ class Game:
         self.play_turn()
 
 
-game = Game()
-p1 = players.Player('p1')
-game.add_player(p1)
-p2 = players.Player('p2')
-game.add_player(p2)
-p3 = players.Player('p3')
-game.add_player(p3)
-game.start_game()
-for p in game.players:
-    p.set_character(random.choice(p.available_characters))
-game.distribute_roles()
+# game = Game()
+# p1 = players.Player('p1')
+# game.add_player(p1)
+# p2 = players.Player('p2')
+# game.add_player(p2)
+# p3 = players.Player('p3')
+# game.add_player(p3)
+# game.start_game()
+# for p in game.players:
+#     p.set_character(random.choice(p.available_characters))
+# game.distribute_roles()
