@@ -4,7 +4,7 @@
 		<h3>Giocatori</h3>
 		<div style="display:flex">
 			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
-				<Card v-for="p in playersTable" v-bind:key="p" :card="p.card"/>
+				<Card v-for="p in playersTable" v-bind:key="p.card.name" :card="p.card"/>
 				<!-- :style="p.style"/> -->
 			<!-- </div> -->
 			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
@@ -44,6 +44,7 @@ export default {
 		started: false,
 		players: [],
 		messages: [],
+		distances: {},
 		availableCharacters: [],
 		self: {},
 	}),
@@ -51,18 +52,27 @@ export default {
 		room(data) {
 			this.lobbyName = data.name
 			this.started = data.started
-			this.players = data.players
+			this.players = data.players.map(x => {
+				return {
+					name:x,
+				}
+			})
 		},
 		characters(data){
 			this.availableCharacters = JSON.parse(data)
 		},
 		start() {
 			this.started = true;
+		},
+		self_vis(vis) {
+			console.log('received visibility update')
+			console.log(vis)
+			this.players = JSON.parse(vis)
 		}
 	},
 	computed: {
 		startGameCard() {
-			if (!this.started && this.players.length > 2 && this.players[0] == this.username) {
+			if (!this.started && this.players.length > 2 && this.players[0].name == this.username) {
 				return {
 					name: 'Start',
 					icon: '▶️',
@@ -76,6 +86,7 @@ export default {
 			return this.availableCharacters.length > 0;
 		},
 		playersTable() {
+			console.log('update players')
 			return this.players.map((x,i) => {
 				let offsetAngle = 360.0 / this.players.length
 				let rotateAngle = (i) * offsetAngle
@@ -85,10 +96,10 @@ export default {
 		}
 	},
 	methods: {
-		getPlayerCard(username) {
+		getPlayerCard(player) {
 			return {
-				name: username,
-				number: (this.username == username) ? 'YOU' : (this.players[0] == username) ? 'OWNER' :'',
+				name: player.name,
+				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: '🤠',
 				is_character: true,
 			}
