@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod 
 
 class Character(ABC):
-    def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0, pick_mod: int = 0):
+    def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0, pick_mod: int = 0, desc: str = ''):
         super().__init__()
         self.name = name
         self.max_lives = max_lives
         self.sight_mod = 0
         self.visibility_mod = 0
         self.pick_mod = 0
+        self.desc = desc
 
     # @abstractmethod
     # def on_hurt(self, dmg: int):
@@ -27,7 +28,7 @@ class Character(ABC):
 
 class BartCassidy(Character):
     def __init__(self):
-        super().__init__("Bart Cassidy", max_lives=4)
+        super().__init__("Bart Cassidy", max_lives=4, desc='Ogni volta che viene ferito, pesca una carta.')
     
     def on_hurt(self, dmg):
         pass

@@ -15,11 +15,10 @@ class Card(ABC):
         'Q': 12,
         'K': 13
     }
-    def __init__(self, suit: Suit, name: str, number, is_equipment:bool=False, is_weapon:bool=False, vis_mod:int=0, sight_mod:int=0, range:int=99):
+    def __init__(self, suit: Suit, name: str, number, is_equipment:bool=False, is_weapon:bool=False, vis_mod:int=0, sight_mod:int=0, range:int=99, desc:str=''):
         super().__init__()
         self.name = name
         self.suit = suit
-        
         if type(number) == int:
             self.number = number
         else:
@@ -29,6 +28,7 @@ class Card(ABC):
         self.vis_mod = vis_mod
         self.sight_mod = sight_mod
         self.range = range
+        self.desc = desc
 
     def __str__(self):
         char = ['♦️','♣️','♥️','♠️'][int(self.suit)]
