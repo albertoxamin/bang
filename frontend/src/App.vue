@@ -2,7 +2,7 @@
 	<div id="app">
 		<div id="logo" class="center-stuff" style="margin-bottom:10pt;">
 			<h1 style="margin-bottom:0pt;">PewPew!</h1>
-			<i style="font-size: x-small;">Bang è un marchio registrato DVGiochi!</i>
+			<i style="font-size: x-small;">Bang! è un marchio registrato DVGiochi</i>
 		</div>
 		<div v-if="isConnected">
 			<div v-if="!didSetUsername">

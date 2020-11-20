@@ -23,6 +23,7 @@ class Game:
             print(f'no players left in game {self.name}')
             return True
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+        self.sio.emit('chat_message', room=self.name, data=f'{player.name} si è disconnesso.')
         return False
 
     def add_player(self, player: players.Player):
@@ -32,6 +33,8 @@ class Game:
         self.players.append(player)
         print(f'Added player {player.name} to game')
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+        self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
+
 
     def choose_characters(self):
         char_cards = random.sample(all_characters(), len(self.players)*2)
@@ -42,6 +45,7 @@ class Game:
         print('GAME IS STARING')
         if self.started:
             return
+        self.sio.emit('chat_message', room=self.name, data=f'La partita sta iniziando...')
         self.started = True
         self.deck = Deck()
         self.choose_characters()

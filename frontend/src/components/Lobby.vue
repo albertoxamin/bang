@@ -3,11 +3,12 @@
 		<h1>Lobby: {{ lobbyName }}</h1>
 		<h3>Giocatori</h3>
 		<div style="display:flex">
+			<Card v-if="startGameCard" :card="startGameCard"/>
 			<Card v-for="p in players" v-bind:key="p" :card="getPlayerCard(p)"/>
 		</div>
 		<h3>Chat</h3>
-		<div id="chatbox" style="max-height:300px; overflow:auto;">
-			<p v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
+		<div id="chatbox" style="max-height:200px; overflow:auto;">
+			<p style="margin:1pt;" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
 		</div>
 		<form @submit="sendChatMessage">
 			<input v-model="text"/>
@@ -58,12 +59,25 @@ export default {
 		getPlayerCard(username) {
 			return {
 				name: username,
-				number: (this.username == username) ? 'YOU' : '',
+				number: (this.username == username) ? 'YOU' : (this.players[0] == username) ? 'OWNER' :'',
 				icon: '🤠',
 				is_character: true,
 			}
 		},
 	},
+	computed: {
+		startGameCard() {
+			if (this.players.length > 2 && this.players[0] == this.username) {
+				return {
+					name: 'Start',
+					icon: '▶️',
+					is_equipment: true,
+					number: `${this.players.length}🤠`
+				}
+			}
+			return null;
+		}
+	}
 }
 </script>
 
