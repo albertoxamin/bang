@@ -8,7 +8,7 @@
 		<div style="position:relative">
 			<div class="card back" style="position:absolute; bottom:-3pt;right:-2pt;"/>
 			<div class="card back" style="position:absolute; bottom:-1pt;right:-1pt;"/>
-			<card :card="card" class="back"/>
+			<card :card="card" class="back" @click.native="action"/>
 		</div>
 	</div>
 </template>
@@ -26,13 +26,25 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
+		pending_action: false,
 	}),
 	sockets: {
-
+		self(self){
+			self = JSON.parse(self)
+			this.pending_action = self.pending_action
+		}
 	},
 	methods: {
-		
-	},
+		action() {
+			if (this.pending_action && this.pending_action < 2) {
+				console.log('action')
+				if (this.pending_action == 0)
+					this.$socket.emit('pick')
+				else if (this.pending_action == 1)
+					this.$socket.emit('draw')
+			}
+		}
+	}
 }
 </script>
 <style scoped>

@@ -77,7 +77,7 @@ class Player:
         self.is_my_turn = True
         self.is_waiting_for_action = True
         self.has_played_bang = False
-        if any([isinstance(c) == cards.Dinamite or isinstance(c) == cards.Prigione for c in self.equipment]):
+        if any([isinstance(c, cards.Dinamite) or isinstance(c, cards.Prigione) for c in self.equipment]):
             self.pending_action = PendingAction.PICK
         else:
             self.pending_action = PendingAction.DRAW
@@ -97,7 +97,7 @@ class Player:
     def pick(self):
         pickable_cards = 1 + self.character.pick_mod
         for i in range(len(self.equipment)):
-            if isinstance(self.equipment[i]) == cards.Dinamite:
+            if isinstance(self.equipment[i], cards.Dinamite):
                 while pickable_cards > 0:
                     pickable_cards -= 1
                     picked: cards.Card = self.game.deck.pick_and_scrap()
@@ -108,10 +108,10 @@ class Player:
                         print(f'{self.name} Boom, -3 hp')
                     else:
                         self.game.next_player().equipment.append(self.equipment.pop(i))
-                if any([isinstance(c) == cards.Dinamite or isinstance(c) == cards.Prigione for c in self.equipment]):
+                if any([isinstance(c, cards.Dinamite) or isinstance(c, cards.Prigione) for c in self.equipment]):
                     return
         for i in range(len(self.equipment)):
-            if isinstance(self.equipment[i]) == cards.Prigione:
+            if isinstance(self.equipment[i], cards.Prigione):
                 while pickable_cards > 0:
                     pickable_cards -= 1
                     picked: cards.Card = self.game.deck.pick_and_scrap()
@@ -128,16 +128,16 @@ class Player:
         playable_cards = []
         for i in range(len(self.hand)):
             card = self.hand[i]
-            if isinstance(card) == cards.Bang and self.has_played_bang and not any([isinstance(c) == cards.Volcanic for c in self.equipment]):
+            if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]):
                 continue
-            elif isinstance(card) == cards.Birra and self.lives >= self.max_lives:
+            elif isinstance(card, cards.Birra) and self.lives >= self.max_lives:
                 continue
             else:
                 playable_cards.append(i)
         return playable_cards
 
     def get_public_description(self):
-        s = f"{self.name} {'Sheriff ⭐️' if isinstance(self.role) == roles.Sheriff else ''} ({self.lives}/{self.max_lives} ⁍) {len(self.hand)} Cards in hand, "
+        s = f"{self.name} {'Sheriff ⭐️' if isinstance(self.role, roles.Sheriff) else ''} ({self.lives}/{self.max_lives} ⁍) {len(self.hand)} Cards in hand, "
         s += f"equipment {[str(c) for c in self.equipment]}"
         return s
 
@@ -149,17 +149,22 @@ class Player:
         print(self.name, 'is playing ', card, ' against:', againts)
         if card.is_equipment and card.name not in [c.name for c in self.equipment]:
             if card.is_weapon:
+                has_weapon = False
                 for i in range(len(self.equipment)):
                     if self.equipment[i].is_weapon:
                         self.game.deck.scrap(self.equipment[i])
                         self.equipment[i] = card
+                        has_weapon = True
                         break
+                if not has_weapon:
+                    self.equipment.append(card)
             else:
                 self.equipment.append(card)
         else:
-            if isinstance(card) == cards.Bang and self.has_played_bang and not any([isinstance(c) == cards.Volcanic for c in self.equipment]):
+            if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]):
                 print('you retard')
             self.game.deck.scrap(card)
+        self.notify_self()
 
     def get_sight(self):
         aim = 0
@@ -176,7 +181,10 @@ class Player:
         return self.character.visibility_mod + covers
 
     def end_turn(self, forced=False):
+        if not self.is_my_turn: return
         if len(self.hand) > self.max_lives and not forced:
             print(f"I {self.name} have to many cards in my hand and I can't end the turn")
         else:
+            self.pending_action = PendingAction.WAIT
+            self.notify_self()
             self.game.next_turn()

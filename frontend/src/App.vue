@@ -73,7 +73,7 @@ export default {
 			setTimeout(function(){
 				this.username =(1+Math.random() * 100 % 100).toFixed(2).toString();
 				this.setUsername();
-			}.bind(this), 200)
+			}.bind(this), 1000)
 		},
 		disconnect() {
 			this.isConnected = false;
@@ -131,5 +131,12 @@ h1,h2,h3,h4,p,span{
 	left: 0;
 	right: 0;
 	text-align: center;
+}
+.list-enter-active, .list-leave-active {
+  transition: all 0.5s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

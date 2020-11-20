@@ -47,10 +47,13 @@ export default {
 }
 .card.back{
   color:white;
-  background: #987e51;
-}
-.card.back::before{
-  background:red;
+  background: repeating-linear-gradient(
+		45deg,
+		#987e51,
+		#987e51 5px,
+		#816b45 5px,
+		#816b45 10px
+	);
 }
 
 .card.equipment {

@@ -1,5 +1,7 @@
 <template>
 	<div>
+		<p v-if="instruction">⏯ {{instruction}}</p>
+		<button v-if="canEndTurn" @click="end_turn">Termina Turno</button>
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"/>
 			<Card v-if="character" :card="character"/>
@@ -7,9 +9,13 @@
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
 			</transition-group>
 		</div>
-		<div class="hand">
-			<i>Mano</i>
-			<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card"  @mouseover.native="hint=card.desc" @mouseleave.native="hint=''"/>
+		<div>
+			<span>Mano</span>
+			<transition-group name="list" tag="div" class="hand">
+				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
+					@click.native="play_card(card)"
+					@mouseover.native="hint=card.desc" @mouseleave.native="hint=''"/>
+			</transition-group>
 		</div>
 		<p>{{hint}}</p>
 	</div>
@@ -31,6 +37,7 @@ export default {
 		lives: 0,
 		max_lives: 0,
 		hint: '',
+		pending_action: null
 	}),
 	sockets: {
 		role(role) {
@@ -38,7 +45,7 @@ export default {
 		},
 		self(self) {
 			self = JSON.parse(self)
-			console.log(self)
+			this.pending_action = self.pending_action
 			this.character = self.character
 			this.character.is_character = true
 			this.hand = self.hand
@@ -47,9 +54,36 @@ export default {
 			this.max_lives = self.max_lives
 		}
 	},
-	methods: {
-		
+	computed:{
+		instruction() {
+			if (this.pending_action == null)
+				return ''
+			let x = ['Estrai una carta', 'Pesca le tue carte', 'Gioca le tue carte', 'Rispondi alla carta', 'Attendi']
+			return x[this.pending_action]
+		},
+		canEndTurn() {
+			return (this.pending_action == 2 && this.hand.length <= this.lives)
+		},
 	},
+	methods: {
+		end_turn(){
+			console.log('ending turn')
+			this.$socket.emit('end_turn')
+		},
+		play_card(card) {
+			if (this.pending_action == 2) {
+				let card_data = {
+					index: this.hand.indexOf(card),
+					against: null
+				}
+				console.log(card_data)
+				this.$socket.emit('play_card', card_data)
+			}
+		},
+	},
+	mounted() {
+		this.$socket.emit('refresh')
+	}
 }
 </script>
 <style scoped>
@@ -62,7 +96,7 @@ export default {
 	opacity: 0.5;
 }
 .hand {
-	margin-top: 12pt;
+	margin-top: -16pt;
 	position: relative;
 	display:flex;
 	border: 1px solid #ccc;
@@ -80,6 +114,6 @@ export default {
 }
 .equipment-slot, .equipment-slot>div {
 	display:flex;
-	margin:0;
+	margin: 10pt 0pt;
 }
 </style>

@@ -3,9 +3,10 @@
 		<h1>Lobby: {{ lobbyName }}</h1>
 		<h3>Giocatori</h3>
 		<div style="display:flex">
-			<div style="position: relative;width:260pt;height:400pt;">
-				<Card v-for="p in playersTable" v-bind:key="p" :card="p.card" :style="p.style"/>
-			</div>
+			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
+				<Card v-for="p in playersTable" v-bind:key="p" :card="p.card"/>
+				<!-- :style="p.style"/> -->
+			<!-- </div> -->
 			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 		</div>
 		<div v-if="started">

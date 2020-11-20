@@ -1,3 +1,4 @@
+import json
 import eventlet
 import socketio
 
@@ -69,6 +70,26 @@ def start_game(sid):
 def set_character(sid, name):
     ses = sio.get_session(sid)
     ses.set_character(name)
+
+@sio.event
+def refresh(sid):
+    ses = sio.get_session(sid)
+    ses.notify_self()
+
+@sio.event
+def draw(sid):
+    ses = sio.get_session(sid)
+    ses.draw()
+
+@sio.event
+def end_turn(sid):
+    ses = sio.get_session(sid)
+    ses.end_turn()
+
+@sio.event
+def play_card(sid, data):
+    ses = sio.get_session(sid)
+    ses.play_card(data['index'], data['against'])
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)
