@@ -3,7 +3,7 @@
 		<h1>Lobby: {{ lobbyName }}</h1>
 		<h3>Giocatori</h3>
 		<div style="display:flex">
-			<Card v-if="startGameCard" :card="startGameCard"/>
+			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 			<Card v-for="p in players" v-bind:key="p" :card="getPlayerCard(p)"/>
 		</div>
 		<h3>Chat</h3>
@@ -14,16 +14,19 @@
 			<input v-model="text"/>
 			<input type="submit"/>
 		</form>
+		<Chooser v-if="showChooser" :cards="availableCharacters" :select="setCharacter"/>
 	</div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
+import Chooser from './Chooser.vue'
 
 export default {
 	name: 'Lobby',
 	components: {
 		Card,
+		Chooser,
 	},
 	props: {
 		username: String
@@ -33,6 +36,7 @@ export default {
 		started: false,
 		players: [],
 		messages: [],
+		availableCharacters: [],
 		text: ''
 	}),
 	sockets: {
@@ -47,6 +51,25 @@ export default {
 			let container = this.$el.querySelector("#chatbox");
 			container.scrollTop = container.scrollHeight;
 		},
+		characters(data){
+			this.availableCharacters = JSON.parse(data)
+		},
+	},
+	computed: {
+		startGameCard() {
+			if (!this.started && this.players.length > 2 && this.players[0] == this.username) {
+				return {
+					name: 'Start',
+					icon: '▶️',
+					is_equipment: true,
+					number: `${this.players.length}🤠`
+				}
+			}
+			return null;
+		},
+		showChooser() {
+			return this.availableCharacters.length > 0;
+		}
 	},
 	methods: {
 		sendChatMessage(e) {
@@ -64,20 +87,15 @@ export default {
 				is_character: true,
 			}
 		},
+		startGame() {
+			this.started = true;
+			this.$socket.emit('start_game')
+		},
+		setCharacter(char) {
+			this.availableCharacters = []
+			this.$socket.emit('set_character', char.name)
+		},
 	},
-	computed: {
-		startGameCard() {
-			if (this.players.length > 2 && this.players[0] == this.username) {
-				return {
-					name: 'Start',
-					icon: '▶️',
-					is_equipment: true,
-					number: `${this.players.length}🤠`
-				}
-			}
-			return null;
-		}
-	}
 }
 </script>
 

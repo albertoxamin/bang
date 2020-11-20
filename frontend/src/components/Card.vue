@@ -30,6 +30,7 @@ export default {
   border-radius: 6pt;
   position: relative;
   transition: all 0.5s ease-in-out;
+	color: #333;
 }
 .card.back{
   color:white;

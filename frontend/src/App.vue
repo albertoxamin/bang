@@ -104,8 +104,9 @@ export default {
 			this.$socket.emit('join_room', lobby.name)
 			this.isInLobby = true;
 		},
-		// room() {
-		// },
+		init() {
+			location.reload();
+		},
 	}
 }
 </script>

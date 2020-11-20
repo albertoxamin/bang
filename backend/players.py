@@ -14,10 +14,11 @@ class PendingAction(IntEnum):
     WAIT = 4
 
 class Player:
-    def __init__(self, name, sid):
+    def __init__(self, name, sid, sio):
         super().__init__()
         self.name = name
         self.sid = sid
+        self.sio = sio
         self.hand: cards.Card = []
         self.equipment: cards.Card = []
         self.role: roles.Role = None
@@ -43,10 +44,12 @@ class Player:
         self.role = role
         print(f'I {self.name} am a {role.name}, my goal is "{role.goal}"')
 
-    def set_character(self, character: characters.Character):
+    def set_character(self, character: str):
+        print(self.available_characters, character)
+        self.character = next(x for x in self.available_characters if x.name==character)
         self.available_characters = []
-        self.character = character
-        print(f'I {self.name} chose character {character.name}')
+        print(f'I {self.name} chose character {self.character.name}')
+        self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha scelto il personaggio.')
 
     def prepare(self):
         self.max_lives = self.character.max_lives + self.role.health_mod
@@ -57,6 +60,7 @@ class Player:
     def set_available_character(self, available):
         self.available_characters = available
         print(f'I {self.name} have to choose between {available}')
+        self.sio.emit('characters', room=self.sid, data=json.dumps(available, default=lambda o: o.__dict__))
 
     def play_turn(self):
         print(f'I {self.name} was notified that it is my turn')

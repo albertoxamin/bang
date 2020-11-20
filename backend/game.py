@@ -35,11 +35,10 @@ class Game:
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
 
-
     def choose_characters(self):
         char_cards = random.sample(all_characters(), len(self.players)*2)
         for i in range(len(self.players)):
-            self.players[i].set_available_character(char_cards[i*2:i*2+2])
+            self.players[i].set_available_character(char_cards[i * 2 : i * 2 + 2])
 
     def start_game(self):
         print('GAME IS STARING')

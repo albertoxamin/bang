@@ -21,7 +21,7 @@ def connect(sid, environ):
 
 @sio.event
 def set_username(sid, username):
-    sio.save_session(sid, Player(username, sid))
+    sio.save_session(sid, Player(username, sid, sio))
     print(f'{sid} is now {username}')
     advertise_lobbies()
 
@@ -59,6 +59,16 @@ def join_room(sid, room_name):
 def chat_message(sid, msg):
     ses = sio.get_session(sid)
     sio.emit('chat_message', room=ses.game.name, data=f'[{ses.name}]: {msg}')
+
+@sio.event
+def start_game(sid):
+    ses = sio.get_session(sid)
+    ses.game.start_game()
+
+@sio.event
+def set_character(sid, name):
+    ses = sio.get_session(sid)
+    ses.set_character(name)
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)
