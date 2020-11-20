@@ -9,6 +9,8 @@ class Character(ABC):
         self.visibility_mod = 0
         self.pick_mod = 0
         self.desc = desc
+        self.icon = '🤷‍♂️'
+        self.number = ''.join(['❤️']*self.max_lives)
 
     # @abstractmethod
     # def on_hurt(self, dmg: int):
@@ -40,6 +42,7 @@ class BlackJack(Character):
 class CalamityJanet(Character):
     def __init__(self):
         super().__init__("Calamity Janet", max_lives=4)
+        self.icon = '🤷‍♀️'
 
 class ElGringo(Character):
     def __init__(self):
@@ -72,6 +75,7 @@ class PedroRamirez(Character):
 class RoseDoolan(Character):
     def __init__(self):
         super().__init__("Rose Doolan", max_lives=4)
+        self.icon = '🤷‍♀️'
 
 class SidKetchum(Character):
     def __init__(self):

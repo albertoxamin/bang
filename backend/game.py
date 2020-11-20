@@ -53,7 +53,7 @@ class Game:
         self.sio.emit('chat_message', room=self.name, data=f'La partita sta iniziando...')
         self.sio.emit('start', room=self.name)
         self.started = True
-        self.deck = Deck(self.sio)
+        self.deck = Deck(self)
         self.choose_characters()
 
     def distribute_roles(self):
@@ -85,6 +85,10 @@ class Game:
     def next_turn(self):
         self.turn = (self.turn + 1) % len(self.players)
         self.play_turn()
+
+    def notify_scrap_pile(self):
+        print('scrap')
+        self.sio.emit('scrap', room=self.name, data=self.deck.peek_scrap_pile().__dict__)
 
 
 # game = Game()
