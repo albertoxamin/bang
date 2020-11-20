@@ -15,6 +15,7 @@ class Game:
         self.deck: Deck = None
         self.started = False
         self.turn = 0
+        self.readyCount = 0
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
@@ -35,6 +36,11 @@ class Game:
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
 
+    def notify_character_selection(self):
+        self.readyCount += 1
+        if self.readyCount == len(self.players):
+            self.distribute_roles()
+
     def choose_characters(self):
         char_cards = random.sample(all_characters(), len(self.players)*2)
         for i in range(len(self.players)):
@@ -45,8 +51,9 @@ class Game:
         if self.started:
             return
         self.sio.emit('chat_message', room=self.name, data=f'La partita sta iniziando...')
+        self.sio.emit('start', room=self.name)
         self.started = True
-        self.deck = Deck()
+        self.deck = Deck(self.sio)
         self.choose_characters()
 
     def distribute_roles(self):
@@ -61,6 +68,7 @@ class Game:
             self.players[i].prepare()
             for k in range(self.players[i].max_lives):
                 self.players[i].hand.append(self.deck.draw())
+            self.players[i].notify_self()
         self.play_turn()
 
     def get_visible_players(self, player):

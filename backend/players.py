@@ -43,6 +43,7 @@ class Player:
     def set_role(self, role: roles.Role):
         self.role = role
         print(f'I {self.name} am a {role.name}, my goal is "{role.goal}"')
+        self.sio.emit('role', room=self.sid, data=json.dumps(role, default=lambda o: o.__dict__))
 
     def set_character(self, character: str):
         print(self.available_characters, character)
@@ -50,6 +51,7 @@ class Player:
         self.available_characters = []
         print(f'I {self.name} chose character {self.character.name}')
         self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha scelto il personaggio.')
+        self.game.notify_character_selection()
 
     def prepare(self):
         self.max_lives = self.character.max_lives + self.role.health_mod
@@ -62,6 +64,13 @@ class Player:
         print(f'I {self.name} have to choose between {available}')
         self.sio.emit('characters', room=self.sid, data=json.dumps(available, default=lambda o: o.__dict__))
 
+    def notify_self(self):
+        ser = self.__dict__.copy()
+        ser.pop('game')
+        ser.pop('sio')
+        ser.pop('sid')
+        self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
+
     def play_turn(self):
         print(f'I {self.name} was notified that it is my turn')
         self.was_shot = False
@@ -70,6 +79,9 @@ class Player:
         self.has_played_bang = False
         if any([isinstance(c) == cards.Dinamite or isinstance(c) == cards.Prigione for c in self.equipment]):
             self.pending_action = PendingAction.PICK
+        else:
+            self.pending_action = PendingAction.DRAW
+        self.notify_self()
 
         # # print(f'lives: {self.lives}/{self.max_lives} hand: {[str(c) for c in self.hand]}')
         # print(f'I {self.name} can see {[p.get_public_description() for p in self.game.get_visible_players(self)]}')
@@ -80,6 +92,7 @@ class Player:
         for i in range(2):
             self.hand.append(self.game.deck.draw())
         self.pending_action = PendingAction.PLAY
+        self.notify_self()
 
     def pick(self):
         pickable_cards = 1 + self.character.pick_mod

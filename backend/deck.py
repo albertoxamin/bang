@@ -3,7 +3,7 @@ import random
 from cards import Card, get_starting_deck
 
 class Deck:
-    def __init__(self):
+    def __init__(self, sio):
         super().__init__()
         self.cards: List[Card] = get_starting_deck()
         random.shuffle(self.cards)

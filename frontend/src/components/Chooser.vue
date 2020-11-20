@@ -1,6 +1,6 @@
 <template>
 	<div id="overlay" class="center-stuff">
-		<h1>Scegli il tuo personaggio</h1>
+		<h1>{{text}}</h1>
 		<div>
 			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"/>
 		</div>
@@ -17,7 +17,8 @@ export default {
 	},
 	props: {
 		cards: Array,
-		select: Function
+		select: Function,
+		text: String,
 	},
 }
 </script>

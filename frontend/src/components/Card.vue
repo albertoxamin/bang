@@ -1,8 +1,8 @@
 <template>
 	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character }">
-		<h3>{{card.name}}</h3>
+		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
-		<span>{{card.number}}{{card.suit}}</span>
+		<span>{{card.number}}{{suit}}</span>
 	</div>
 </template>
 
@@ -12,6 +12,15 @@ export default {
 	props: {
 		card: Object
 	},
+	computed: {
+		suit() {
+			if (this.card && !isNaN(this.card.suit)) {
+				let x = ['♦️','♣️','♥️','♠️']
+				return x[this.card.suit];
+			}
+			return '';
+		}
+	}
 }
 </script>
 
@@ -31,6 +40,10 @@ export default {
   position: relative;
   transition: all 0.5s ease-in-out;
 	color: #333;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: normal;
+	/* word-wrap: break-word; */
 }
 .card.back{
   color:white;
@@ -52,7 +65,7 @@ export default {
     0 0 0 6pt white,
     0 0 5pt 6pt #aaa;
 }
-.card h3 {
+.card h4 {
 	position: absolute;
   text-align: center;
   width: 100%;

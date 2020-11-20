@@ -6,27 +6,27 @@
 			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 			<Card v-for="p in players" v-bind:key="p" :card="getPlayerCard(p)"/>
 		</div>
-		<h3>Chat</h3>
-		<div id="chatbox" style="max-height:200px; overflow:auto;">
-			<p style="margin:1pt;" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
+		<div v-if="started">
+			<player/>
 		</div>
-		<form @submit="sendChatMessage">
-			<input v-model="text"/>
-			<input type="submit"/>
-		</form>
-		<Chooser v-if="showChooser" :cards="availableCharacters" :select="setCharacter"/>
+		<chat/>
+		<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
 	</div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
 import Chooser from './Chooser.vue'
+import Chat from './Chat.vue'
+import Player from './Player.vue'
 
 export default {
 	name: 'Lobby',
 	components: {
 		Card,
 		Chooser,
+		Chat,
+		Player,
 	},
 	props: {
 		username: String
@@ -37,7 +37,7 @@ export default {
 		players: [],
 		messages: [],
 		availableCharacters: [],
-		text: ''
+		self: {},
 	}),
 	sockets: {
 		room(data) {
@@ -46,14 +46,12 @@ export default {
 			this.started = data.started
 			this.players = data.players
 		},
-		chat_message(msg) {
-			this.messages.push(msg)
-			let container = this.$el.querySelector("#chatbox");
-			container.scrollTop = container.scrollHeight;
-		},
 		characters(data){
 			this.availableCharacters = JSON.parse(data)
 		},
+		start() {
+			this.started = true;
+		}
 	},
 	computed: {
 		startGameCard() {
@@ -72,13 +70,6 @@ export default {
 		}
 	},
 	methods: {
-		sendChatMessage(e) {
-			if (this.text.trim().length > 0){
-				this.$socket.emit('chat_message', this.text.trim())
-				this.text = ''
-			}
-			e.preventDefault();
-		},
 		getPlayerCard(username) {
 			return {
 				name: username,
@@ -100,6 +91,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style >
+#logo {
+	display:none;
+}
 </style>
