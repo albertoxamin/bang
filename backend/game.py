@@ -1,24 +1,38 @@
 from typing import List, Set, Dict, Tuple, Optional
 import random
+import socketio
 import players
 from characters import all_characters
 from deck import Deck
 import roles
 
 class Game:
-    def __init__(self, name):
+    def __init__(self, name, sio:socketio):
         super().__init__()
+        self.sio = sio
         self.name = name
         self.players: List[players.Player] = []
         self.deck: Deck = None
         self.started = False
         self.turn = 0
 
+    def handle_disconnect(self, player: players.Player):
+        print(f'player {player.name} left the game {self.name}')
+        self.players.pop(self.players.index(player))
+        if len(self.players) == 0:
+            print(f'no players left in game {self.name}')
+            return True
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+        return False
+
     def add_player(self, player: players.Player):
+        if player in self.players:
+            return
         player.join_game(self)
         self.players.append(player)
         print(f'Added player {player.name} to game')
-    
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+
     def choose_characters(self):
         char_cards = random.sample(all_characters(), len(self.players)*2)
         for i in range(len(self.players)):

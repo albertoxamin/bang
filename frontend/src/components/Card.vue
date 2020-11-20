@@ -1,17 +1,17 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment }" @click="equip(card)">
+	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character }">
 		<h3>{{card.name}}</h3>
-		<emoji>{{card.icon}}</emoji>
+		<div class="emoji">{{card.icon}}</div>
 		<span>{{card.number}}{{card.suit}}</span>
 	</div>
 </template>
 
 <script>
 export default {
-	name: 'HelloWorld',
+	name: 'Card',
 	props: {
-    card: Object
-  },
+		card: Object
+	},
 }
 </script>
 
@@ -57,7 +57,7 @@ export default {
   width: 100%;
   top: -10pt;
 } 
-.card emoji {
+.card .emoji {
 	position: absolute;
   text-align: center;
   width: 100%;

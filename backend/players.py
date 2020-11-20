@@ -1,5 +1,6 @@
 from enum import IntEnum
 import json
+import socketio
 
 import roles
 import cards
@@ -13,9 +14,10 @@ class PendingAction(IntEnum):
     WAIT = 4
 
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, sid):
         super().__init__()
         self.name = name
+        self.sid = sid
         self.hand: cards.Card = []
         self.equipment: cards.Card = []
         self.role: roles.Role = None
@@ -33,6 +35,9 @@ class Player:
     def join_game(self, game):
         self.game = game
         print(f'I {self.name} joined {self.game}')
+
+    def disconnect(self):
+        return self.game.handle_disconnect(self)
 
     def set_role(self, role: roles.Role):
         self.role = role
