@@ -3,14 +3,15 @@
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"/>
 			<Card v-if="character" :card="character"/>
-			<transition-group name="list" tag="equ">
+			<transition-group name="list" tag="div" >
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
 			</transition-group>
 		</div>
 		<div class="hand">
 			<i>Mano</i>
-			<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" />
+			<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card"  @mouseover.native="hint=card.desc" @mouseleave.native="hint=''"/>
 		</div>
+		<p>{{hint}}</p>
 	</div>
 </template>
 
@@ -29,6 +30,7 @@ export default {
 		hand: [],
 		lives: 0,
 		max_lives: 0,
+		hint: '',
 	}),
 	sockets: {
 		role(role) {
@@ -36,6 +38,7 @@ export default {
 		},
 		self(self) {
 			self = JSON.parse(self)
+			console.log(self)
 			this.character = self.character
 			this.character.is_character = true
 			this.hand = self.hand
@@ -59,6 +62,7 @@ export default {
 	opacity: 0.5;
 }
 .hand {
+	margin-top: 12pt;
 	position: relative;
 	display:flex;
 	border: 1px solid #ccc;
@@ -74,7 +78,7 @@ export default {
 	margin-right:35pt;
 	margin-top:-0.5pt;
 }
-.equipment-slot, .equipment-slot>equ {
+.equipment-slot, .equipment-slot>div {
 	display:flex;
 	margin:0;
 }

@@ -38,106 +38,128 @@ class Card(ABC):
 class Barile(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Barile', number, is_equipment=True)
+        self.icon = '🛢'
         self.desc = "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
 
 class Dinamite(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Dinamite', number, is_equipment=True)
+        self.icon = '🧨'
         self.desc = "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
 
 class Mirino(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mirino', number, is_equipment=True, sight_mod=1)
+        self.icon = '🔎'
         self.desc = "Tu vedi gli altri giocatori a distanza -1"
 
 class Mustang(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mustang', number, is_equipment=True, vis_mod=1)
+        self.icon = '🐎'
         self.desc = "Gli altri giocatori ti vedono a distanza +1"
 
 class Prigione(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Prigione', number, is_equipment=False)
+        self.icon = '⛓'
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
 
 class Remington(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Remington', number, is_equipment=True, is_weapon=True, range=3)
+        self.icon = '🔫'
         self.desc = "Puoi sparare a un giocatore che sia distante 3 o meno"
 
 class RevCarabine(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Rev. Carabine', number, is_equipment=True, is_weapon=True, range=4)
+        self.icon = '🔫'
         self.desc = "Puoi sparare a un giocatore che sia distante 4 o meno"
 
 class Schofield(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Schofield', number, is_equipment=True, is_weapon=True, range=2)
+        self.icon = '🔫'
         self.desc = "Puoi sparare a un giocatore che sia distante 2 o meno"
 
 class Volcanic(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Volcanic', number, is_equipment=True, is_weapon=True, range=1)
+        self.icon = '🔫'
         self.desc = "Puoi sparare a un giocatore che sia distante 1 o meno, tuttavia puoi giocare quanti bang vuoi"
 
 class Winchester(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Winchester', number, is_equipment=True, is_weapon=True, range=5)
+        self.icon = '🔫'
         self.desc = "Puoi sparare a un giocatore che sia distante 5 o meno"
 
 class Bang(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Bang!', number)
+        self.icon = '💥'
         self.desc = "Spara a un giocatore a distanta raggiungibile. Se non hai armi la distanza di default è 1"
 
 class Birra(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Birra', number)
+        self.icon = '🍺'
         self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
 
 class CatBalou(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Cat Balou', number)
+        self.icon = '💃'
         self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
 
 class Diligenza(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Diligenza', number)
+        self.icon = '🚡'
         self.desc = "Pesca 2 carte dalla cima del mazzo"
 
 class Duello(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Duello', number)
+        self.icon = '⚔️'
 
 class Emporio(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Emporio', number)
+        self.icon = '🏪'
 
 class Gatling(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Gatling', number)
+        self.icon = '🛰'
 
 class Indiani(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Indiani!', number)
+        self.icon = '🏹'
 
 class Mancato(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mancato!', number)
+        self.icon = '😅'
 
 class Panico(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Panico!', number, range=1)
+        self.icon = '😱'
 
 class Saloon(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Saloon', number)
         self.desc = "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
+        self.icon = '🍻'
 
 class WellsFargo(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'WellsFargo', number)
         self.desc = "Pesca 3 carte dalla cima del mazzo"
+        self.icon = '💸'
 
 def get_starting_deck() -> List[Card]:
     return [
