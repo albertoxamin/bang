@@ -2,7 +2,7 @@
 	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character }">
 		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
-		<span>{{card.number}}{{suit}}</span>
+		<div class="suit">{{card.number}}{{suit}}</div>
 	</div>
 </template>
 
@@ -78,7 +78,7 @@ export default {
   font-size:26pt;
   top: 35%;
 } 
-.card span {
+.card .suit {
 	position: absolute;
   bottom: 3pt;
   left:3pt;
