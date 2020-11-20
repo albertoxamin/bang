@@ -120,7 +120,7 @@ export default {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	color: #2c3e50;
-	margin: 60px;
+	margin: 16pt;
 }
 h1,h2,h3,h4,p,span{
 	font-family: Avenir, Helvetica, Arial, sans-serif;

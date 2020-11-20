@@ -3,10 +3,13 @@
 		<h1>Lobby: {{ lobbyName }}</h1>
 		<h3>Giocatori</h3>
 		<div style="display:flex">
+			<div style="position: relative;width:260pt;height:400pt;">
+				<Card v-for="p in playersTable" v-bind:key="p" :card="p.card" :style="p.style"/>
+			</div>
 			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
-			<Card v-for="p in players" v-bind:key="p" :card="getPlayerCard(p)"/>
 		</div>
 		<div v-if="started">
+			<deck/>
 			<player/>
 		</div>
 		<chat/>
@@ -19,6 +22,7 @@ import Card from '@/components/Card.vue'
 import Chooser from './Chooser.vue'
 import Chat from './Chat.vue'
 import Player from './Player.vue'
+import Deck from './Deck.vue'
 
 export default {
 	name: 'Lobby',
@@ -27,6 +31,7 @@ export default {
 		Chooser,
 		Chat,
 		Player,
+		Deck,
 	},
 	props: {
 		username: String
@@ -41,7 +46,6 @@ export default {
 	}),
 	sockets: {
 		room(data) {
-			console.log(data)
 			this.lobbyName = data.name
 			this.started = data.started
 			this.players = data.players
@@ -67,6 +71,14 @@ export default {
 		},
 		showChooser() {
 			return this.availableCharacters.length > 0;
+		},
+		playersTable() {
+			return this.players.map((x,i) => {
+				let offsetAngle = 360.0 / this.players.length
+				let rotateAngle = (i) * offsetAngle
+				let size = 130
+				return {card:this.getPlayerCard(x), style: `position:absolute;transform: rotate(${rotateAngle}deg) translate(0, -${size}pt) rotate(-${rotateAngle}deg) translate(${size}pt,${size}pt)`}
+			})
 		}
 	},
 	methods: {
