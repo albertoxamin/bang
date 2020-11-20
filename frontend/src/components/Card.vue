@@ -26,19 +26,19 @@ export default {
 
 <style>
 .card {
-  cursor: pointer;
-  width: 60pt;
-  min-width:60pt;
-  height: 100pt;
+	cursor: pointer;
+	width: 60pt;
+	min-width:60pt;
+	height: 100pt;
 	margin: 12pt;
-  background: white;
-  box-shadow: 
-    0 0 0 3pt #987e51,
-    0 0 0 6pt white,
-    0 0 5pt 6pt #aaa;
-  border-radius: 6pt;
-  position: relative;
-  transition: all 0.5s ease-in-out;
+	background: white;
+	box-shadow: 
+		0 0 0 3pt #987e51,
+		0 0 0 6pt white,
+		0 0 5pt 6pt #aaa;
+	border-radius: 6pt;
+	position: relative;
+	transition: all 0.5s ease-in-out;
 	color: #333;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -46,8 +46,8 @@ export default {
 	/* word-wrap: break-word; */
 }
 .card.back{
-  color:white;
-  background: repeating-linear-gradient(
+	color:white;
+	background: repeating-linear-gradient(
 		45deg,
 		#987e51,
 		#987e51 5px,
@@ -57,33 +57,33 @@ export default {
 }
 
 .card.equipment {
-  box-shadow: 
-    0 0 0 3pt #5c5e83,
-    0 0 0 6pt white,
-    0 0 5pt 6pt #aaa;
+	box-shadow: 
+		0 0 0 3pt #5c5e83,
+		0 0 0 6pt white,
+		0 0 5pt 6pt #aaa;
 }
 .card.character {
-  box-shadow: 
-    0 0 0 3pt #7c795b,
-    0 0 0 6pt white,
-    0 0 5pt 6pt #aaa;
+	box-shadow: 
+		0 0 0 3pt #7c795b,
+		0 0 0 6pt white,
+		0 0 5pt 6pt #aaa;
 }
 .card h4 {
 	position: absolute;
-  text-align: center;
-  width: 100%;
-  top: -10pt;
+	text-align: center;
+	width: 100%;
+	top: -10pt;
 } 
 .card .emoji {
 	position: absolute;
-  text-align: center;
-  width: 100%;
-  font-size:26pt;
-  top: 35%;
+	text-align: center;
+	width: 100%;
+	font-size:26pt;
+	top: 35%;
 } 
 .card .suit {
 	position: absolute;
-  bottom: 3pt;
-  left:3pt;
+	bottom: 3pt;
+	left:3pt;
 }
 </style>

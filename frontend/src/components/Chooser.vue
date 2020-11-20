@@ -45,4 +45,13 @@ export default {
 	align-items: center;
 	justify-content: center;
 }
+
+.card {
+	width: 72pt;
+	min-width:72pt;
+	height: 120pt;
+}
+.card:hover {
+	transform: translate(0, -5px) scale(1.05, 1.05);
+}
 </style>

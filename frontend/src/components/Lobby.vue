@@ -14,7 +14,9 @@
 			<player/>
 		</div>
 		<chat/>
-		<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
+		<transition name="bounce">
+			<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
+		</transition>
 	</div>
 </template>
 
