@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import Card from './components/Card.vue'
 import Lobby from './components/Lobby.vue'
 
@@ -70,10 +71,12 @@ export default {
 	sockets: {
 		connect() {
 			this.isConnected = true;
-			setTimeout(function(){
-				this.username =(1+Math.random() * 100 % 100).toFixed(2).toString();
-				this.setUsername();
-			}.bind(this), 1000)
+			if (Vue.config.devtools) {
+				setTimeout(function(){
+					this.username = (1+Math.random() * 100 % 100).toFixed(2).toString();
+					this.setUsername();
+				}.bind(this), 1000)
+			}
 		},
 		disconnect() {
 			this.isConnected = false;

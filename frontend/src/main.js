@@ -5,7 +5,7 @@ Vue.config.productionTip = false
 import VueSocketIO from 'vue-socket.io'
 Vue.use(new VueSocketIO({
 	debug: true,
-	connection: 'http://localhost:5001',
+	connection: Vue.config.devtools?'http://localhost:5001':'http://51.15.199.193:5001',
 }))
 
 new Vue({
