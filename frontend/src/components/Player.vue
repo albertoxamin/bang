@@ -9,6 +9,10 @@
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
 			</transition-group>
 		</div>
+		<transition-group name="list" tag="div" style="display: flex; justify-content: space-evenly;">
+			<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
+			<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
+		</transition-group>
 		<div>
 			<span>Mano</span>
 			<transition-group name="list" tag="div" class="hand">
@@ -20,6 +24,7 @@
 		<p>{{hint}}</p>
 		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst"/>
 		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
+		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 	</div>
 </template>
 

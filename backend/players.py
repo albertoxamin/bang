@@ -69,6 +69,8 @@ class Player:
         self.sio.emit('characters', room=self.sid, data=json.dumps(available, default=lambda o: o.__dict__))
 
     def notify_self(self):
+        if self.lives <= 0 and self.max_lives > 0:
+            self.game.player_death(self)
         ser = self.__dict__.copy()
         ser.pop('game')
         ser.pop('sio')
@@ -80,6 +82,8 @@ class Player:
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
 
     def play_turn(self):
+        if self.lives == 0:
+            self.end_turn(forced=True)
         print(f'I {self.name} was notified that it is my turn')
         self.was_shot = False
         self.is_my_turn = True

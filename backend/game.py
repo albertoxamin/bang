@@ -108,6 +108,18 @@ class Game:
         print('scrap')
         self.sio.emit('scrap', room=self.name, data=self.deck.peek_scrap_pile().__dict__)
 
+    def player_death(self, player: players.Player):
+        print(f'player {player.name} died')
+        self.players.pop(self.players.index(player))
+        if len(self.players) == 0:
+            print(f'no players left in game {self.name}')
+            return True
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+        self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
+        for p in self.players:
+            p.notify_self()
+        self.players_map = {c.name: i for i, c in enumerate(self.players)}
+
 
 # game = Game()
 # p1 = players.Player('p1')
