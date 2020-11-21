@@ -6,7 +6,7 @@
 			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
 			<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
-				<Card :card="p.card"/>
+				<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 				<tiny-hand :ncards="p.ncards"/>
 			</div>
 				<!-- :style="p.style"/> -->
@@ -114,7 +114,7 @@ export default {
 			return {
 				name: player.name,
 				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
-				icon: (player.lives === undefined || player.lives > 0) ? '🤠' : '☠️',
+				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : '🤠') : '☠️',
 				alt_text: player.lives !== undefined ? Array(player.lives).join('❤️')+Array(player.max_lives-player.lives).join('💀') : '',
 				is_character: true,
 			}
@@ -135,5 +135,22 @@ export default {
 <style >
 #logo {
 	display:none;
+}
+.is_my_turn {
+	box-shadow: 0 0 0 3pt rgb(138, 12, 12), 0 0 0 6pt white, 0 0 5pt 6pt #aaa !important;
+	animation-name: turn-animation;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+@keyframes turn-animation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>

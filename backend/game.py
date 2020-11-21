@@ -141,7 +141,8 @@ class Game:
             'equipment': [e.__dict__ for e in p.equipment],
             'lives': p.lives,
             'max_lives': p.max_lives,
-            'is_sheriff': isinstance(p.role, roles.Sheriff)
+            'is_sheriff': isinstance(p.role, roles.Sheriff),
+            'is_my_turn': p.is_my_turn,
         } for p in self.players]
         self.sio.emit('players_update', room=self.name, data=data)
 
