@@ -25,6 +25,7 @@ class Game:
             self.deck.scrap(c)
         for c in player.equipment:
             self.deck.scrap(c)
+        died_in_his_turn = self.started and index == self.turn
         if self.started and index < self.turn:
             self.turn -= 1
         self.players.pop(index)
@@ -34,6 +35,8 @@ class Game:
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} si è disconnesso.')
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
+        if died_in_his_turn:
+            self.next_turn()
         return False
 
     def add_player(self, player: players.Player):
@@ -125,7 +128,8 @@ class Game:
         for c in player.equipment:
             self.deck.scrap(c)
         index = self.players.index(player)
-        if index < self.turn:
+        died_in_his_turn = index == self.turn
+        if index <= self.turn:
             self.turn -= 1
         self.players.pop(index)
         if len(self.players) == 0:
@@ -136,7 +140,9 @@ class Game:
         for p in self.players:
             p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
-    
+        if died_in_his_turn:
+            self.next_turn()
+
     def notify_all(self):
         data = [{
             'name': p.name,

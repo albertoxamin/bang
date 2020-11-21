@@ -101,5 +101,10 @@ def respond(sid, data):
     ses = sio.get_session(sid)
     ses.respond(data)
 
+@sio.event
+def choose(sid, card_index):
+    ses = sio.get_session(sid)
+    ses.choose(card_index)
+
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)

@@ -13,6 +13,7 @@ class PendingAction(IntEnum):
     PLAY = 2
     RESPOND = 3
     WAIT = 4
+    CHOOSE = 5
 
 class Player:
     def __init__(self, name, sid, sio):
@@ -36,6 +37,7 @@ class Player:
         self.on_pick_cb = None
         self.on_response_cb = None
         self.expected_response = None
+        self.target_p: str  = None
 
     def join_game(self, game):
         self.game = game
@@ -85,6 +87,7 @@ class Player:
     def play_turn(self):
         if self.lives == 0:
             self.end_turn(forced=True)
+        self.sio.emit('chat_message', room=self.game.name, data=f'È il turno di {self.name}.')
         print(f'I {self.name} was notified that it is my turn')
         self.was_shot = False
         self.is_my_turn = True
@@ -118,6 +121,7 @@ class Player:
                         if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i))
+                            self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha fatto esplodere la dinamite.')
                             print(f'{self.name} Boom, -3 hp')
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
@@ -189,38 +193,74 @@ class Player:
                 self.hand.insert(hand_index, card)
                 return
             if isinstance(card, cards.Bang) and againts != None:
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.has_played_bang = True
                 self.game.attack(self, againts)
             if isinstance(card, cards.Birra) and len(self.game.players) != 2:
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato una {card.name}.')
                 self.lives = min(self.lives+1, self.max_lives)
-            if isinstance(card, cards.CatBalou):
-                pass
+            if isinstance(card, cards.CatBalou) and againts != None:
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
+                self.pending_action = PendingAction.CHOOSE
+                self.choose_action = 'discard'
+                self.target_p = againts
+                print('choose now')
             if isinstance(card, cards.Diligenza):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} e ha pescato 2 carte.')
                 for i in range(2):
                     self.hand.append(self.game.deck.draw())
             if isinstance(card, cards.Duello):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 pass
             if isinstance(card, cards.Emporio):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 pass
             if isinstance(card, cards.Gatling):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 for p in self.game.players:
                     if p != self:
                         self.game.attack(self, p)
                 pass
             if isinstance(card, cards.Indiani):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 pass
             if isinstance(card, cards.Mancato):
                 pass
             if isinstance(card, cards.Panico):
-                pass
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
+                self.pending_action = PendingAction.CHOOSE
+                self.choose_action = 'steal'
+                self.target_p = againts
+                print('choose now')
             if isinstance(card, cards.Saloon):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} e ha curato 1 punto vita a tutti.')
                 for p in self.game.players:
                     p.lives = min(p.lives+1, p.max_lives)
                     p.notify_self()
             if isinstance(card, cards.WellsFargo):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} e ha pescato 3 carte.')
                 for i in range(3):
                     self.hand.append(self.game.deck.draw())
             self.game.deck.scrap(card)
+        self.notify_self()
+
+    def choose(self, card_index):
+        if self.pending_action != PendingAction.CHOOSE:
+            return
+        target = self.game.get_player_named(self.target_p)
+        card = None
+        if card_index >= len(target.hand):
+            card = target.equipment.pop(card_index - len(target.hand))
+        else:
+            card = target.hand.pop(card_index)
+        target.notify_self()
+        if self.choose_action == 'steal':
+            self.hand.append(card)
+        else:
+            self.game.deck.scrap(card)
+        self.target_p = ''
+        self.choose_action = ''
+        self.pending_action = PendingAction.PLAY
         self.notify_self()
 
     def barrel_pick(self):

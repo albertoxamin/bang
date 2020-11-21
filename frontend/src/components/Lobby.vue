@@ -17,11 +17,12 @@
 		</div>
 		<div v-if="started">
 			<deck/>
-			<player/>
+			<player :chooseCardFromPlayer="choose"/>
 		</div>
 		<chat/>
 		<transition name="bounce">
 			<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
+			<Chooser v-if="hasToChoose" text="Scegli una carta" :cards="chooseCards" :select="chooseCard"/>
 		</transition>
 	</div>
 </template>
@@ -55,6 +56,8 @@ export default {
 		distances: {},
 		availableCharacters: [],
 		self: {},
+		hasToChoose: false,
+		chooseCards: [],
 	}),
 	sockets: {
 		room(data) {
@@ -129,6 +132,27 @@ export default {
 		setCharacter(char) {
 			this.availableCharacters = []
 			this.$socket.emit('set_character', char.name)
+		},
+		choose(player_name) {
+			console.log('choose from' + player_name)
+			let pl = this.players.filter(x=>x.name === player_name)[0]
+			console.log(pl)
+			let arr = []
+			for (let i=0; i<pl.ncards; i++)
+				arr.push({
+					name: 'PewPew!',
+					icon: '💥',
+					is_back: true,
+				})
+			pl.equipment.forEach(x=>arr.push(x))
+			this.chooseCards = arr
+			this.hasToChoose = true
+		},
+		chooseCard(card) {
+			this.$socket.emit('choose', this.chooseCards.indexOf(card))
+			console.log(card + ' ' + this.chooseCards.indexOf(card))
+			this.chooseCards = []
+			this.hasToChoose = false
 		},
 	},
 }

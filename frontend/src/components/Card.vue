@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character}">
+	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back}">
 		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div v-if="card.is_character" class="alt_text">{{card.alt_text}}</div>

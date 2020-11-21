@@ -34,6 +34,9 @@ import Chooser from '@/components/Chooser.vue'
 
 export default {
 	name: 'Player',
+	props: {
+		chooseCardFromPlayer: Function
+	},
 	components: {
 		Card,
 		Chooser,
@@ -65,6 +68,9 @@ export default {
 			this.lives = self.lives
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
+			if (this.pending_action == 5) {
+				this.chooseCardFromPlayer(self.target_p)
+			}
 		},
 		self_vis(vis) {
 			console.log('received visibility update')
@@ -82,7 +88,7 @@ export default {
 		instruction() {
 			if (this.pending_action == null)
 				return ''
-			let x = ['Estrai una carta', 'Pesca le tue carte', 'Gioca le tue carte', 'Rispondi alla carta', 'Attendi']
+			let x = ['Estrai una carta', 'Pesca le tue carte', 'Gioca le tue carte', 'Rispondi alla carta', 'Attendi', 'Scegli una carta']
 			return x[this.pending_action]
 		},
 		canEndTurn() {
