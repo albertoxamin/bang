@@ -107,7 +107,8 @@ export default {
 		},
 		play_card(card) {
 			if (this.pending_action == 2) {
-				if (card.need_target && !(card.name == 'Bang!' && this.has_played_bang)) {
+				if (card.need_target &&
+					!(card.name == 'Bang!' && (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0))) {
 					this.card_against = card
 				} else {
 					this.really_play_card(card, null)
