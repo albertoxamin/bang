@@ -133,6 +133,18 @@ class Game:
         for p in self.players:
             p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
+    
+    def notify_all(self):
+        data = [{
+            'name': p.name,
+            'ncards': len(p.hand),
+            'equipment': [e.__dict__ for e in p.equipment],
+            'lives': p.lives,
+            'max_lives': p.max_lives,
+            'is_sheriff': isinstance(p.role, roles.Sheriff)
+        } for p in self.players]
+        self.sio.emit('players_update', room=self.name, data=data)
+
 
 
 # game = Game()

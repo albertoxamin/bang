@@ -3,11 +3,14 @@
 		<h1>Lobby: {{ lobbyName }}</h1>
 		<h3>Giocatori (tu sei {{username}})</h3>
 		<div style="display:flex">
+			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
-				<Card v-for="p in playersTable" v-bind:key="p.card.name" :card="p.card"/>
+			<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
+				<Card :card="p.card"/>
+				<tiny-hand :ncards="p.ncards"/>
+			</div>
 				<!-- :style="p.style"/> -->
 			<!-- </div> -->
-			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 		</div>
 		<div v-if="started">
 			<deck/>
@@ -26,6 +29,7 @@ import Chooser from './Chooser.vue'
 import Chat from './Chat.vue'
 import Player from './Player.vue'
 import Deck from './Deck.vue'
+import TinyHand from './TinyHand.vue'
 
 export default {
 	name: 'Lobby',
@@ -35,6 +39,7 @@ export default {
 		Chat,
 		Player,
 		Deck,
+		TinyHand,
 	},
 	props: {
 		username: String
@@ -54,21 +59,26 @@ export default {
 			this.started = data.started
 			this.players = data.players.map(x => {
 				return {
-					name:x,
+					name: x,
+					ncards: 0,
 				}
 			})
 		},
-		characters(data){
+		characters(data) {
 			this.availableCharacters = JSON.parse(data)
 		},
 		start() {
 			this.started = true;
 		},
-		self_vis(vis) {
-			console.log('received visibility update')
-			console.log(vis)
-			this.players = JSON.parse(vis)
+		players_update(data) {
+			console.log(data)
+			this.players = data
 		},
+		// self_vis(vis) {
+		// 	console.log('received visibility update')
+		// 	console.log(vis)
+		// 	this.players = JSON.parse(vis)
+		// },
 	},
 	computed: {
 		startGameCard() {
@@ -91,7 +101,11 @@ export default {
 				let offsetAngle = 360.0 / this.players.length
 				let rotateAngle = (i) * offsetAngle
 				let size = 130
-				return {card:this.getPlayerCard(x), style: `position:absolute;transform: rotate(${rotateAngle}deg) translate(0, -${size}pt) rotate(-${rotateAngle}deg) translate(${size}pt,${size}pt)`}
+				return {
+					card:this.getPlayerCard(x),
+					style: `position:absolute;transform: rotate(${rotateAngle}deg) translate(0, -${size}pt) rotate(-${rotateAngle}deg) translate(${size}pt,${size}pt)`,
+					...x
+				}
 			})
 		}
 	},

@@ -80,6 +80,7 @@ class Player:
         ser.pop('expected_response')
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
+        self.game.notify_all()
 
     def play_turn(self):
         if self.lives == 0:
