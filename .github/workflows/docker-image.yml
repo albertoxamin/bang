@@ -8,10 +8,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Backend Docker image
-      run: cd backend;docker build . --file Dockerfile --tag bang-backend:latest
+      run: cd backend;docker build . --file Dockerfile --tag albertoxamin/bang-backend:latest
     - uses: actions/checkout@v2
     - name: Build the Frontend Docker image
-      run: cd frontend;docker build . --file Dockerfile --tag bang-frontend:latest
+      run: cd frontend;docker build . --file Dockerfile --tag albertoxamin/bang-frontend:latest
     - name: Log into registry
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
     - name: Push iamges
