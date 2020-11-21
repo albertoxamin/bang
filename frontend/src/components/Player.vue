@@ -48,6 +48,7 @@ export default {
 		hint: '',
 		pending_action: null,
 		card_against: null,
+		has_played_bang: false,
 		visiblePlayers: []
 	}),
 	sockets: {
@@ -63,6 +64,7 @@ export default {
 			this.equipment = self.equipment
 			this.lives = self.lives
 			this.max_lives = self.max_lives
+			this.has_played_bang = self.has_played_bang
 		},
 		self_vis(vis) {
 			console.log('received visibility update')
@@ -105,7 +107,7 @@ export default {
 		},
 		play_card(card) {
 			if (this.pending_action == 2) {
-				if (card.need_target) {
+				if (card.need_target && !(card.name == 'Bang!' && this.has_played_bang)) {
 					this.card_against = card
 				} else {
 					this.really_play_card(card, null)

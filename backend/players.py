@@ -139,6 +139,7 @@ class Player:
             self.pending_action = PendingAction.DRAW
             self.notify_self()
         else:
+            self.pending_action = PendingAction.WAIT
             self.on_pick_cb()
 
     def get_playable_cards(self):
@@ -164,7 +165,10 @@ class Player:
             return
         card: cards.Card = self.hand.pop(hand_index)
         print(self.name, 'is playing ', card, ' against:', againts)
-        if card.is_equipment and card.name not in [c.name for c in self.equipment]:
+        if isinstance(card, cards.Prigione) and isinstance(self.game.players_map[againts].role, roles.Sheriff):
+            self.game.players_map[againts].equipment.append(card)
+            self.game.players_map[againts].notify_self()
+        elif card.is_equipment and card.name not in [c.name for c in self.equipment]:
             if card.is_weapon:
                 has_weapon = False
                 for i in range(len(self.equipment)):
@@ -178,10 +182,38 @@ class Player:
             else:
                 self.equipment.append(card)
         else:
-            if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]):
+            if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]) and againts != None:
+                self.hand.insert(hand_index, card)
                 return
             if isinstance(card, cards.Bang) and againts != None:
+                self.has_played_bang = True
                 self.game.attack(self, againts)
+            if isinstance(card, cards.Birra) and len(self.game.players) != 2:
+                self.lives = min(self.lives+1, self.max_lives)
+            if isinstance(card, cards.CatBalou):
+                pass
+            if isinstance(card, cards.Diligenza):
+                for i in range(2):
+                    self.hand.append(self.game.deck.draw())
+            if isinstance(card, cards.Duello):
+                pass
+            if isinstance(card, cards.Emporio):
+                pass
+            if isinstance(card, cards.Gatling):
+                pass
+            if isinstance(card, cards.Indiani):
+                pass
+            if isinstance(card, cards.Mancato):
+                pass
+            if isinstance(card, cards.Panico):
+                pass
+            if isinstance(card, cards.Saloon):
+                for p in self.game.players:
+                    p.lives = min(p.lives+1, p.max_lives)
+                    p.notify_self()
+            if isinstance(card, cards.WellsFargo):
+                for i in range(3):
+                    self.hand.append(self.game.deck.draw())
             self.game.deck.scrap(card)
         self.notify_self()
 
@@ -192,7 +224,6 @@ class Player:
             picked: cards.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
             if picked.suit == cards.Suit.HEARTS:
-                self.pending_action = PendingAction.WAIT
                 self.notify_self()
                 self.game.responders_did_respond()
                 return
@@ -202,16 +233,16 @@ class Player:
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = cards.Mancato
-            self.on_response_cb = self.take_damage_response()
+            self.on_response_cb = self.take_damage_response
             self.notify_self()
 
     def get_banged(self):
-        if len([c for c in self.hand if isinstance(c, cards.Mancato) or isinstance(c, cards.Barile)]) == 0:
+        if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0:
             print('Cant defend')
             self.take_damage_response()
             return False
         else:
-            if len([c for c in self.hand if isinstance(c, cards.Barile)]) > 0:
+            if len([c for c in self.equipment if isinstance(c, cards.Barile)]) > 0:
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
                 self.on_pick_cb = self.barrel_pick
@@ -219,7 +250,7 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = cards.Mancato
-                self.on_response_cb = self.take_damage_response()
+                self.on_response_cb = self.take_damage_response
             self.notify_self()
             return True
     
@@ -256,6 +287,7 @@ class Player:
         if len(self.hand) > self.max_lives and not forced:
             print(f"I {self.name} have to many cards in my hand and I can't end the turn")
         else:
+            self.is_my_turn = False
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.next_turn()

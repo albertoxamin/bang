@@ -62,7 +62,7 @@ class Mustang(Card):
 
 class Prigione(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, 'Prigione', number, is_equipment=False)
+        super().__init__(suit, 'Prigione', number, is_equipment=True)
         self.icon = '⛓'
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
         self.need_target = True
@@ -126,6 +126,7 @@ class Diligenza(Card):
 class Duello(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Duello', number)
+        self.need_target = True
         self.icon = '⚔️'
 
 class Emporio(Card):
