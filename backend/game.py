@@ -4,6 +4,7 @@ import socketio
 import players
 from characters import all_characters
 from deck import Deck
+from players import Player
 import roles
 
 class Game:
@@ -25,6 +26,7 @@ class Game:
             return True
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} si è disconnesso.')
+        self.players_map = {c.name: i for i, c in enumerate(self.players)}
         return False
 
     def add_player(self, player: players.Player):
@@ -50,6 +52,7 @@ class Game:
         print('GAME IS STARING')
         if self.started:
             return
+        self.players_map = {c.name: i for i, c in enumerate(self.players)}
         self.sio.emit('chat_message', room=self.name, data=f'La partita sta iniziando...')
         self.sio.emit('start', room=self.name)
         self.started = True
@@ -74,8 +77,22 @@ class Game:
     def get_visible_players(self, player):
         i = self.players.index(player)
         sight = player.get_sight()
-        return [{'name': self.players[j].name, 'dist': min(abs(i - j) - 1, abs(i - len(self.players) - j)) + self.players[j].get_visibility()}
-         for j in range(len(self.players)) if i != j and min(abs(i - j) - 1, abs(i - len(self.players) - j)) + self.players[j].get_visibility() <= sight]
+        return [{
+            'name': self.players[j].name,
+            'dist': min(abs(i - j), abs(i - len(self.players) - j)) + self.players[j].get_visibility(),
+            'lives': self.players[j].lives,
+            'max_lives': self.players[j].max_lives,
+        } for j in range(len(self.players)) if i != j]
+
+    def attack(self, attacker:Player, target_username:str):
+        self.sio.emit('chat_message', room=self.name, data=f'{attacker.name} ha fatto Bang contro {target_username}.')
+        if self.players[self.players_map[target_username]].get_banged():
+            attacker.pending_action = players.PendingAction.WAIT
+            attacker.notify_self()
+    
+    def responders_did_respond(self):
+        self.players[self.turn].pending_action = players.PendingAction.PLAY
+        self.players[self.turn].notify_self()
 
     def next_player(self):
         return self.players[(self.turn + 1) % len(self.players)]

@@ -36,7 +36,7 @@ export default {
 	},
 	methods: {
 		action() {
-			if (this.pending_action && this.pending_action < 2) {
+			if (this.pending_action !== false && this.pending_action < 2) {
 				console.log('action')
 				if (this.pending_action == 0)
 					this.$socket.emit('pick')

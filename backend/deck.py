@@ -23,6 +23,7 @@ class Deck:
     def pick_and_scrap(self) -> Card:
         card = self.cards.pop(0)
         self.scrap_pile.append(card)
+        self.game.notify_scrap_pile()
         return card
 
     def draw(self) -> Card:

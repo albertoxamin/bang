@@ -92,8 +92,7 @@ export default {
 			return {
 				name: lobby.name,
 				icon: "💥",
-				number: lobby.players,
-				suit: '🤠',
+				number: `${lobby.players}🤠`,
 				is_equipment: true,
 			}
 		},

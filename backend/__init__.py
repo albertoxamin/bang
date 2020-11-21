@@ -82,6 +82,11 @@ def draw(sid):
     ses.draw()
 
 @sio.event
+def pick(sid):
+    ses = sio.get_session(sid)
+    ses.pick()
+
+@sio.event
 def end_turn(sid):
     ses = sio.get_session(sid)
     ses.end_turn()
@@ -90,6 +95,11 @@ def end_turn(sid):
 def play_card(sid, data):
     ses = sio.get_session(sid)
     ses.play_card(data['index'], data['against'])
+
+@sio.event
+def respond(sid, data):
+    ses = sio.get_session(sid)
+    ses.respond(data)
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)

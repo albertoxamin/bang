@@ -29,6 +29,7 @@ class Card(ABC):
         self.sight_mod = sight_mod
         self.range = range
         self.desc = desc
+        self.need_target = False
 
     def __str__(self):
         char = ['♦️','♣️','♥️','♠️'][int(self.suit)]
@@ -64,6 +65,7 @@ class Prigione(Card):
         super().__init__(suit, 'Prigione', number, is_equipment=False)
         self.icon = '⛓'
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
+        self.need_target = True
 
 class Remington(Card):
     def __init__(self, suit, number):
@@ -100,6 +102,7 @@ class Bang(Card):
         super().__init__(suit, 'Bang!', number)
         self.icon = '💥'
         self.desc = "Spara a un giocatore a distanta raggiungibile. Se non hai armi la distanza di default è 1"
+        self.need_target = True
 
 class Birra(Card):
     def __init__(self, suit, number):
@@ -112,6 +115,7 @@ class CatBalou(Card):
         super().__init__(suit, 'Cat Balou', number)
         self.icon = '💃'
         self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
+        self.need_target = True
 
 class Diligenza(Card):
     def __init__(self, suit, number):
@@ -148,6 +152,7 @@ class Panico(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Panico!', number, range=1)
         self.icon = '😱'
+        self.need_target = True
 
 class Saloon(Card):
     def __init__(self, suit, number):

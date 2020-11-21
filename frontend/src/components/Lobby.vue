@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>Lobby: {{ lobbyName }}</h1>
-		<h3>Giocatori</h3>
+		<h3>Giocatori (tu sei {{username}})</h3>
 		<div style="display:flex">
 			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
 				<Card v-for="p in playersTable" v-bind:key="p.card.name" :card="p.card"/>
@@ -68,7 +68,7 @@ export default {
 			console.log('received visibility update')
 			console.log(vis)
 			this.players = JSON.parse(vis)
-		}
+		},
 	},
 	computed: {
 		startGameCard() {
@@ -100,7 +100,8 @@ export default {
 			return {
 				name: player.name,
 				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
-				icon: '🤠',
+				icon: (player.lives === undefined || player.lives > 0) ? '🤠' : '☠️',
+				alt_text: player.lives !== undefined ? Array(player.lives).join('❤️')+Array(player.max_lives-player.lives).join('💀') : '',
 				is_character: true,
 			}
 		},

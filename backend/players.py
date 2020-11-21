@@ -1,6 +1,7 @@
 from enum import IntEnum
 import json
 import socketio
+from cards import Mancato
 
 import roles
 import cards
@@ -32,6 +33,9 @@ class Player:
         self.pending_action: PendingAction = None
         self.available_characters = []
         self.was_shot = False
+        self.on_pick_cb = None
+        self.on_response_cb = None
+        self.expected_response = None
 
     def join_game(self, game):
         self.game = game
@@ -69,6 +73,9 @@ class Player:
         ser.pop('game')
         ser.pop('sio')
         ser.pop('sid')
+        ser.pop('on_pick_cb')
+        ser.pop('on_response_cb')
+        ser.pop('expected_response')
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
 
@@ -84,46 +91,51 @@ class Player:
             self.pending_action = PendingAction.DRAW
         self.notify_self()
 
-        # # print(f'lives: {self.lives}/{self.max_lives} hand: {[str(c) for c in self.hand]}')
-        # print(f'I {self.name} can see {[p.get_public_description() for p in self.game.get_visible_players(self)]}')
-        # ser = self.__dict__.copy()
-        # ser.pop('game')
-        # print(json.dumps(ser, default=lambda o: o.__dict__, indent=4))
     def draw(self):
+        if self.pending_action != PendingAction.DRAW:
+            return
         for i in range(2):
             self.hand.append(self.game.deck.draw())
         self.pending_action = PendingAction.PLAY
         self.notify_self()
 
     def pick(self):
+        if self.pending_action != PendingAction.PICK:
+            return
         pickable_cards = 1 + self.character.pick_mod
-        for i in range(len(self.equipment)):
-            if isinstance(self.equipment[i], cards.Dinamite):
-                while pickable_cards > 0:
-                    pickable_cards -= 1
-                    picked: cards.Card = self.game.deck.pick_and_scrap()
-                    print(f'Did pick {picked}')
-                    if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
-                        self.lives -= 3
-                        self.game.deck.scrap(self.equipment.pop(i))
-                        print(f'{self.name} Boom, -3 hp')
-                    else:
-                        self.game.next_player().equipment.append(self.equipment.pop(i))
-                if any([isinstance(c, cards.Dinamite) or isinstance(c, cards.Prigione) for c in self.equipment]):
-                    return
-        for i in range(len(self.equipment)):
-            if isinstance(self.equipment[i], cards.Prigione):
-                while pickable_cards > 0:
-                    pickable_cards -= 1
-                    picked: cards.Card = self.game.deck.pick_and_scrap()
-                    print(f'Did pick {picked}')
-                    if picked.suit != cards.Suit.HEARTS and pickable_cards == 0:
-                        self.game.deck.scrap(self.equipment.pop(i))
-                        self.end_turn(forced=True)
-                    else:
-                        break
-                break
-        self.pending_action = PendingAction.DRAW
+        if self.is_my_turn:
+            for i in range(len(self.equipment)):
+                if isinstance(self.equipment[i], cards.Dinamite):
+                    while pickable_cards > 0:
+                        pickable_cards -= 1
+                        picked: cards.Card = self.game.deck.pick_and_scrap()
+                        print(f'Did pick {picked}')
+                        if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
+                            self.lives -= 3
+                            self.game.deck.scrap(self.equipment.pop(i))
+                            print(f'{self.name} Boom, -3 hp')
+                        else:
+                            self.game.next_player().equipment.append(self.equipment.pop(i))
+                            self.game.next_player().notify_self()
+                    if any([isinstance(c, cards.Dinamite) or isinstance(c, cards.Prigione) for c in self.equipment]):
+                        self.notify_self()
+                        return
+            for i in range(len(self.equipment)):
+                if isinstance(self.equipment[i], cards.Prigione):
+                    while pickable_cards > 0:
+                        pickable_cards -= 1
+                        picked: cards.Card = self.game.deck.pick_and_scrap()
+                        print(f'Did pick {picked}')
+                        if picked.suit != cards.Suit.HEARTS and pickable_cards == 0:
+                            self.game.deck.scrap(self.equipment.pop(i))
+                            self.end_turn(forced=True)
+                        else:
+                            break
+                    break
+            self.pending_action = PendingAction.DRAW
+            self.notify_self()
+        else:
+            self.on_pick_cb()
 
     def get_playable_cards(self):
         playable_cards = []
@@ -163,9 +175,63 @@ class Player:
                 self.equipment.append(card)
         else:
             if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]):
-                print('you retard')
+                return
+            if isinstance(card, cards.Bang) and againts != None:
+                self.game.attack(self, againts)
             self.game.deck.scrap(card)
         self.notify_self()
+
+    def barrel_pick(self):
+        pickable_cards = 1 + self.character.pick_mod
+        while pickable_cards > 0:
+            pickable_cards -= 1
+            picked: cards.Card = self.game.deck.pick_and_scrap()
+            print(f'Did pick {picked}')
+            if picked.suit == cards.Suit.HEARTS:
+                self.pending_action = PendingAction.WAIT
+                self.notify_self()
+                self.game.responders_did_respond()
+                return
+        if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0:
+            self.take_damage_response()
+            self.game.responders_did_respond()
+        else:
+            self.pending_action = PendingAction.RESPOND
+            self.expected_response = cards.Mancato
+            self.on_response_cb = self.take_damage_response()
+            self.notify_self()
+
+    def get_banged(self):
+        if len([c for c in self.hand if isinstance(c, cards.Mancato) or isinstance(c, cards.Barile)]) == 0:
+            print('Cant defend')
+            self.take_damage_response()
+            return False
+        else:
+            if len([c for c in self.hand if isinstance(c, cards.Barile)]) > 0:
+                print('has barrel')
+                self.pending_action = PendingAction.PICK
+                self.on_pick_cb = self.barrel_pick
+            else:
+                print('has mancato')
+                self.pending_action = PendingAction.RESPOND
+                self.expected_response = cards.Mancato
+                self.on_response_cb = self.take_damage_response()
+            self.notify_self()
+            return True
+    
+    def take_damage_response(self):
+        self.lives -= 1
+        self.notify_self()
+
+    def respond(self, hand_index):
+        self.pending_action = PendingAction.WAIT
+        if hand_index != -1 and isinstance(self.hand[hand_index], self.expected_response):
+            self.game.deck.scrap(self.hand.pop(hand_index))
+            self.notify_self()
+            self.game.responders_did_respond()
+        else:
+            self.on_response_cb()
+            self.game.responders_did_respond()
 
     def get_sight(self):
         aim = 0

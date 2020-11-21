@@ -18,16 +18,20 @@
 			</transition-group>
 		</div>
 		<p>{{hint}}</p>
+		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst"/>
+		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
 	</div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
+import Chooser from '@/components/Chooser.vue'
 
 export default {
 	name: 'Player',
 	components: {
-		Card
+		Card,
+		Chooser,
 	},
 	data: () => ({
 		my_role: null,
@@ -37,7 +41,9 @@ export default {
 		lives: 0,
 		max_lives: 0,
 		hint: '',
-		pending_action: null
+		pending_action: null,
+		card_against: null,
+		visiblePlayers: []
 	}),
 	sockets: {
 		role(role) {
@@ -52,7 +58,18 @@ export default {
 			this.equipment = self.equipment
 			this.lives = self.lives
 			this.max_lives = self.max_lives
-		}
+		},
+		self_vis(vis) {
+			console.log('received visibility update')
+			console.log(vis)
+			this.visiblePlayers = JSON.parse(vis).map(player => {
+				return {
+					name: player.name,
+					number: player.dist !== undefined ? `${player.dist}⛰` : '',
+					icon: '🤠',
+					is_character: true,
+				}})
+		},
 	},
 	computed:{
 		instruction() {
@@ -64,6 +81,17 @@ export default {
 		canEndTurn() {
 			return (this.pending_action == 2 && this.hand.length <= this.lives)
 		},
+		respondCards() {
+			let cc = [{
+					name: 'Prendi Danno',
+					icon: '❌',
+					is_equipment: true,
+				}]
+			this.hand.filter(x => x.name == 'Mancato!').forEach(x=>{
+				cc.push(x)
+			})
+			return cc
+		}
 	},
 	methods: {
 		end_turn(){
@@ -72,14 +100,28 @@ export default {
 		},
 		play_card(card) {
 			if (this.pending_action == 2) {
-				let card_data = {
-					index: this.hand.indexOf(card),
-					against: null
+				if (card.need_target) {
+					this.card_against = card
+				} else {
+					this.really_play_card(card, null)
 				}
-				console.log(card_data)
-				this.$socket.emit('play_card', card_data)
 			}
 		},
+		respond(card) {
+			this.$socket.emit('respond', this.hand.indexOf(card))
+		},
+		selectAgainst(player) {
+			this.really_play_card(this.card_against, player.name)
+			this.card_against = null
+		},
+		really_play_card(card, against) {
+			let card_data	 = {
+				index: this.hand.indexOf(card),
+				against: against
+			}
+			console.log(card_data)
+			this.$socket.emit('play_card', card_data)
+		}
 	},
 	mounted() {
 		this.$socket.emit('refresh')
