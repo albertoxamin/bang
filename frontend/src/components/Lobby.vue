@@ -1,23 +1,25 @@
 <template>
-	<div>
-		<h1>Lobby: {{ lobbyName }}</h1>
-		<h3>Giocatori (tu sei {{username}})</h3>
-		<div class="players-table">
-			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
-			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
-			<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
-				<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
-				<tiny-hand :ncards="p.ncards"/>
-				<div class="tiny-equipment">
-					<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
+	<div class="lobby">
+		<div style="flex-grow: 4;">
+			<h1>Lobby: {{ lobbyName }}</h1>
+			<h3>Giocatori (tu sei {{username}})</h3>
+			<div class="players-table">
+				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
+				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
+				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
+					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
+					<tiny-hand :ncards="p.ncards"/>
+					<div class="tiny-equipment">
+						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
+					</div>
 				</div>
+					<!-- :style="p.style"/> -->
+				<!-- </div> -->
 			</div>
-				<!-- :style="p.style"/> -->
-			<!-- </div> -->
-		</div>
-		<div v-if="started">
-			<deck/>
-			<player :chooseCardFromPlayer="choose"/>
+			<div v-if="started">
+				<deck/>
+				<player :chooseCardFromPlayer="choose"/>
+			</div>
 		</div>
 		<chat/>
 		<transition name="bounce">
@@ -196,5 +198,14 @@ export default {
 	display: flex;
 	justify-content: space-evenly;
 	margin-bottom: 12pt;
+}
+.lobby {
+	display: flex;
+	flex-direction: column;
+}
+@media only screen and (min-width:1000px) {
+	.lobby {
+		flex-direction: row;
+	}
 }
 </style>
