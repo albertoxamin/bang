@@ -19,9 +19,12 @@ class Game:
         self.readyCount = 0
 
     def handle_disconnect(self, player: players.Player):
-        
         print(f'player {player.name} left the game {self.name}')
         index = self.players.index(player)
+        for c in player.hand:
+            self.deck.scrap(c)
+        for c in player.equipment:
+            self.deck.scrap(c)
         if self.started and index < self.turn:
             self.turn -= 1
         self.players.pop(index)
@@ -114,6 +117,10 @@ class Game:
 
     def player_death(self, player: players.Player):
         print(f'player {player.name} died')
+        for c in player.hand:
+            self.deck.scrap(c)
+        for c in player.equipment:
+            self.deck.scrap(c)
         index = self.players.index(player)
         if index < self.turn:
             self.turn -= 1
