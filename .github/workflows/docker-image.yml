@@ -2,15 +2,17 @@ name: Docker Images CI
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: cd backend;docker build . --file Dockerfile --tag bang-backend:$(date +%s)
+    - name: Build the Backend Docker image
+      run: cd backend;docker build . --file Dockerfile --tag bang-backend:latest
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: cd frontend;docker build . --file Dockerfile --tag bang-frontend:$(date +%s)
+    - name: Build the Frontend Docker image
+      run: cd frontend;docker build . --file Dockerfile --tag bang-frontend:latest
+    - name: Log into registry
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+    - name: Push iamges
+      run: docker push albertoxamin/bang-backend:latest; docker push albertoxamin/bang-frontend:latest
