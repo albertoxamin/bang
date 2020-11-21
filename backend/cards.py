@@ -128,32 +128,38 @@ class Duello(Card):
         super().__init__(suit, 'Duello', number)
         self.need_target = True
         self.icon = '⚔️'
+        self.desc = "Gioca questa carta contro un qualsiasi giocatore. A turno, cominciando dal tuo avversario, potete scartare una carta Bang!, il primo giocatore che non lo fa perde 1 vita"
 
 class Emporio(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Emporio', number)
         self.icon = '🏪'
+        self.desc = "Scopri dal mazzo tante carte quanto il numero di giocatori, a turno, partendo da te, scegliete una carta e aggiungetela alla vostra mano"
 
 class Gatling(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Gatling', number)
         self.icon = '🛰'
+        self.desc = "Spara a tutti gli altri giocatori"
 
 class Indiani(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Indiani!', number)
         self.icon = '🏹'
+        self.desc = "Tutti gli altri giocatori devono scartare un Bang! o perdere una vita"
 
 class Mancato(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mancato!', number)
         self.icon = '😅'
+        self.desc = "Usa questa carta per annullare un bang"
 
 class Panico(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Panico!', number, range=1)
         self.icon = '😱'
         self.need_target = True
+        self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
 
 class Saloon(Card):
     def __init__(self, suit, number):
