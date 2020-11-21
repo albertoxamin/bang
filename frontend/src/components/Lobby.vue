@@ -2,12 +2,15 @@
 	<div>
 		<h1>Lobby: {{ lobbyName }}</h1>
 		<h3>Giocatori (tu sei {{username}})</h3>
-		<div style="display:flex">
+		<div class="players-table">
 			<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 			<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
 			<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
 				<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 				<tiny-hand :ncards="p.ncards"/>
+				<div class="tiny-equipment">
+					<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
+				</div>
 			</div>
 				<!-- :style="p.style"/> -->
 			<!-- </div> -->
@@ -152,5 +155,22 @@ export default {
   100% {
     transform: scale(1);
   }
+}
+.tiny-equipment {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	right: -35pt;
+	transform: scale(0.45);
+	transform-origin: 50% 0%;
+	top: 0;
+}
+.tiny-equipment .card:nth-child(n+2) {
+	margin-top: -60pt;
+}
+.players-table {
+	display: flex;
+	justify-content: space-evenly;
+	margin-bottom: 12pt;
 }
 </style>
