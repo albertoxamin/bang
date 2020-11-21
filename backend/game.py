@@ -96,7 +96,10 @@ class Game:
         if self.players[self.players_map[target_username]].get_banged():
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
-    
+
+    def get_player_named(self, name:str):
+        return self.players[self.players_map[name]]
+
     def responders_did_respond(self):
         self.players[self.turn].pending_action = players.PendingAction.PLAY
         self.players[self.turn].notify_self()

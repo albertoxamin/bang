@@ -134,7 +134,9 @@ class Player:
                         if picked.suit != cards.Suit.HEARTS and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i))
                             self.end_turn(forced=True)
+                            return
                         else:
+                            self.game.deck.scrap(self.equipment.pop(i))
                             break
                     break
             self.pending_action = PendingAction.DRAW
@@ -166,9 +168,9 @@ class Player:
             return
         card: cards.Card = self.hand.pop(hand_index)
         print(self.name, 'is playing ', card, ' against:', againts)
-        if isinstance(card, cards.Prigione) and isinstance(self.game.players_map[againts].role, roles.Sheriff):
-            self.game.players_map[againts].equipment.append(card)
-            self.game.players_map[againts].notify_self()
+        if isinstance(card, cards.Prigione) and not isinstance(self.game.get_player_named(againts).role, roles.Sheriff):
+            self.game.get_player_named(againts).equipment.append(card)
+            self.game.get_player_named(againts).notify_self()
         elif card.is_equipment and card.name not in [c.name for c in self.equipment]:
             if card.is_weapon:
                 has_weapon = False
@@ -201,6 +203,9 @@ class Player:
             if isinstance(card, cards.Emporio):
                 pass
             if isinstance(card, cards.Gatling):
+                for p in self.game.players:
+                    if p != self:
+                        self.game.attack(self, p)
                 pass
             if isinstance(card, cards.Indiani):
                 pass
