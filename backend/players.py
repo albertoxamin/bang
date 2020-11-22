@@ -1,5 +1,6 @@
 from enum import IntEnum
 import json
+from random import randrange
 import socketio
 from cards import Mancato
 
@@ -290,15 +291,18 @@ class Player:
 
     def barrel_pick(self):
         pickable_cards = 1 + self.character.pick_mod
+        if len([c for c in self.equipment if isinstance(c, cards.Barile)]) > 0 and isinstance(self.character, characters.Jourdonnais):
+            pickable_cards = 2
         while pickable_cards > 0:
             pickable_cards -= 1
             picked: cards.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
+            self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
             if picked.suit == cards.Suit.HEARTS:
                 self.notify_self()
                 self.game.responders_did_respond()
                 return
-        if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0:
+        if len([c for c in self.hand if isinstance(c, cards.Mancato) or (isinstance(self.character, characters.CalamityJanet) and isinstance(c, cards.Bang))]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond()
         else:
@@ -314,7 +318,7 @@ class Player:
             self.take_damage_response()
             return False
         else:
-            if len([c for c in self.equipment if isinstance(c, cards.Barile)]) > 0:
+            if len([c for c in self.equipment if isinstance(c, cards.Barile)]) > 0 or isinstance(self.character, characters.Jourdonnais):
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
                 self.on_pick_cb = self.barrel_pick
@@ -358,9 +362,13 @@ class Player:
 
     def take_damage_response(self):
         self.lives -= 1
+        if self.lives > 0:
+            if isinstance(self.character, characters.BartCassidy):
+                self.hand.append(self.game.deck.draw())
+            elif isinstance(self.character, characters.ElGringo) and self.attacker and len(self.attacker.hand) > 0:
+                self.hand.append(self.attacker.hand.pop(randrange(0, len(self.attacker.hand))))
+                self.attacker.notify_self()
         self.notify_self()
-        if isinstance(self.character, characters.BartCassidy):
-            self.hand.append(self.game.deck.draw())
         self.attacker = None
 
     def respond(self, hand_index):
