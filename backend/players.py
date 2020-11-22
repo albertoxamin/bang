@@ -217,7 +217,7 @@ class Player:
                 self.game.duel(self, againts)
             if isinstance(card, cards.Emporio):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
-                pass
+                self.game.emporio()
             if isinstance(card, cards.Gatling):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 self.game.attack_others(self)
@@ -247,21 +247,24 @@ class Player:
     def choose(self, card_index):
         if self.pending_action != PendingAction.CHOOSE:
             return
-        target = self.game.get_player_named(self.target_p)
-        card = None
-        if card_index >= len(target.hand):
-            card = target.equipment.pop(card_index - len(target.hand))
+        if self.target_p and self.target_p != '':
+            target = self.game.get_player_named(self.target_p)
+            card = None
+            if card_index >= len(target.hand):
+                card = target.equipment.pop(card_index - len(target.hand))
+            else:
+                card = target.hand.pop(card_index)
+            target.notify_self()
+            if self.choose_action == 'steal':
+                self.hand.append(card)
+            else:
+                self.game.deck.scrap(card)
+            self.target_p = ''
+            self.choose_action = ''
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
         else:
-            card = target.hand.pop(card_index)
-        target.notify_self()
-        if self.choose_action == 'steal':
-            self.hand.append(card)
-        else:
-            self.game.deck.scrap(card)
-        self.target_p = ''
-        self.choose_action = ''
-        self.pending_action = PendingAction.PLAY
-        self.notify_self()
+            self.game.respond_emporio(self, card_index)
 
     def barrel_pick(self):
         pickable_cards = 1 + self.character.pick_mod

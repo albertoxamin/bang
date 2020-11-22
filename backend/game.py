@@ -6,7 +6,7 @@ from cards import Bang
 import players
 from characters import all_characters
 from deck import Deck
-from players import Player
+from players import PendingAction, Player
 import roles
 
 class Game:
@@ -109,6 +109,9 @@ class Game:
             if p != attacker:
                 if p.get_banged():
                     self.waiting_for += 1
+        if self.waiting_for == 0:
+            attacker.pending_action = players.PendingAction.PLAY
+            attacker.notify_self()
 
     def indian_others(self, attacker:Player):
         attacker.pending_action = players.PendingAction.WAIT
@@ -119,6 +122,9 @@ class Game:
             if p != attacker:
                 if p.get_indians():
                     self.waiting_for += 1
+        if self.waiting_for == 0:
+            attacker.pending_action = players.PendingAction.PLAY
+            attacker.notify_self()
 
     def attack(self, attacker:Player, target_username:str):
         if self.players[self.players_map[target_username]].get_banged():
@@ -133,6 +139,26 @@ class Game:
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
+
+    def emporio(self):
+        self.available_cards = [self.deck.draw() for i in range(len(self.players))]
+        self.players[self.turn].pending_action = players.PendingAction.CHOOSE
+        self.players[self.turn].available_cards = [self.deck.draw() for i in range(len(self.players))]
+        self.players[self.turn].notify_self()
+
+    def respond_emporio(self, player, i):
+        player.hand.append(self.available_cards.pop(i))
+        player.available_cards = []
+        player.pending_action = players.PendingAction.WAIT
+        player.notify_self()
+        nextPlayer = self.players[(self.turn + (len(self.players)-len(self.available_cards))) % len(self.players)]
+        if nextPlayer == self.players[self.turn]:
+            self.players[self.turn].pending_action = players.PendingAction.PLAY
+            self.players[self.turn].notify_self()
+        else:
+            nextPlayer.pending_action = players.PendingAction.CHOOSE
+            nextPlayer.available_cards = self.available_cards
+            nextPlayer.notify_self()
 
     def get_player_named(self, name:str):
         return self.players[self.players_map[name]]

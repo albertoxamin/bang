@@ -24,6 +24,7 @@
 		<p>{{hint}}</p>
 		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst"/>
 		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
+		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 		<Chooser v-if="is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 	</div>
@@ -56,6 +57,8 @@ export default {
 		visiblePlayers: [],
 		is_my_turn: false,
 		expected_response: null,
+		shouldChooseCard: false,
+		available_cards: [],
 	}),
 	sockets: {
 		role(role) {
@@ -73,8 +76,11 @@ export default {
 			this.has_played_bang = self.has_played_bang
 			this.is_my_turn = self.is_my_turn
 			this.expected_response = self.expected_response
-			if (this.pending_action == 5) {
+			this.available_cards = self.available_cards
+			if (this.pending_action == 5 && self.target_p) {
 				this.chooseCardFromPlayer(self.target_p)
+			} else if (this.pending_action == 5) {
+				this.shouldChooseCard = true
 			}
 		},
 		self_vis(vis) {
@@ -140,7 +146,12 @@ export default {
 			}
 			console.log(card_data)
 			this.$socket.emit('play_card', card_data)
-		}
+		},
+		choose(card) {
+			this.$socket.emit('choose', this.available_cards.indexOf(card))
+			this.available_cards = []
+			this.shouldChooseCard = false
+		},
 	},
 	mounted() {
 		this.$socket.emit('refresh')
