@@ -1,12 +1,13 @@
 <template>
-	<div>
+	<div style="max-width: 350pt;">
 		<h3>Chat</h3>
 		<div id="chatbox">
-			<p style="margin:1pt;" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
+			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
+			<p class="end">.</p>
 		</div>
-		<form @submit="sendChatMessage" style="width:100%; padding:0">
-			<input v-model="text" style="width:80%;"/>
-			<input type="submit" style="width:18%;"/>
+		<form @submit="sendChatMessage" style="width:100%; padding:0; display:flex;">
+			<input v-model="text" style="flex-grow:2;"/>
+			<input type="submit"/>
 		</form>
 	</div>
 </template>
@@ -21,8 +22,12 @@ export default {
 	sockets: {
 		chat_message(msg) {
 			this.messages.push(msg)
-			let container = this.$el.querySelector("#chatbox");
-			container.scrollTop = container.scrollHeight;
+			// let container = this.$el.querySelector("#chatbox");
+			// container.scrollTop = container.scrollHeight;
+			const el = this.$el.getElementsByClassName('end')[0];
+			if (el) {
+				el.scrollIntoView();
+			}
 		},
 	},
 	methods: {
@@ -36,12 +41,18 @@ export default {
 	},
 }
 </script>
-<style >
+<style scoped>
 #chatbox {
 	width:100%;
 	max-height:150px;
-	overflow:auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+	overflow-wrap: break-word;
+	overflow-wrap: normal;
 	border: 1pt solid #ccc;
 	border-radius: 2pt;
 }
+/* .chat-message:nth-last-of-type(1) {
+	margin-bottom: 50pt !important;
+} */
 </style>

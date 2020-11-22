@@ -4,7 +4,8 @@
 		<div>
 			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@mouseover.native="showDesc(c)" @mouseleave.native="desc=''"/>
 		</div>
-		<div class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>ANNULLA</span></div>
+		<p v-if="hintText">{{hintText}}</p>
+		<div class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{cancelText}}</span></div>
 		<p v-if="desc" style="bottom:10pt;position:absolute;margin:16pt;">{{desc}}</p>
 	</div>
 </template>
@@ -21,7 +22,12 @@ export default {
 		cards: Array,
 		select: Function,
 		cancel: Function,
+		cancelText: {
+			type: String,
+			default: 'ANNULLA',
+		},
 		text: String,
+		hintText: String,
 	},
 	data: () => ({
 		desc: ''

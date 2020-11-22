@@ -27,7 +27,8 @@
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
-		<Chooser v-if="is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
+		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :cancel="() => {show_role=false}" cancelText="OK" />
+		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" text="ESTRAI UNA CARTA" :key="hasToPickResponse" class="turn-notify" />
 	</div>
 </template>
@@ -64,10 +65,13 @@ export default {
 		win_status: undefined,
 		range: 1,
 		sight: 1,
+		show_role: false,
 	}),
 	sockets: {
 		role(role) {
 			this.my_role = JSON.parse(role)
+			this.my_role.is_back = true
+			this.show_role = true
 		},
 		self(self) {
 			self = JSON.parse(self)
