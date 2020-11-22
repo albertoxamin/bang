@@ -35,8 +35,10 @@ class Player:
         self.available_characters = []
         self.was_shot = False
         self.on_pick_cb = None
-        self.on_response_cb = None
+        self.on_failed_response_cb = None
+        self.event_type: str = None
         self.expected_response = None
+        self.attacker = None
         self.target_p: str  = None
 
     def join_game(self, game):
@@ -78,8 +80,9 @@ class Player:
         ser.pop('sio')
         ser.pop('sid')
         ser.pop('on_pick_cb')
-        ser.pop('on_response_cb')
-        ser.pop('expected_response')
+        ser.pop('on_failed_response_cb')
+        # ser.pop('expected_response')
+        ser.pop('attacker')
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
         self.game.notify_all()
@@ -211,7 +214,7 @@ class Player:
                     self.hand.append(self.game.deck.draw())
             if isinstance(card, cards.Duello):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
-                pass
+                self.game.duel(self, againts)
             if isinstance(card, cards.Emporio):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 pass
@@ -272,17 +275,18 @@ class Player:
             if picked.suit == cards.Suit.HEARTS:
                 self.notify_self()
                 self.game.responders_did_respond()
+                self.attacker = None
                 return
         if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond()
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = cards.Mancato
-            self.on_response_cb = self.take_damage_response
+            self.expected_response = cards.Mancato(0,0).name
+            self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
-    def get_banged(self):
+    def get_banged(self, attacker = None):
         if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0:
             print('Cant defend')
             self.take_damage_response()
@@ -295,24 +299,45 @@ class Player:
             else:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
-                self.expected_response = cards.Mancato
-                self.on_response_cb = self.take_damage_response
+                self.expected_response = cards.Mancato(0,0).name
+                self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
             return True
-    
+
+    def get_dueled(self, attacker):
+        if len([c for c in self.hand if isinstance(c, cards.Bang)]) == 0:
+            print('Cant defend')
+            self.take_damage_response()
+            self.game.responders_did_respond_resume_turn()
+            return False
+        else:
+            self.attacker = attacker
+            self.pending_action = PendingAction.RESPOND
+            self.expected_response = cards.Bang(0,0).name
+            self.event_type = 'duel'
+            self.on_failed_response_cb = self.take_damage_response
+            self.notify_self()
+            return True
+
     def take_damage_response(self):
         self.lives -= 1
+        self.attacker = None
         self.notify_self()
 
     def respond(self, hand_index):
         self.pending_action = PendingAction.WAIT
-        if hand_index != -1 and isinstance(self.hand[hand_index], self.expected_response):
+        if hand_index != -1 and self.hand[hand_index].name == self.expected_response:
             self.game.deck.scrap(self.hand.pop(hand_index))
             self.notify_self()
-            self.game.responders_did_respond()
+            if self.event_type == 'duel':
+                self.game.duel(self, self.attacker.name)
+            else:
+                self.game.responders_did_respond_resume_turn()
+            self.event_type = ''
         else:
-            self.on_response_cb()
-            self.game.responders_did_respond()
+            self.on_failed_response_cb()
+            self.game.responders_did_respond_resume_turn()
+        self.attacker = None
 
     def get_sight(self):
         aim = 0

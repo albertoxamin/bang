@@ -1,6 +1,8 @@
+import cards
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
+from cards import Bang
 import players
 from characters import all_characters
 from deck import Deck
@@ -95,15 +97,19 @@ class Game:
         } for j in range(len(self.players)) if i != j]
 
     def attack(self, attacker:Player, target_username:str):
-        self.sio.emit('chat_message', room=self.name, data=f'{attacker.name} ha fatto Bang contro {target_username}.')
         if self.players[self.players_map[target_username]].get_banged():
+            attacker.pending_action = players.PendingAction.WAIT
+            attacker.notify_self()
+
+    def duel(self, attacker:Player, target_username:str):
+        if self.players[self.players_map[target_username]].get_dueled(attacker=attacker):
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
 
     def get_player_named(self, name:str):
         return self.players[self.players_map[name]]
 
-    def responders_did_respond(self):
+    def responders_did_respond_resume_turn(self):
         self.players[self.turn].pending_action = players.PendingAction.PLAY
         self.players[self.turn].notify_self()
 

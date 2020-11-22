@@ -55,6 +55,7 @@ export default {
 		has_played_bang: false,
 		visiblePlayers: [],
 		is_my_turn: false,
+		expected_response: null,
 	}),
 	sockets: {
 		role(role) {
@@ -71,6 +72,7 @@ export default {
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.is_my_turn = self.is_my_turn
+			this.expected_response = self.expected_response
 			if (this.pending_action == 5) {
 				this.chooseCardFromPlayer(self.target_p)
 			}
@@ -103,7 +105,7 @@ export default {
 					icon: '❌',
 					is_equipment: true,
 				}]
-			this.hand.filter(x => x.name == 'Mancato!').forEach(x=>{
+			this.hand.filter(x => x.name == this.expected_response).forEach(x=>{
 				cc.push(x)
 			})
 			return cc
