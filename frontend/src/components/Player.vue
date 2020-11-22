@@ -9,7 +9,7 @@
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
 			</transition-group>
 		</div>
-		<transition-group name="list" tag="div" style="display: flex; justify-content: space-evenly;">
+		<transition-group name="list" tag="div" style="display: flex; justify-content: space-evenly; margin-bottom:2pt;">
 			<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
 			<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
 		</transition-group>
@@ -27,7 +27,7 @@
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
-		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :cancel="() => {show_role=false}" cancelText="OK" />
+		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
 		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" text="ESTRAI UNA CARTA" :key="hasToPickResponse" class="turn-notify" />
 	</div>

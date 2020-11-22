@@ -1,7 +1,7 @@
 <template>
 	<div class="lobby">
 		<div style="flex-grow: 4;">
-			<h2>Lobby: {{ lobbyName }}</h2>
+			<h2 v-if="!started">Lobby: {{ lobbyName }}</h2>
 			<h3>Giocatori (tu sei {{username}})</h3>
 			<div class="players-table">
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>

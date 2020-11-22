@@ -199,6 +199,8 @@ class Game:
         self.players.pop(index)
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
+        if self.started:
+            self.sio.emit('chat_message', room=self.name, data=f'{player.name} era {player.role.name}!')
         for p in self.players:
             p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
