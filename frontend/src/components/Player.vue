@@ -5,7 +5,7 @@
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"/>
 			<Card v-if="character" :card="character"/>
-			<transition-group name="list" tag="div" >
+			<transition-group name="list" tag="div" style="margin: 0 0 0 10pt;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
 			</transition-group>
 		</div>
