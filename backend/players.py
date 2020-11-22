@@ -193,56 +193,71 @@ class Player:
             else:
                 self.equipment.append(card)
         else:
+            did_play_card = len(self.hand) + 1 > self.lives
             if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]) and againts != None:
                 self.hand.insert(hand_index, card)
                 return
-            if isinstance(card, cards.Bang) and againts != None:
+            elif isinstance(card, cards.Bang) and againts != None:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.has_played_bang = True
                 self.game.attack(self, againts)
-            if isinstance(card, cards.Birra) and len(self.game.players) != 2:
+                did_play_card = True
+            elif isinstance(card, cards.Birra) and len(self.game.players) != 2:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato una {card.name}.')
                 self.lives = min(self.lives+1, self.max_lives)
-            if isinstance(card, cards.CatBalou) and againts != None:
+                did_play_card = True
+            elif isinstance(card, cards.CatBalou) and againts != None:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.pending_action = PendingAction.CHOOSE
                 self.choose_action = 'discard'
                 self.target_p = againts
+                did_play_card = True
                 print('choose now')
-            if isinstance(card, cards.Diligenza):
+            elif isinstance(card, cards.Diligenza):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} e ha pescato 2 carte.')
                 for i in range(2):
                     self.hand.append(self.game.deck.draw())
-            if isinstance(card, cards.Duello):
+                did_play_card = True
+            elif isinstance(card, cards.Duello):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.game.duel(self, againts)
-            if isinstance(card, cards.Emporio):
+                did_play_card = True
+            elif isinstance(card, cards.Emporio):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 self.game.emporio()
-            if isinstance(card, cards.Gatling):
+                did_play_card = True
+            elif isinstance(card, cards.Gatling):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 self.game.attack_others(self)
-            if isinstance(card, cards.Indiani):
+                did_play_card = True
+            elif isinstance(card, cards.Indiani):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 self.game.indian_others(self)
-            if isinstance(card, cards.Mancato):
+                did_play_card = True
+            elif isinstance(card, cards.Mancato):
                 pass
-            if isinstance(card, cards.Panico):
+            elif isinstance(card, cards.Panico):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.pending_action = PendingAction.CHOOSE
                 self.choose_action = 'steal'
                 self.target_p = againts
                 print('choose now')
-            if isinstance(card, cards.Saloon):
+                did_play_card = True
+            elif isinstance(card, cards.Saloon):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} e ha curato 1 punto vita a tutti.')
                 for p in self.game.players:
                     p.lives = min(p.lives+1, p.max_lives)
                     p.notify_self()
-            if isinstance(card, cards.WellsFargo):
+                did_play_card = True
+            elif isinstance(card, cards.WellsFargo):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} e ha pescato 3 carte.')
                 for i in range(3):
                     self.hand.append(self.game.deck.draw())
-            self.game.deck.scrap(card)
+                did_play_card = True
+            if did_play_card:
+                self.game.deck.scrap(card)
+            else:
+                self.hand.insert(hand_index, card)
         self.notify_self()
 
     def choose(self, card_index):
