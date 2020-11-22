@@ -27,6 +27,7 @@
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 		<Chooser v-if="is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
+		<Chooser v-if="hasToPickResponse" text="ESTRAI UNA CARTA" :key="hasToPickResponse" class="turn-notify" />
 	</div>
 </template>
 
@@ -96,6 +97,9 @@ export default {
 		},
 	},
 	computed:{
+		hasToPickResponse() {
+			return !this.is_my_turn && this.pending_action == 0
+		},
 		instruction() {
 			if (this.pending_action == null)
 				return ''
