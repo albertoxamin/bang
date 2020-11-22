@@ -146,6 +146,9 @@ export default {
 							this.range = this.sight
 						else
 							this.range = 999
+					if (this.visiblePlayers.length == 0 && this.hand.length > this.lives) {
+						this.really_play_card(card, null)
+					}
 					this.card_against = card
 				} else {
 					this.really_play_card(card, null)
