@@ -4,7 +4,7 @@
 		<div>
 			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@mouseover.native="showDesc(c)" @mouseleave.native="desc=''"/>
 		</div>
-		<p v-if="desc" style="bottom:20%;position:absolute;margin:16pt;">{{desc}}</p>
+		<p v-if="desc" style="bottom:10pt;position:absolute;margin:16pt;">{{desc}}</p>
 	</div>
 </template>
 
@@ -53,8 +53,8 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-wrap: wrap;
 }
-
 .card {
 	width: 72pt;
 	min-width:72pt;

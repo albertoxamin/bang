@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<p v-if="instruction">⏯ {{instruction}}</p>
+		<p v-if="instruction" class="center-stuff">{{instruction}}</p>
 		<button v-if="canEndTurn" @click="end_turn">Termina Turno</button>
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"/>
@@ -25,6 +25,7 @@
 		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst"/>
 		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
+		<Chooser v-if="is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 	</div>
 </template>
 
@@ -52,7 +53,8 @@ export default {
 		pending_action: null,
 		card_against: null,
 		has_played_bang: false,
-		visiblePlayers: []
+		visiblePlayers: [],
+		is_my_turn: false,
 	}),
 	sockets: {
 		role(role) {
@@ -68,6 +70,7 @@ export default {
 			this.lives = self.lives
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
+			this.is_my_turn = self.is_my_turn
 			if (this.pending_action == 5) {
 				this.chooseCardFromPlayer(self.target_p)
 			}
@@ -88,7 +91,7 @@ export default {
 		instruction() {
 			if (this.pending_action == null)
 				return ''
-			let x = ['Estrai una carta', 'Pesca le tue carte', 'Gioca le tue carte', 'Rispondi alla carta', 'Attendi', 'Scegli una carta']
+			let x = ['▶️ Estrai una carta', '▶️ Pesca le tue carte', '▶️ Gioca le tue carte', '▶️ Rispondi alla carta', '⏸ Attendi', '▶️ Scegli una carta']
 			return x[this.pending_action]
 		},
 		canEndTurn() {
@@ -171,5 +174,18 @@ export default {
 .equipment-slot, .equipment-slot>div {
 	display:flex;
 	margin: 10pt 0pt;
+}
+.turn-notify {
+	pointer-events: none;
+	animation: disappear 2s ease-in forwards;
+}
+@keyframes disappear {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		visibility: hidden;
+	}
 }
 </style>
