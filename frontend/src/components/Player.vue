@@ -56,12 +56,14 @@ export default {
 		pending_action: null,
 		card_against: null,
 		has_played_bang: false,
-		visiblePlayers: [],
+		playersDistances: [],
 		is_my_turn: false,
 		expected_response: null,
 		shouldChooseCard: false,
 		available_cards: [],
 		win_status: undefined,
+		range: 1,
+		sight: 1,
 	}),
 	sockets: {
 		role(role) {
@@ -81,6 +83,7 @@ export default {
 			this.expected_response = self.expected_response
 			this.available_cards = self.available_cards
 			this.win_status = self.win_status
+			this.sight = self.sight
 			if (this.pending_action == 5 && self.target_p) {
 				this.chooseCardFromPlayer(self.target_p)
 			} else if (this.pending_action == 5) {
@@ -90,7 +93,13 @@ export default {
 		self_vis(vis) {
 			console.log('received visibility update')
 			console.log(vis)
-			this.visiblePlayers = JSON.parse(vis).map(player => {
+			this.playersDistances = JSON.parse(vis)
+		},
+	},
+	computed:{
+		visiblePlayers() {
+			this.range;
+			return this.playersDistances.filter(x=> x.dist <= this.range).map(player => {
 				return {
 					name: player.name,
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
@@ -98,8 +107,6 @@ export default {
 					is_character: true,
 				}})
 		},
-	},
-	computed:{
 		hasToPickResponse() {
 			return !this.is_my_turn && this.pending_action == 0
 		},
@@ -133,6 +140,12 @@ export default {
 			if (this.pending_action == 2) {
 				if (card.need_target &&
 					!(card.name == 'Bang!' && (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0))) {
+						if (card.name == 'Panico!' || (card.name == 'Bang!' && (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)))
+							this.range = 1
+						else if (card.name == 'Bang!')
+							this.range = this.sight
+						else
+							this.range = 999
 					this.card_against = card
 				} else {
 					this.really_play_card(card, null)

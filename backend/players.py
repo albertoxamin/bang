@@ -84,6 +84,7 @@ class Player:
         ser.pop('on_failed_response_cb')
         # ser.pop('expected_response')
         ser.pop('attacker')
+        ser['sight'] = self.get_sight()
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
         self.game.notify_all()
@@ -371,11 +372,13 @@ class Player:
 
     def get_sight(self):
         aim = 0
+        range = 0
         for card in self.equipment:
-            aim += card.sight_mod
             if card.is_weapon:
-                aim += card.range
-        return 1 + self.character.sight_mod + aim
+                range += card.range
+            else:
+                aim += card.sight_mod
+        return max(1, range) + aim + self.character.sight_mod
 
     def get_visibility(self):
         covers = 0

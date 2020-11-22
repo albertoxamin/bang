@@ -70,12 +70,12 @@ class Game:
             self.players[i].notify_self()
         self.play_turn()
 
-    def get_visible_players(self, player):
+    def get_visible_players(self, player:Player):
         i = self.players.index(player)
         sight = player.get_sight()
         return [{
             'name': self.players[j].name,
-            'dist': min(abs(i - j), abs(i - len(self.players) - j)) + self.players[j].get_visibility(),
+            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility(),
             'lives': self.players[j].lives,
             'max_lives': self.players[j].max_lives,
         } for j in range(len(self.players)) if i != j]
@@ -123,7 +123,7 @@ class Game:
     def emporio(self):
         self.available_cards = [self.deck.draw() for i in range(len(self.players))]
         self.players[self.turn].pending_action = players.PendingAction.CHOOSE
-        self.players[self.turn].available_cards = [self.deck.draw() for i in range(len(self.players))]
+        self.players[self.turn].available_cards = self.available_cards
         self.players[self.turn].notify_self()
 
     def respond_emporio(self, player, i):
@@ -175,6 +175,8 @@ class Game:
 
     def player_death(self, player: players.Player):
         print(f'player {player.name} died')
+        if (self.waiting_for > 0):
+            self.responders_did_respond_resume_turn()
         for c in player.hand:
             self.deck.scrap(c)
         for c in player.equipment:
