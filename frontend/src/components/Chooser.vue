@@ -2,8 +2,9 @@
 	<div id="overlay" class="center-stuff">
 		<h1>{{text}}</h1>
 		<div>
-			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"/>
+			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@mouseover.native="showDesc(c)" @mouseleave.native="desc=''"/>
 		</div>
+		<p v-if="desc" style="bottom:20%;position:absolute;margin:16pt;">{{desc}}</p>
 	</div>
 </template>
 
@@ -20,6 +21,14 @@ export default {
 		select: Function,
 		text: String,
 	},
+	data: () => ({
+		desc: ''
+	}),
+	methods: {
+		showDesc(card) {
+			this.desc = card.desc
+		}
+	}
 }
 </script>
 
