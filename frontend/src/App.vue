@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<div v-if="!username" id="logo" class="center-stuff" style="margin-bottom:10pt;">
+		<div v-if="!isInLobby" id="logo" class="center-stuff" style="margin-bottom:10pt;">
 			<h1 style="margin-bottom:0pt;">PewPew!</h1>
 			<i style="font-size: x-small;">Bang! è un marchio registrato DVGiochi</i>
 		</div>
@@ -73,7 +73,7 @@ export default {
 			this.isConnected = true;
 			if (Vue.config.devtools) {
 				setTimeout(function(){
-					this.username = (1+Math.random() * 100 % 100).toFixed(2).toString();
+					this.username =(1+Math.random() * 100 % 100).toFixed(2).toString();
 					this.setUsername();
 				}.bind(this), 1000)
 			}

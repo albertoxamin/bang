@@ -1,7 +1,7 @@
 <template>
 	<div class="lobby">
 		<div style="flex-grow: 4;">
-			<h1>Lobby: {{ lobbyName }}</h1>
+			<h2>Lobby: {{ lobbyName }}</h2>
 			<h3>Giocatori (tu sei {{username}})</h3>
 			<div class="players-table">
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
@@ -162,9 +162,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style >
-#logo {
-	display:none;
-}
 .is_my_turn {
 	box-shadow: 0 0 0 3pt rgb(138, 12, 12), 0 0 0 6pt white, 0 0 5pt 6pt #aaa !important;
 	animation-name: turn-animation;
