@@ -77,6 +77,8 @@ class Player:
         if self.lives <= 0 and self.max_lives > 0:
             print('dying, attacker', self.attacker)
             self.game.player_death(self)
+        if isinstance(self.character, characters.CalamityJanet):
+            self.expected_response = [cards.Mancato(0,0).name, cards.Bang(0,0).name]
         ser = self.__dict__.copy()
         ser.pop('game')
         ser.pop('sio')
@@ -127,6 +129,8 @@ class Player:
                         if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i))
+                            if isinstance(self.character, characters.BartCassidy):
+                                self.hand.append(self.game.deck.draw())
                             self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha fatto esplodere la dinamite.')
                             print(f'{self.name} Boom, -3 hp')
                         else:
@@ -299,7 +303,7 @@ class Player:
             self.game.responders_did_respond()
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = cards.Mancato(0,0).name
+            self.expected_response = [cards.Mancato(0,0).name]
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -317,7 +321,7 @@ class Player:
             else:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
-                self.expected_response = cards.Mancato(0,0).name
+                self.expected_response = [cards.Mancato(0,0).name]
                 self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
             return True
@@ -331,7 +335,7 @@ class Player:
         else:
             print('has bang')
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = cards.Bang(0,0).name
+            self.expected_response = [cards.Bang(0,0).name]
             self.event_type = 'indians'
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
@@ -346,7 +350,7 @@ class Player:
             return False
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = cards.Bang(0,0).name
+            self.expected_response = [cards.Bang(0,0).name]
             self.event_type = 'duel'
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
@@ -355,6 +359,8 @@ class Player:
     def take_damage_response(self):
         self.lives -= 1
         self.notify_self()
+        if isinstance(self.character, characters.BartCassidy):
+            self.hand.append(self.game.deck.draw())
         self.attacker = None
 
     def respond(self, hand_index):

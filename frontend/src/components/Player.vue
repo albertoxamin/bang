@@ -129,7 +129,7 @@ export default {
 					icon: '❌',
 					is_equipment: true,
 				}]
-			this.hand.filter(x => x.name == this.expected_response).forEach(x=>{
+			this.hand.filter(x => this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
 				cc.push(x)
 			})
 			return cc
