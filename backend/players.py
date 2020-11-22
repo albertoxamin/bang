@@ -66,6 +66,7 @@ class Player:
         self.lives = self.max_lives
         self.hand = []
         self.equipment = []
+        self.pending_action = PendingAction.WAIT
 
     def set_available_character(self, available):
         self.available_characters = available

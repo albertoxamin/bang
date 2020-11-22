@@ -13,6 +13,7 @@
 					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<tiny-hand :ncards="p.ncards"/>
+					<span style="position:absolute;top:0;">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
 					</div>
@@ -122,6 +123,16 @@ export default {
 		}
 	},
 	methods: {
+		getActionEmoji(p) {
+			if (p.is_my_turn === undefined || p.pending_action === undefined) return '';
+			if (p.pending_action != 4) {
+				return '▶️'
+			} else if (p.is_my_turn) {
+				return '⏸'
+			} else {
+				return ''
+			}
+		},
 		getPlayerCard(player) {
 			return {
 				name: player.name,
