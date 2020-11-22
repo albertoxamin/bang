@@ -220,13 +220,10 @@ class Player:
                 pass
             if isinstance(card, cards.Gatling):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
-                for p in self.game.players:
-                    if p != self:
-                        self.game.attack(self, p)
-                pass
+                self.game.attack_others(self)
             if isinstance(card, cards.Indiani):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
-                pass
+                self.game.indian_others(self)
             if isinstance(card, cards.Mancato):
                 pass
             if isinstance(card, cards.Panico):
@@ -301,6 +298,20 @@ class Player:
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = cards.Mancato(0,0).name
                 self.on_failed_response_cb = self.take_damage_response
+            self.notify_self()
+            return True
+
+    def get_indians(self, attacker = None):
+        if len([c for c in self.hand if isinstance(c, cards.Bang)]) == 0:
+            print('Cant defend')
+            self.take_damage_response()
+            return False
+        else:
+            print('has bang')
+            self.pending_action = PendingAction.RESPOND
+            self.expected_response = cards.Bang(0,0).name
+            self.event_type = 'indians'
+            self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
             return True
 

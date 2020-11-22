@@ -19,6 +19,7 @@ class Game:
         self.started = False
         self.turn = 0
         self.readyCount = 0
+        self.waiting_for = 0
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
@@ -96,13 +97,37 @@ class Game:
             'max_lives': self.players[j].max_lives,
         } for j in range(len(self.players)) if i != j]
 
+    def attack_others(self, attacker:Player):
+        attacker.pending_action = players.PendingAction.WAIT
+        attacker.notify_self()
+        self.waiting_for = 0
+        self.readyCount = 0
+        for p in self.players:
+            if p != attacker:
+                if p.get_banged():
+                    self.waiting_for += 1
+
+    def indian_others(self, attacker:Player):
+        attacker.pending_action = players.PendingAction.WAIT
+        attacker.notify_self()
+        self.waiting_for = 0
+        self.readyCount = 0
+        for p in self.players:
+            if p != attacker:
+                if p.get_indians():
+                    self.waiting_for += 1
+
     def attack(self, attacker:Player, target_username:str):
         if self.players[self.players_map[target_username]].get_banged():
+            self.readyCount = 0
+            self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
 
     def duel(self, attacker:Player, target_username:str):
         if self.players[self.players_map[target_username]].get_dueled(attacker=attacker):
+            self.readyCount = 0
+            self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
 
@@ -110,8 +135,12 @@ class Game:
         return self.players[self.players_map[name]]
 
     def responders_did_respond_resume_turn(self):
-        self.players[self.turn].pending_action = players.PendingAction.PLAY
-        self.players[self.turn].notify_self()
+        self.readyCount += 1
+        if self.readyCount == self.waiting_for:
+            self.waiting_for = 0
+            self.readyCount = 0
+            self.players[self.turn].pending_action = players.PendingAction.PLAY
+            self.players[self.turn].notify_self()
 
     def next_player(self):
         return self.players[(self.turn + 1) % len(self.players)]
