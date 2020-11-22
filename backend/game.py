@@ -87,7 +87,7 @@ class Game:
         self.readyCount = 0
         for p in self.players:
             if p != attacker:
-                if p.get_banged():
+                if p.get_banged(attacker=attacker):
                     self.waiting_for += 1
         if self.waiting_for == 0:
             attacker.pending_action = players.PendingAction.PLAY
@@ -100,14 +100,14 @@ class Game:
         self.readyCount = 0
         for p in self.players:
             if p != attacker:
-                if p.get_indians():
+                if p.get_indians(attacker=attacker):
                     self.waiting_for += 1
         if self.waiting_for == 0:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
 
     def attack(self, attacker:Player, target_username:str):
-        if self.players[self.players_map[target_username]].get_banged():
+        if self.players[self.players_map[target_username]].get_banged(attacker=attacker):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
@@ -174,6 +174,17 @@ class Game:
         else: return False
 
     def player_death(self, player: players.Player):
+        print(player.attacker)
+        if player.attacker and isinstance(player.attacker, roles.Sheriff) and isinstance(player.role, roles.Vice):
+            for i in range(len(player.attacker.hand)):
+                self.deck.scrap(player.attacker.hand.pop())
+            for i in range(len(player.attacker.equipment)):
+                self.deck.scrap(player.attacker.hand.pop())
+            player.attacker.notify_self()
+        elif player.attacker and isinstance(player.role, roles.Outlaw):
+            for i in range(3):
+                player.attacker.hand.append(self.deck.draw())
+            player.attacker.notify_self()
         print(f'player {player.name} died')
         if (self.waiting_for > 0):
             self.responders_did_respond_resume_turn()

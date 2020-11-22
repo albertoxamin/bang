@@ -75,6 +75,7 @@ class Player:
 
     def notify_self(self):
         if self.lives <= 0 and self.max_lives > 0:
+            print('dying, attacker', self.attacker)
             self.game.player_death(self)
         ser = self.__dict__.copy()
         ser.pop('game')
@@ -292,7 +293,6 @@ class Player:
             if picked.suit == cards.Suit.HEARTS:
                 self.notify_self()
                 self.game.responders_did_respond()
-                self.attacker = None
                 return
         if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0:
             self.take_damage_response()
@@ -303,7 +303,8 @@ class Player:
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
-    def get_banged(self, attacker = None):
+    def get_banged(self, attacker):
+        self.attacker = attacker
         if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0:
             print('Cant defend')
             self.take_damage_response()
@@ -321,7 +322,8 @@ class Player:
             self.notify_self()
             return True
 
-    def get_indians(self, attacker = None):
+    def get_indians(self, attacker):
+        self.attacker = attacker
         if len([c for c in self.hand if isinstance(c, cards.Bang)]) == 0:
             print('Cant defend')
             self.take_damage_response()
@@ -336,13 +338,13 @@ class Player:
             return True
 
     def get_dueled(self, attacker):
+        self.attacker = attacker
         if len([c for c in self.hand if isinstance(c, cards.Bang)]) == 0:
             print('Cant defend')
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
             return False
         else:
-            self.attacker = attacker
             self.pending_action = PendingAction.RESPOND
             self.expected_response = cards.Bang(0,0).name
             self.event_type = 'duel'
@@ -352,8 +354,8 @@ class Player:
 
     def take_damage_response(self):
         self.lives -= 1
-        self.attacker = None
         self.notify_self()
+        self.attacker = None
 
     def respond(self, hand_index):
         self.pending_action = PendingAction.WAIT
