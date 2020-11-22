@@ -4,6 +4,7 @@
 		<div>
 			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@mouseover.native="showDesc(c)" @mouseleave.native="desc=''"/>
 		</div>
+		<div class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>ANNULLA</span></div>
 		<p v-if="desc" style="bottom:10pt;position:absolute;margin:16pt;">{{desc}}</p>
 	</div>
 </template>
@@ -19,11 +20,19 @@ export default {
 	props: {
 		cards: Array,
 		select: Function,
+		cancel: Function,
 		text: String,
 	},
 	data: () => ({
 		desc: ''
 	}),
+	computed: {
+		showCancelBtn() {
+			if (this.cancel)
+				return true
+			return false
+		}
+	},
 	methods: {
 		showDesc(card) {
 			this.desc = card.desc
@@ -62,5 +71,20 @@ export default {
 }
 .card:hover {
 	transform: translate(0, -5px) scale(1.05, 1.05);
+}
+.button {
+	background-color: #0000;
+	color: white;
+	border: 2px solid white;
+	transition-duration: 0.2s;
+	width: 100pt;
+	height: 24pt;
+	border-radius: 12pt;
+	cursor: pointer;
+}
+
+.button:hover {
+	background-color: white; /* Green */
+	color: black;
 }
 </style>

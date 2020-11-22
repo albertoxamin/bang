@@ -22,7 +22,7 @@
 			</transition-group>
 		</div>
 		<p>{{hint}}</p>
-		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst"/>
+		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
@@ -144,6 +144,9 @@ export default {
 		},
 		selectAgainst(player) {
 			this.really_play_card(this.card_against, player.name)
+			this.card_against = null
+		},
+		cancelCardAgainst() {
 			this.card_against = null
 		},
 		really_play_card(card, against) {
