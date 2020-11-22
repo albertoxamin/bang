@@ -75,11 +75,14 @@ class Game:
     def distribute_roles(self):
         available_roles: List[roles.Role] = []
         if len(self.players) == 3:
-            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw()]
+            available_roles = [roles.Vice(), roles.Renegade(), roles.Outlaw()]
+        elif len(self.players) >= 4:
+            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice()]
+            available_roles = available_roles[:len(self.players)]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
             self.players[i].set_role(available_roles[i])
-            if type(available_roles[i]) == roles.Sheriff:
+            if isinstance(available_roles[i], roles.Sheriff) or (len(available_roles) == 3 and isinstance(available_roles[i], roles.Vice)):
                 self.turn = i
             self.players[i].prepare()
             for k in range(self.players[i].max_lives):
