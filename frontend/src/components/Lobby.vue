@@ -7,6 +7,10 @@
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
 				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
+					<transition-group v-if="p.max_lives" name="list" tag="div" class="tiny-health">
+						<span v-for="(n, i) in p.lives" v-bind:key="n" :alt="i">❤️</span>
+						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="n" :alt="i">💀</span>
+					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<tiny-hand :ncards="p.ncards"/>
 					<div class="tiny-equipment">
@@ -123,7 +127,7 @@ export default {
 				name: player.name,
 				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : '🤠') : '☠️',
-				alt_text: player.lives !== undefined ? Array(player.lives).join('❤️')+Array(player.max_lives-player.lives).join('💀') : '',
+				alt_text: player.character,
 				is_character: true,
 			}
 		},
@@ -187,6 +191,15 @@ export default {
 	transform: scale(0.45);
 	transform-origin: 50% 0%;
 	top: 0;
+}
+.tiny-health {
+	position: absolute;
+	display: flex;
+	justify-content: space-evenly;
+	top: -16pt;
+	transform: scale(0.8);
+	right: 0;
+	left: 0;
 }
 .tiny-equipment .card:nth-child(n+2) {
 	margin-top: -60pt;
