@@ -21,27 +21,6 @@ class Game:
         self.readyCount = 0
         self.waiting_for = 0
 
-    def handle_disconnect(self, player: players.Player):
-        print(f'player {player.name} left the game {self.name}')
-        index = self.players.index(player)
-        for c in player.hand:
-            self.deck.scrap(c)
-        for c in player.equipment:
-            self.deck.scrap(c)
-        died_in_his_turn = self.started and index == self.turn
-        if self.started and index < self.turn:
-            self.turn -= 1
-        self.players.pop(index)
-        if len(self.players) == 0:
-            print(f'no players left in game {self.name}')
-            return True
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
-        self.sio.emit('chat_message', room=self.name, data=f'{player.name} si è disconnesso.')
-        self.players_map = {c.name: i for i, c in enumerate(self.players)}
-        if died_in_his_turn:
-            self.next_turn()
-        return False
-
     def add_player(self, player: players.Player):
         if player in self.players:
             return
@@ -70,6 +49,7 @@ class Game:
         self.sio.emit('start', room=self.name)
         self.started = True
         self.deck = Deck(self)
+        self.initial_players = len(self.players)
         self.choose_characters()
 
     def distribute_roles(self):
@@ -185,6 +165,14 @@ class Game:
         print('scrap')
         self.sio.emit('scrap', room=self.name, data=self.deck.peek_scrap_pile().__dict__)
 
+    def handle_disconnect(self, player: players.Player):
+        print(f'player {player.name} left the game {self.name}')
+        self.player_death(player=player)
+        if len(self.players) == 0:
+            print(f'no players left in game {self.name}')
+            return True
+        else: return False
+
     def player_death(self, player: players.Player):
         print(f'player {player.name} died')
         for c in player.hand:
@@ -192,18 +180,25 @@ class Game:
         for c in player.equipment:
             self.deck.scrap(c)
         index = self.players.index(player)
-        died_in_his_turn = index == self.turn
-        if index <= self.turn:
+        died_in_his_turn = self.started and index == self.turn
+        if self.started and index <= self.turn:
             self.turn -= 1
         self.players.pop(index)
-        if len(self.players) == 0:
-            print(f'no players left in game {self.name}')
-            return True
         self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
         for p in self.players:
             p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
+        if self.started:
+            print('Check win status')
+            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.players, initial_players=self.initial_players)]
+            if len(winners) > 0:
+                print('WE HAVE A WINNER')
+                for p in self.players:
+                    p.win_status = p in winners
+                    p.notify_self()
+                return
+
         if died_in_his_turn:
             self.next_turn()
 

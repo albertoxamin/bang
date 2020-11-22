@@ -26,6 +26,7 @@
 		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
+		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
 		<Chooser v-if="is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" text="ESTRAI UNA CARTA" :key="hasToPickResponse" class="turn-notify" />
 	</div>
@@ -60,6 +61,7 @@ export default {
 		expected_response: null,
 		shouldChooseCard: false,
 		available_cards: [],
+		win_status: undefined,
 	}),
 	sockets: {
 		role(role) {
@@ -78,6 +80,7 @@ export default {
 			this.is_my_turn = self.is_my_turn
 			this.expected_response = self.expected_response
 			this.available_cards = self.available_cards
+			this.win_status = self.win_status
 			if (this.pending_action == 5 && self.target_p) {
 				this.chooseCardFromPlayer(self.target_p)
 			} else if (this.pending_action == 5) {

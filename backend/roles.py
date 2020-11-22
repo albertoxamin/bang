@@ -8,7 +8,7 @@ class Role(ABC):
         self.health_mod = health_mod
     
     @abstractmethod
-    def on_player_death(self, alive_players: list):
+    def on_player_death(self, alive_players: list, initial_players: int):
         pass
 
 class Sheriff(Role):
@@ -17,10 +17,13 @@ class Sheriff(Role):
         self.max_players = 1
         self.icon = '⭐️'
 
-    def on_player_death(self, alive_players: list):
-        if not any([isinstance(p.role) == Outlaw or isinstance(p.role) == Renegade for p in alive_players]):
+    def on_player_death(self, alive_players: list, initial_players: int):
+        if initial_players == 3 and len(alive_players) == 1:
+            return True
+        elif initial_players != 3 and not any([isinstance(p.role, Outlaw) or isinstance(p.role, Renegade) for p in alive_players]):
             print("The Sheriff won!")
-            pass
+            return True
+        return False
 
 
 class Vice(Role):
@@ -29,10 +32,13 @@ class Vice(Role):
         self.max_players = 2
         self.icon = '🎖'
     
-    def on_player_death(self, alive_players: list):
-        if not any([isinstance(p.role) == Outlaw or isinstance(p.role) == Renegade for p in alive_players]):
+    def on_player_death(self, alive_players: list, initial_players: int):
+        if initial_players == 3 and len(alive_players) == 1:
+            return True
+        elif initial_players != 3 and not any([isinstance(p.role, Outlaw) or isinstance(p.role, Renegade) for p in alive_players]):
             print("The Vice won!")
-            pass
+            return True
+        return False
 
 class Outlaw(Role):
     def __init__(self):
@@ -40,10 +46,13 @@ class Outlaw(Role):
         self.max_players = 3
         self.icon = '🐺'
 
-    def on_player_death(self, alive_players: list):
-        if not any([isinstance(p.role) == Sheriff for p in alive_players]):
+    def on_player_death(self, alive_players: list, initial_players: int):
+        if initial_players == 3 and len(alive_players) == 1:
+            return True
+        elif initial_players != 3 and not any([isinstance(p.role, Sheriff) for p in alive_players]):
             print("The Outlaw won!")
-            pass
+            return True
+        return False
 
 class Renegade(Role):
     def __init__(self):
@@ -51,7 +60,10 @@ class Renegade(Role):
         self.max_players = 1
         self.icon = '🦅'
 
-    def on_player_death(self, alive_players: list):
-        if len(alive_players) == 1 and isinstance(alive_players[0]) == Renegade:
+    def on_player_death(self, alive_players: list, initial_players: int):
+        if initial_players == 3 and len(alive_players) == 1:
+            return True
+        elif initial_players != 3 and len(alive_players) == 1 and isinstance(alive_players[0], Renegade):
             print("The Renegade won!")
-            pass
+            return True
+        return False
