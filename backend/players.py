@@ -88,6 +88,8 @@ class Player:
         ser.pop('on_failed_response_cb')
         # ser.pop('expected_response')
         ser.pop('attacker')
+        if self.attacker:
+            ser['attacker'] = self.attacker.name
         ser['sight'] = self.get_sight()
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
@@ -300,11 +302,11 @@ class Player:
             self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
             if picked.suit == cards.Suit.HEARTS:
                 self.notify_self()
-                self.game.responders_did_respond()
+                self.game.responders_did_respond_resume_turn()
                 return
         if len([c for c in self.hand if isinstance(c, cards.Mancato) or (isinstance(self.character, characters.CalamityJanet) and isinstance(c, cards.Bang))]) == 0:
             self.take_damage_response()
-            self.game.responders_did_respond()
+            self.game.responders_did_respond_resume_turn()
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = [cards.Mancato(0,0).name]

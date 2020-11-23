@@ -23,13 +23,13 @@
 		</div>
 		<p>{{hint}}</p>
 		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
-		<Chooser v-if="pending_action == 3" text="Scegli come rispondere" :cards="respondCards" :select="respond"/>
+		<Chooser v-if="pending_action == 3" :text="`Scegli come rispondere ${attacker?('a '+attacker):''}`" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
 		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
 		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
-		<Chooser v-if="hasToPickResponse" text="ESTRAI UNA CARTA" :key="hasToPickResponse" class="turn-notify" />
+		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 	</div>
 </template>
 
@@ -67,6 +67,7 @@ export default {
 		sight: 1,
 		can_target_sheriff: true,
 		show_role: false,
+		attacker: undefined,
 	}),
 	sockets: {
 		role(role) {
@@ -89,6 +90,7 @@ export default {
 			this.available_cards = self.available_cards
 			this.win_status = self.win_status
 			this.sight = self.sight
+			this.attacker = self.attacker
 			if (this.pending_action == 5 && self.target_p) {
 				this.chooseCardFromPlayer(self.target_p)
 			} else if (this.pending_action == 5) {
