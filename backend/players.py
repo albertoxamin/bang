@@ -313,7 +313,7 @@ class Player:
 
     def get_banged(self, attacker):
         self.attacker = attacker
-        if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0:
+        if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0 and not isinstance(self.character, characters.Jourdonnais):
             print('Cant defend')
             self.take_damage_response()
             return False

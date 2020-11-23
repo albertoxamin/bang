@@ -70,16 +70,6 @@ class Game:
             self.players[i].notify_self()
         self.play_turn()
 
-    def get_visible_players(self, player:Player):
-        i = self.players.index(player)
-        sight = player.get_sight()
-        return [{
-            'name': self.players[j].name,
-            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility(),
-            'lives': self.players[j].lives,
-            'max_lives': self.players[j].max_lives,
-        } for j in range(len(self.players)) if i != j]
-
     def attack_others(self, attacker:Player):
         attacker.pending_action = players.PendingAction.WAIT
         attacker.notify_self()
@@ -217,6 +207,17 @@ class Game:
         if died_in_his_turn:
             self.next_turn()
 
+    def get_visible_players(self, player:Player):
+        i = self.players.index(player)
+        sight = player.get_sight()
+        return [{
+            'name': self.players[j].name,
+            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility(),
+            'lives': self.players[j].lives,
+            'max_lives': self.players[j].max_lives,
+            'is_sheriff': isinstance(self.players[j].role, roles.Sheriff),
+        } for j in range(len(self.players)) if i != j]
+
     def notify_all(self):
         data = [{
             'name': p.name,
@@ -229,7 +230,6 @@ class Game:
             'pending_action': p.pending_action,
         } for p in self.players]
         self.sio.emit('players_update', room=self.name, data=data)
-
 
 
 # game = Game()

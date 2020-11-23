@@ -65,6 +65,7 @@ export default {
 		win_status: undefined,
 		range: 1,
 		sight: 1,
+		can_target_sheriff: true,
 		show_role: false,
 	}),
 	sockets: {
@@ -103,11 +104,17 @@ export default {
 	computed:{
 		visiblePlayers() {
 			this.range;
-			return this.playersDistances.filter(x=> x.dist <= this.range).map(player => {
+			
+			return this.playersDistances.filter(x => {
+					if (!this.can_target_sheriff && x.is_sheriff)
+						return false
+					else
+						return x.dist <= this.range
+				}).map(player => {
 				return {
 					name: player.name,
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
-					icon: '🤠',
+					icon: player.is_sheriff ? '⭐' : '🤠',
 					is_character: true,
 				}})
 		},
@@ -150,6 +157,7 @@ export default {
 							this.range = this.sight
 						else
 							this.range = 999
+						this.can_target_sheriff = (card.name !== 'Prigione')
 					if (this.visiblePlayers.length == 0 && this.hand.length > this.lives) {
 						this.really_play_card(card, null)
 					}

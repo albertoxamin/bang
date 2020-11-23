@@ -5,9 +5,9 @@ class Character(ABC):
         super().__init__()
         self.name = name
         self.max_lives = max_lives
-        self.sight_mod = 0
-        self.visibility_mod = 0
-        self.pick_mod = 0
+        self.sight_mod = sight_mod
+        self.visibility_mod = visibility_mod
+        self.pick_mod = pick_mod
         self.desc = desc
         self.icon = '🤷‍♂️'
         self.number = ''.join(['❤️']*self.max_lives)
