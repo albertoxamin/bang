@@ -14,17 +14,17 @@
 			</div>
 			<div v-else>
 				<div v-if="!isInLobby" >
-					<Card :card="getSelfCard"/>
-					<form @submit="createLobby">
-						<h2>Crea una lobby:</h2>
-						Nome: <input v-model="lobbyName"/>
-						<input type="submit" />
-					</form>
+					<Card :card="getSelfCard" style="position:absolute; bottom:10pt; right: 10pt;"/>
 					<h2>Lobby disponibili:</h2>
 					<div style="display: flex">
 						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
 						<p v-if="noLobbyAvailable">Nessuna lobby disponibile</p>
 					</div>
+					<form @submit="createLobby">
+						<h2>Crea una lobby:</h2>
+						Nome: <input v-model="lobbyName"/>
+						<input type="submit" />
+					</form>
 				</div>
 				<Lobby :username="username" v-else/>
 			</div>
@@ -123,9 +123,27 @@ export default {
 	-moz-osx-font-smoothing: grayscale;
 	color: #2c3e50;
 	margin: 16pt;
+	-webkit-user-select: none;  /* Chrome all and Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* Internet Explorer 10 and later */
+	user-select: none;          /* Likely future */
+}
+#logo {
+	margin-top: 60pt;
+	margin-bottom: 60pt !important;
+}
+@media only screen and (max-width:600px) {
+	#app {
+		margin: 4pt;
+		margin-top: -16pt;
+		zoom: 0.8;
+	}
 }
 h1,h2,h3,h4,p,span{
 	font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+p {
+  font-size: 2vmin;
 }
 .center-stuff {
 	margin-left: auto;
@@ -177,5 +195,14 @@ h1,h2,h3,h4,p,span{
   100% {
     transform: scale(0);
   }
+}
+input {
+  border: 2px solid;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin: 0.25rem;
+  min-width: 125px;
+  padding: 0.5rem;
+  transition: border-color 0.5s ease-out;
 }
 </style>
