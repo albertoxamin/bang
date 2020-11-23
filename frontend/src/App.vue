@@ -6,14 +6,16 @@
 		</div>
 		<div v-if="isConnected">
 			<div v-if="!didSetUsername">
-				Scegli un username:
+				<p>Scegli un username:</p>
 				<form @submit="setUsername">
 					<input v-model="username" />
 					<input type="submit"/>
 				</form>
+				<p>Giocatori online: {{onlinePlayers}}</p>
 			</div>
 			<div v-else>
 				<div v-if="!isInLobby" >
+					<p>Giocatori online: {{onlinePlayers}}</p>
 					<Card :card="getSelfCard" style="position:absolute; bottom:10pt; right: 10pt;"/>
 					<h2>Lobby disponibili:</h2>
 					<div style="display: flex">
@@ -22,7 +24,8 @@
 					</div>
 					<form @submit="createLobby">
 						<h2>Crea una lobby:</h2>
-						Nome: <input v-model="lobbyName"/>
+						<p>Nome:</p>
+						<input v-model="lobbyName"/>
 						<input type="submit" />
 					</form>
 				</div>
@@ -54,6 +57,7 @@ export default {
 		openLobbies: [],
 		lobbyName: '',
 		isInLobby: false,
+		onlinePlayers: 1,
 	}),
 	computed: {
 		noLobbyAvailable() {
@@ -86,6 +90,9 @@ export default {
 		},
 		room() {
 			this.isInLobby = true;
+		},
+		players(num) {
+			this.onlinePlayers = num;
 		}
 	},
 	methods: {

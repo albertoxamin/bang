@@ -12,14 +12,18 @@ app = socketio.WSGIApp(sio, static_files={
 })
 
 games: List[Game] = []
+online_players = 0
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players)} for g in games if not g.started])
 
 @sio.event
 def connect(sid, environ):
+    global online_players
     print('connect ', sid)
+    online_players += 1
     sio.enter_room(sid, 'lobby')
+    sio.emit('players', room='lobby', data=online_players)
 
 @sio.event
 def set_username(sid, username):
@@ -33,7 +37,11 @@ def my_message(sid, data):
 
 @sio.event
 def disconnect(sid):
-    if sio.get_session(sid).disconnect():
+    global online_players
+    online_players -= 1
+    sio.emit('players', room='lobby', data=online_players)
+    if sio.get_session(sid).game and sio.get_session(sid).disconnect():
+        sio.close_room(sio.get_session(sid).game.name)
         games.pop(games.index(sio.get_session(sid).game))
     print('disconnect ', sid)
     advertise_lobbies()
