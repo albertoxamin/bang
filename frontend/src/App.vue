@@ -142,9 +142,6 @@ export default {
 h1,h2,h3,h4,p,span{
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-p {
-  font-size: 2vmin;
-}
 .center-stuff {
 	margin-left: auto;
 	margin-right: auto;

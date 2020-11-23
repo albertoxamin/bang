@@ -22,12 +22,8 @@ export default {
 	sockets: {
 		chat_message(msg) {
 			this.messages.push(msg)
-			// let container = this.$el.querySelector("#chatbox");
-			// container.scrollTop = container.scrollHeight;
-			const el = this.$el.getElementsByClassName('end')[0];
-			if (el) {
-				el.scrollIntoView();
-			}
+			let container = this.$el.querySelector("#chatbox");
+			container.scrollTop = container.scrollHeight;
 		},
 	},
 	methods: {
