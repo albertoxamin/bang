@@ -379,7 +379,7 @@ class Player:
 
     def respond(self, hand_index):
         self.pending_action = PendingAction.WAIT
-        if hand_index != -1 and self.hand[hand_index].name == self.expected_response:
+        if hand_index != -1 and self.hand[hand_index].name in self.expected_response:
             self.game.deck.scrap(self.hand.pop(hand_index))
             self.notify_self()
             if self.event_type == 'duel':
