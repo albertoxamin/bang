@@ -41,6 +41,7 @@ class Player:
         self.expected_response = None
         self.attacker = None
         self.target_p: str  = None
+        self.mancato_needed = 0
 
     def join_game(self, game):
         self.game = game
@@ -267,8 +268,11 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name}.')
                 self.game.indian_others(self)
                 did_play_card = True
-            elif isinstance(card, cards.Mancato):
-                pass
+            elif isinstance(card, cards.Mancato) and (not self.has_played_bang and againts != None and isinstance(self.character, characters.CalamityJanet)):
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} come un BANG! contro {againts}.')
+                self.has_played_bang = True
+                self.game.attack(self, againts)
+                did_play_card = True
             elif isinstance(card, cards.Panico):
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.pending_action = PendingAction.CHOOSE
@@ -325,9 +329,11 @@ class Player:
             print(f'Did pick {picked}')
             self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
             if picked.suit == cards.Suit.HEARTS:
+                self.mancato_needed -= 1
                 self.notify_self()
-                self.game.responders_did_respond_resume_turn()
-                return
+                if self.mancato_needed <= 0:
+                    self.game.responders_did_respond_resume_turn()
+                    return
         if len([c for c in self.hand if isinstance(c, cards.Mancato) or (isinstance(self.character, characters.CalamityJanet) and isinstance(c, cards.Bang))]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
@@ -337,8 +343,9 @@ class Player:
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
-    def get_banged(self, attacker):
+    def get_banged(self, attacker, double=False):
         self.attacker = attacker
+        self.mancato_needed = 1 if not double else 2
         if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0 and not isinstance(self.character, characters.Jourdonnais):
             print('Cant defend')
             self.take_damage_response()
@@ -400,6 +407,7 @@ class Player:
                     self.lives += 1
                     self.game.deck.scrap(self.hand.pop(i))
                     break
+        self.mancato_needed = 0
         self.notify_self()
         self.attacker = None
 
@@ -408,11 +416,16 @@ class Player:
         if hand_index != -1 and self.hand[hand_index].name in self.expected_response:
             self.game.deck.scrap(self.hand.pop(hand_index))
             self.notify_self()
-            if self.event_type == 'duel':
-                self.game.duel(self, self.attacker.name)
+            self.mancato_needed -= 1
+            if self.mancato_needed <= 0:
+                if self.event_type == 'duel':
+                    self.game.duel(self, self.attacker.name)
+                else:
+                    self.game.responders_did_respond_resume_turn()
+                self.event_type = ''
             else:
-                self.game.responders_did_respond_resume_turn()
-            self.event_type = ''
+                self.pending_action = PendingAction.RESPOND
+                self.notify_self()
         else:
             self.on_failed_response_cb()
             self.game.responders_did_respond_resume_turn()

@@ -101,7 +101,7 @@ class Game:
             attacker.notify_self()
 
     def attack(self, attacker:Player, target_username:str):
-        if self.players[self.players_map[target_username]].get_banged(attacker=attacker):
+        if self.players[self.players_map[target_username]].get_banged(attacker=attacker, double=isinstance(attacker.character, characters.SlabTheKiller)):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
