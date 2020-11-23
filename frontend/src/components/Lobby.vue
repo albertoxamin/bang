@@ -12,7 +12,7 @@
 						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="n" :alt="i">💀</span>
 					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
-					<tiny-hand :ncards="p.ncards"/>
+					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
 					<span style="position:absolute;top:0;">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
@@ -170,6 +170,10 @@ export default {
 			console.log(card + ' ' + this.chooseCards.indexOf(card))
 			this.chooseCards = []
 			this.hasToChoose = false
+		},
+		drawFromPlayer(name) {
+			console.log(name)
+			this.$socket.emit('draw', name)
 		},
 	},
 }
