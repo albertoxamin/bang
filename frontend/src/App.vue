@@ -26,7 +26,7 @@
 						<input type="submit" />
 					</form>
 				</div>
-				<Lobby :username="username" v-else/>
+				<Lobby v-show="isInLobby" :username="username" />
 			</div>
 		</div>
 		<div v-else class="center-stuff">
@@ -83,6 +83,9 @@ export default {
 		},
 		lobbies(data) {
 			this.openLobbies = data;
+		},
+		room() {
+			this.isInLobby = true;
 		}
 	},
 	methods: {
@@ -102,13 +105,11 @@ export default {
 		createLobby(e) {
 			if (this.lobbyName.trim().length > 0) {
 				this.$socket.emit('create_room', this.lobbyName)
-				this.isInLobby = true; 
 			}
 			e.preventDefault();
 		},
 		joinLobby(lobby) {
 			this.$socket.emit('join_room', lobby.name)
-			this.isInLobby = true;
 		},
 		init() {
 			location.reload();

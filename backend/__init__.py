@@ -1,4 +1,5 @@
 import json
+from typing import List
 import eventlet
 import socketio
 
@@ -10,7 +11,7 @@ app = socketio.WSGIApp(sio, static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'}
 })
 
-games = []
+games: List[Game] = []
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players)} for g in games if not g.started])
@@ -39,6 +40,8 @@ def disconnect(sid):
 
 @sio.event
 def create_room(sid, room_name):
+    while len([g for g in games if g.name == room_name]):
+        room_name += '_1'
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
     g = Game(room_name, sio)
@@ -53,6 +56,8 @@ def join_room(sid, room_name):
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
     i = [g.name for g in games].index(room_name)
+    while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
+        sio.get_session(sid).name += '_1'
     games[i].add_player(sio.get_session(sid))
     advertise_lobbies()
 

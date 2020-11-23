@@ -161,6 +161,7 @@ export default {
 	methods: {
 		end_turn(){
 			console.log('ending turn')
+			this.cancelEndingTurn()
 			this.$socket.emit('end_turn')
 		},
 		scrap(c) {
@@ -251,7 +252,7 @@ export default {
 }
 .hand>.card:hover {
 	margin-right:35pt;
-	margin-top:-0.5pt;
+	transform: translateY(-15px);
 }
 .equipment-slot {
 	display:flex;

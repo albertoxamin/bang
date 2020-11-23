@@ -87,6 +87,10 @@ class Player:
     def notify_self(self):
         if self.lives <= 0 and self.max_lives > 0:
             print('dying, attacker', self.attacker)
+            if isinstance(self.character, characters.SidKetchum) and len(self.hand) > 1:
+                self.lives += 1
+                self.game.deck.scrap(self.hand.pop(randrange(0, len(self.hand))))
+                self.game.deck.scrap(self.hand.pop(randrange(0, len(self.hand))))
             self.game.player_death(self)
         if isinstance(self.character, characters.CalamityJanet):
             self.expected_response = [cards.Mancato(0,0).name, cards.Bang(0,0).name]
@@ -109,7 +113,8 @@ class Player:
 
     def play_turn(self):
         if self.lives == 0:
-            self.end_turn(forced=True)
+            return self.end_turn(forced=True)
+        self.scrapped_cards = 0
         self.sio.emit('chat_message', room=self.game.name, data=f'È il turno di {self.name}.')
         print(f'I {self.name} was notified that it is my turn')
         self.was_shot = False
@@ -463,6 +468,10 @@ class Player:
 
     def scrap(self, card_index):
         if self.is_my_turn or isinstance(self.character, characters.SidKetchum):
+            self.scrapped_cards += 1
+            if isinstance(self.character, characters.SidKetchum) and self.scrapped_cards == 2:
+                self.scrapped_cards = 0
+                self.lives = min(self.lives+1, self.max_lives)
             self.game.deck.scrap(self.hand.pop(card_index))
             self.notify_self()
 
