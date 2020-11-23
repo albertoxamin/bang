@@ -3,6 +3,7 @@ from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
 from cards import Bang
+import characters
 import players
 from characters import all_characters
 from deck import Deck
@@ -169,7 +170,7 @@ class Game:
             for i in range(len(player.attacker.hand)):
                 self.deck.scrap(player.attacker.hand.pop())
             for i in range(len(player.attacker.equipment)):
-                self.deck.scrap(player.attacker.hand.pop())
+                self.deck.scrap(player.attacker.equipment.pop())
             player.attacker.notify_self()
         elif player.attacker and isinstance(player.role, roles.Outlaw):
             for i in range(3):
@@ -178,10 +179,17 @@ class Game:
         print(f'player {player.name} died')
         if (self.waiting_for > 0):
             self.responders_did_respond_resume_turn()
-        for c in player.hand:
-            self.deck.scrap(c)
-        for c in player.equipment:
-            self.deck.scrap(c)
+        vulture = [p for p in self.players if isinstance(p.character, characters.VultureSam)]
+        if len(vulture) == 0:
+            for i in range(len(player.hand)):
+                self.deck.scrap(player.hand.pop())
+            for i in range(len(player.equipment)):
+                self.deck.scrap(player.equipment.pop())
+        else:
+            for i in range(len(player.hand)):
+                vulture[0].hand.append(player.hand.pop())
+            for i in range(len(player.equipment)):
+                vulture[0].hand.append(player.equipment.pop())
         index = self.players.index(player)
         died_in_his_turn = self.started and index == self.turn
         if self.started and index <= self.turn:
