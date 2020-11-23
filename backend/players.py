@@ -42,6 +42,7 @@ class Player:
         self.expected_response = None
         self.attacker = None
         self.target_p: str  = None
+        self.is_drawing = False
         self.mancato_needed = 0
 
     def join_game(self, game):
