@@ -157,7 +157,10 @@ class Game:
 
     def notify_scrap_pile(self):
         print('scrap')
-        self.sio.emit('scrap', room=self.name, data=self.deck.peek_scrap_pile().__dict__)
+        if self.deck.peek_scrap_pile():
+            self.sio.emit('scrap', room=self.name, data=self.deck.peek_scrap_pile().__dict__)
+        else:
+            self.sio.emit('scrap', room=self.name, data=None)
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')

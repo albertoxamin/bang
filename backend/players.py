@@ -135,7 +135,7 @@ class Player:
             if pile == 'scrap' and isinstance(self.character, characters.PedroRamirez):
                 self.hand.append(self.game.deck.draw_from_scrap_pile())
                 self.hand.append(self.game.deck.draw())
-            if type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, characters.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
+            elif type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, characters.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
                 self.hand.append(self.game.get_player_named(pile).hand.pop(randrange(0, len(self.game.get_player_named(pile).hand))))
                 self.hand.append(self.game.deck.draw())
             else:
