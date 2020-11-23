@@ -3,12 +3,15 @@
 		<p v-if="instruction" class="center-stuff">{{instruction}}</p>
 		<button v-if="canEndTurn" @click="end_turn">Termina Turno</button>
 		<div class="equipment-slot">
-			<Card v-if="my_role" :card="my_role" class="back"/>
-			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"/>
+			<Card v-if="my_role" :card="my_role" class="back"
+					@pointerenter.native="desc=my_role.goal" @pointerleave.native="desc=''"/>
+			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
+					@pointerenter.native="desc=character.desc" @pointerleave.native="desc=''"/>
 			<transition-group name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
 			</transition-group>
 		</div>
+		<p v-if="desc">{{desc}}</p>
 		<transition-group name="list" tag="div" style="display: flex; justify-content: space-evenly; margin-bottom:2pt;">
 			<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
 			<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
@@ -70,6 +73,7 @@ export default {
 		show_role: false,
 		attacker: undefined,
 		notifycard: null,
+		desc: '',
 	}),
 	sockets: {
 		role(role) {
@@ -111,7 +115,6 @@ export default {
 	computed:{
 		visiblePlayers() {
 			this.range;
-			
 			return this.playersDistances.filter(x => {
 					if (!this.can_target_sheriff && x.is_sheriff)
 						return false

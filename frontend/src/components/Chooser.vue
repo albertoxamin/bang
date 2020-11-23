@@ -6,7 +6,7 @@
 		</div>
 		<p v-if="hintText">{{hintText}}</p>
 		<div class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{cancelText}}</span></div>
-		<p v-if="desc" style="bottom:10pt;position:absolute;margin:16pt;">{{desc}}</p>
+		<p v-if="desc" style="bottom:10pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
 	</div>
 </template>
 
