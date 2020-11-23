@@ -18,7 +18,7 @@
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card)"
-					@mouseover.native="hint=card.desc" @mouseleave.native="hint=''"/>
+					@pointerenter.native="hint=card.desc" @pointerleave.native="hint=''"/>
 			</transition-group>
 		</div>
 		<p>{{hint}}</p>

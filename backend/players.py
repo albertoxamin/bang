@@ -80,6 +80,8 @@ class Player:
             self.game.player_death(self)
         if isinstance(self.character, characters.CalamityJanet):
             self.expected_response = [cards.Mancato(0,0).name, cards.Bang(0,0).name]
+        elif isinstance(self.character, characters.SuzyLafayette) and len(self.hand) == 0:
+            self.hand.append(self.game.deck.draw())
         ser = self.__dict__.copy()
         ser.pop('game')
         ser.pop('sio')

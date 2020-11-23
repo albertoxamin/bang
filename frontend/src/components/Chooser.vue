@@ -2,7 +2,7 @@
 	<div id="overlay" class="center-stuff">
 		<h1>{{text}}</h1>
 		<div>
-			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@mouseover.native="showDesc(c)" @mouseleave.native="desc=''"/>
+			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
 		</div>
 		<p v-if="hintText">{{hintText}}</p>
 		<div class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{cancelText}}</span></div>
