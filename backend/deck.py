@@ -26,6 +26,9 @@ class Deck:
         self.game.notify_scrap_pile()
         return card
 
+    def put_on_top(self, card: Card):
+        self.cards.insert(0, card)
+
     def draw(self) -> Card:
         card = self.cards.pop(0)
         if len(self.cards) == 0:

@@ -1,3 +1,4 @@
+import deck
 from enum import IntEnum
 import json
 from random import randrange
@@ -124,24 +125,30 @@ class Player:
     def draw(self, pile):
         if self.pending_action != PendingAction.DRAW:
             return
-        self.pending_action = PendingAction.PLAY
-        if pile == 'scrap' and isinstance(self.character, characters.PedroRamirez):
-            self.hand.append(self.game.deck.draw_from_scrap_pile())
-            self.hand.append(self.game.deck.draw())
-        if type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, characters.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
-            self.hand.append(self.game.get_player_named(pile).hand.pop(randrange(0, len(self.game.get_player_named(pile).hand))))
-            self.hand.append(self.game.deck.draw())
+        if isinstance(self.character, characters.KitCarlson):
+            self.is_drawing = True
+            self.available_cards = [self.game.deck.draw() for i in range(3)]
+            self.pending_action = PendingAction.CHOOSE
+            self.notify_self()
         else:
-            for i in range(2):
-                card: cards.Card = self.game.deck.draw()
-                self.hand.append(card)
-                if i == 1 and isinstance(self.character, characters.BlackJack):
-                    for p in self.game.players:
-                        if p != self:
-                            p.notify_card(self, card)
-                    if card.suit == cards.Suit.HEARTS or card.suit == cards.Suit.DIAMONDS:
-                        self.hand.append(self.game.deck.draw())
-        self.notify_self()
+            self.pending_action = PendingAction.PLAY
+            if pile == 'scrap' and isinstance(self.character, characters.PedroRamirez):
+                self.hand.append(self.game.deck.draw_from_scrap_pile())
+                self.hand.append(self.game.deck.draw())
+            if type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, characters.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
+                self.hand.append(self.game.get_player_named(pile).hand.pop(randrange(0, len(self.game.get_player_named(pile).hand))))
+                self.hand.append(self.game.deck.draw())
+            else:
+                for i in range(2):
+                    card: cards.Card = self.game.deck.draw()
+                    self.hand.append(card)
+                    if i == 1 and isinstance(self.character, characters.BlackJack):
+                        for p in self.game.players:
+                            if p != self:
+                                p.notify_card(self, card)
+                        if card.suit == cards.Suit.HEARTS or card.suit == cards.Suit.DIAMONDS:
+                            self.hand.append(self.game.deck.draw())
+            self.notify_self()
 
     def pick(self):
         if self.pending_action != PendingAction.PICK:
@@ -315,6 +322,13 @@ class Player:
             self.target_p = ''
             self.choose_action = ''
             self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif self.is_drawing and isinstance(self.character, characters.KitCarlson):
+            self.hand.append(self.available_cards.pop(card_index))
+            if len(self.available_cards) == 1:
+                self.game.deck.put_on_top(self.available_cards.pop())
+                self.is_drawing = False
+                self.pending_action = PendingAction.PLAY
             self.notify_self()
         else:
             self.game.respond_emporio(self, card_index)
