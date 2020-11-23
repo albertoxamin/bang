@@ -289,7 +289,7 @@ class Player:
                 self.has_played_bang = True
                 self.game.attack(self, againts)
                 did_play_card = True
-            elif isinstance(card, cards.Panico):
+            elif isinstance(card, cards.Panico) and againts != None:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.pending_action = PendingAction.CHOOSE
                 self.choose_action = 'steal'
