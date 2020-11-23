@@ -167,6 +167,7 @@ class Player:
                         pickable_cards -= 1
                         picked: cards.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
+                        self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
                         if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i))
@@ -186,6 +187,7 @@ class Player:
                         pickable_cards -= 1
                         picked: cards.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
+                        self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
                         if picked.suit != cards.Suit.HEARTS and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i))
                             self.end_turn(forced=True)
@@ -224,6 +226,7 @@ class Player:
         card: cards.Card = self.hand.pop(hand_index)
         print(self.name, 'is playing ', card, ' against:', againts)
         if isinstance(card, cards.Prigione) and not isinstance(self.game.get_player_named(againts).role, roles.Sheriff):
+            self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
             self.game.get_player_named(againts).equipment.append(card)
             self.game.get_player_named(againts).notify_self()
         elif card.is_equipment and card.name not in [c.name for c in self.equipment]:
