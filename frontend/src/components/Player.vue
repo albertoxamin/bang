@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p v-if="instruction" class="center-stuff">{{instruction}}</p>
-		<button v-if="canEndTurn" @click="end_turn">Termina Turno</button>
+		<!-- <button v-if="canEndTurn" @click="end_turn">Termina Turno</button> -->
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"
 					@pointerenter.native="desc=my_role.goal" @pointerleave.native="desc=''"/>
@@ -34,6 +34,7 @@
 		<Chooser v-if="notifycard" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
+		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap" :key="hasToPickResponse" :cancel="cancelEndingTurn"/>
 	</div>
 </template>
 
@@ -44,7 +45,9 @@ import Chooser from '@/components/Chooser.vue'
 export default {
 	name: 'Player',
 	props: {
-		chooseCardFromPlayer: Function
+		chooseCardFromPlayer: Function,
+		isEndingTurn: Boolean,
+		cancelEndingTurn: Function,
 	},
 	components: {
 		Card,
@@ -113,6 +116,9 @@ export default {
 		}
 	},
 	computed:{
+		showScrapScreen() {
+			return this.isEndingTurn && !this.canEndTurn && this.is_my_turn;
+		},
 		visiblePlayers() {
 			this.range;
 			return this.playersDistances.filter(x => {
@@ -156,6 +162,9 @@ export default {
 		end_turn(){
 			console.log('ending turn')
 			this.$socket.emit('end_turn')
+		},
+		scrap(c) {
+			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
 		play_card(card) {
 			if (this.pending_action == 2) {
@@ -203,6 +212,18 @@ export default {
 	},
 	mounted() {
 		this.$socket.emit('refresh')
+	},
+	watch: {
+		isEndingTurn(val) {
+			if (val && this.canEndTurn) {
+				this.end_turn()
+			}
+		},
+		canEndTurn(val) {
+			if (val && this.isEndingTurn) {
+				this.end_turn()
+			}
+		},
 	}
 }
 </script>

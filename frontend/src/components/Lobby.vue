@@ -22,8 +22,8 @@
 				<!-- </div> -->
 			</div>
 			<div v-if="started">
-				<deck/>
-				<player :chooseCardFromPlayer="choose"/>
+				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
+				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose"/>
 			</div>
 		</div>
 		<chat/>
@@ -65,6 +65,7 @@ export default {
 		self: {},
 		hasToChoose: false,
 		chooseCards: [],
+		wantsToEndTurn: false,
 	}),
 	sockets: {
 		room(data) {

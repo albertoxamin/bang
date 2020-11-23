@@ -234,7 +234,7 @@ class Player:
             else:
                 self.equipment.append(card)
         else:
-            did_play_card = len(self.hand) + 1 > self.lives
+            did_play_card = False
             if isinstance(card, cards.Bang) and self.has_played_bang and not any([isinstance(c, cards.Volcanic) for c in self.equipment]) and againts != None:
                 self.hand.insert(hand_index, card)
                 return
@@ -460,6 +460,11 @@ class Player:
         for card in self.equipment:
             covers += card.vis_mod
         return self.character.visibility_mod + covers
+
+    def scrap(self, card_index):
+        if self.is_my_turn or isinstance(self.character, characters.SidKetchum):
+            self.game.deck.scrap(self.hand.pop(card_index))
+            self.notify_self()
 
     def end_turn(self, forced=False):
         if not self.is_my_turn: return

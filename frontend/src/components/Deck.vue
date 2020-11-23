@@ -1,5 +1,6 @@
 <template>
 	<div class="deck">
+		<card v-if="endTurnAction" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
 		<div style="position:relative">
 			<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
 			<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -18,6 +19,9 @@ import Card from '@/components/Card.vue'
 
 export default {
 	name: 'Deck',
+	props: {
+		endTurnAction: Function
+	},
 	components: {
 		Card,
 	},
@@ -25,6 +29,10 @@ export default {
 		card: {
 			name: 'PewPew!',
 			icon: '💥',
+		},
+		endTurnCard: {
+			name: 'Termina turno!',
+			icon: '⛔️'
 		},
 		lastScrap: null,
 		previousScrap: null,
@@ -87,5 +95,11 @@ export default {
 .draw:hover {
 	transform: translate(0,10px);
 	z-index: 1;
+}
+.end-turn {
+	box-shadow: 
+		0 0 0 3pt  rgb(138, 12, 12),
+		0 0 0 6pt white,
+		0 0 5pt 6pt #aaa !important;
 }
 </style>
