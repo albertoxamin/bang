@@ -79,7 +79,7 @@ class LuckyDuke(Character):
 
 class PaulRegret(Character):
     def __init__(self):
-        super().__init__("Paul Regret", max_lives=3)
+        super().__init__("Paul Regret", max_lives=3, visibility_mod=1)
         self.desc = "Gioca come se avesse una Mustang sempre attiva, nel caso in cui metta in gioco una Mustang 'Reale' l'effetto si somma tranquillamente"
 
 class PedroRamirez(Character):
@@ -89,7 +89,7 @@ class PedroRamirez(Character):
 
 class RoseDoolan(Character):
     def __init__(self):
-        super().__init__("Rose Doolan", max_lives=4)
+        super().__init__("Rose Doolan", max_lives=4, sight_mod=1)
         self.icon = '🤷‍♀️'
         self.desc = "Gioca come se avesse un Mirino sempre attivo, nel caso in cui metta in gioco una Mirino 'Reale' l'effetto si somma tranquillamente"
 
