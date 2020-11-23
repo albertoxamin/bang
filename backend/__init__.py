@@ -77,9 +77,9 @@ def refresh(sid):
     ses.notify_self()
 
 @sio.event
-def draw(sid):
+def draw(sid, pile):
     ses = sio.get_session(sid)
-    ses.draw()
+    ses.draw(pile)
 
 @sio.event
 def pick(sid):

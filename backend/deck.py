@@ -36,8 +36,9 @@ class Deck:
 
     def draw_from_scrap_pile(self) -> Card:
         if len(self.scrap_pile) > 0:
-            return self.scrap_pile.pop(0)
+            card = self.scrap_pile.pop(0)
             self.game.notify_scrap_pile()
+            return card
         else:
             return self.draw()
 

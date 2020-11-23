@@ -62,8 +62,11 @@ class Game:
             available_roles = available_roles[:len(self.players)]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
+            self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} ha come personaggio {self.players[i].character.name}')
             self.players[i].set_role(available_roles[i])
             if isinstance(available_roles[i], roles.Sheriff) or (len(available_roles) == 3 and isinstance(available_roles[i], roles.Vice)):
+                if isinstance(available_roles[i], roles.Sheriff):
+                    self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} È lo sceriffo')
                 self.turn = i
             self.players[i].prepare()
             for k in range(self.players[i].max_lives):

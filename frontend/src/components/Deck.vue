@@ -8,7 +8,7 @@
 		<div style="position:relative;">
 			<card v-if="previousScrap" :card="previousScrap"/>
 			<card v-else :card="card" class="back" style="opacity:0"/>
-			<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap"/>
+			<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap" @click.native="action('scrap')"/>
 		</div>
 	</div>
 </template>
@@ -40,13 +40,13 @@ export default {
 		}
 	},
 	methods: {
-		action() {
+		action(pile) {
 			if (this.pending_action !== false && this.pending_action < 2) {
 				console.log('action')
 				if (this.pending_action == 0)
 					this.$socket.emit('pick')
 				else if (this.pending_action == 1)
-					this.$socket.emit('draw')
+					this.$socket.emit('draw', pile)
 			}
 		}
 	},

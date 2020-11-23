@@ -120,19 +120,23 @@ class Player:
             self.pending_action = PendingAction.DRAW
         self.notify_self()
 
-    def draw(self):
+    def draw(self, pile):
         if self.pending_action != PendingAction.DRAW:
             return
         self.pending_action = PendingAction.PLAY
-        for i in range(2):
-            card: cards.Card = self.game.deck.draw()
-            self.hand.append(card)
-            if i == 1 and isinstance(self.character, characters.BlackJack):
-                for p in self.game.players:
-                    if p != self:
-                        p.notify_card(self, card)
-                if card.suit == cards.Suit.HEARTS or card.suit == cards.Suit.DIAMONDS:
-                    self.game.deck.draw(self.hand.append(card))
+        if pile == 'scrap' and isinstance(self.character, characters.PedroRamirez):
+            self.hand.append(self.game.deck.draw_from_scrap_pile())
+            self.hand.append(self.game.deck.draw())
+        else:
+            for i in range(2):
+                card: cards.Card = self.game.deck.draw()
+                self.hand.append(card)
+                if i == 1 and isinstance(self.character, characters.BlackJack):
+                    for p in self.game.players:
+                        if p != self:
+                            p.notify_card(self, card)
+                    if card.suit == cards.Suit.HEARTS or card.suit == cards.Suit.DIAMONDS:
+                        self.hand.append(self.game.deck.draw())
         self.notify_self()
 
     def pick(self):
