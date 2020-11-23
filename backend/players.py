@@ -74,6 +74,14 @@ class Player:
         print(f'I {self.name} have to choose between {available}')
         self.sio.emit('characters', room=self.sid, data=json.dumps(available, default=lambda o: o.__dict__))
 
+    def notify_card(self, player, card):
+        mess = {
+            'player': player.name,
+            'card': card.__dict__
+        }
+        print('notifying card')
+        self.sio.emit('notify_card', room=self.sid, data=mess)
+
     def notify_self(self):
         if self.lives <= 0 and self.max_lives > 0:
             print('dying, attacker', self.attacker)
@@ -115,9 +123,16 @@ class Player:
     def draw(self):
         if self.pending_action != PendingAction.DRAW:
             return
-        for i in range(2):
-            self.hand.append(self.game.deck.draw())
         self.pending_action = PendingAction.PLAY
+        for i in range(2):
+            card: cards.Card = self.game.deck.draw()
+            self.hand.append(card)
+            if i == 1 and isinstance(self.character, characters.BlackJack):
+                for p in self.game.players:
+                    if p != self:
+                        p.notify_card(self, card)
+                if card.suit == cards.Suit.HEARTS or card.suit == cards.Suit.DIAMONDS:
+                    self.game.deck.draw(self.hand.append(card))
         self.notify_self()
 
     def pick(self):

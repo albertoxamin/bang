@@ -28,6 +28,7 @@
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
 		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
+		<Chooser v-if="notifycard" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 	</div>
@@ -68,6 +69,7 @@ export default {
 		can_target_sheriff: true,
 		show_role: false,
 		attacker: undefined,
+		notifycard: null,
 	}),
 	sockets: {
 		role(role) {
@@ -102,6 +104,9 @@ export default {
 			console.log(vis)
 			this.playersDistances = JSON.parse(vis)
 		},
+		notify_card(mess) {
+			this.notifycard = mess
+		}
 	},
 	computed:{
 		visiblePlayers() {
@@ -232,6 +237,10 @@ export default {
 .turn-notify {
 	pointer-events: none;
 	animation: disappear 2s ease-in forwards;
+}
+.turn-notify-4s {
+	pointer-events: none;
+	animation: disappear 4s ease-in forwards;
 }
 @keyframes disappear {
 	0% {
