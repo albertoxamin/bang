@@ -225,7 +225,7 @@ class Player:
                 return
             elif isinstance(card, cards.Bang) and againts != None:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
-                self.has_played_bang = True
+                self.has_played_bang = not isinstance(self.character, characters.WillyTheKid)
                 self.game.attack(self, againts)
                 did_play_card = True
             elif isinstance(card, cards.Birra) and len(self.game.players) != 2:
