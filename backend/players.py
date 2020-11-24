@@ -229,7 +229,7 @@ class Player:
             self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
             self.game.get_player_named(againts).equipment.append(card)
             self.game.get_player_named(againts).notify_self()
-        elif card.is_equipment and card.name not in [c.name for c in self.equipment]:
+        elif card.is_equipment:
             if card.is_weapon:
                 has_weapon = False
                 for i in range(len(self.equipment)):
@@ -240,6 +240,12 @@ class Player:
                         break
                 if not has_weapon:
                     self.equipment.append(card)
+            elif card.name in [c.name for c in self.equipment if not isinstance(c, cards.Dinamite)]:
+                for i in range(len(self.equipment)):
+                    if type(self.equipment[i]) == type(card):
+                        self.game.deck.scrap(self.equipment[i])
+                        self.equipment[i] = card
+                        break
             else:
                 self.equipment.append(card)
         else:
