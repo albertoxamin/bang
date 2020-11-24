@@ -95,6 +95,8 @@ export default {
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.is_my_turn = self.is_my_turn
+			if (this.is_my_turn) document.title = 'È il tuo turno! | PewPew!'
+			else document.title = 'PewPew!'
 			this.expected_response = self.expected_response
 			this.available_cards = self.available_cards
 			this.win_status = self.win_status

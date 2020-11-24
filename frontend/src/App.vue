@@ -75,6 +75,7 @@ export default {
 	sockets: {
 		connect() {
 			this.isConnected = true;
+			document.title = 'PewPew!'
 			if (Vue.config.devtools) {
 				setTimeout(function(){
 					this.username =(1+Math.random() * 100 % 100).toFixed(2).toString();
