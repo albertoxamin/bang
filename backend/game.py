@@ -182,7 +182,7 @@ class Game:
             for i in range(len(player.attacker.equipment)):
                 self.deck.scrap(player.attacker.equipment.pop())
             player.attacker.notify_self()
-        elif player.attacker and isinstance(player.role, roles.Outlaw) or self.initial_players == 3:
+        elif player.attacker and (isinstance(player.role, roles.Outlaw) or self.initial_players == 3):
             for i in range(3):
                 player.attacker.hand.append(self.deck.draw())
             player.attacker.notify_self()
