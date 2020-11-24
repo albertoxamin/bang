@@ -373,7 +373,7 @@ class Player:
     def get_banged(self, attacker, double=False):
         self.attacker = attacker
         self.mancato_needed = 1 if not double else 2
-        if len([c for c in self.hand if isinstance(c, cards.Mancato)]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0 and not isinstance(self.character, characters.Jourdonnais):
+        if len([c for c in self.hand if isinstance(c, cards.Mancato) or (isinstance(self.character, characters.CalamityJanet) and isinstance(c, cards.Bang))]) == 0 and len([c for c in self.equipment if isinstance(c, cards.Barile)]) == 0 and not isinstance(self.character, characters.Jourdonnais):
             print('Cant defend')
             self.take_damage_response()
             return False
@@ -392,7 +392,7 @@ class Player:
 
     def get_indians(self, attacker):
         self.attacker = attacker
-        if len([c for c in self.hand if isinstance(c, cards.Bang)]) == 0:
+        if len([c for c in self.hand if isinstance(c, cards.Bang) or (isinstance(self.character, characters.CalamityJanet) and isinstance(c, cards.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
             return False
@@ -407,7 +407,7 @@ class Player:
 
     def get_dueled(self, attacker):
         self.attacker = attacker
-        if len([c for c in self.hand if isinstance(c, cards.Bang)]) == 0:
+        if len([c for c in self.hand if isinstance(c, cards.Bang) or (isinstance(self.character, characters.CalamityJanet) and isinstance(c, cards.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
