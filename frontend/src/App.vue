@@ -98,9 +98,11 @@ export default {
 	},
 	methods: {
 		setUsername(e){
-			this.didSetUsername = true
-			this.$socket.emit('set_username', this.username)
-			e.preventDefault();
+			if (this.username.trim().length > 0){
+				this.didSetUsername = true
+				this.$socket.emit('set_username', this.username)
+				e.preventDefault();
+			}
 		},
 		getLobbyCard(lobby) {
 			return {
