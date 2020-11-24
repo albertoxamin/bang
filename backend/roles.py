@@ -27,7 +27,7 @@ class Sheriff(Role):
 
 
 class Vice(Role):
-    def __init__(self, alternative_goal):
+    def __init__(self, alternative_goal=None):
         super().__init__("Vice", "Proteggi lo Sceriffo! Elimina tutti i Fuorilegge e il Rinnegato!")
         if alternative_goal:
             self.goal = alternative_goal
@@ -45,7 +45,7 @@ class Vice(Role):
         return False
 
 class Outlaw(Role):
-    def __init__(self, alternative_goal):
+    def __init__(self, alternative_goal=None):
         super().__init__("Fuorilegge", "Elimina lo Sceriffo!")
         if alternative_goal:
             self.goal = alternative_goal
@@ -63,7 +63,7 @@ class Outlaw(Role):
         return False
 
 class Renegade(Role):
-    def __init__(self, alternative_goal):
+    def __init__(self, alternative_goal=None):
         super().__init__("Rinnegato", "Rimani l'ultimo personaggio in gioco!")
         if alternative_goal:
             self.goal = alternative_goal
