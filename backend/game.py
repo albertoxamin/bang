@@ -23,7 +23,7 @@ class Game:
         self.waiting_for = 0
 
     def add_player(self, player: players.Player):
-        if player in self.players:
+        if player in self.players or len(self.players) >= 7:
             return
         player.join_game(self)
         self.players.append(player)

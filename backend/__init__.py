@@ -17,7 +17,7 @@ games: List[Game] = []
 online_players = 0
 
 def advertise_lobbies():
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players)} for g in games if not g.started])
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players)} for g in games if not g.started and len(g.players) < 7])
 
 @sio.event
 def connect(sid, environ):

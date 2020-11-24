@@ -17,7 +17,7 @@ class Sheriff(Role):
         self.max_players = 1
         self.icon = '⭐️'
 
-    def on_player_death(self, alive_players: list, initial_players: int):
+    def on_player_death(self, alive_players: list, initial_players: int, dead_role=None, attacker_role=None):
         if initial_players == 3 and len(alive_players) == 1:
             return True
         elif initial_players != 3 and not any([isinstance(p.role, Outlaw) or isinstance(p.role, Renegade) for p in alive_players]):

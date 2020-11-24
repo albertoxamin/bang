@@ -440,6 +440,7 @@ class Player:
                 if isinstance(self.hand[i], cards.Birra):
                     self.lives += 1
                     self.game.deck.scrap(self.hand.pop(i))
+                    self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha usato una birra per recuperare una vita.')
                     break
         self.mancato_needed = 0
         self.notify_self()
