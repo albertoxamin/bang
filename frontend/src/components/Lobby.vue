@@ -238,5 +238,8 @@ export default {
 	.lobby {
 		flex-direction: row;
 	}
+	.chat {
+		max-width: 350pt;
+	}
 }
 </style>

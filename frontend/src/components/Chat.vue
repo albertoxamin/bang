@@ -1,11 +1,11 @@
 <template>
-	<div style="max-width: 350pt;">
+	<div class="chat">
 		<h3>Chat</h3>
 		<div id="chatbox">
 			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
 			<p class="end">.</p>
 		</div>
-		<form @submit="sendChatMessage" style="width:100%; padding:0; display:flex;">
+		<form @submit="sendChatMessage" id="msg-form">
 			<input v-model="text" style="flex-grow:2;"/>
 			<input type="submit"/>
 		</form>
@@ -45,10 +45,24 @@ export default {
 	overflow-x: hidden;
 	overflow-wrap: break-word;
 	overflow-wrap: normal;
-	border: 1pt solid #ccc;
-	border-radius: 2pt;
+	border: 2pt solid #ccc;
+	border-radius: 4pt;
 }
-/* .chat-message:nth-last-of-type(1) {
-	margin-bottom: 50pt !important;
-} */
+input {
+	margin:0;
+}
+.end {
+	height: 0pt;
+	margin-top: -1.5pt;
+}
+#msg-form {
+	width:100%;
+	padding:0;
+	display:flex;
+}
+@media only screen and (max-width:1000px) {
+	#msg-form {
+		flex-direction: column;
+	}
+}
 </style>
