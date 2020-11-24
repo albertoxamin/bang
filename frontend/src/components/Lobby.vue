@@ -16,7 +16,7 @@
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
 					<span style="position:absolute;top:0;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
-						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
+						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" @click.native="selectedInfo = card"/>
 					</div>
 				</div>
 					<!-- :style="p.style"/> -->
