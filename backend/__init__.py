@@ -21,14 +21,14 @@ def advertise_lobbies():
 
 @sio.event
 def connect(sid, environ):
-    global online_players
     print('connect ', sid)
-    online_players += 1
     sio.enter_room(sid, 'lobby')
     sio.emit('players', room='lobby', data=online_players)
 
 @sio.event
 def set_username(sid, username):
+    global online_players
+    online_players += 1
     sio.save_session(sid, Player(username, sid, sio))
     print(f'{sid} is now {username}')
     advertise_lobbies()
@@ -40,13 +40,14 @@ def my_message(sid, data):
 @sio.event
 def disconnect(sid):
     global online_players
-    online_players -= 1
-    sio.emit('players', room='lobby', data=online_players)
-    if sio.get_session(sid).game and sio.get_session(sid).disconnect():
-        sio.close_room(sio.get_session(sid).game.name)
-        games.pop(games.index(sio.get_session(sid).game))
-    print('disconnect ', sid)
-    advertise_lobbies()
+    if sio.get_session(sid):
+        online_players -= 1
+        sio.emit('players', room='lobby', data=online_players)
+        if sio.get_session(sid).game and sio.get_session(sid).disconnect():
+            sio.close_room(sio.get_session(sid).game.name)
+            games.pop(games.index(sio.get_session(sid).game))
+        print('disconnect ', sid)
+        advertise_lobbies()
 
 @sio.event
 def create_room(sid, room_name):
