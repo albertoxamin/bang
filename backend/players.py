@@ -3,7 +3,7 @@ from enum import IntEnum
 import json
 from random import randrange
 import socketio
-from cards import Mancato
+import cards
 
 import roles
 import cards
@@ -86,13 +86,6 @@ class Player:
         self.sio.emit('notify_card', room=self.sid, data=mess)
 
     def notify_self(self):
-        if self.lives <= 0 and self.max_lives > 0:
-            print('dying, attacker', self.attacker)
-            if isinstance(self.character, characters.SidKetchum) and len(self.hand) > 1:
-                self.lives += 1
-                self.game.deck.scrap(self.hand.pop(randrange(0, len(self.hand))))
-                self.game.deck.scrap(self.hand.pop(randrange(0, len(self.hand))))
-            self.game.player_death(self)
         if isinstance(self.character, characters.CalamityJanet):
             self.expected_response = [cards.Mancato(0,0).name, cards.Bang(0,0).name]
         elif isinstance(self.character, characters.SuzyLafayette) and len(self.hand) == 0:
@@ -110,6 +103,13 @@ class Player:
         ser['sight'] = self.get_sight()
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
+        if self.lives <= 0 and self.max_lives > 0:
+            print('dying, attacker', self.attacker)
+            if isinstance(self.character, characters.SidKetchum) and len(self.hand) > 1:
+                self.lives += 1
+                self.game.deck.scrap(self.hand.pop(randrange(0, len(self.hand))))
+                self.game.deck.scrap(self.hand.pop(randrange(0, len(self.hand))))
+            self.game.player_death(self)
         self.game.notify_all()
 
     def play_turn(self):
@@ -169,7 +169,7 @@ class Player:
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
                         if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
-                            self.lives -= 3
+                            self.lives = max(self.lives - 3, 0)
                             self.game.deck.scrap(self.equipment.pop(i))
                             if isinstance(self.character, characters.BartCassidy):
                                 self.hand.append(self.game.deck.draw())
@@ -320,7 +320,7 @@ class Player:
     def choose(self, card_index):
         if self.pending_action != PendingAction.CHOOSE:
             return
-        if self.target_p and self.target_p != '':
+        if self.target_p and self.target_p != '': # panico, cat balou
             target = self.game.get_player_named(self.target_p)
             card = None
             if card_index >= len(target.hand):
@@ -336,14 +336,14 @@ class Player:
             self.choose_action = ''
             self.pending_action = PendingAction.PLAY
             self.notify_self()
-        elif self.is_drawing and isinstance(self.character, characters.KitCarlson):
+        elif self.is_drawing and isinstance(self.character, characters.KitCarlson): # specifico per personaggio
             self.hand.append(self.available_cards.pop(card_index))
             if len(self.available_cards) == 1:
                 self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
-        else:
+        else: # emporio
             self.game.respond_emporio(self, card_index)
 
     def barrel_pick(self):
