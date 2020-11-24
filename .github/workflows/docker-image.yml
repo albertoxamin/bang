@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Build the Unified Docker image
+      run: docker build . --file Dockerfile --tag albertoxamin/bang:latest
     - name: Build the Backend Docker image
       run: cd backend;docker build . --file Dockerfile --tag albertoxamin/bang-backend:latest
     - uses: actions/checkout@v2
@@ -14,5 +16,5 @@ jobs:
       run: cd frontend;docker build . --file Dockerfile --tag albertoxamin/bang-frontend:latest
     - name: Log into registry
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-    - name: Push iamges
-      run: docker push albertoxamin/bang-backend:latest; docker push albertoxamin/bang-frontend:latest
+    - name: Push images
+      run: docker push albertoxamin/bang:latest; docker push albertoxamin/bang-backend:latest; docker push albertoxamin/bang-frontend:latest

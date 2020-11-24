@@ -8,7 +8,9 @@ from players import Player
 
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio, static_files={
-    '/': {'content_type': 'text/html', 'filename': 'index.html'}
+    '/': {'content_type': 'text/html', 'filename': 'index.html'},
+    '/css': './css',
+    '/js': './js',
 })
 
 games: List[Game] = []
