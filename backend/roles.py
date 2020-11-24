@@ -6,7 +6,8 @@ class Role(ABC):
         self.name = name
         self.goal = goal
         self.health_mod = health_mod
-    
+        self.alt_goal = ''
+
     @abstractmethod
     def on_player_death(self, alive_players: list, initial_players: int):
         pass

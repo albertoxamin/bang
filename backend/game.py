@@ -242,6 +242,7 @@ class Game:
             'is_sheriff': isinstance(p.role, roles.Sheriff),
             'is_my_turn': p.is_my_turn,
             'pending_action': p.pending_action,
+            'character': p.character.__dict__
         } for p in self.players]
         self.sio.emit('players_update', room=self.name, data=data)
 

@@ -12,8 +12,9 @@
 						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="n" :alt="i">💀</span>
 					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
+					<Card v-if="p.character" :card="p.character" class="character tiny-character"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
-					<span style="position:absolute;top:0;">{{getActionEmoji(p)}}</span>
+					<span style="position:absolute;top:0;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" />
 					</div>
@@ -139,7 +140,6 @@ export default {
 				name: player.name,
 				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : '🤠') : '☠️',
-				alt_text: player.character,
 				is_character: true,
 			}
 		},
@@ -224,6 +224,11 @@ export default {
 }
 .tiny-equipment .card:nth-child(n+2) {
 	margin-top: -60pt;
+}
+.tiny-character {
+	position: absolute;
+	transform: scale(0.6) translate(-80px, -50px);
+	top: 0;
 }
 .players-table {
 	display: flex;
