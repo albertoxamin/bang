@@ -479,6 +479,8 @@ class Player:
         return max(1, range) + aim + self.character.sight_mod
 
     def get_visibility(self):
+        if not self.character:
+            return 0
         covers = 0
         for card in self.equipment:
             covers += card.vis_mod
