@@ -56,7 +56,6 @@ export default {
 		#816b45 10px
 	);
 }
-
 .card.equipment {
 	box-shadow: 
 		0 0 0 3pt #5c5e83,
@@ -99,5 +98,34 @@ export default {
 	font-size: small;
 	bottom: 16pt;
 	left: 3pt;
+}
+@media (prefers-color-scheme: dark) {
+	:root, #app {
+    background-color: #181a1b;
+    color: rgb(174, 194, 211);
+  }
+	.card {
+		background-color: #181a1b;
+    color: rgb(174, 194, 211);
+		box-shadow: 
+			0 0 0 3pt #987e51,
+			0 0 0 6pt #181a1b,
+			0 0 5pt 6pt #aaa;
+	}
+	.card.back{
+		color:#181a1b;
+	}
+	.card.equipment {
+		box-shadow: 
+			0 0 0 3pt #5c5e83,
+			0 0 0 6pt #181a1b,
+			0 0 5pt 6pt #aaa;
+	}
+	.card.character {
+		box-shadow: 
+			0 0 0 3pt #7c795b,
+			0 0 0 6pt #181a1b,
+			0 0 5pt 6pt #aaa;
+	}
 }
 </style>

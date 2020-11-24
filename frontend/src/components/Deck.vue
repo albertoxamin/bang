@@ -102,4 +102,9 @@ export default {
 		0 0 0 6pt white,
 		0 0 5pt 6pt #aaa !important;
 }
+@media (prefers-color-scheme: dark) {
+	.end-turn {
+		box-shadow: 0 0 0 3pt rgb(138, 12, 12), 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa !important;
+	}
+}
 </style>
