@@ -34,7 +34,10 @@
 		<Chooser v-if="notifycard" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
-		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap" :key="hasToPickResponse" :cancel="cancelEndingTurn"/>
+		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
+		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`SCARTA ${2 - sidScrapForHealth.length} PER RECUPERARE 1 VITA`"
+							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
+		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">ABILITÀ SPECIALE</button>
 	</div>
 </template>
 
@@ -77,6 +80,8 @@ export default {
 		attacker: undefined,
 		notifycard: null,
 		desc: '',
+		sidScrapForHealth: [],
+		sidWantsScrapForHealth: false,
 	}),
 	sockets: {
 		role(role) {
@@ -121,6 +126,9 @@ export default {
 		showScrapScreen() {
 			return this.isEndingTurn && !this.canEndTurn && this.is_my_turn;
 		},
+		sidScrapHand() {
+			return this.hand.filter((x, i) => (this.sidScrapForHealth.indexOf(i) === -1))
+		},
 		visiblePlayers() {
 			this.range;
 			return this.playersDistances.filter(x => {
@@ -161,6 +169,15 @@ export default {
 		}
 	},
 	methods: {
+		sidScrap(c) {
+			this.sidScrapForHealth.push(this.hand.indexOf(c))
+			if (this.sidScrapForHealth.length == 2) {
+				this.$socket.emit('scrap', this.hand.indexOf(this.sidScrapForHealth[0]))
+				this.$socket.emit('scrap', this.hand.indexOf(this.sidScrapForHealth[1]))
+				this.sidScrapForHealth = []
+				this.sidWantsScrapForHealth = false
+			}
+		},
 		end_turn(){
 			console.log('ending turn')
 			this.cancelEndingTurn()
