@@ -12,7 +12,7 @@
 						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="n" :alt="i">💀</span>
 					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
-					<Card v-if="p.character" :card="p.character" class="character tiny-character"/>
+					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = p.character"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
 					<span style="position:absolute;top:0;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
@@ -28,6 +28,7 @@
 			</div>
 		</div>
 		<chat/>
+		<Chooser v-if="selectedInfo" text="Dettagli" :cards="[selectedInfo]"  cancelText="OK" :cancel="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
 			<Chooser v-if="hasToChoose" text="Scegli una carta" :cards="chooseCards" :select="chooseCard"/>
@@ -67,6 +68,7 @@ export default {
 		hasToChoose: false,
 		chooseCards: [],
 		wantsToEndTurn: false,
+		selectedInfo: null,
 	}),
 	sockets: {
 		room(data) {

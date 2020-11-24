@@ -8,7 +8,7 @@
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
 					@pointerenter.native="desc=character.desc" @pointerleave.native="desc=''"/>
 			<transition-group name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
-				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" />
+				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" @pointerenter.native="desc=card.desc" @pointerleave.native="desc=''" />
 			</transition-group>
 		</div>
 		<p v-if="desc">{{desc}}</p>
