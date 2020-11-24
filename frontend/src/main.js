@@ -4,8 +4,8 @@ import App from './App.vue'
 Vue.config.productionTip = false
 import VueSocketIO from 'vue-socket.io'
 Vue.use(new VueSocketIO({
-	debug: true,
-	connection: Vue.config.devtools?'http://localhost:5001':'https://bang.xamin.it/backend',
+	debug: Vue.config.devtools,
+	connection: Vue.config.devtools?'http://localhost:5001':process.env.BACKEND,
 }))
 
 new Vue({

@@ -57,7 +57,7 @@ export default {
 		openLobbies: [],
 		lobbyName: '',
 		isInLobby: false,
-		onlinePlayers: 1,
+		onlinePlayers: 0,
 	}),
 	computed: {
 		noLobbyAvailable() {
