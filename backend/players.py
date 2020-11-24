@@ -466,6 +466,8 @@ class Player:
         self.attacker = None
 
     def get_sight(self):
+        if not self.character:
+            return 0
         aim = 0
         range = 0
         for card in self.equipment:

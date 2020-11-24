@@ -56,7 +56,11 @@ class Game:
     def distribute_roles(self):
         available_roles: List[roles.Role] = []
         if len(self.players) == 3:
-            available_roles = [roles.Vice(), roles.Renegade(), roles.Outlaw()]
+            available_roles = [
+                roles.Vice('Elimina il Rinnegato 🦅, se non lo elimini tu elimina anche il Fuorilegge'),
+                roles.Renegade('Elimina il Fuorilegge 🐺, se non lo elimini tu elimina anche il Vice'),
+                roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato')
+            ]
         elif len(self.players) >= 4:
             available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice()]
             available_roles = available_roles[:len(self.players)]
@@ -178,7 +182,7 @@ class Game:
             for i in range(len(player.attacker.equipment)):
                 self.deck.scrap(player.attacker.equipment.pop())
             player.attacker.notify_self()
-        elif player.attacker and isinstance(player.role, roles.Outlaw):
+        elif player.attacker and isinstance(player.role, roles.Outlaw) or self.initial_players == 3:
             for i in range(3):
                 player.attacker.hand.append(self.deck.draw())
             player.attacker.notify_self()
@@ -210,7 +214,10 @@ class Game:
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         if self.started:
             print('Check win status')
-            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.players, initial_players=self.initial_players)]
+            attacker_role = None
+            if player.attacker:
+                attacker_role = player.attacker.role
+            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.players, initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             if len(winners) > 0:
                 print('WE HAVE A WINNER')
                 for p in self.players:
@@ -242,19 +249,7 @@ class Game:
             'is_sheriff': isinstance(p.role, roles.Sheriff),
             'is_my_turn': p.is_my_turn,
             'pending_action': p.pending_action,
-            'character': p.character.__dict__
+            'character': p.character.__dict__,
+            'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
         } for p in self.players]
         self.sio.emit('players_update', room=self.name, data=data)
-
-
-# game = Game()
-# p1 = players.Player('p1')
-# game.add_player(p1)
-# p2 = players.Player('p2')
-# game.add_player(p2)
-# p3 = players.Player('p3')
-# game.add_player(p3)
-# game.start_game()
-# for p in game.players:
-#     p.set_character(random.choice(p.available_characters))
-# game.distribute_roles()
