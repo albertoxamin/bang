@@ -2,7 +2,7 @@
 	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back}">
 		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
-		<div v-if="card.is_character" class="alt_text">{{card.alt_text}}</div>
+		<div class="alt_text">{{card.alt_text}}</div>
 		<div class="suit">{{card.number}}{{suit}}</div>
 	</div>
 </template>
@@ -91,12 +91,12 @@ export default {
 	right: 3pt;
 	text-align: center;
 }
-.card.character .alt_text {
+.alt_text {
 	right: 3pt;
 	text-align: center;
 	position: absolute;
 	font-size: small;
-	bottom: 16pt;
+	bottom: 20pt;
 	left: 3pt;
 }
 @media (prefers-color-scheme: dark) {

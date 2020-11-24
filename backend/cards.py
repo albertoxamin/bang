@@ -28,6 +28,8 @@ class Card(ABC):
         self.vis_mod = vis_mod
         self.sight_mod = sight_mod
         self.range = range
+        if self.range != 0 and self.range != 99:
+            self.alt_text =  f'{self.range} 🔍'
         self.desc = desc
         self.need_target = False
 
