@@ -187,12 +187,13 @@ export default {
 			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
 		play_card(card) {
+			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
+			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
-				if (card.need_target &&
-					!(card.name == 'Bang!' && (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0))) {
-						if (card.name == 'Panico!' || (card.name == 'Bang!' && (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)))
+				if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || !calamity_special) && cant_play_bang)) {
+						if (card.name == 'Panico!' || (card.name == 'Bang!' && cant_play_bang))
 							this.range = 1
-						else if (card.name == 'Bang!')
+						else if (card.name == 'Bang!' || calamity_special)
 							this.range = this.sight
 						else
 							this.range = 999
