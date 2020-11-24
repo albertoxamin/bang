@@ -252,10 +252,14 @@ class Player:
                 self.has_played_bang = not isinstance(self.character, characters.WillyTheKid)
                 self.game.attack(self, againts)
                 did_play_card = True
-            elif isinstance(card, cards.Birra) and len(self.game.players) != 2:
-                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato una {card.name}.')
-                self.lives = min(self.lives+1, self.max_lives)
-                did_play_card = True
+            elif isinstance(card, cards.Birra):
+                if len(self.game.players) != 2 and self.lives != self.max_lives:
+                    self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato una {card.name}.')
+                    self.lives = min(self.lives+1, self.max_lives)
+                    did_play_card = True
+                elif len(self.game.players) == 2:
+                    self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha rovesciato una {card.name}.')
+                    did_play_card = True
             elif isinstance(card, cards.CatBalou) and againts != None:
                 self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha giocato {card.name} contro {againts}.')
                 self.pending_action = PendingAction.CHOOSE
