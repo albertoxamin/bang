@@ -101,6 +101,7 @@ class Player:
         if self.attacker:
             ser['attacker'] = self.attacker.name
         ser['sight'] = self.get_sight()
+        ser['lives'] = max(ser['lives'], 0)
         self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
         self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
         if self.lives <= 0 and self.max_lives > 0:
@@ -169,7 +170,7 @@ class Player:
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha estratto {picked}.')
                         if picked.suit == cards.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
-                            self.lives = max(self.lives - 3, 0)
+                            self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i))
                             if isinstance(self.character, characters.BartCassidy):
                                 self.hand.append(self.game.deck.draw())
