@@ -75,7 +75,7 @@ class Renegade(Role):
             return True
         elif initial_players == 3 and attacker_role != None:
             return isinstance(dead_role, Outlaw) and isinstance(attacker_role, Renegade)
-        elif initial_players != 3 and len(alive_players) == 1 and isinstance(alive_players[0], Renegade):
+        elif initial_players != 3 and len(alive_players) == 1 and isinstance(alive_players[0].role, Renegade):
             print("The Renegade won!")
             return True
         return False

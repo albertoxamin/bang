@@ -1,7 +1,7 @@
 from typing import List, Set, Dict, Tuple, Optional
 from abc import ABC, abstractmethod
 from enum import IntEnum
-
+import roles as r
 
 class Suit(IntEnum):
     DIAMONDS = 0  # ♦
@@ -41,8 +41,28 @@ class Card(ABC):
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
-    def play_card(self, player, against):
-        contro = f'contro {against}' if against else ''
+    def play_card(self, player, against):#self --> carta
+        if self.is_equipment:
+            if self.is_weapon:
+                has_weapon = False
+                for i in range(len(player.equipment)):
+                    if player.equipment[i].is_weapon:
+                        player.game.deck.scrap(player.equipment[i])
+                        player.equipment[i] = self
+                        has_weapon = True
+                        break
+                if not has_weapon:
+                    player.equipment.append(self)
+            elif self.name in [c.name for c in player.equipment if not isinstance(c, Dinamite)]:
+                for i in range(len(player.equipment)):
+                    print('tipo',type(self))
+                    if type(player.equipment[i]) == type(self):
+                        player.game.deck.scrap(self.equipment[i])
+                        player.equipment[i] = self
+                        break
+            else:
+                player.equipment.append(self)
+        contro = f' contro {against}' if against else ''
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'{player.name} ha giocato {self.name}{contro}.')
         return True
@@ -83,6 +103,13 @@ class Prigione(Card):
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
         self.need_target = True
 
+    def play_card(self, player, against):
+        if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
+            player.sio.emit('chat_message', room=player.game.name,
+                          data=f'{self.name} ha giocato {self.name} contro {against}.')
+            player.game.get_player_named(against).equipment.append(self)
+            player.game.get_player_named(against).notify_self()
+        return False
 
 class Remington(Card):
     def __init__(self, suit, number):
@@ -170,7 +197,7 @@ class CatBalou(Card):
         self.need_target = True
 
     def play_card(self, player, against):
-        if against != None:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
             from players import PendingAction
             player.pending_action = PendingAction.CHOOSE
@@ -272,7 +299,7 @@ class Panico(Card):
         self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
 
     def play_card(self, player, against):
-        if against != None:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
             from players import PendingAction
             player.pending_action = PendingAction.CHOOSE

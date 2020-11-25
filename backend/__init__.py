@@ -10,6 +10,7 @@ from players import Player
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio, static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
+    '/favicon.ico': {'filename': 'favicon.ico'},
     '/css': './css',
     '/js': './js',
 })
@@ -53,7 +54,7 @@ def disconnect(sid):
 @sio.event
 def create_room(sid, room_name):
     while len([g for g in games if g.name == room_name]):
-        room_name += '_1'
+        room_name += f'_{random.randint(0,100)}'
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
     g = Game(room_name, sio)
@@ -78,7 +79,7 @@ def join_room(sid, room):
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
     while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
-        sio.get_session(sid).name += '_1'
+        sio.get_session(sid).name += f'_{random.randint(0,100)}'
     games[i].add_player(sio.get_session(sid))
     advertise_lobbies()
 
@@ -91,6 +92,7 @@ def chat_message(sid, msg):
 def start_game(sid):
     ses = sio.get_session(sid)
     ses.game.start_game()
+    advertise_lobbies()
 
 @sio.event
 def set_character(sid, name):
