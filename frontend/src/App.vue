@@ -109,7 +109,7 @@ export default {
 			return {
 				name: lobby.name,
 				icon: "💥",
-				number: `${lobby.players}🤠`,
+				number: `${lobby.players}🤠 ${lobby.locked?'🔐':''}`,
 				is_equipment: true,
 			}
 		},
@@ -120,7 +120,8 @@ export default {
 			e.preventDefault();
 		},
 		joinLobby(lobby) {
-			this.$socket.emit('join_room', lobby.name)
+			let password = lobby.locked ? prompt("Room password:", "") : '';
+			this.$socket.emit('join_room', {name:lobby.name,password:password})
 		},
 		init() {
 			location.reload();

@@ -3,13 +3,9 @@
 		<div style="flex-grow: 4;">
 			<h2 v-if="!started">Lobby: {{ lobbyName }}</h2>
 			<h3>Giocatori (tu sei {{username}})</h3>
-			<div v-if="startGameCard">
-				<div class="pretty p-switch p-fill">
-					<input type="checkbox" />
-					<div class="state">
-							<label>Stanza Privata</label>
-					</div>
-				</div>
+			<h3 v-if="!started && password !== ''">Password: {{ password }}</h3>
+			<div v-if="!started && isRoomOwner">
+				<PrettyCheck class="p-switch p-fill" v-model="privateRoom">Stanza Privata</PrettyCheck>
 			</div>
 			<div class="players-table">
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
@@ -45,6 +41,7 @@
 </template>
 
 <script>
+import PrettyCheck from 'pretty-checkbox-vue/check'
 import Card from '@/components/Card.vue'
 import Chooser from './Chooser.vue'
 import Chat from './Chat.vue'
@@ -61,6 +58,7 @@ export default {
 		Player,
 		Deck,
 		TinyHand,
+		PrettyCheck,
 	},
 	props: {
 		username: String
@@ -77,11 +75,14 @@ export default {
 		chooseCards: [],
 		wantsToEndTurn: false,
 		selectedInfo: null,
+		privateRoom: false,
+		password: '',
 	}),
 	sockets: {
 		room(data) {
 			this.lobbyName = data.name
 			this.started = data.started
+			this.password = data.password
 			this.players = data.players.map(x => {
 				return {
 					name: x,
@@ -106,8 +107,11 @@ export default {
 		// },
 	},
 	computed: {
+		isRoomOwner() {
+			return this.players[0].name == this.username
+		},
 		startGameCard() {
-			if (!this.started && this.players.length > 2 && this.players[0].name == this.username) {
+			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
 				return {
 					name: 'Start',
 					icon: '▶️',
@@ -187,6 +191,11 @@ export default {
 			this.$socket.emit('draw', name)
 		},
 	},
+	watch: {
+		privateRoom() {
+			this.$socket.emit('private')
+		}
+	}
 }
 </script>
 
