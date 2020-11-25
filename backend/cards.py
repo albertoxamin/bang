@@ -42,7 +42,7 @@ class Card(ABC):
         return super().__str__()
 
     def play_card(self, player, against):
-        contro = f'contro {against}' if against else ''
+        contro = f' contro {against}' if against else ''
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'{player.name} ha giocato {self.name}{contro}.')
         return True
