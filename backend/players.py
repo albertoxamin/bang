@@ -1,13 +1,11 @@
-import deck
 from enum import IntEnum
 import json
 from random import randrange
 import socketio
-
+import deck
 import roles as r
 import cards as cs
 import characters as chars
-
 
 class PendingAction(IntEnum):
     PICK = 0
@@ -195,7 +193,7 @@ class Player:
                             if isinstance(self.character, chars.BartCassidy):
                                 self.hand.append(self.game.deck.draw())
                                 self.sio.emit('chat_message', room=self.game.name,
-                                              data=f'{self.name} ha pescato perchè é stato ferito.')
+                                              data=f'{self.name} ha ricevuto un risarcimento perchè è stato ferito.')
                             self.sio.emit('chat_message', room=self.game.name,
                                           data=f'{self.name} ha fatto esplodere la dinamite.')
                             print(f'{self.name} Boom, -3 hp')
@@ -395,7 +393,7 @@ class Player:
         if self.lives > 0:
             if isinstance(self.character, chars.BartCassidy):
                 self.sio.emit('chat_message', room=self.game.name,
-                              data=f'{self.name} ha pescato perchè é stato ferito.')
+                              data=f'{self.name} ha ricevuto un risarcimento perchè è stato ferito.')
                 self.hand.append(self.game.deck.draw())
             elif isinstance(self.character, chars.ElGringo) and self.attacker and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(

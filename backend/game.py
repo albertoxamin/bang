@@ -1,13 +1,14 @@
-import cards
+
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
+import cards
 from cards import Bang
-import characters
 import players
+from players import PendingAction, Player
+import characters
 from characters import all_characters
 from deck import Deck
-from players import PendingAction, Player
 import roles
 
 class Game:
