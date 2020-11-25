@@ -100,6 +100,7 @@ export default {
 		setUsername(e){
 			if (this.username.trim().length > 0){
 				this.didSetUsername = true
+				localStorage.setItem('username', this.username)
 				this.$socket.emit('set_username', this.username)
 				e.preventDefault();
 			}
@@ -124,7 +125,11 @@ export default {
 		init() {
 			location.reload();
 		},
-	}
+	},
+	mounted() {
+		if (localStorage.getItem('username'))
+			this.username = localStorage.getItem('username')
+	},
 }
 </script>
 
