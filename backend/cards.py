@@ -170,7 +170,7 @@ class CatBalou(Card):
         self.need_target = True
 
     def play_card(self, player, against):
-        if against != None:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
             from players import PendingAction
             player.pending_action = PendingAction.CHOOSE
@@ -272,7 +272,7 @@ class Panico(Card):
         self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
 
     def play_card(self, player, against):
-        if against != None:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
             from players import PendingAction
             player.pending_action = PendingAction.CHOOSE
