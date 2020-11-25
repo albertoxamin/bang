@@ -92,6 +92,7 @@ def chat_message(sid, msg):
 def start_game(sid):
     ses = sio.get_session(sid)
     ses.game.start_game()
+    advertise_lobbies()
 
 @sio.event
 def set_character(sid, name):
