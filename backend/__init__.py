@@ -10,6 +10,7 @@ from players import Player
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio, static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
+    '/favicon.ico': {'filename': 'favicon.ico'},
     '/css': './css',
     '/js': './js',
 })
