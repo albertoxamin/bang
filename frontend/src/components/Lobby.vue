@@ -3,7 +3,7 @@
 		<div style="flex-grow: 4;">
 			<h2 v-if="!started">Lobby: {{ lobbyName }}</h2>
 			<h3>Giocatori (tu sei {{username}})</h3>
-			<h3 v-if="!started && password !== ''">Password: {{ password }}</h3>
+			<h3 v-if="!started && password !== ''">Password: <span class="selectable">{{ password }}</span></h3>
 			<div v-if="!started && isRoomOwner">
 				<PrettyCheck class="p-switch p-fill" v-model="privateRoom">Stanza Privata</PrettyCheck>
 			</div>
