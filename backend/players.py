@@ -160,7 +160,7 @@ class Player:
                     randrange(0, len(self.game.get_player_named(pile).hand))))
                 self.game.get_player_named(pile).notify_self()
                 self.sio.emit('chat_message', room=self.game.name,
-                              data=f'{self.name} ha pescato la prima carta dalla mano di {self.attacker.name}.')
+                              data=f'{self.name} ha pescato la prima carta dalla mano di {pile}.')
                 self.hand.append(self.game.deck.draw())
             else:
                 for i in range(2):
