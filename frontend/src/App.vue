@@ -163,7 +163,7 @@ export default {
 		zoom: 0.8;
 	}
 }
-h1,h2,h3,h4,p,span{
+h1,h2,h3,h4,p,span,b,label{
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 .center-stuff {
