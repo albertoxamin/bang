@@ -1,15 +1,15 @@
 name: Docker Images CI
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build the Unified Docker image
-      run: docker build . --file Dockerfile --tag albertoxamin/bang:latest
+      run: docker build . --file Dockerfile --tag albertoxamin/bang:dev
     - name: Log into registry
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
     - name: Push images
-      run: docker push albertoxamin/bang:latest
+      run: docker push albertoxamin/bang:dev

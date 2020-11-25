@@ -8,6 +8,9 @@ Vue.use(new VueSocketIO({
 	connection: Vue.config.devtools ? 'http://localhost:5001' : window.location.origin,
 }))
 
+import PrettyCheckbox from 'pretty-checkbox-vue';
+Vue.use(PrettyCheckbox)
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')

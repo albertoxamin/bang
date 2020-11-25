@@ -2,12 +2,8 @@
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
-import cards
-from cards import Bang
 import players
-from players import PendingAction, Player
 import characters
-from characters import all_characters
 from deck import Deck
 import roles
 
@@ -23,6 +19,7 @@ class Game:
         self.readyCount = 0
         self.waiting_for = 0
         self.initial_players = 0
+        self.password = ''
 
     def add_player(self, player: players.Player):
         if player in self.players or len(self.players) >= 7:
@@ -30,8 +27,16 @@ class Game:
         player.join_game(self)
         self.players.append(player)
         print(f'Added player {player.name} to game')
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players], 'password': self.password})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
+
+    def set_private(self):
+        if self.password == '':
+            self.password = ''.join(random.choice("AEIOUJKZT123456789") for x in range(6))
+            print(self.name, 'is now private pwd', self.password)
+        else:
+            self.password = ''
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players], 'password': self.password})
 
     def notify_character_selection(self):
         self.readyCount += 1
@@ -39,7 +44,7 @@ class Game:
             self.distribute_roles()
 
     def choose_characters(self):
-        char_cards = random.sample(all_characters(), len(self.players)*2)
+        char_cards = random.sample(characters.all_characters(), len(self.players)*2)
         for i in range(len(self.players)):
             self.players[i].set_available_character(char_cards[i * 2 : i * 2 + 2])
 
@@ -80,7 +85,7 @@ class Game:
             self.players[i].notify_self()
         self.play_turn()
 
-    def attack_others(self, attacker:Player):
+    def attack_others(self, attacker: players.Player):
         attacker.pending_action = players.PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
@@ -93,7 +98,7 @@ class Game:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
 
-    def indian_others(self, attacker:Player):
+    def indian_others(self, attacker: players.Player):
         attacker.pending_action = players.PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
@@ -106,14 +111,14 @@ class Game:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
 
-    def attack(self, attacker:Player, target_username:str):
+    def attack(self, attacker: players.Player, target_username:str):
         if self.players[self.players_map[target_username]].get_banged(attacker=attacker, double=isinstance(attacker.character, characters.SlabTheKiller)):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
 
-    def duel(self, attacker:Player, target_username:str):
+    def duel(self, attacker: players.Player, target_username:str):
         if self.players[self.players_map[target_username]].get_dueled(attacker=attacker):
             self.readyCount = 0
             self.waiting_for = 1
@@ -230,7 +235,7 @@ class Game:
         if died_in_his_turn:
             self.next_turn()
 
-    def get_visible_players(self, player:Player):
+    def get_visible_players(self, player: players.Player):
         i = self.players.index(player)
         sight = player.get_sight()
         return [{

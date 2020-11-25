@@ -1,4 +1,5 @@
 import json
+import random
 from typing import List
 import eventlet
 import socketio
@@ -17,7 +18,7 @@ games: List[Game] = []
 online_players = 0
 
 def advertise_lobbies():
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players)} for g in games if not g.started and len(g.players) < 7])
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 7])
 
 @sio.event
 def connect(sid, environ):
@@ -62,11 +63,20 @@ def create_room(sid, room_name):
     advertise_lobbies()
 
 @sio.event
-def join_room(sid, room_name):
+def private(sid):
+    g = sio.get_session(sid).game
+    g.set_private()
+    advertise_lobbies()
+
+@sio.event
+def join_room(sid, room):
+    room_name = room['name']
     print(f'{sid} joined a room named {room_name}')
+    i = [g.name for g in games].index(room_name)
+    if games[i].password != '' and games[i].password != room['password'].upper():
+        return
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
-    i = [g.name for g in games].index(room_name)
     while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
         sio.get_session(sid).name += '_1'
     games[i].add_player(sio.get_session(sid))
