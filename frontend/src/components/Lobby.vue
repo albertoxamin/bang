@@ -3,6 +3,14 @@
 		<div style="flex-grow: 4;">
 			<h2 v-if="!started">Lobby: {{ lobbyName }}</h2>
 			<h3>Giocatori (tu sei {{username}})</h3>
+			<div v-if="startGameCard">
+				<div class="pretty p-switch p-fill">
+					<input type="checkbox" />
+					<div class="state">
+							<label>Stanza Privata</label>
+					</div>
+				</div>
+			</div>
 			<div class="players-table">
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->

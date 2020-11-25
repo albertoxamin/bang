@@ -134,6 +134,7 @@ export default {
 </script>
 
 <style>
+@import '../node_modules/pretty-checkbox/dist/pretty-checkbox.css';
 #app {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
