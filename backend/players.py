@@ -154,9 +154,12 @@ class Player:
             if pile == 'scrap' and isinstance(self.character, chars.PedroRamirez):
                 self.hand.append(self.game.deck.draw_from_scrap_pile())
                 self.hand.append(self.game.deck.draw())
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha ha pescato la prima carta dall pila delle carte scartate.')
             elif type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
                 self.hand.append(self.game.get_player_named(pile).hand.pop(
                     randrange(0, len(self.game.get_player_named(pile).hand))))
+                self.game.get_player_named(pile).notify_self()
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha pescato la prima carta dalla mano di {self.attacker.name}.')
                 self.hand.append(self.game.deck.draw())
             else:
                 for i in range(2):
@@ -213,6 +216,9 @@ class Player:
                             self.game.deck.scrap(self.equipment.pop(i))
                             break
                     break
+            if any([isinstance(c, cs.Prigione) for c in self.equipment]):
+                self.notify_self()
+                return
             self.pending_action = PendingAction.DRAW
             self.notify_self()
         else:
