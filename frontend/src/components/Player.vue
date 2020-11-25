@@ -31,7 +31,7 @@
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" cancelText="SPETTATORE" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
 		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
-		<Chooser v-if="notifycard" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
+		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
