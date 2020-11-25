@@ -431,7 +431,8 @@ class Player:
         else:
             self.on_failed_response_cb()
             self.game.responders_did_respond_resume_turn()
-        self.attacker = None
+        if self.mancato_needed <= 0:
+            self.attacker = None
 
     def get_sight(self, countWeapon=True):
         if not self.character:
