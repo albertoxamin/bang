@@ -21,6 +21,7 @@ class Game:
         self.turn = 0
         self.readyCount = 0
         self.waiting_for = 0
+        self.initial_players = 0
 
     def add_player(self, player: players.Player):
         if player in self.players or len(self.players) >= 7:
@@ -233,23 +234,24 @@ class Game:
         sight = player.get_sight()
         return [{
             'name': self.players[j].name,
-            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility(),
+            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
             'lives': self.players[j].lives,
             'max_lives': self.players[j].max_lives,
             'is_sheriff': isinstance(self.players[j].role, roles.Sheriff),
         } for j in range(len(self.players)) if i != j]
 
     def notify_all(self):
-        data = [{
-            'name': p.name,
-            'ncards': len(p.hand),
-            'equipment': [e.__dict__ for e in p.equipment],
-            'lives': p.lives,
-            'max_lives': p.max_lives,
-            'is_sheriff': isinstance(p.role, roles.Sheriff),
-            'is_my_turn': p.is_my_turn,
-            'pending_action': p.pending_action,
-            'character': p.character.__dict__,
-            'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
-        } for p in self.players]
-        self.sio.emit('players_update', room=self.name, data=data)
+        if self.started:
+            data = [{
+                'name': p.name,
+                'ncards': len(p.hand),
+                'equipment': [e.__dict__ for e in p.equipment],
+                'lives': p.lives,
+                'max_lives': p.max_lives,
+                'is_sheriff': isinstance(p.role, roles.Sheriff),
+                'is_my_turn': p.is_my_turn,
+                'pending_action': p.pending_action,
+                'character': p.character.__dict__ if p.character else None,
+                'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
+            } for p in self.players]
+            self.sio.emit('players_update', room=self.name, data=data)

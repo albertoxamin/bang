@@ -466,13 +466,13 @@ class Player:
             self.game.responders_did_respond_resume_turn()
         self.attacker = None
 
-    def get_sight(self):
+    def get_sight(self, countWeapon=True):
         if not self.character:
             return 0
         aim = 0
         range = 0
         for card in self.equipment:
-            if card.is_weapon:
+            if card.is_weapon and countWeapon:
                 range += card.range
             else:
                 aim += card.sight_mod
