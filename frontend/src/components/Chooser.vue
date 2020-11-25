@@ -5,7 +5,7 @@
 			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
 		</div>
 		<p v-if="hintText">{{hintText}}</p>
-		<div class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{cancelText}}</span></div>
+		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{cancelText}}</span></div>
 		<p v-if="desc" style="bottom:10pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
 	</div>
 </template>
