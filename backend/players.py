@@ -434,6 +434,7 @@ class Player:
                 self.hand.append(self.game.deck.draw())
             elif isinstance(self.character, characters.ElGringo) and self.attacker and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(randrange(0, len(self.attacker.hand))))
+                self.sio.emit('chat_message', room=self.game.name, data=f'{self.name} ha rubato una carta a {self.attacker.name} mentre veniva colpito.')
                 self.attacker.notify_self()
         while self.lives <= 0 and len(self.game.players) > 2 and len([c for c in self.hand if isinstance(c, cards.Birra)]) > 0:
             for i in range(len(self.hand)):
