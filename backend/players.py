@@ -251,32 +251,8 @@ class Player:
             return
         card: cs.Card = self.hand.pop(hand_index)
         print(self.name, 'is playing ', card, ' against:', against)
-        if isinstance(card, cs.Prigione) and not isinstance(self.game.get_player_named(against).role, r.Sheriff):
-            self.sio.emit('chat_message', room=self.game.name,
-                          data=f'{self.name} ha giocato {card.name} contro {against}.')
-            self.game.get_player_named(against).equipment.append(card)
-            self.game.get_player_named(against).notify_self()
-        elif card.is_equipment:
-            if card.is_weapon:
-                has_weapon = False
-                for i in range(len(self.equipment)):
-                    if self.equipment[i].is_weapon:
-                        self.game.deck.scrap(self.equipment[i])
-                        self.equipment[i] = card
-                        has_weapon = True
-                        break
-                if not has_weapon:
-                    self.equipment.append(card)
-            elif card.name in [c.name for c in self.equipment if not isinstance(c, cs.Dinamite)]:
-                for i in range(len(self.equipment)):
-                    if type(self.equipment[i]) == type(card):
-                        self.game.deck.scrap(self.equipment[i])
-                        self.equipment[i] = card
-                        break
-            else:
-                self.equipment.append(card)
-        else:
-            did_play_card = card.play_card(self, against)
+        did_play_card = card.play_card(self, against)
+        if not card.is_equipment:
             if did_play_card:
                 self.game.deck.scrap(card)
             else:

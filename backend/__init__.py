@@ -54,7 +54,7 @@ def disconnect(sid):
 @sio.event
 def create_room(sid, room_name):
     while len([g for g in games if g.name == room_name]):
-        room_name += '_1'
+        room_name += f'_{random.randint(0,100)}'
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
     g = Game(room_name, sio)
@@ -79,7 +79,7 @@ def join_room(sid, room):
     sio.leave_room(sid, 'lobby')
     sio.enter_room(sid, room_name)
     while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
-        sio.get_session(sid).name += '_1'
+        sio.get_session(sid).name += f'_{random.randint(0,100)}'
     games[i].add_player(sio.get_session(sid))
     advertise_lobbies()
 
