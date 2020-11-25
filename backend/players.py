@@ -234,7 +234,7 @@ class Player:
             elif isinstance(card, cs.Birra) and self.lives >= self.max_lives:
                 continue
             else:
-                playable_cs.append(i)
+                playable_cards.append(i)
         return playable_cards
 
     def get_public_description(self):
@@ -301,9 +301,9 @@ class Player:
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and isinstance(self.character, chars.KitCarlson):
-            self.hand.append(self.available_cs.pop(card_index))
+            self.hand.append(self.available_cards.pop(card_index))
             if len(self.available_cards) == 1:
-                self.game.deck.put_on_top(self.available_cs.pop())
+                self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
