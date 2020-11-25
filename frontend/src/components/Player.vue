@@ -7,7 +7,7 @@
 					@pointerenter.native="desc=my_role.goal" @pointerleave.native="desc=''"/>
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
 					@pointerenter.native="desc=character.desc" @pointerleave.native="desc=''"/>
-			<transition-group name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
+			<transition-group v-if="lives > 0" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" @pointerenter.native="desc=card.desc" @pointerleave.native="desc=''" />
 			</transition-group>
 		</div>
@@ -16,7 +16,7 @@
 			<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
 			<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
 		</transition-group>
-		<div>
+		<div v-if="lives > 0">
 			<span>Mano</span>
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
@@ -28,7 +28,7 @@
 		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="`Scegli come rispondere ${attacker?('a '+attacker):''}`" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
-		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" />
+		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" cancelText="SPETTATORE" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
 		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
 		<Chooser v-if="notifycard" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
@@ -190,7 +190,7 @@ export default {
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
-				if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || !calamity_special) && cant_play_bang)) {
+				if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
 						if (card.name == 'Panico!' || (card.name == 'Bang!' && cant_play_bang))
 							this.range = 1
 						else if (card.name == 'Bang!' || calamity_special)

@@ -1,6 +1,6 @@
 <template>
 	<div class="deck">
-		<card v-if="endTurnAction" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
+		<card v-if="endTurnAction && isPlaying" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
 		<div style="position:relative">
 			<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
 			<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -37,10 +37,12 @@ export default {
 		lastScrap: null,
 		previousScrap: null,
 		pending_action: false,
+		isPlaying: true,
 	}),
 	sockets: {
 		self(self){
 			self = JSON.parse(self)
+			this.isPlaying = self.lives > 0
 			this.pending_action = self.pending_action
 		},
 		scrap(card) {
