@@ -3,10 +3,11 @@
 		<div style="flex-grow: 4;">
 			<h2 v-if="!started">Lobby: {{ lobbyName }}</h2>
 			<h3>Giocatori (tu sei {{username}})</h3>
-			<h3 v-if="!started && password !== ''">Password: {{ password }}</h3>
-			<div v-if="!started && isRoomOwner">
-				<PrettyCheck class="p-switch p-fill" v-model="privateRoom">Stanza Privata</PrettyCheck>
+			<div v-if="!started" >
+				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom">Stanza Privata</PrettyCheck>
+				<label v-if="password !== ''">Password: <b class="selectable" style="font-size:larger;">{{ password }}</b></label>
 			</div>
+			
 			<div class="players-table">
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->

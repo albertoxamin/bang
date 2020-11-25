@@ -146,6 +146,12 @@ export default {
 	-ms-user-select: none;      /* Internet Explorer 10 and later */
 	user-select: none;          /* Likely future */
 }
+.selectable {
+	-webkit-user-select: text !important;  /* Chrome all and Safari all */
+	-moz-user-select: text !important;     /* Firefox all */
+	-ms-user-select: text !important;      /* Internet Explorer 10 and later */
+	user-select: text !important;          /* Likely future */
+}
 #logo {
 	margin-top: 60pt;
 	margin-bottom: 60pt !important;
@@ -157,7 +163,7 @@ export default {
 		zoom: 0.8;
 	}
 }
-h1,h2,h3,h4,p,span{
+h1,h2,h3,h4,p,span,b,label{
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 .center-stuff {
