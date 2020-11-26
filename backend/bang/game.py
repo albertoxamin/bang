@@ -183,8 +183,9 @@ class Game:
         self.players[self.turn].play_turn()
 
     def next_turn(self):
-        self.turn = (self.turn + 1) % len(self.players)
-        self.play_turn()
+        if len(self.players) > 0:
+            self.turn = (self.turn + 1) % len(self.players)
+            self.play_turn()
 
     def notify_scrap_pile(self):
         print('scrap')
