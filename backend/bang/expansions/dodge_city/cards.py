@@ -1,16 +1,16 @@
 from bang.cards import *
 
-class Riparo(Mustang):
-    def __init__(self, suit, number):
-        super().__init__(suit, number)
-        self.name = 'Riparo'
-        self.icon = '⛰'
-
 class Binocolo(Mirino):
     def __init__(self, suit, number):
         super().__init__(suit, number)
         self.name = 'Binocolo'
         self.icon = '🔍'
+
+class Riparo(Mustang):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Riparo'
+        self.icon = '⛰'
 
 class Pugno(Card):
     def __init__(self, suit, number):
@@ -26,6 +26,19 @@ class Pugno(Card):
             player.game.attack(player, against)
             return True
         return False
+
+class Schivata(Mancato):
+    def __init__(self,suit,number):
+        super().__init__(suit, 'Schivata', number)
+        self.icon = '🙅‍♂️'
+        self.desc += " e poi pesca una carta"
+
+    def play_card(self, player, against):
+        return False
+
+    def use_card(self, player):
+        player.hand.append(player.game.deck.draw())
+        player.notify_self()
 
 def get_starting_deck() -> List[Card]:
     return [
@@ -49,4 +62,6 @@ def get_starting_deck() -> List[Card]:
         Mancato(Suit.DIAMONDS, 8),
         Panico(Suit.HEARTS, 'J'),
         Pugno(Suit.SPADES, 10),
+        Schivata(Suit.DIAMONDS, 7),
+        Schivata(Suit.HEARTS, 'K'),
     ]
