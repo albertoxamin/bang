@@ -32,8 +32,9 @@
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
 		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
-		<Chooser v-if="!show_role && is_my_turn" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
+		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
+		<Chooser v-if="!card_against && card_with" :text="`SCEGLI CHE CARTA SCARTARE PER GIOCCARE ${card_with.name}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`SCARTA ${2 - sidScrapForHealth.length} PER RECUPERARE 1 VITA`"
 							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
@@ -66,6 +67,7 @@ export default {
 		hint: '',
 		pending_action: null,
 		card_against: null,
+		card_with: null,
 		has_played_bang: false,
 		playersDistances: [],
 		is_my_turn: false,
@@ -195,7 +197,9 @@ export default {
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
-				if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
+				if (card.need_with && !this.card_with) {
+					this.card_with = card
+				} else if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
 						if (card.name == 'Bang!' || calamity_special)
 							this.range = this.sight
 						else
@@ -217,14 +221,21 @@ export default {
 			this.really_play_card(this.card_against, player.name)
 			this.card_against = null
 		},
+		selectWith(card) {
+			this.card_against = this.card_with
+			this.card_with = card
+		},
 		cancelCardAgainst() {
 			this.card_against = null
+			this.card_with = null
 		},
 		really_play_card(card, against) {
 			let card_data	 = {
 				index: this.hand.indexOf(card),
-				against: against
+				against: against,
+				with: this.hand.indexOf(this.card_with),
 			}
+			this.card_with = null
 			console.log(card_data)
 			this.$socket.emit('play_card', card_data)
 		},

@@ -248,18 +248,23 @@ class Player:
         s += f"equipment {[str(c) for c in self.equipment]}"
         return s
 
-    def play_card(self, hand_index: int, against=None):
+    def play_card(self, hand_index: int, against=None, _with=None):
         if not (0 <= hand_index < len(self.hand)):
             print('illegal')
             return
         card: cs.Card = self.hand.pop(hand_index)
-        print(self.name, 'is playing ', card, ' against:', against)
-        did_play_card = card.play_card(self, against)
+        withCard: cs.Card = None
+        if _with:
+            withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
+        print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
+        did_play_card = card.play_card(self, against, withCard)
         if not card.is_equipment:
             if did_play_card:
                 self.game.deck.scrap(card)
             else:
                 self.hand.insert(hand_index, card)
+                if withCard:
+                    self.hand.insert(_with, withCard)
         self.notify_self()
 
     def choose(self, card_index):

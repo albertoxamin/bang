@@ -35,13 +35,14 @@ class Card(ABC):
             self.alt_text = f'{self.range} 🔍'
         self.desc = desc
         self.need_target = False
+        self.need_with = False
 
     def __str__(self):
         char = ['♦️', '♣️', '♥️', '♠️'][int(self.suit)]
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
-    def play_card(self, player, against):#self --> carta
+    def play_card(self, player, against=None, _with=None):#self --> carta
         if self.is_equipment:
             if self.is_weapon:
                 has_weapon = False
@@ -106,7 +107,7 @@ class Prigione(Card):
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
         self.need_target = True
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
             player.sio.emit('chat_message', room=player.game.name,
                           data=f'{self.name} ha giocato {self.name} contro {against}.')
@@ -161,7 +162,7 @@ class Bang(Card):
         self.desc = "Spara a un giocatore a distanta raggiungibile. Se non hai armi la distanza di default è 1"
         self.need_target = True
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if player.has_played_bang and not any([isinstance(c, Volcanic) for c in player.equipment]) and against != None:
             return False
         elif against != None:
@@ -180,7 +181,7 @@ class Birra(Card):
         self.icon = '🍺'
         self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if len(player.game.players) != 2 and player.lives != player.max_lives:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
@@ -199,7 +200,7 @@ class CatBalou(Card):
         self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
         self.need_target = True
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
             from bang.players import PendingAction
@@ -217,7 +218,7 @@ class Diligenza(Card):
         self.icon = '🚡'
         self.desc = "Pesca 2 carte dalla cima del mazzo"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'{player.name} ha giocato {self.name} e ha pescato 2 carte.')
@@ -233,7 +234,7 @@ class Duello(Card):
         self.icon = '⚔️'
         self.desc = "Gioca questa carta contro un qualsiasi giocatore. A turno, cominciando dal tuo avversario, potete scartare una carta Bang!, il primo giocatore che non lo fa perde 1 vita"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if against != None:
             super().play_card(player, against=against)
             player.game.duel(player, against)
@@ -247,7 +248,7 @@ class Emporio(Card):
         self.icon = '🏪'
         self.desc = "Scopri dal mazzo tante carte quanto il numero di giocatori, a turno, partendo da te, scegliete una carta e aggiungetela alla vostra mano"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
         player.game.emporio()
         return True
@@ -259,7 +260,7 @@ class Gatling(Card):
         self.icon = '🛰'
         self.desc = "Spara a tutti gli altri giocatori"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
         player.game.attack_others(player)
         return True
@@ -271,7 +272,7 @@ class Indiani(Card):
         self.icon = '🏹'
         self.desc = "Tutti gli altri giocatori devono scartare un Bang! o perdere una vita"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
         player.game.indian_others(player)
         return True
@@ -283,7 +284,7 @@ class Mancato(Card):
         self.icon = '😅'
         self.desc = "Usa questa carta per annullare un bang"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         import bang.characters as chars
         if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
             player.sio.emit('chat_message', room=player.game.name,
@@ -301,7 +302,7 @@ class Panico(Card):
         self.need_target = True
         self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
             from bang.players import PendingAction
@@ -319,7 +320,7 @@ class Saloon(Card):
         self.desc = "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
         self.icon = '🍻'
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'{player.name} ha giocato {self.name} e ha curato 1 punto vita a tutti.')
         for p in player.game.players:
@@ -334,7 +335,7 @@ class WellsFargo(Card):
         self.desc = "Pesca 3 carte dalla cima del mazzo"
         self.icon = '💸'
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'{player.name} ha giocato {self.name} e ha pescato 3 carte.')
         for i in range(3):

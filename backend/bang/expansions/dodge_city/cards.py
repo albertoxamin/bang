@@ -19,7 +19,7 @@ class Pugno(Card):
         self.desc = "Spara a un giocatore a distanta 1"
         self.need_target = True
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         if against != None:
             import bang.characters as chars
             super().play_card(player, against=against)
@@ -34,12 +34,27 @@ class Schivata(Mancato):
         self.icon = '🙅‍♂️'
         self.desc += " e poi pesca una carta"
 
-    def play_card(self, player, against):
+    def play_card(self, player, against, _with=None):
         return False
 
     def use_card(self, player):
         player.hand.append(player.game.deck.draw())
         player.notify_self()
+
+class RagTime(Panico):
+    def __init__(self, suit, number):
+        Card.__init__(self, suit, 'Rag Time', number)
+        self.icon = '🎹'
+        self.desc = "Ruba 1 carta dalla mano di un giocatore"
+        self.need_target = True
+        self.need_with = True
+
+    def play_card(self, player, against, _with):
+        if against != None and _with != None:
+            player.game.deck.scrap(_with)
+            super().play_card(player, against=against)
+            return True
+        return False
 
 def get_starting_deck() -> List[Card]:
     return [
@@ -65,4 +80,5 @@ def get_starting_deck() -> List[Card]:
         Pugno(Suit.SPADES, 10),
         Schivata(Suit.DIAMONDS, 7),
         Schivata(Suit.HEARTS, 'K'),
+        RagTime(Suit.HEARTS, 9)
     ]
