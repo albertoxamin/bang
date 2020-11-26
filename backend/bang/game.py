@@ -20,6 +20,7 @@ class Game:
         self.waiting_for = 0
         self.initial_players = 0
         self.password = ''
+        self.expansions = []
 
     def add_player(self, player: players.Player):
         if player in self.players or len(self.players) >= 7:
@@ -27,7 +28,7 @@ class Game:
         player.join_game(self)
         self.players.append(player)
         print(f'Added player {player.name} to game')
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players], 'password': self.password})
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [{'name':p.name, 'ready': False} for p in self.players], 'password': self.password})
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
 
     def set_private(self):
@@ -36,10 +37,11 @@ class Game:
             print(self.name, 'is now private pwd', self.password)
         else:
             self.password = ''
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players], 'password': self.password})
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [{'name':p.name, 'ready': False} for p in self.players], 'password': self.password})
 
     def notify_character_selection(self):
         self.readyCount += 1
+        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [{'name':p.name, 'ready': p.character!=None} for p in self.players], 'password': self.password})
         if self.readyCount == len(self.players):
             self.distribute_roles()
 

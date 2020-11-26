@@ -5,7 +5,7 @@ import bang.cards as cs
 class Deck:
     def __init__(self, game):
         super().__init__()
-        self.cards: List[cs.Card] = cs.get_starting_deck()
+        self.cards: List[cs.Card] = cs.get_starting_deck(game.expansions)
         self.game = game
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []

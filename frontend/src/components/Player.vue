@@ -196,12 +196,10 @@ export default {
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
 				if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
-						if (card.name == 'Panico!' || (card.name == 'Bang!' && cant_play_bang))
-							this.range = 1
-						else if (card.name == 'Bang!' || calamity_special)
+						if (card.name == 'Bang!' || calamity_special)
 							this.range = this.sight
 						else
-							this.range = 999
+							this.range = card.range
 						this.can_target_sheriff = (card.name !== 'Prigione')
 					if (this.visiblePlayers.length == 0 && this.hand.length > this.lives) {
 						this.really_play_card(card, null)

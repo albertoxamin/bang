@@ -86,7 +86,8 @@ export default {
 			this.password = data.password
 			this.players = data.players.map(x => {
 				return {
-					name: x,
+					name: x.name,
+					ready: x.ready,
 					ncards: 0,
 				}
 			})
@@ -154,7 +155,7 @@ export default {
 			return {
 				name: player.name,
 				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
-				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : player.icon || '🤠' ) : '☠️',
+				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : player.icon || ((player.ready)?'👍': '🤠') ) : '☠️',
 				is_character: true,
 			}
 		},
