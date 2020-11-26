@@ -2,10 +2,10 @@ from enum import IntEnum
 import json
 from random import randrange
 import socketio
-import deck
-import roles as r
-import cards as cs
-import characters as chars
+import bang.deck as deck
+import bang.roles as r
+import bang.cards as cs
+import bang.characters as chars
 
 class PendingAction(IntEnum):
     PICK = 0
@@ -17,9 +17,9 @@ class PendingAction(IntEnum):
 
 
 class Player:
-    import game as g
 
     def __init__(self, name, sid, sio):
+        import bang.game as g
         super().__init__()
         self.name = name
         self.sid = sid

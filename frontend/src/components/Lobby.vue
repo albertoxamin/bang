@@ -27,6 +27,10 @@
 					<!-- :style="p.style"/> -->
 				<!-- </div> -->
 			</div>
+			<div v-if="!started">
+				<h3>Espansioni (NON COMPLETE)</h3>
+				<PrettyCheck @click.native="toggleExpansions('dodge_city')" :disabled="!isRoomOwner" v-model="useDodgeCity" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">Dodge City</PrettyCheck>
+			</div>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
 				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose"/>
@@ -78,15 +82,18 @@ export default {
 		selectedInfo: null,
 		privateRoom: false,
 		password: '',
+		useDodgeCity: false,
 	}),
 	sockets: {
 		room(data) {
 			this.lobbyName = data.name
 			this.started = data.started
 			this.password = data.password
+			this.useDodgeCity = data.expansions.indexOf('dodge_city') !== -1
 			this.players = data.players.map(x => {
 				return {
-					name: x,
+					name: x.name,
+					ready: x.ready,
 					ncards: 0,
 				}
 			})
@@ -140,6 +147,10 @@ export default {
 		}
 	},
 	methods: {
+		toggleExpansions(name) {
+			if (!this.isRoomOwner) return;
+			this.$socket.emit('toggle_expansion', name)
+		},
 		getActionEmoji(p) {
 			if (p.is_my_turn === undefined || p.pending_action === undefined) return '';
 			if (p.pending_action != 4) {
@@ -154,7 +165,7 @@ export default {
 			return {
 				name: player.name,
 				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
-				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : player.icon || '🤠' ) : '☠️',
+				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : player.icon || ((player.ready)?'👍': '🤠') ) : '☠️',
 				is_character: true,
 			}
 		},

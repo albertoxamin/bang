@@ -4,8 +4,8 @@ from typing import List
 import eventlet
 import socketio
 
-from game import Game
-from players import Player
+from bang.game import Game
+from bang.players import Player
 
 sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio, static_files={
@@ -68,6 +68,11 @@ def private(sid):
     g = sio.get_session(sid).game
     g.set_private()
     advertise_lobbies()
+
+@sio.event
+def toggle_expansion(sid, expansion_name):
+    g = sio.get_session(sid).game
+    g.toggle_expansion(expansion_name)
 
 @sio.event
 def join_room(sid, room):
