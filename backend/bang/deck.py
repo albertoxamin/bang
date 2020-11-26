@@ -1,6 +1,6 @@
 from typing import List, Set, Dict, Tuple, Optional
 import random
-import cards as cs
+import bang.cards as cs
 
 class Deck:
     def __init__(self, game):

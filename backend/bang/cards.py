@@ -1,7 +1,7 @@
 from typing import List, Set, Dict, Tuple, Optional
 from abc import ABC, abstractmethod
 from enum import IntEnum
-import roles as r
+import bang.roles as r
 
 class Suit(IntEnum):
     DIAMONDS = 0  # ♦
@@ -57,7 +57,7 @@ class Card(ABC):
                 for i in range(len(player.equipment)):
                     print('tipo',type(self))
                     if type(player.equipment[i]) == type(self):
-                        player.game.deck.scrap(self.equipment[i])
+                        player.game.deck.scrap(player.equipment[i])
                         player.equipment[i] = self
                         break
             else:
@@ -162,7 +162,7 @@ class Bang(Card):
         if player.has_played_bang and not any([isinstance(c, Volcanic) for c in player.equipment]) and against != None:
             return False
         elif against != None:
-            import characters as chars
+            import bang.characters as chars
             super().play_card(player, against=against)
             player.has_played_bang = not isinstance(
                 player.character, chars.WillyTheKid)
@@ -199,7 +199,7 @@ class CatBalou(Card):
     def play_card(self, player, against):
         if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
-            from players import PendingAction
+            from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE
             player.choose_action = 'discard'
             player.target_p = against
@@ -281,7 +281,7 @@ class Mancato(Card):
         self.desc = "Usa questa carta per annullare un bang"
 
     def play_card(self, player, against):
-        import characters as chars
+        import bang.characters as chars
         if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'{player.name} ha giocato {self.name} come un BANG! contro {against}.')
@@ -301,7 +301,7 @@ class Panico(Card):
     def play_card(self, player, against):
         if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
             super().play_card(player, against=against)
-            from players import PendingAction
+            from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE
             player.choose_action = 'steal'
             player.target_p = against
@@ -339,8 +339,9 @@ class WellsFargo(Card):
         return True
 
 
-def get_starting_deck() -> List[Card]:
-    return [
+def get_starting_deck(expansions:List[str]) -> List[Card]:
+    from bang.expansions import DodgeCity
+    base_cards = [
         Barile(Suit.SPADES, 'Q'),
         Barile(Suit.SPADES, 'K'),
         Dinamite(Suit.HEARTS, 2),
@@ -422,3 +423,7 @@ def get_starting_deck() -> List[Card]:
         Saloon(Suit.HEARTS, 5),
         WellsFargo(Suit.HEARTS, 3),
     ]
+    if 'dodge_city' in expansions:
+        base_cards.extend(DodgeCity.get_cards())
+    return base_cards
+

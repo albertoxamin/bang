@@ -2,10 +2,10 @@
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
-import players
-import characters
-from deck import Deck
-import roles
+import bang.players as players
+import bang.characters as characters
+from bang.deck import Deck
+import bang.roles as roles
 
 class Game:
     def __init__(self, name, sio:socketio):
