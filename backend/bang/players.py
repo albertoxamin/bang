@@ -254,7 +254,7 @@ class Player:
             return
         card: cs.Card = self.hand.pop(hand_index)
         withCard: cs.Card = None
-        if _with:
+        if _with != None:
             withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = card.play_card(self, against, withCard)

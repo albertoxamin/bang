@@ -21,7 +21,6 @@ class Pugno(Card):
 
     def play_card(self, player, against, _with=None):
         if against != None:
-            import bang.characters as chars
             super().play_card(player, against=against)
             player.game.attack(player, against)
             return True
@@ -56,6 +55,68 @@ class RagTime(Panico):
             return True
         return False
 
+class Rissa(Gatling):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Rissa'
+        self.icon = '🥊'
+        self.need_with = True
+
+    def play_card(self, player, against, _with):
+        if _with != None:
+            player.game.deck.scrap(_with)
+            super().play_card(player, against=against)
+            return True
+        return False
+
+class SpringField(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Springfield', number)
+        self.icon = '🌵'
+        self.desc = "Spara a un giocatore"
+        self.need_target = True
+        self.need_with = True
+
+    def play_card(self, player, against, _with=None):
+        if against != None and _with != None:
+            player.game.deck.scrap(_with)
+            super().play_card(player, against=against)
+            player.game.attack(player, against)
+            return True
+        return False
+
+class Tequila(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Tequila', number)
+        self.icon = '🍹'
+        self.desc = "Fai recuperare 1 vita a un giocatore"
+        self.need_target = True
+        self.need_with = True
+
+    def play_card(self, player, against, _with=None):
+        if against != None and _with != None:
+            player.game.deck.scrap(_with)
+            player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
+            player.game.get_player_named(against).notify_self()
+            return True
+        return False
+
+class Whisky(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Whisky', number)
+        self.icon = '🥃'
+        self.desc = "Recupera 2 vite"
+        self.need_with = True
+
+    def play_card(self, player, against, _with=None):
+        if _with != None:
+            player.game.deck.scrap(_with)
+            player.lives = min(player.lives+2, player.max_lives)
+            player.notify_self()
+            return True
+        return False
+
+
 def get_starting_deck() -> List[Card]:
     return [
         #TODO: aggiungere anche le carte normalmente presenti https://bang.dvgiochi.com/cardslist.php?id=3
@@ -80,5 +141,9 @@ def get_starting_deck() -> List[Card]:
         Pugno(Suit.SPADES, 10),
         Schivata(Suit.DIAMONDS, 7),
         Schivata(Suit.HEARTS, 'K'),
-        RagTime(Suit.HEARTS, 9)
+        RagTime(Suit.HEARTS, 9),
+        Rissa(Suit.SPADES, 'J'),
+        SpringField(Suit.SPADES, 'K'),
+        Tequila(Suit.CLUBS, 9),
+        Whisky(Suit.HEARTS, 'Q'),
     ]

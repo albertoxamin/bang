@@ -124,6 +124,9 @@ export default {
 		},
 		notify_card(mess) {
 			this.notifycard = mess
+			setTimeout(function(){
+					this.notifycard = null
+				}.bind(this), 4000)
 		}
 	},
 	computed:{
@@ -222,8 +225,18 @@ export default {
 			this.card_against = null
 		},
 		selectWith(card) {
-			this.card_against = this.card_with
-			this.card_with = card
+			if (this.card_with.need_target) {
+				this.card_against = this.card_with
+				this.card_with = card
+			} else {
+				let card_data	 = {
+					index: this.hand.indexOf(this.card_with),
+					against: null,
+					with: this.hand.indexOf(card),
+				}
+				this.card_with = null
+				this.$socket.emit('play_card', card_data)
+			}
 		},
 		cancelCardAgainst() {
 			this.card_against = null
@@ -233,7 +246,7 @@ export default {
 			let card_data	 = {
 				index: this.hand.indexOf(card),
 				against: against,
-				with: this.hand.indexOf(this.card_with),
+				with: this.hand.indexOf(this.card_with) > -1 ? this.hand.indexOf(this.card_with):null,
 			}
 			this.card_with = null
 			console.log(card_data)
