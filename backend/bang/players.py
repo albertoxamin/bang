@@ -41,7 +41,7 @@ class Player:
         self.on_pick_cb = None
         self.on_failed_response_cb = None
         self.event_type: str = None
-        self.expected_response = None
+        self.expected_response = []
         self.attacker = None
         self.target_p: str = None
         self.is_drawing = False

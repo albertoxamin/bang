@@ -28,8 +28,9 @@ class Pugno(Card):
         return False
 
 class Schivata(Mancato):
-    def __init__(self,suit,number):
-        super().__init__(suit, 'Schivata', number)
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Schivata'
         self.icon = '🙅‍♂️'
         self.desc += " e poi pesca una carta"
 
