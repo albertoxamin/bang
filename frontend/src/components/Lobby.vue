@@ -28,7 +28,7 @@
 				<!-- </div> -->
 			</div>
 			<div v-if="!started">
-				<h3>Espansioni</h3>
+				<h3>Espansioni (NON COMPLETE)</h3>
 				<PrettyCheck @click.native="toggleExpansions('dodge_city')" :disabled="!isRoomOwner" v-model="useDodgeCity" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">Dodge City</PrettyCheck>
 			</div>
 			<div v-if="started">
