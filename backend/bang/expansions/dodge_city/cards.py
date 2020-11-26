@@ -47,6 +47,7 @@ class RagTime(Panico):
         self.desc = "Ruba 1 carta dalla mano di un giocatore"
         self.need_target = True
         self.need_with = True
+        self.alt_text = '‼️'
 
     def play_card(self, player, against, _with):
         if against != None and _with != None:
@@ -61,6 +62,7 @@ class Rissa(Gatling):
         self.name = 'Rissa'
         self.icon = '🥊'
         self.need_with = True
+        self.alt_text = '‼️'
 
     def play_card(self, player, against, _with):
         if _with != None:
@@ -76,6 +78,7 @@ class SpringField(Card):
         self.desc = "Spara a un giocatore"
         self.need_target = True
         self.need_with = True
+        self.alt_text = '‼️'
 
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
@@ -92,6 +95,7 @@ class Tequila(Card):
         self.desc = "Fai recuperare 1 vita a un giocatore"
         self.need_target = True
         self.need_with = True
+        self.alt_text = '‼️'
 
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
@@ -107,6 +111,7 @@ class Whisky(Card):
         self.icon = '🥃'
         self.desc = "Recupera 2 vite"
         self.need_with = True
+        self.alt_text = '‼️'
 
     def play_card(self, player, against, _with=None):
         if _with != None:
