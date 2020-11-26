@@ -26,7 +26,7 @@
 		</div>
 		<p>{{hint}}</p>
 		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
-		<Chooser v-if="pending_action == 3" :text="`Scegli come rispondere ${attacker?('a '+attacker):''}`" :cards="respondCards" :select="respond"/>
+		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" cancelText="SPETTATORE" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
@@ -82,6 +82,7 @@ export default {
 		desc: '',
 		sidScrapForHealth: [],
 		sidWantsScrapForHealth: false,
+		mancato_needed: 0,
 	}),
 	sockets: {
 		role(role) {
@@ -107,6 +108,7 @@ export default {
 			this.win_status = self.win_status
 			this.sight = self.sight
 			this.attacker = self.attacker
+			this.mancato_needed = self.mancato_needed
 			if (this.pending_action == 5 && self.target_p) {
 				this.chooseCardFromPlayer(self.target_p)
 			} else if (this.pending_action == 5) {
@@ -123,6 +125,9 @@ export default {
 		}
 	},
 	computed:{
+		respondText() {
+			return `Scegli come rispondere ${this.attacker?('a '+this.attacker):''}${(this.mancato_needed>1)?(' (NE OCCORRONO ' + this.mancato_needed + ')'):''}`
+		},
 		showScrapScreen() {
 			return this.isEndingTurn && !this.canEndTurn && this.is_my_turn;
 		},
