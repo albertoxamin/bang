@@ -67,6 +67,9 @@ class Card(ABC):
                         data=f'{player.name} ha giocato {self.name}{contro}.')
         return True
 
+    def use_card(self, player):
+        pass
+
 
 class Barile(Card):
     def __init__(self, suit, number):

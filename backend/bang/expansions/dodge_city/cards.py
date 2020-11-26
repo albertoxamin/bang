@@ -1,16 +1,16 @@
 from bang.cards import *
 
-class Riparo(Mustang):
-    def __init__(self, suit, number):
-        super().__init__(suit, number)
-        self.name = 'Riparo'
-        self.icon = '⛰'
-
 class Binocolo(Mirino):
     def __init__(self, suit, number):
         super().__init__(suit, number)
         self.name = 'Binocolo'
         self.icon = '🔍'
+
+class Riparo(Mustang):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Riparo'
+        self.icon = '⛰'
 
 class Pugno(Card):
     def __init__(self, suit, number):
@@ -27,10 +27,42 @@ class Pugno(Card):
             return True
         return False
 
+class Schivata(Mancato):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Schivata'
+        self.icon = '🙅‍♂️'
+        self.desc += " e poi pesca una carta"
+
+    def play_card(self, player, against):
+        return False
+
+    def use_card(self, player):
+        player.hand.append(player.game.deck.draw())
+        player.notify_self()
+
 def get_starting_deck() -> List[Card]:
     return [
         #TODO: aggiungere anche le carte normalmente presenti https://bang.dvgiochi.com/cardslist.php?id=3
-        Riparo(Suit.DIAMONDS, 'K'),
+        Barile(Suit.CLUBS, 'A'),
         Binocolo(Suit.DIAMONDS, 10),
+        Dinamite(Suit.CLUBS, 10),
+        Mustang(Suit.HEARTS, 5),
+        Remington(Suit.DIAMONDS, 6),
+        RevCarabine(Suit.SPADES, 5),
+        Riparo(Suit.DIAMONDS, 'K'),
+        Bang(Suit.SPADES, 8),
+        Bang(Suit.CLUBS, 5),
+        Bang(Suit.CLUBS, 6),
+        Bang(Suit.CLUBS, 'K'),
+        Birra(Suit.HEARTS, 6),
+        Birra(Suit.SPADES, 6),
+        CatBalou(Suit.CLUBS, 8),
+        Emporio(Suit.SPADES, 'A'),
+        Indiani(Suit.DIAMONDS, 5),
+        Mancato(Suit.DIAMONDS, 8),
+        Panico(Suit.HEARTS, 'J'),
         Pugno(Suit.SPADES, 10),
+        Schivata(Suit.DIAMONDS, 7),
+        Schivata(Suit.HEARTS, 'K'),
     ]

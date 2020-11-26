@@ -5,6 +5,7 @@ import socketio
 import bang.deck as deck
 import bang.roles as r
 import bang.cards as cs
+import bang.expansions.dodge_city.cards as csd
 import bang.characters as chars
 
 class PendingAction(IntEnum):
@@ -40,7 +41,7 @@ class Player:
         self.on_pick_cb = None
         self.on_failed_response_cb = None
         self.event_type: str = None
-        self.expected_response = None
+        self.expected_response = []
         self.attacker = None
         self.target_p: str = None
         self.is_drawing = False
@@ -92,8 +93,10 @@ class Player:
 
     def notify_self(self):
         if isinstance(self.character, chars.CalamityJanet):
-            self.expected_response = [
-                cs.Mancato(0, 0).name, cs.Bang(0, 0).name]
+            if cs.Mancato(0, 0).name not in self.expected_response:
+                self.expected_response.append(cs.Mancato(0, 0).name)
+            elif cs.Bang(0, 0).name not in self.expected_response:
+                self.expected_response.append(cs.Bang(0, 0).name)
         elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0:
             self.hand.append(self.game.deck.draw())
         ser = self.__dict__.copy()
@@ -310,7 +313,7 @@ class Player:
             self.game.responders_did_respond_resume_turn()
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = [cs.Mancato(0, 0).name]
+            self.expected_response = [cs.Mancato(0, 0).name, csd.Schivata(0,0).name]
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -329,7 +332,7 @@ class Player:
             else:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
-                self.expected_response = [cs.Mancato(0, 0).name]
+                self.expected_response = [cs.Mancato(0, 0).name, csd.Schivata(0,0).name]
                 self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
             return True
@@ -392,7 +395,9 @@ class Player:
     def respond(self, hand_index):
         self.pending_action = PendingAction.WAIT
         if hand_index != -1 and self.hand[hand_index].name in self.expected_response:
-            self.game.deck.scrap(self.hand.pop(hand_index))
+            card = self.hand.pop(hand_index)
+            card.use_card(self)
+            self.game.deck.scrap(card)
             self.notify_self()
             self.mancato_needed -= 1
             if self.mancato_needed <= 0:
