@@ -30,7 +30,23 @@ class Pugno(Card):
 def get_starting_deck() -> List[Card]:
     return [
         #TODO: aggiungere anche le carte normalmente presenti https://bang.dvgiochi.com/cardslist.php?id=3
-        Riparo(Suit.DIAMONDS, 'K'),
+        Barile(Suit.CLUBS, 'A'),
         Binocolo(Suit.DIAMONDS, 10),
+        Dinamite(Suit.CLUBS, 10),
+        Mustang(Suit.HEARTS, 5),
+        Remington(Suit.DIAMONDS, 6),
+        RevCarabine(Suit.SPADES, 5),
+        Riparo(Suit.DIAMONDS, 'K'),
+        Bang(Suit.SPADES, 8),
+        Bang(Suit.CLUBS, 5),
+        Bang(Suit.CLUBS, 6),
+        Bang(Suit.CLUBS, 'K'),
+        Birra(Suit.HEARTS, 6),
+        Birra(Suit.SPADES, 6),
+        CatBalou(Suit.CLUBS, 8),
+        Emporio(Suit.SPADES, 'A'),
+        Indiani(Suit.DIAMONDS, 5),
+        Mancato(Suit.DIAMONDS, 8),
+        Panico(Suit.HEARTS, 'J'),
         Pugno(Suit.SPADES, 10),
     ]
