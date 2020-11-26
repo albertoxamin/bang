@@ -70,6 +70,11 @@ def private(sid):
     advertise_lobbies()
 
 @sio.event
+def toggle_expansion(sid, expansion_name):
+    g = sio.get_session(sid).game
+    g.toggle_expansion(expansion_name)
+
+@sio.event
 def join_room(sid, room):
     room_name = room['name']
     print(f'{sid} joined a room named {room_name}')

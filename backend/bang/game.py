@@ -22,13 +22,31 @@ class Game:
         self.password = ''
         self.expansions = []
 
+    def notify_room(self):
+        self.sio.emit('room', room=self.name, data={
+            'name': self.name,
+            'started': self.started,
+            'players': [{'name':p.name, 'ready': False} for p in self.players],
+            'password': self.password,
+            'expansions': self.expansions,
+        })
+
+    def toggle_expansion(self, expansion_name):
+        if not self.started:
+            print('toggling', expansion_name)
+            if expansion_name in self.expansions:
+                self.expansions.remove(expansion_name)
+            else:
+                self.expansions.append(expansion_name)
+            self.notify_room()
+
     def add_player(self, player: players.Player):
         if player in self.players or len(self.players) >= 7:
             return
         player.join_game(self)
         self.players.append(player)
         print(f'Added player {player.name} to game')
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [{'name':p.name, 'ready': False} for p in self.players], 'password': self.password})
+        self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
 
     def set_private(self):
@@ -37,11 +55,11 @@ class Game:
             print(self.name, 'is now private pwd', self.password)
         else:
             self.password = ''
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [{'name':p.name, 'ready': False} for p in self.players], 'password': self.password})
+        self.notify_room()
 
     def notify_character_selection(self):
         self.readyCount += 1
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [{'name':p.name, 'ready': p.character!=None} for p in self.players], 'password': self.password})
+        self.notify_room()
         if self.readyCount == len(self.players):
             self.distribute_roles()
 
@@ -214,7 +232,7 @@ class Game:
         if self.started and index <= self.turn:
             self.turn -= 1
         self.players.pop(index)
-        self.sio.emit('room', room=self.name, data={'name': self.name, 'started': self.started, 'players': [p.name for p in self.players]})
+        self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
         if self.started:
             self.sio.emit('chat_message', room=self.name, data=f'{player.name} era {player.role.name}!')
