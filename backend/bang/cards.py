@@ -160,7 +160,7 @@ class Bang(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Bang!', number)
         self.icon = '💥'
-        self.desc = "Spara a un giocatore a distanta raggiungibile. Se non hai armi la distanza di default è 1"
+        self.desc = "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
         self.need_target = True
 
     def play_card(self, player, against, _with=None):

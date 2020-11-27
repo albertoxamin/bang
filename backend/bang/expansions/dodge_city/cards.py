@@ -16,7 +16,7 @@ class Pugno(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Pugno!', number, range=1)
         self.icon = '👊'
-        self.desc = "Spara a un giocatore a distanta 1"
+        self.desc = "Spara a un giocatore a distanza 1"
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
@@ -71,7 +71,7 @@ class Rissa(CatBalou):
         if _with != None:
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
-            super().play_card(player, against=[p.name for p in player.game.players if p != player][0])
+            super().play_card(player, against=[p.name for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0][0])
             return True
         return False
 
