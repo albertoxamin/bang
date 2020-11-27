@@ -44,10 +44,10 @@ class RagTime(Panico):
     def __init__(self, suit, number):
         Card.__init__(self, suit, 'Rag Time', number)
         self.icon = '🎹'
-        self.desc = "Ruba 1 carta dalla mano di un giocatore"
+        self.desc = "Ruba 1 carta dalla mano di un giocatore a prescindere dalla distanza"
         self.need_target = True
         self.need_with = True
-        self.alt_text = '‼️'
+        self.alt_text = '2🃏'
 
     def play_card(self, player, against, _with):
         if against != None and _with != None:
@@ -61,9 +61,10 @@ class Rissa(CatBalou):
         super().__init__(suit, number)
         self.name = 'Rissa'
         self.icon = '🥊'
+        self.desc = "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
         self.need_with = True
         self.need_target = False
-        self.alt_text = '‼️'
+        self.alt_text = '2🃏'
 
     def play_card(self, player, against, _with):
         if _with != None:
@@ -77,10 +78,10 @@ class SpringField(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Springfield', number)
         self.icon = '🌵'
-        self.desc = "Spara a un giocatore"
+        self.desc = "Spara a un giocatore a prescindere dalla distanza"
         self.need_target = True
         self.need_with = True
-        self.alt_text = '‼️'
+        self.alt_text = '2🃏'
 
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
@@ -94,13 +95,15 @@ class Tequila(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Tequila', number)
         self.icon = '🍹'
-        self.desc = "Fai recuperare 1 vita a un giocatore"
+        self.desc = "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
         self.need_target = True
         self.need_with = True
-        self.alt_text = '‼️'
+        self.alt_text = '2🃏'
 
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
+            beneficiario = f'{against}' if against != player.name else 'se stesso'
+            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name} per {beneficiario}.')
             player.game.deck.scrap(_with)
             player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
             player.game.get_player_named(against).notify_self()
@@ -111,12 +114,13 @@ class Whisky(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Whisky', number)
         self.icon = '🥃'
-        self.desc = "Recupera 2 vite"
+        self.desc = "Gioca questa carta per recuperare fino a 2 punti vita."
         self.need_with = True
-        self.alt_text = '‼️'
+        self.alt_text = '2🃏'
 
     def play_card(self, player, against, _with=None):
         if _with != None:
+            super().play_card(player, against=against)
             player.game.deck.scrap(_with)
             player.lives = min(player.lives+2, player.max_lives)
             player.notify_self()
@@ -146,10 +150,10 @@ def get_starting_deck() -> List[Card]:
         Mancato(Suit.DIAMONDS, 8),
         Panico(Suit.HEARTS, 'J'),
         Pugno(Suit.SPADES, 10),
-        Schivata(Suit.DIAMONDS, 7),
-        Schivata(Suit.HEARTS, 'K'),
         RagTime(Suit.HEARTS, 9),
         Rissa(Suit.SPADES, 'J'),
+        Schivata(Suit.DIAMONDS, 7),
+        Schivata(Suit.HEARTS, 'K'),
         SpringField(Suit.SPADES, 'K'),
         Tequila(Suit.CLUBS, 9),
         Whisky(Suit.HEARTS, 'Q'),

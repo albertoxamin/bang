@@ -34,7 +34,7 @@
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
-		<Chooser v-if="!card_against && card_with" :text="`SCEGLI CHE CARTA SCARTARE PER GIOCCARE ${card_with.name}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
+		<Chooser v-if="!card_against && card_with" :text="`SCEGLI CHE CARTA SCARTARE PER USARE ${card_with.name.toUpperCase()}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`SCARTA ${2 - sidScrapForHealth.length} PER RECUPERARE 1 VITA`"
 							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
