@@ -41,8 +41,11 @@ class Game:
             self.notify_room()
 
     def add_player(self, player: players.Player):
-        if player in self.players or len(self.players) >= 7:
+        if player in self.players or len(self.players) >= 10:
             return
+        if len(self.players) > 7:
+            if 'dodge_city' not in self.expansions:
+                self.expansions.append('dodge_city')
         player.join_game(self)
         self.players.append(player)
         print(f'Added player {player.name} to game')
@@ -89,7 +92,7 @@ class Game:
                 roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato')
             ]
         elif len(self.players) >= 4:
-            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice()]
+            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
             available_roles = available_roles[:len(self.players)]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
