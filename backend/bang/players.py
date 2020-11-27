@@ -283,6 +283,7 @@ class Player:
             else:
                 self.game.deck.scrap(card)
             if self.event_type != 'rissa' or self.target_p == [p.name for p in self.game.players if p != self][-1]:
+                self.event_type = ''
                 self.target_p = ''
                 self.choose_action = ''
                 self.pending_action = PendingAction.PLAY
