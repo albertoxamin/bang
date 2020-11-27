@@ -30,10 +30,7 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
-		endTurnCard: {
-			name: this.$t('end_turn'),
-			icon: '⛔️'
-		},
+		endTurnCard: null,
 		lastScrap: null,
 		previousScrap: null,
 		pending_action: false,
@@ -47,6 +44,12 @@ export default {
 		},
 		scrap(card) {
 			this.lastScrap = card
+		}
+	},
+	mounted() {
+		this.endTurnCard = {
+			name: this.$t('end_turn'),
+			icon: '⛔️'
 		}
 	},
 	methods: {
