@@ -92,7 +92,7 @@ class Game:
                 roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato')
             ]
         elif len(self.players) >= 4:
-            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
+            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Renegade(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
             available_roles = available_roles[:len(self.players)]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
