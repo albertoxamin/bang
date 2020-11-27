@@ -74,7 +74,7 @@ class Player:
         self.max_lives = self.character.max_lives + self.role.health_mod
         self.lives = self.max_lives
         self.hand = []
-        self.equipment = [cs.Dinamite(1,1), cs.Prigione(1,1)]
+        self.equipment = []
         self.pending_action = PendingAction.WAIT
 
     def set_available_character(self, available):
