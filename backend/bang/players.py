@@ -282,7 +282,7 @@ class Player:
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card)
-            if self.event_type != 'rissa' or self.target_p == [p.name for p in self.game.players if p != self][-1]:
+            if self.event_type != 'rissa' or (self.event_type == 'rissa' and self.target_p == [p.name for p in self.game.players if p != self][-1]):
                 self.event_type = ''
                 self.target_p = ''
                 self.choose_action = ''
