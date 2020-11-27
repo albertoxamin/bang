@@ -227,6 +227,7 @@ export default {
 		selectWith(card) {
 			if (this.card_with.need_target) {
 				this.card_against = this.card_with
+				this.range = this.card_against.range
 				this.card_with = card
 			} else {
 				let card_data	 = {

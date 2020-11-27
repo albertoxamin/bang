@@ -32,6 +32,7 @@ class Schivata(Mancato):
         self.name = 'Schivata'
         self.icon = '🙅‍♂️'
         self.desc += " e poi pesca una carta"
+        self.alt_text = '☝️🆓'
 
     def play_card(self, player, against, _with=None):
         return False
