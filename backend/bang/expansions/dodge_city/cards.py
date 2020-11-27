@@ -56,18 +56,20 @@ class RagTime(Panico):
             return True
         return False
 
-class Rissa(Gatling):
+class Rissa(CatBalou):
     def __init__(self, suit, number):
         super().__init__(suit, number)
         self.name = 'Rissa'
         self.icon = '🥊'
         self.need_with = True
+        self.need_target = False
         self.alt_text = '‼️'
 
     def play_card(self, player, against, _with):
         if _with != None:
             player.game.deck.scrap(_with)
-            super().play_card(player, against=against)
+            player.event_type = 'rissa'
+            super().play_card(player, against=[p.name for p in player.game.players if p != player][0])
             return True
         return False
 
