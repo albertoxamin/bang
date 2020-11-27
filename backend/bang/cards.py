@@ -35,6 +35,7 @@ class Card(ABC):
             self.alt_text = f'{self.range} 🔍'
         self.desc = desc
         self.need_target = False
+        self.can_target_self = False
         self.need_with = False
 
     def __str__(self):

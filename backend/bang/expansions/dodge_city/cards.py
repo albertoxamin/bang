@@ -98,6 +98,7 @@ class Tequila(Card):
         self.icon = '🍹'
         self.desc = "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
         self.need_target = True
+        self.can_target_self = True
         self.need_with = True
         self.alt_text = '2🃏'
 

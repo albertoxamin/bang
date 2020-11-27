@@ -85,6 +85,7 @@ export default {
 		sidScrapForHealth: [],
 		sidWantsScrapForHealth: false,
 		mancato_needed: 0,
+		name: '',
 	}),
 	sockets: {
 		role(role) {
@@ -94,6 +95,7 @@ export default {
 		},
 		self(self) {
 			self = JSON.parse(self)
+			this.name = self.name
 			this.pending_action = self.pending_action
 			this.character = self.character
 			this.character.is_character = true
@@ -141,7 +143,7 @@ export default {
 		},
 		visiblePlayers() {
 			this.range;
-			return this.playersDistances.filter(x => {
+			let vis = this.playersDistances.filter(x => {
 					if (!this.can_target_sheriff && x.is_sheriff)
 						return false
 					else
@@ -153,6 +155,15 @@ export default {
 					icon: player.is_sheriff ? '⭐' : '🤠',
 					is_character: true,
 				}})
+			if (this.card_against && this.card_against.can_target_self) {
+				vis.push({
+					name: this.name,
+					number: 0,
+					icon: 'TU',
+					is_character: true,
+				})
+			}
+			return vis
 		},
 		hasToPickResponse() {
 			return !this.is_my_turn && this.pending_action == 0
