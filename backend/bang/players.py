@@ -74,7 +74,7 @@ class Player:
         self.max_lives = self.character.max_lives + self.role.health_mod
         self.lives = self.max_lives
         self.hand = []
-        self.equipment = []
+        self.equipment = [cs.Dinamite(1,1), cs.Prigione(1,1)]
         self.pending_action = PendingAction.WAIT
 
     def set_available_character(self, available):
@@ -203,6 +203,7 @@ class Player:
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
                             self.game.next_player().notify_self()
+                            break
                     if any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
                         self.notify_self()
                         return
@@ -218,7 +219,7 @@ class Player:
                             self.game.deck.scrap(self.equipment.pop(i))
                             self.end_turn(forced=True)
                             return
-                        else:
+                        elif pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i))
                             break
                     break
