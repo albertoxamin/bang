@@ -40,7 +40,7 @@
 		<Chooser v-if="selectedInfo" text="Dettagli" :cards="selectedInfo"  cancelText="OK" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
-			<Chooser v-if="hasToChoose" text="Scegli una carta" :cards="chooseCards" :select="chooseCard"/>
+			<Chooser v-if="hasToChoose" :text="`Scegli una carta${target_p?' da ' + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
 		</transition>
 	</div>
 </template>
@@ -77,6 +77,7 @@ export default {
 		availableCharacters: [],
 		self: {},
 		hasToChoose: false,
+		target_p: '', 
 		chooseCards: [],
 		wantsToEndTurn: false,
 		selectedInfo: null,
@@ -179,6 +180,7 @@ export default {
 		},
 		choose(player_name) {
 			console.log('choose from' + player_name)
+			this.target_p = player_name
 			let pl = this.players.filter(x=>x.name === player_name)[0]
 			console.log(pl)
 			let arr = []
@@ -197,6 +199,7 @@ export default {
 			console.log(card + ' ' + this.chooseCards.indexOf(card))
 			this.chooseCards = []
 			this.hasToChoose = false
+			this.target_p = ''
 		},
 		drawFromPlayer(name) {
 			console.log(name)
