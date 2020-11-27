@@ -17,7 +17,7 @@
 			<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
 		</transition-group>
 		<div v-if="lives > 0">
-			<span>Mano</span>
+			<span>{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card)"
@@ -25,20 +25,20 @@
 			</transition-group>
 		</div>
 		<p>{{hint}}</p>
-		<Chooser v-if="card_against" text="Contro chi vuoi giocare la carta" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
+		<Chooser v-if="card_against" :text="$t('card_against')" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond"/>
-		<Chooser v-if="shouldChooseCard" text="Scegli che carta pescare" :cards="available_cards" :select="choose"/>
-		<Chooser v-if="lives <= 0 && max_lives > 0" text="SEI MORTO" cancelText="SPETTATORE" :cancel="()=>{max_lives = 0}"/>
-		<Chooser v-if="win_status !== undefined" :text="win_status?'HAI VINTO':'HAI PERSO'" />
-		<Chooser v-if="show_role" text="Tu sei" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" cancelText="OK" />
-		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ha pescato come seconda carta:`" :cards="[notifycard.card]" hintText="Se la carta è cuori o quadri ne pesca un'altra" class="turn-notify-4s"/>
-		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" text="GIOCA IL TUO TURNO" :key="is_my_turn" class="turn-notify" />
-		<Chooser v-if="hasToPickResponse" :text="`ESTRAI UNA CARTA ${attacker?('PER DIFENDERTI DA '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
-		<Chooser v-if="!card_against && card_with" :text="`SCEGLI CHE CARTA SCARTARE PER USARE ${card_with.name.toUpperCase()}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
-		<Chooser v-if="showScrapScreen" :text="`SCARTA ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
-		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`SCARTA ${2 - sidScrapForHealth.length} PER RECUPERARE 1 VITA`"
+		<Chooser v-if="shouldChooseCard" :text="$t('choose_card_to_get')" :cards="available_cards" :select="choose"/>
+		<Chooser v-if="lives <= 0 && max_lives > 0" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
+		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
+		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
+		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t('if_card_red')" class="turn-notify-4s"/>
+		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
+		<Chooser v-if="hasToPickResponse" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
+		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
+		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
+		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`${$t('discard')} ${2 - sidScrapForHealth.length} ${$t('to_regain_1_hp')}`"
 							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
-		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">ABILITÀ SPECIALE</button>
+		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
 	</div>
 </template>
 
@@ -133,7 +133,7 @@ export default {
 	},
 	computed:{
 		respondText() {
-			return `Scegli come rispondere ${this.attacker?('a '+this.attacker):''}${(this.mancato_needed>1)?(' (NE OCCORRONO ' + this.mancato_needed + ')'):''}`
+			return `${this.$t('choose_response')}${this.attacker?(this.$t('choose_response_to')+this.attacker):''}${(this.mancato_needed>1)?(` (${this.$t('choose_response_needed')} ` + this.mancato_needed + ')'):''}`
 		},
 		showScrapScreen() {
 			return this.isEndingTurn && !this.canEndTurn && this.is_my_turn;
@@ -159,7 +159,7 @@ export default {
 				vis.push({
 					name: this.name,
 					number: 0,
-					icon: 'TU',
+					icon: this.$t('you'),
 					is_character: true,
 				})
 			}
@@ -171,7 +171,7 @@ export default {
 		instruction() {
 			if (this.pending_action == null)
 				return ''
-			let x = ['▶️ Estrai una carta', '▶️ Pesca le tue carte', '▶️ Gioca le tue carte', '▶️ Rispondi alla carta', '⏸ Attendi', '▶️ Scegli una carta']
+			let x = [this.$t('flip_card'), this.$t('draw_cards'), this.$t('play_cards'), this.$t('respond_card'), this.$t('wait'), this.$t('choose_cards')]
 			return x[this.pending_action]
 		},
 		canEndTurn() {
@@ -179,7 +179,7 @@ export default {
 		},
 		respondCards() {
 			let cc = [{
-					name: 'Prendi Danno',
+					name: this.$t('take_dmg'),
 					icon: '❌',
 					is_equipment: true,
 				}]

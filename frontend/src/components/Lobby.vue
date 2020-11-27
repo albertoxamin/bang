@@ -1,11 +1,11 @@
 <template>
 	<div class="lobby">
 		<div style="flex-grow: 4;">
-			<h2 v-if="!started">Lobby: {{ lobbyName }}</h2>
-			<h3>Giocatori (tu sei {{username}})</h3>
+			<h2 v-if="!started">{{$t('room')}}{{ lobbyName }}</h2>
+			<h3>{{$t('room_players', {username:username})}}</h3>
 			<div v-if="!started">
-				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">Stanza Privata</PrettyCheck>
-				<label v-if="password !== ''">Password: <b class="selectable" style="font-size:larger;">{{ password }}</b></label>
+				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">{{$t("private_room")}}</PrettyCheck>
+				<label v-if="password !== ''">{{$t('password')}}<b class="selectable" style="font-size:larger;">{{ password }}</b></label>
 			</div>
 			
 			<div class="players-table">
@@ -28,7 +28,7 @@
 				<!-- </div> -->
 			</div>
 			<div v-if="!started">
-				<h3>Espansioni (NON COMPLETE)</h3>
+				<h3>{{$t("expansions")}}</h3>
 				<PrettyCheck @click.native="toggleExpansions('dodge_city')" :disabled="!isRoomOwner" v-model="useDodgeCity" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">Dodge City</PrettyCheck>
 			</div>
 			<div v-if="started">
@@ -37,10 +37,10 @@
 			</div>
 		</div>
 		<chat/>
-		<Chooser v-if="selectedInfo" text="Dettagli" :cards="selectedInfo"  cancelText="OK" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
+		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
-			<Chooser v-if="showChooser" text="Scegli il tuo personaggio" :cards="availableCharacters" :select="setCharacter"/>
-			<Chooser v-if="hasToChoose" :text="`Scegli una carta${target_p?' da ' + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
+			<Chooser v-if="showChooser" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
+			<Chooser v-if="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
 		</transition>
 	</div>
 </template>
@@ -122,7 +122,7 @@ export default {
 		startGameCard() {
 			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
 				return {
-					name: 'Start',
+					name: this.$t('start_game'),
 					icon: '▶️',
 					is_equipment: true,
 					number: `${this.players.length}🤠`
@@ -165,7 +165,7 @@ export default {
 		getPlayerCard(player) {
 			return {
 				name: player.name,
-				number: ((this.username == player.name) ? 'YOU' : (this.players[0].name == player.name) ? 'OWNER' :'') + (player.dist ? `${player.dist}⛰` : ''),
+				number: ((this.username == player.name) ? this.$t('you') : (this.players[0].name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : player.icon || ((player.ready)?'👍': '🤠') ) : '☠️',
 				is_character: true,
 			}

@@ -24,7 +24,7 @@ export default {
 		cancel: Function,
 		cancelText: {
 			type: String,
-			default: 'ANNULLA',
+			default: '',
 		},
 		text: String,
 		hintText: String,
@@ -43,7 +43,12 @@ export default {
 		showDesc(card) {
 			this.desc = card.desc
 		}
-	}
+	},
+	mounted() {
+		if (this.cancelText == '') {
+			this.cancelText = this.$t('cancel')
+		}
+	},
 }
 </script>
 

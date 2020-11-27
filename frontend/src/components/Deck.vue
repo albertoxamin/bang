@@ -31,7 +31,7 @@ export default {
 			icon: '💥',
 		},
 		endTurnCard: {
-			name: 'Termina turno!',
+			name: this.$t('end_turn'),
 			icon: '⛔️'
 		},
 		lastScrap: null,
