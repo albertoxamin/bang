@@ -72,7 +72,7 @@ class Rissa(CatBalou):
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
             super().play_card(player, against=[p.name for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0][0])
-            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name})
+            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name}')
             return True
         return False
 
