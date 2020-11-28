@@ -289,7 +289,7 @@ class Mancato(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mancato!', number)
         self.icon = '😅'
-        self.desc = "Usa questa carta per annullare un Bang!"
+        self.desc = "Usa questa carta per annullare un bang"
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars

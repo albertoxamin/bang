@@ -31,7 +31,7 @@ class Schivata(Mancato):
         super().__init__(suit, number)
         self.name = 'Schivata'
         self.icon = '🙅‍♂️'
-        self.desc = "Usa questa carta per annullare un Bang! e poi pesca una carta"
+        self.desc += " e poi pesca una carta"
         self.alt_text = '☝️🆓'
 
     def play_card(self, player, against, _with=None):
@@ -149,10 +149,6 @@ class Bibbia(Schivata):
             player.equipment.append(self)
             return True
 
-    def use_card(self, player):
-        player.hand.append(player.game.deck.draw())
-        player.notify_self()
-
 class Cappello(Mancato):
     def __init__(self, suit, number):
         super().__init__(suit, number)
@@ -202,6 +198,7 @@ class Derringer(Pugnale):
         self.name = 'Derringer'
         self.icon = '🚬'
         self.alt_text += ' ☝️🆓'
+        self.desc += ' e poi pesca una carta'
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
@@ -210,6 +207,10 @@ class Derringer(Pugnale):
         else:
             player.equipment.append(self)
             return True
+
+    def use_card(self, player):
+        player.hand.append(player.game.deck.draw())
+        player.notify_self()
 
 class Borraccia(Card):
     def __init__(self, suit, number):
