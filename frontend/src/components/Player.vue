@@ -12,7 +12,9 @@
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
 			</transition-group>
 			<transition-group v-if="lives > 0" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
-				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" @pointerenter.native="desc=card.desc" @pointerleave.native="desc=''" />
+				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
+					@pointerenter.native="desc=card.desc" @pointerleave.native="desc=''"
+					@click.native="play_card(card, true)" />
 			</transition-group>
 		</div>
 		<transition name="list">
@@ -22,7 +24,7 @@
 			<span>{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
-					@click.native="play_card(card)"
+					@click.native="play_card(card, false)"
 					@pointerenter.native="hint=card.desc" @pointerleave.native="hint=''"/>
 			</transition-group>
 		</div>
@@ -223,7 +225,9 @@ export default {
 		scrap(c) {
 			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
-		play_card(card) {
+		play_card(card, from_equipment) {
+			if (from_equipment && (!card.usable_next_turn || !card.can_be_used_now)) return;
+			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
@@ -276,8 +280,13 @@ export default {
 			this.card_with = null
 		},
 		really_play_card(card, against) {
+			let res = this.hand.indexOf(card)
+			if (res === -1) {
+				res = this.equipment.indexOf(card)
+				if (res !== -1) res += this.hand.length
+			}
 			let card_data	 = {
-				index: this.hand.indexOf(card),
+				index: res,
 				against: against,
 				with: this.hand.indexOf(this.card_with) > -1 ? this.hand.indexOf(this.card_with):null,
 			}

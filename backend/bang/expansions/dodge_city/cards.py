@@ -178,6 +178,21 @@ class Sombrero(Cappello):
         self.name = 'Sombrero'
         self.icon = '👒'
 
+class Pugnale(Pugno):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Pugnale'
+        self.icon = '🗡'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against=against)
+        else:
+            player.equipment.append(self)
+            return True
+
 def get_starting_deck() -> List[Card]:
     return [
         #TODO: aggiungere anche le carte normalmente presenti https://bang.dvgiochi.com/cardslist.php?id=3
@@ -212,5 +227,5 @@ def get_starting_deck() -> List[Card]:
         PlaccaDiFerro(Suit.DIAMONDS, 'A'),
         PlaccaDiFerro(Suit.SPADES, 'Q'),
         Sombrero(Suit.CLUBS, 7),
-
+        Pugnale(Suit.HEARTS, 8),
     ]

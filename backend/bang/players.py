@@ -249,22 +249,27 @@ class Player:
         return s
 
     def play_card(self, hand_index: int, against=None, _with=None):
-        if not (0 <= hand_index < len(self.hand)):
+        if not (0 <= hand_index < len(self.hand) + len(self.equipment)):
             print('illegal')
             return
-        card: cs.Card = self.hand.pop(hand_index)
+        card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
         if _with != None:
             withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = card.play_card(self, against, withCard)
-        if not card.is_equipment:
+        if not card.is_equipment and not card.usable_next_turn:
             if did_play_card:
                 self.game.deck.scrap(card)
             else:
                 self.hand.insert(hand_index, card)
                 if withCard:
                     self.hand.insert(_with, withCard)
+        elif card.usable_next_turn and card.can_be_used_now:
+            if did_play_card:
+                self.game.deck.scrap(card)
+            else:
+                self.equipment.insert(hand_index-len(self.hand), card)
         self.notify_self()
 
     def choose(self, card_index):
