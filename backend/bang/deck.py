@@ -10,6 +10,10 @@ class Deck:
         for c in self.cards:
             if isinstance(c, cs.Mancato) and c.name not in self.mancato_cards:
                 self.mancato_cards.append(c.name)
+        self.all_cards_str: List[str] = []
+        for c in self.cards:
+            if c.name not in self.all_cards_str:
+                self.all_cards_str.append(c.name)
         self.game = game
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []

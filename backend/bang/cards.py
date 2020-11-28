@@ -188,6 +188,9 @@ class Birra(Card):
         if len(player.game.players) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
+            import bang.expansions.dodge_city.characters as chd
+            if isinstance(player.character, chd.TequilaJoe):
+                player.lives = min(player.lives+1, player.max_lives)
             return True
         elif len(player.game.players) == 2:
             player.sio.emit('chat_message', room=player.game.name,

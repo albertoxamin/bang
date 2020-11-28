@@ -1,4 +1,5 @@
-from abc import ABC, abstractmethod 
+from abc import ABC, abstractmethod
+from typing import List
 
 class Character(ABC):
     def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0, pick_mod: int = 0, desc: str = ''):
@@ -33,7 +34,6 @@ class BartCassidy(Character):
         super().__init__("Bart Cassidy", max_lives=4)
         self.desc = "Ogni volta che viene ferito, pesca una carta"
         self.icon = '💔'
-        #una sola carta per ogni gruppo di danni. es: dinamite -> 1 carta
     
     def on_hurt(self, dmg):
         pass
@@ -133,8 +133,9 @@ class WillyTheKid(Character):
         self.desc = "Questo personaggio può giocare quanti bang vuole nel suo turno"
         self.icon = '🎉'
 
-def all_characters():
-    return [
+def all_characters(expansions: List[str]):
+    from bang.expansions import DodgeCity
+    base_chars = [
         BartCassidy(),
         BlackJack(),
         CalamityJanet(),
@@ -152,3 +153,6 @@ def all_characters():
         VultureSam(),
         WillyTheKid(),
     ]
+    if 'dodge_city' in expansions:
+        base_chars.extend(DodgeCity.get_characters())
+    return base_chars

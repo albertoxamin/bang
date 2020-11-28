@@ -7,6 +7,7 @@ import bang.roles as r
 import bang.cards as cs
 import bang.expansions.dodge_city.cards as csd
 import bang.characters as chars
+import bang.expansions.dodge_city.characters as chd
 
 class PendingAction(IntEnum):
     PICK = 0
@@ -164,6 +165,10 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'{self.name} ha pescato la prima carta dalla mano di {pile}.')
                 self.hand.append(self.game.deck.draw())
+            elif isinstance(self.character, chd.BillNoface):
+                self.hand.append(self.game.deck.draw())
+                for i in range(self.max_lives-self.lives):
+                    self.hand.append(self.game.deck.draw())
             else:
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
@@ -174,6 +179,8 @@ class Player:
                                 p.notify_card(self, card)
                         if card.suit == cs.Suit.HEARTS or card.suit == cs.Suit.DIAMONDS:
                             self.hand.append(self.game.deck.draw())
+                if isinstance(self.character, chd.PixiePete):
+                    self.hand.append(self.game.deck.draw())
             self.notify_self()
 
     def pick(self):
@@ -327,13 +334,15 @@ class Player:
                 if self.mancato_needed <= 0:
                     self.game.responders_did_respond_resume_turn()
                     return
-        if len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang))]) == 0\
+        if len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = self.game.deck.mancato_cards
+            if isinstance(self.character, chd.ElenaFuente):
+                self.expected_response = self.game.deck.all_cards_str
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -344,7 +353,7 @@ class Player:
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])
         if len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not isinstance(self.character, chars.Jourdonnais)\
-             and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang))]) == 0\
+             and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             print('Cant defend')
             self.take_damage_response()
@@ -358,6 +367,8 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards
+                if isinstance(self.character, chd.ElenaFuente):
+                    self.expected_response = self.game.deck.all_cards_str
                 self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
             return True

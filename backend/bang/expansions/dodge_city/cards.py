@@ -211,17 +211,19 @@ class Derringer(Pugnale):
             player.equipment.append(self)
             return True
 
-class Borraccia(Birra):
+class Borraccia(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, number)
-        self.name = 'Borraccia'
+        super().__init__(suit, 'Borraccia', number)
         self.icon = '🍼'
         self.usable_next_turn = True
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
-            return super().play_card(player, against)
+            super().play_card(player, against)
+            player.lives = min(player.lives+1, player.max_lives)
+            player.notify_self()
+            return True
         else:
             player.equipment.append(self)
             return True

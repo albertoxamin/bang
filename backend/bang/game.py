@@ -74,7 +74,7 @@ class Game:
             self.players[self.turn].play_turn()
 
     def choose_characters(self):
-        char_cards = random.sample(characters.all_characters(), len(self.players)*2)
+        char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*2)
         for i in range(len(self.players)):
             self.players[i].set_available_character(char_cards[i * 2 : i * 2 + 2])
 
@@ -209,6 +209,7 @@ class Game:
         else: return False
 
     def player_death(self, player: players.Player):
+        import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
         if player.attacker and isinstance(player.attacker, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
@@ -223,6 +224,7 @@ class Game:
         print(f'player {player.name} died')
         if (self.waiting_for > 0):
             self.responders_did_respond_resume_turn()
+
         vulture = [p for p in self.players if isinstance(p.character, characters.VultureSam)]
         if len(vulture) == 0:
             for i in range(len(player.hand)):
@@ -234,6 +236,15 @@ class Game:
                 vulture[0].hand.append(player.hand.pop())
             for i in range(len(player.equipment)):
                 vulture[0].hand.append(player.equipment.pop())
+            vulture[0].notify_self()
+        greg = [p for p in self.players if isinstance(p.character, chd.GregDigger)]
+        if len(greg) > 0:
+            greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
+        herb = [p for p in self.players if isinstance(p.character, chd.HerbHunter)]
+        if len(herb) > 0:
+            herb[0].hand.append(self.deck.draw())
+            herb[0].hand.append(self.deck.draw())
+
         index = self.players.index(player)
         died_in_his_turn = self.started and index == self.turn
         if self.started and index <= self.turn:

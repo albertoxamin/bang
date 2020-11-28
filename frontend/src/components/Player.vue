@@ -197,7 +197,7 @@ export default {
 			this.hand.filter(x => x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
 				cc.push(x)
 			})
-			this.equipment.filter(x => x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
+			this.equipment.filter(x => x.usable_next_turn && x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
 				cc.push(x)
 			})
 			return cc
