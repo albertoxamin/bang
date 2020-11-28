@@ -50,5 +50,7 @@ class Deck:
             return self.draw()
 
     def scrap(self, card: cs.Card):
+        if card.usable_next_turn:
+            card.can_be_used_now = False
         self.scrap_pile.append(card)
         self.game.notify_scrap_pile()

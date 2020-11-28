@@ -284,6 +284,8 @@ class Player:
                 card = target.hand.pop(card_index)
             target.notify_self()
             if self.choose_action == 'steal':
+                if card.usable_next_turn:
+                    card.can_be_used_now = False
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card)
