@@ -414,6 +414,7 @@ class Player:
                                   data=f'{self.name} ha usato una birra per recuperare una vita.')
                     break
         self.mancato_needed = 0
+        self.event_type = ''
         self.notify_self()
         self.attacker = None
 
