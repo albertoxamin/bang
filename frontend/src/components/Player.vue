@@ -7,15 +7,17 @@
 					@pointerenter.native="desc=my_role.goal" @pointerleave.native="desc=''"/>
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
 					@pointerenter.native="desc=character.desc" @pointerleave.native="desc=''"/>
+			<transition-group name="list" tag="div" style="display: flex;flex-direction:column; justify-content: space-evenly; margin-left: 12pt;margin-right:-10pt;">
+				<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
+				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
+			</transition-group>
 			<transition-group v-if="lives > 0" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" @pointerenter.native="desc=card.desc" @pointerleave.native="desc=''" />
 			</transition-group>
 		</div>
-		<p v-if="desc">{{desc}}</p>
-		<transition-group name="list" tag="div" style="display: flex; justify-content: space-evenly; margin-bottom:2pt;">
-			<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
-			<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
-		</transition-group>
+		<transition name="list">
+			<p v-if="desc"><i>{{desc}}</i></p>
+		</transition>
 		<div v-if="lives > 0">
 			<span>{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
@@ -24,7 +26,9 @@
 					@pointerenter.native="hint=card.desc" @pointerleave.native="hint=''"/>
 			</transition-group>
 		</div>
-		<p>{{hint}}</p>
+		<transition name="list">
+			<p v-if="hint"><i>{{hint}}</i></p>
+		</transition>
 		<Chooser v-if="card_against" :text="$t('card_against')" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" :text="$t('choose_card_to_get')" :cards="available_cards" :select="choose"/>
