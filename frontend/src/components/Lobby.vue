@@ -39,7 +39,6 @@
 		<chat/>
 		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
-			<Chooser v-if="showChooser" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
 			<Chooser v-if="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
 		</transition>
 	</div>
@@ -74,7 +73,6 @@ export default {
 		players: [],
 		messages: [],
 		distances: {},
-		availableCharacters: [],
 		self: {},
 		hasToChoose: false,
 		target_p: '', 
@@ -98,9 +96,6 @@ export default {
 					ncards: 0,
 				}
 			})
-		},
-		characters(data) {
-			this.availableCharacters = JSON.parse(data)
 		},
 		start() {
 			this.started = true;
@@ -129,9 +124,6 @@ export default {
 				}
 			}
 			return null;
-		},
-		showChooser() {
-			return this.availableCharacters.length > 0;
 		},
 		playersTable() {
 			console.log('update players')
@@ -173,10 +165,6 @@ export default {
 		startGame() {
 			this.started = true;
 			this.$socket.emit('start_game')
-		},
-		setCharacter(char) {
-			this.availableCharacters = []
-			this.$socket.emit('set_character', char.name)
 		},
 		choose(player_name) {
 			console.log('choose from' + player_name)

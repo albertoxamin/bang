@@ -33,6 +33,7 @@
 		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t('if_card_red')" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
+		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
 		<Chooser v-if="hasToPickResponse" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
@@ -60,6 +61,7 @@ export default {
 	data: () => ({
 		my_role: null,
 		character: null,
+		availableCharacters: [],
 		equipment: [],
 		hand: [],
 		lives: 0,
@@ -92,6 +94,9 @@ export default {
 			this.my_role = JSON.parse(role)
 			this.my_role.is_back = true
 			this.show_role = true
+		},
+		characters(data) {
+			this.availableCharacters = JSON.parse(data)
 		},
 		self(self) {
 			self = JSON.parse(self)
@@ -190,6 +195,10 @@ export default {
 		}
 	},
 	methods: {
+		setCharacter(char) {
+			this.availableCharacters = []
+			this.$socket.emit('set_character', char.name)
+		},
 		sidScrap(c) {
 			this.sidScrapForHealth.push(this.hand.indexOf(c))
 			if (this.sidScrapForHealth.length == 2) {
