@@ -36,6 +36,8 @@ class Card(ABC):
         self.desc = desc
         self.need_target = False
         self.can_target_self = False
+        self.can_be_used_now = True
+        self.usable_next_turn = False
         self.need_with = False
 
     def __str__(self):
@@ -284,7 +286,7 @@ class Mancato(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mancato!', number)
         self.icon = '😅'
-        self.desc = "Usa questa carta per annullare un bang"
+        self.desc = "Usa questa carta per annullare un Bang!"
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars

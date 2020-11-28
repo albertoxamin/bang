@@ -16,7 +16,7 @@
 			<div v-else>
 				<div v-if="!isInLobby" >
 					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
-					<Card :card="getSelfCard" style="position:absolute; bottom:10pt; right: 10pt;"/>
+					<Card :card="getSelfCard" style="position:absolute; bottom:10pt; left: 10pt;"/>
 					<h2>{{$t("available_lobbies")}}</h2>
 					<div style="display: flex">
 						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>

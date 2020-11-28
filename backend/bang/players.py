@@ -16,7 +16,6 @@ class PendingAction(IntEnum):
     WAIT = 4
     CHOOSE = 5
 
-
 class Player:
 
     def __init__(self, name, sid, sio):
@@ -321,19 +320,25 @@ class Player:
                 if self.mancato_needed <= 0:
                     self.game.responders_did_respond_resume_turn()
                     return
-        if len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang))]) == 0:
+        if len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang))]) == 0\
+             and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = [cs.Mancato(0, 0).name, csd.Schivata(0,0).name]
+            self.expected_response = self.game.deck.mancato_cards
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
     def get_banged(self, attacker, double=False):
         self.attacker = attacker
         self.mancato_needed = 1 if not double else 2
-        if len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang))]) == 0 and len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not isinstance(self.character, chars.Jourdonnais):
+        for i in range(len(self.equipment)):
+            if self.equipment[i].can_be_used_now:
+                print('usable', self.equipment[i])
+        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not isinstance(self.character, chars.Jourdonnais)\
+             and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang))]) == 0\
+             and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             print('Cant defend')
             self.take_damage_response()
             return False
@@ -345,7 +350,7 @@ class Player:
             else:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
-                self.expected_response = [cs.Mancato(0, 0).name, csd.Schivata(0,0).name]
+                self.expected_response = self.game.deck.mancato_cards
                 self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
             return True
@@ -407,8 +412,10 @@ class Player:
 
     def respond(self, hand_index):
         self.pending_action = PendingAction.WAIT
-        if hand_index != -1 and self.hand[hand_index].name in self.expected_response:
-            card = self.hand.pop(hand_index)
+        if hand_index != -1 and (
+            ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
+            self.equipment[hand_index-len(self.hand)].name in self.expected_response):
+            card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
             card.use_card(self)
             self.game.deck.scrap(card)
             self.notify_self()
@@ -465,6 +472,9 @@ class Player:
                 f"I {self.name} have to many cards in my hand and I can't end the turn")
         else:
             self.is_my_turn = False
+            for i in range(len(self.equipment)):
+                if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
+                    self.equipment[i].can_be_used_now = True
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.next_turn()

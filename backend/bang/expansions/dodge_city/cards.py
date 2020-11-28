@@ -31,7 +31,7 @@ class Schivata(Mancato):
         super().__init__(suit, number)
         self.name = 'Schivata'
         self.icon = '🙅‍♂️'
-        self.desc += " e poi pesca una carta"
+        self.desc = "Usa questa carta per annullare un Bang! e poi pesca una carta"
         self.alt_text = '☝️🆓'
 
     def play_card(self, player, against, _with=None):
@@ -130,6 +130,53 @@ class Whisky(Card):
             return True
         return False
 
+class Bibbia(Schivata):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Bibbia'
+        self.icon = '📖'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            pass
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
+    def use_card(self, player):
+        player.hand.append(player.game.deck.draw())
+        player.notify_self()
+
+class Cappello(Mancato):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Cappello'
+        self.icon = '🧢'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            pass
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
+class PlaccaDiFerro(Cappello):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Placca Di Ferro'
+        self.icon = '🛡'
+
+class Sombrero(Cappello):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Sombrero'
+        self.icon = '👒'
 
 def get_starting_deck() -> List[Card]:
     return [
@@ -160,4 +207,10 @@ def get_starting_deck() -> List[Card]:
         SpringField(Suit.SPADES, 'K'),
         Tequila(Suit.CLUBS, 9),
         Whisky(Suit.HEARTS, 'Q'),
+        Bibbia(Suit.HEARTS, 10),
+        Cappello(Suit.DIAMONDS, 'J'),
+        PlaccaDiFerro(Suit.DIAMONDS, 'A'),
+        PlaccaDiFerro(Suit.SPADES, 'Q'),
+        Sombrero(Suit.CLUBS, 7),
+
     ]

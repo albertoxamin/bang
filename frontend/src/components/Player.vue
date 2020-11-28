@@ -192,7 +192,10 @@ export default {
 					icon: '❌',
 					is_equipment: true,
 				}]
-			this.hand.filter(x => this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
+			this.hand.filter(x => x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
+				cc.push(x)
+			})
+			this.equipment.filter(x => x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
 				cc.push(x)
 			})
 			return cc
@@ -242,7 +245,12 @@ export default {
 			}
 		},
 		respond(card) {
-			this.$socket.emit('respond', this.hand.indexOf(card))
+			let res = this.hand.indexOf(card)
+			if (res === -1) {
+				res = this.equipment.indexOf(card)
+				if (res !== -1) res += this.hand.length
+			}
+			this.$socket.emit('respond', res)
 		},
 		selectAgainst(player) {
 			this.really_play_card(this.card_against, player.name)
