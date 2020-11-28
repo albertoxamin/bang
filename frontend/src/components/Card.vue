@@ -133,7 +133,7 @@ export default {
 	}
 	.card.usable-next-turn {
 		box-shadow: 
-			0 0 0 3pt rgb(192,192,117), 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
+			0 0 0 3pt #65b46a, 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
 	}
 }
 </style>
