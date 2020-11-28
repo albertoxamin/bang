@@ -31,7 +31,7 @@ class Schivata(Mancato):
         super().__init__(suit, number)
         self.name = 'Schivata'
         self.icon = '🙅‍♂️'
-        self.desc += " e poi pesca una carta"
+        self.desc = "Usa questa carta per annullare un Bang! e poi pesca una carta"
         self.alt_text = '☝️🆓'
 
     def play_card(self, player, against, _with=None):
@@ -69,9 +69,12 @@ class Rissa(CatBalou):
 
     def play_card(self, player, against, _with):
         if _with != None:
+            players_with_cards = [p.name for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0]
+            if len(players_with_cards) == 0:
+                return False
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
-            super().play_card(player, against=[p.name for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0][0])
+            super().play_card(player, against=players_with_cards[0])
             player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name}')
             return True
         return False
@@ -130,6 +133,198 @@ class Whisky(Card):
             return True
         return False
 
+class Bibbia(Schivata):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Bibbia'
+        self.icon = '📖'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            pass
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
+    def use_card(self, player):
+        player.hand.append(player.game.deck.draw())
+        player.notify_self()
+
+class Cappello(Mancato):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Cappello'
+        self.icon = '🧢'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            pass
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
+class PlaccaDiFerro(Cappello):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Placca Di Ferro'
+        self.icon = '🛡'
+
+class Sombrero(Cappello):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Sombrero'
+        self.icon = '👒'
+
+class Pugnale(Pugno):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Pugnale'
+        self.icon = '🗡'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against=against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Derringer(Pugnale):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Derringer'
+        self.icon = '🚬'
+        self.alt_text += ' ☝️🆓'
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            player.hand.append(player.game.deck.draw())
+            return super().play_card(player, against=against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Borraccia(Birra):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Borraccia'
+        self.icon = '🍼'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class PonyExpress(WellsFargo):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Pony Express'
+        self.icon = '🦄'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Howitzer(Gatling):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Howitzer'
+        self.icon = '📡'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class CanCan(CatBalou):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Can Can'
+        self.icon = '👯‍♀️'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Conestoga(Panico):
+    def __init__(self, suit, number):
+        Card.__init__(self, suit, 'Conestoga', number)
+        self.icon = '🏕'
+        self.desc = "Ruba 1 carta dalla mano di un giocatore a prescindere dalla distanza"
+        self.need_target = True
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Pepperbox(Bang):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Pepperbox'
+        self.icon = '🌶'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            if against != None:
+                Card.play_card(self, player, against=against)
+                player.game.attack(player, against)
+                return True
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
+class FucileDaCaccia(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Fucile Da Caccia', number)
+        self.icon = '🌂'
+        self.desc = "Spara a un giocatore a prescindere dalla distanza"
+        self.need_target = True
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            if against != None:
+                super().play_card(player, against=against)
+                player.game.attack(player, against)
+                return True
+            return False
+        else:
+            player.equipment.append(self)
+            return True
 
 def get_starting_deck() -> List[Card]:
     return [
@@ -160,4 +355,18 @@ def get_starting_deck() -> List[Card]:
         SpringField(Suit.SPADES, 'K'),
         Tequila(Suit.CLUBS, 9),
         Whisky(Suit.HEARTS, 'Q'),
+        Bibbia(Suit.HEARTS, 10),
+        Cappello(Suit.DIAMONDS, 'J'),
+        PlaccaDiFerro(Suit.DIAMONDS, 'A'),
+        PlaccaDiFerro(Suit.SPADES, 'Q'),
+        Sombrero(Suit.CLUBS, 7),
+        Pugnale(Suit.HEARTS, 8),
+        Derringer(Suit.SPADES, 7),
+        Borraccia(Suit.HEARTS, 7),
+        CanCan(Suit.CLUBS, 'J'),
+        Conestoga(Suit.DIAMONDS, 9),
+        FucileDaCaccia(Suit.CLUBS, 'Q'),
+        PonyExpress(Suit.DIAMONDS, 'Q'),
+        Pepperbox(Suit.HEARTS, 'A'),
+        Howitzer(Suit.SPADES, 9),
     ]

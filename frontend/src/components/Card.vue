@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back}">
+	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn}">
 		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
@@ -68,6 +68,10 @@ export default {
 		0 0 0 6pt white,
 		0 0 5pt 6pt #aaa;
 }
+.card.usable-next-turn {
+	box-shadow: 
+		0 0 0 3pt rgb(192,192,117), 0 0 0 6pt white, 0 0 5pt 6pt #aaa
+}
 .card h4 {
 	position: absolute;
 	text-align: center;
@@ -126,6 +130,10 @@ export default {
 			0 0 0 3pt #7c795b,
 			0 0 0 6pt #181a1b,
 			0 0 5pt 6pt #aaa;
+	}
+	.card.usable-next-turn {
+		box-shadow: 
+			0 0 0 3pt rgb(192,192,117), 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
 	}
 }
 </style>

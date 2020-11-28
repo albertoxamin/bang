@@ -6,6 +6,10 @@ class Deck:
     def __init__(self, game):
         super().__init__()
         self.cards: List[cs.Card] = cs.get_starting_deck(game.expansions)
+        self.mancato_cards: List[str] = []
+        for c in self.cards:
+            if isinstance(c, cs.Mancato) and c.name not in self.mancato_cards:
+                self.mancato_cards.append(c.name)
         self.game = game
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []
@@ -46,5 +50,7 @@ class Deck:
             return self.draw()
 
     def scrap(self, card: cs.Card):
+        if card.usable_next_turn:
+            card.can_be_used_now = False
         self.scrap_pile.append(card)
         self.game.notify_scrap_pile()

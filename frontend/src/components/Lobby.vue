@@ -132,7 +132,7 @@ export default {
 				let rotateAngle = (i) * offsetAngle
 				let size = 130
 				return {
-					card:this.getPlayerCard(x),
+					card: this.getPlayerCard(x),
 					style: `position:absolute;transform: rotate(${rotateAngle}deg) translate(0, -${size}pt) rotate(-${rotateAngle}deg) translate(${size}pt,${size}pt)`,
 					...x
 				}
@@ -155,10 +155,13 @@ export default {
 			}
 		},
 		getPlayerCard(player) {
+			let icon = ''
+			if (!this.started) icon = '🤠'
+			else icon = player.ready !== undefined ? ((player.ready)?'👍': '🤔') : (player.is_sheriff ? '⭐' : player.icon)
 			return {
 				name: player.name,
 				number: ((this.username == player.name) ? this.$t('you') : (this.players[0].name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
-				icon: (player.lives === undefined || player.lives > 0) ? (player.is_sheriff ? '⭐' : player.icon || ((player.ready)?'👍': '🤠') ) : '☠️',
+				icon: icon,
 				is_character: true,
 			}
 		},
