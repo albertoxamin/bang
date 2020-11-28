@@ -16,7 +16,7 @@
 			<div v-else>
 				<div v-if="!isInLobby" >
 					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
-					<Card :card="getSelfCard" style="position:absolute; bottom:10pt; left: 10pt;"/>
+					<Card :card="getSelfCard" style="position:absolute; top:10pt; left: 10pt;"/>
 					<h2>{{$t("available_lobbies")}}</h2>
 					<div style="display: flex">
 						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
@@ -36,7 +36,7 @@
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
 		</div>
-		<select style="position:absolute;bottom:4pt;right:4pt;" v-model="$i18n.locale">
+		<select style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale">
 			<option
 				v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
 				:key="`lang-${i}`"
