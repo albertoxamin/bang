@@ -36,12 +36,12 @@
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
 		</div>
-		<select style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale">
+		<select style="position:absolute;bottom:4pt;right:4pt;" v-model="$i18n.locale">
 			<option
-				v-for="(lang, i) in ['it.🇮🇹', 'en.🇬🇧']"
+				v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
 				:key="`lang-${i}`"
 				:value="lang.split('.')[0]">
-					{{lang.split('.')[1]}} {{lang.split('.')[0]}}
+					{{lang.split('.')[1]}} {{lang.split('.')[2]}}
 			</option>
 		</select>
 	</div>

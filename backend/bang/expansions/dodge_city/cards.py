@@ -298,7 +298,7 @@ class Pepperbox(Bang):
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
             if against != None:
-                Card.play_card(player, against=against)
+                Card.play_card(self, player, against=against)
                 player.game.attack(player, against)
                 return True
             return False
@@ -361,7 +361,7 @@ def get_starting_deck() -> List[Card]:
         PlaccaDiFerro(Suit.SPADES, 'Q'),
         Sombrero(Suit.CLUBS, 7),
         Pugnale(Suit.HEARTS, 8),
-        Derringer(Suit.SPADES, 9),
+        Derringer(Suit.SPADES, 7),
         Borraccia(Suit.HEARTS, 7),
         CanCan(Suit.CLUBS, 'J'),
         Conestoga(Suit.DIAMONDS, 9),
