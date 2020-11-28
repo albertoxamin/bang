@@ -249,8 +249,9 @@ class Player:
         return s
 
     def play_card(self, hand_index: int, against=None, _with=None):
+        if not self.is_my_turn or self.pending_action != PendingAction.PLAY:
+            return
         if not (0 <= hand_index < len(self.hand) + len(self.equipment)):
-            print('illegal')
             return
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
