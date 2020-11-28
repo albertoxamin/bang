@@ -131,5 +131,9 @@ export default {
 			0 0 0 6pt #181a1b,
 			0 0 5pt 6pt #aaa;
 	}
+	.card.usable-next-turn {
+		box-shadow: 
+			0 0 0 3pt rgb(192,192,117), 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
+	}
 }
 </style>

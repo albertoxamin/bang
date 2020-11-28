@@ -295,10 +295,9 @@ class Player:
                 self.choose_action = ''
                 self.pending_action = PendingAction.PLAY
             else:
-                while len(self.game.players[self.game.players_map[self.target_p]+1].hand) + len(self.game.players[self.game.players_map[self.target_p]+1].equipment) == 0:
+                self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
+                while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
                     self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
-                    if self.target_p == self.name:
-                        self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and isinstance(self.character, chars.KitCarlson):
