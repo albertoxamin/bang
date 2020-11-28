@@ -1,6 +1,6 @@
 <template>
 	<div class="chat">
-		<h3>Chat</h3>
+		<h3>{{$t("chat")}}</h3>
 		<div id="chatbox">
 			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
 			<p class="end">.</p>

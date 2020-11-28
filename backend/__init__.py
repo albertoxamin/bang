@@ -19,7 +19,7 @@ games: List[Game] = []
 online_players = 0
 
 def advertise_lobbies():
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 7])
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10])
 
 @sio.event
 def connect(sid, environ):
@@ -90,58 +90,58 @@ def join_room(sid, room):
 
 @sio.event
 def chat_message(sid, msg):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     sio.emit('chat_message', room=ses.game.name, data=f'[{ses.name}]: {msg}')
 
 @sio.event
 def start_game(sid):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.game.start_game()
     advertise_lobbies()
 
 @sio.event
 def set_character(sid, name):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.set_character(name)
 
 @sio.event
 def refresh(sid):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.notify_self()
 
 @sio.event
 def draw(sid, pile):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.draw(pile)
 
 @sio.event
 def pick(sid):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.pick()
 
 @sio.event
 def end_turn(sid):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.end_turn()
 
 @sio.event
 def play_card(sid, data):
-    ses = sio.get_session(sid)
-    ses.play_card(data['index'], data['against'])
+    ses: Player = sio.get_session(sid)
+    ses.play_card(data['index'], data['against'], data['with'])
 
 @sio.event
 def respond(sid, data):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.respond(data)
 
 @sio.event
 def choose(sid, card_index):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.choose(card_index)
 
 @sio.event
 def scrap(sid, card_index):
-    ses = sio.get_session(sid)
+    ses: Player = sio.get_session(sid)
     ses.scrap(card_index)
 
 if __name__ == '__main__':

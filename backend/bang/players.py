@@ -203,6 +203,7 @@ class Player:
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
                             self.game.next_player().notify_self()
+                            break
                     if any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
                         self.notify_self()
                         return
@@ -218,7 +219,7 @@ class Player:
                             self.game.deck.scrap(self.equipment.pop(i))
                             self.end_turn(forced=True)
                             return
-                        else:
+                        elif pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i))
                             break
                     break
@@ -248,18 +249,23 @@ class Player:
         s += f"equipment {[str(c) for c in self.equipment]}"
         return s
 
-    def play_card(self, hand_index: int, against=None):
+    def play_card(self, hand_index: int, against=None, _with=None):
         if not (0 <= hand_index < len(self.hand)):
             print('illegal')
             return
         card: cs.Card = self.hand.pop(hand_index)
-        print(self.name, 'is playing ', card, ' against:', against)
-        did_play_card = card.play_card(self, against)
+        withCard: cs.Card = None
+        if _with != None:
+            withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
+        print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
+        did_play_card = card.play_card(self, against, withCard)
         if not card.is_equipment:
             if did_play_card:
                 self.game.deck.scrap(card)
             else:
                 self.hand.insert(hand_index, card)
+                if withCard:
+                    self.hand.insert(_with, withCard)
         self.notify_self()
 
     def choose(self, card_index):
@@ -277,9 +283,16 @@ class Player:
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card)
-            self.target_p = ''
-            self.choose_action = ''
-            self.pending_action = PendingAction.PLAY
+            if self.event_type != 'rissa' or (self.event_type == 'rissa' and self.target_p == [p.name for p in self.game.players if p != self and (len(p.hand)+len(p.equipment)) > 0][-1]):
+                self.event_type = ''
+                self.target_p = ''
+                self.choose_action = ''
+                self.pending_action = PendingAction.PLAY
+            else:
+                while len(self.game.players[self.game.players_map[self.target_p]+1].hand) + len(self.game.players[self.game.players_map[self.target_p]+1].equipment) == 0:
+                    self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
+                    if self.target_p == self.name:
+                        self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and isinstance(self.character, chars.KitCarlson):

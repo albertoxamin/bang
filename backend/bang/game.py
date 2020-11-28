@@ -41,8 +41,11 @@ class Game:
             self.notify_room()
 
     def add_player(self, player: players.Player):
-        if player in self.players or len(self.players) >= 7:
+        if player in self.players or len(self.players) >= 10:
             return
+        if len(self.players) > 7:
+            if 'dodge_city' not in self.expansions:
+                self.expansions.append('dodge_city')
         player.join_game(self)
         self.players.append(player)
         print(f'Added player {player.name} to game')
@@ -61,7 +64,13 @@ class Game:
         self.readyCount += 1
         self.notify_room()
         if self.readyCount == len(self.players):
-            self.distribute_roles()
+            for i in range(len(self.players)):
+                self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} ha come personaggio {self.players[i].character.name}, la sua abilità speciale è: {self.players[i].character.desc}')
+                self.players[i].prepare()
+                for k in range(self.players[i].max_lives):
+                    self.players[i].hand.append(self.deck.draw())
+                self.players[i].notify_self()
+            self.players[self.turn].play_turn()
 
     def choose_characters(self):
         char_cards = random.sample(characters.all_characters(), len(self.players)*2)
@@ -78,6 +87,7 @@ class Game:
         self.started = True
         self.deck = Deck(self)
         self.initial_players = len(self.players)
+        self.distribute_roles()
         self.choose_characters()
 
     def distribute_roles(self):
@@ -89,21 +99,16 @@ class Game:
                 roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato')
             ]
         elif len(self.players) >= 4:
-            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice()]
+            available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Renegade(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
             available_roles = available_roles[:len(self.players)]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
-            self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} ha come personaggio {self.players[i].character.name}, la sua abilità speciale è: {self.players[i].character.desc}')
             self.players[i].set_role(available_roles[i])
             if isinstance(available_roles[i], roles.Sheriff) or (len(available_roles) == 3 and isinstance(available_roles[i], roles.Vice)):
                 if isinstance(available_roles[i], roles.Sheriff):
                     self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} È lo sceriffo')
                 self.turn = i
-            self.players[i].prepare()
-            for k in range(self.players[i].max_lives):
-                self.players[i].hand.append(self.deck.draw())
             self.players[i].notify_self()
-        self.play_turn()
 
     def attack_others(self, attacker: players.Player):
         attacker.pending_action = players.PendingAction.WAIT

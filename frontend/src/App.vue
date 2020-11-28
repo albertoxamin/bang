@@ -2,29 +2,29 @@
 	<div id="app" class="dark-mode">
 		<div v-if="!isInLobby" id="logo" class="center-stuff" style="margin-bottom:10pt;">
 			<h1 style="margin-bottom:0pt;">PewPew!</h1>
-			<i style="font-size: x-small;">Bang! è un marchio registrato DVGiochi</i>
+			<i style="font-size: x-small;">{{$t("trademark")}}</i>
 		</div>
 		<div v-if="isConnected">
 			<div v-if="!didSetUsername">
-				<p>Scegli un username:</p>
+				<p>{{$t("choose_username")}}</p>
 				<form @submit="setUsername">
 					<input v-model="username" />
 					<input type="submit"/>
 				</form>
-				<p>Giocatori online: {{onlinePlayers}}</p>
+				<p>{{$t("online_players")}}{{onlinePlayers}}</p>
 			</div>
 			<div v-else>
 				<div v-if="!isInLobby" >
-					<p>Giocatori online: {{onlinePlayers}}</p>
+					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
 					<Card :card="getSelfCard" style="position:absolute; bottom:10pt; right: 10pt;"/>
-					<h2>Lobby disponibili:</h2>
+					<h2>{{$t("available_lobbies")}}</h2>
 					<div style="display: flex">
 						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
-						<p v-if="noLobbyAvailable">Nessuna lobby disponibile</p>
+						<p v-if="noLobbyAvailable">{{$t("no_lobby_available")}}</p>
 					</div>
 					<form @submit="createLobby">
-						<h2>Crea una lobby:</h2>
-						<p>Nome:</p>
+						<h2>{{$t("create_lobby")}}</h2>
+						<p>{{$t("lobby_name")}}</p>
 						<input v-model="lobbyName"/>
 						<input type="submit" />
 					</form>
@@ -33,9 +33,17 @@
 			</div>
 		</div>
 		<div v-else class="center-stuff">
-			<h2>Attenzione!</h2>
-			<p>Connessione al server assente.</p>
+			<h2>{{$t("warning")}}</h2>
+			<p>{{$t("connection_error")}}</p>
 		</div>
+		<select style="position:absolute;bottom:4pt;right:4pt;" v-model="$i18n.locale">
+			<option
+				v-for="(lang, i) in ['it.🇮🇹', 'en.🇬🇧']"
+				:key="`lang-${i}`"
+				:value="lang.split('.')[0]">
+					{{lang.split('.')[1]}} {{lang.split('.')[0]}}
+			</option>
+		</select>
 	</div>
 </template>
 
@@ -66,7 +74,7 @@ export default {
 		getSelfCard() {
 			return {
 				name: this.username,
-				number: 'YOU',
+				number: this.$t('you'),
 				icon: '🤠',
 				is_character: true,
 			}
@@ -120,7 +128,7 @@ export default {
 			e.preventDefault();
 		},
 		joinLobby(lobby) {
-			let password = lobby.locked ? prompt("Room password:", "") : '';
+			let password = lobby.locked ? prompt(this.$t("room_password_prompt"), "") : '';
 			this.$socket.emit('join_room', {name:lobby.name,password:password})
 		},
 		init() {
@@ -217,7 +225,7 @@ h1,h2,h3,h4,p,span,b,label{
     transform: scale(0);
   }
 }
-input {
+input, select {
   border: 2px solid;
   border-radius: 4px;
   font-size: 1rem;
@@ -227,7 +235,7 @@ input {
   transition: border-color 0.5s ease-out;
 }
 @media (prefers-color-scheme: dark) {
-	:root, #app, input {
+	:root, #app, input, select {
     background-color: #181a1b;
     color: rgb(174, 194, 211);
   }

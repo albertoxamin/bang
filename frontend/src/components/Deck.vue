@@ -1,16 +1,22 @@
 <template>
-	<div class="deck">
-		<card v-if="endTurnAction && isPlaying" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
-		<div style="position:relative">
-			<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
-			<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-			<card :card="card" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
+	<div>
+		<div class="deck">
+			<card v-if="endTurnAction && isPlaying" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
+			<div style="position:relative">
+				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
+				<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
+				<card :card="card" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
+			</div>
+			<div style="position:relative;">
+				<card v-if="previousScrap" :card="previousScrap"/>
+				<card v-else :card="card" class="back" style="opacity:0"/>
+				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap" @click.native="action('scrap')"
+							@pointerenter.native="desc=lastScrap.desc" @pointerleave.native="desc=''" />
+			</div>
 		</div>
-		<div style="position:relative;">
-			<card v-if="previousScrap" :card="previousScrap"/>
-			<card v-else :card="card" class="back" style="opacity:0"/>
-			<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap" @click.native="action('scrap')"/>
-		</div>
+		<transition name="list">
+			<p v-if="desc" class="center-stuff"><i>{{desc}}</i></p>
+		</transition>
 	</div>
 </template>
 
@@ -30,14 +36,12 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
-		endTurnCard: {
-			name: 'Termina turno!',
-			icon: '⛔️'
-		},
+		endTurnCard: null,
 		lastScrap: null,
 		previousScrap: null,
 		pending_action: false,
 		isPlaying: true,
+		desc: '',
 	}),
 	sockets: {
 		self(self){
@@ -47,6 +51,12 @@ export default {
 		},
 		scrap(card) {
 			this.lastScrap = card
+		}
+	},
+	mounted() {
+		this.endTurnCard = {
+			name: this.$t('end_turn'),
+			icon: '⛔️'
 		}
 	},
 	methods: {
