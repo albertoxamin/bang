@@ -23,13 +23,14 @@ class Game:
         self.expansions = []
 
     def notify_room(self):
-        self.sio.emit('room', room=self.name, data={
-            'name': self.name,
-            'started': self.started,
-            'players': [{'name':p.name, 'ready': False} for p in self.players],
-            'password': self.password,
-            'expansions': self.expansions,
-        })
+        if len([p for p in self.players if p.character == None]) != 0:
+            self.sio.emit('room', room=self.name, data={
+                'name': self.name,
+                'started': self.started,
+                'players': [{'name':p.name, 'ready': p.character != None} for p in self.players],
+                'password': self.password,
+                'expansions': self.expansions,
+            })
 
     def toggle_expansion(self, expansion_name):
         if not self.started:
