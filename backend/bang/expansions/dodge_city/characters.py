@@ -46,3 +46,17 @@ def all_characters() -> List[Character]:
         ElenaFuente(),
         BillNoface(),
     ]
+
+#Apache Kid: il suo effetto non conta nei duelli
+#belle star: vale solo per le carte blu e verdi
+#chuck wengam: può usarlo più volte in un turno, ma non può suicidarsi
+#doc holiday: il suo effetto non conta nel limite di un bang per turno,
+#             se deve sparare a Apache Kid una delle due carte scartate non deve essere di quadri
+#molly stark: le carte scartate che valgono sono solo quelle scartate volontariamente,
+#             carte scartate per colpa di can can, cat balou, rissa, panico non valgono,
+#             invece carte scartata per indiani, birra(in caso di morte), o un mancato valgono,
+#             in un duello pesca solo quando il duello è finito (una carta x ogni bang scartato)
+#pat brennan: quando pesca con il suo effetto, pesca solo la carta del giocatore non anche dal mazzo
+#vera custer: la scelta può essere fatta solo appena prima di pescare,
+#             quando inizia la partita serve farle scegliere, poi può rimanere quello finchè non decide di cambiarlo
+#             eventualmente fare una schermata dove vede tutti i personaggi

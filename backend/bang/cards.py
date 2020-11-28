@@ -226,7 +226,6 @@ class Diligenza(Card):
         self.desc = "Pesca 2 carte dalla cima del mazzo"
 
     def play_card(self, player, against, _with=None):
-        super().play_card(player, against=against)
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'{player.name} ha giocato {self.name} e ha pescato 2 carte.')
         for i in range(2):
