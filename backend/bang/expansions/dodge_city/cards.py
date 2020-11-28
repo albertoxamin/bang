@@ -193,6 +193,136 @@ class Pugnale(Pugno):
             player.equipment.append(self)
             return True
 
+class Derringer(Pugnale):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Derringer'
+        self.icon = '🚬'
+        self.alt_text += ' ☝️🆓'
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            player.hand.append(player.game.deck.draw())
+            return super().play_card(player, against=against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Borraccia(Birra):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Borraccia'
+        self.icon = '🍼'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class PonyExpress(WellsFargo):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Pony Express'
+        self.icon = '🦄'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Howitzer(Gatling):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Howitzer'
+        self.icon = '📡'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class CanCan(CatBalou):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Can Can'
+        self.icon = '👯‍♀️'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Conestoga(Panico):
+    def __init__(self, suit, number):
+        Card.__init__(self, suit, 'Conestoga', number)
+        self.icon = '🏕'
+        self.desc = "Ruba 1 carta dalla mano di un giocatore a prescindere dalla distanza"
+        self.need_target = True
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            return super().play_card(player, against)
+        else:
+            player.equipment.append(self)
+            return True
+
+class Pepperbox(Bang):
+    def __init__(self, suit, number):
+        super().__init__(suit, number)
+        self.name = 'Pepperbox'
+        self.icon = '🌶'
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            if against != None:
+                Card.play_card(player, against=against)
+                player.game.attack(player, against)
+                return True
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
+class FucileDaCaccia(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Fucile Da Caccia', number)
+        self.icon = '🌂'
+        self.desc = "Spara a un giocatore a prescindere dalla distanza"
+        self.need_target = True
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+
+    def play_card(self, player, against, _with=None):
+        if self.can_be_used_now:
+            if against != None:
+                super().play_card(player, against=against)
+                player.game.attack(player, against)
+                return True
+            return False
+        else:
+            player.equipment.append(self)
+            return True
+
 def get_starting_deck() -> List[Card]:
     return [
         #TODO: aggiungere anche le carte normalmente presenti https://bang.dvgiochi.com/cardslist.php?id=3
@@ -228,4 +358,12 @@ def get_starting_deck() -> List[Card]:
         PlaccaDiFerro(Suit.SPADES, 'Q'),
         Sombrero(Suit.CLUBS, 7),
         Pugnale(Suit.HEARTS, 8),
+        Derringer(Suit.SPADES, 9),
+        Borraccia(Suit.HEARTS, 7),
+        CanCan(Suit.CLUBS, 'J'),
+        Conestoga(Suit.DIAMONDS, 9),
+        FucileDaCaccia(Suit.CLUBS, 'Q'),
+        PonyExpress(Suit.DIAMONDS, 'Q'),
+        Pepperbox(Suit.HEARTS, 'A'),
+        Howitzer(Suit.SPADES, 9),
     ]
