@@ -70,7 +70,7 @@ export default {
 }
 .card.usable-next-turn {
 	box-shadow: 
-		0 0 0 3pt rgb(192,192,117), 0 0 0 6pt white, 0 0 5pt 6pt #aaa
+		0 0 0 3pt  #6aa16e, 0 0 0 6pt white, 0 0 5pt 6pt #aaa
 }
 .card h4 {
 	position: absolute;
@@ -133,7 +133,7 @@ export default {
 	}
 	.card.usable-next-turn {
 		box-shadow: 
-			0 0 0 3pt rgb(192,192,117), 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
+			0 0 0 3pt #6aa16e, 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
 	}
 }
 </style>
