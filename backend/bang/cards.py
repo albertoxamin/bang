@@ -183,7 +183,7 @@ class Birra(Card):
         self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
 
     def play_card(self, player, against, _with=None):
-        if len(player.game.players) != 2 and player.lives != player.max_lives:
+        if len(player.game.players) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             return True
@@ -203,7 +203,8 @@ class CatBalou(Card):
 
     def play_card(self, player, against, _with=None):
         if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
-            super().play_card(player, against=against)
+            if self.name != 'Rissa'
+                super().play_card(player, against=against)
             from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE
             player.choose_action = 'discard'

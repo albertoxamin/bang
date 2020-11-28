@@ -72,6 +72,7 @@ class Rissa(CatBalou):
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
             super().play_card(player, against=[p.name for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0][0])
+            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name})
             return True
         return False
 
@@ -105,7 +106,7 @@ class Tequila(Card):
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
             beneficiario = f'{against}' if against != player.name else 'se stesso'
-            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name} per {beneficiario}.')
+            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name} per {beneficiario}')
             player.game.deck.scrap(_with)
             player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
             player.game.get_player_named(against).notify_self()
@@ -116,7 +117,7 @@ class Whisky(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Whisky', number)
         self.icon = '🥃'
-        self.desc = "Gioca questa carta per recuperare fino a 2 punti vita."
+        self.desc = "Gioca questa carta per recuperare fino a 2 punti vita"
         self.need_with = True
         self.alt_text = '2🃏'
 
