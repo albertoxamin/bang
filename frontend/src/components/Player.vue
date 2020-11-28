@@ -234,7 +234,7 @@ export default {
 				if (card.need_with && !this.card_with) {
 					this.card_with = card
 				} else if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
-						if (card.name == 'Bang!' || calamity_special)
+						if (card.name == 'Bang!' || card.name == "Pepperbox" || calamity_special)
 							this.range = this.sight
 						else
 							this.range = card.range
