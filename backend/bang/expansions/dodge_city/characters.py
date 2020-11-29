@@ -40,7 +40,7 @@ class BillNoface(Character):
     def __init__(self):
         super().__init__("Bill Noface", max_lives=4)
         self.desc = "Pesca 1 carta + 1 carta per ogni ferita che ha"
-        self.desc_eng = "She can use any card of her hand as missed"
+        self.desc_eng = "Draw 1 card + 1 card for each wound he has"
         self.icon = '🙈'
 
 class MollyStark(Character):

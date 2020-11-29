@@ -51,5 +51,6 @@
 	"if_card_red": "Se la carta è cuori o quadri ne pesca un'altra",
 	"choose_scarp_card_to": "SCEGLI CHE CARTA SCARTARE PER USARE",
 	"pick_a_card": "ESTRAI UNA CARTA",
-	"to_defend_from": "PER DIFENDERTI DA"
+	"to_defend_from": "PER DIFENDERTI DA",
+	"submit": "Invia"
 }
