@@ -39,14 +39,14 @@ class ElenaFuente(Character):
 class BillNoface(Character):
     def __init__(self):
         super().__init__("Bill Noface", max_lives=4)
-        self.desc = "Pesca 1 carta + 1 carta per ogni ferita che ha"
+        self.desc = "All'inizio del turno pesca 1 carta + 1 carta per ogni ferita che ha"
         self.desc_eng = "Draw 1 card + 1 card for each wound he has"
         self.icon = '🙈'
 
 class MollyStark(Character):
     def __init__(self):
         super().__init__("Molly Stark", max_lives=4)
-        self.desc = "Quando usa una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
+        self.desc = "Quando usa volontariamente una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
         self.desc_eng = "When she uses a card from her hand outside her turn, he draws a card."
         self.icon = '🙅‍♀️'
 
