@@ -15,6 +15,7 @@ import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
 
 import { languages, defaultLocale } from './i18n';
+import './registerServiceWorker'
 const messages = Object.assign(languages)
 
 const i18n = new VueI18n({
