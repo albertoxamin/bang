@@ -435,6 +435,8 @@ class Player:
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
             self.equipment[hand_index-len(self.hand)].name in self.expected_response):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
+            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand):
+                self.hand.append(self.game.deck.draw())
             card.use_card(self)
             self.game.deck.scrap(card)
             self.notify_self()

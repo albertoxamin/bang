@@ -37,6 +37,12 @@ class BillNoface(Character):
         self.desc = "Pesca 1 carta + 1 carta per ogni ferita che ha"
         self.icon = '🙈'
 
+class MollyStark(Character):
+    def __init__(self):
+        super().__init__("Molly Stark", max_lives=4)
+        self.desc = "Quando usa una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
+        self.icon = '🙅‍♀️'
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -45,6 +51,7 @@ def all_characters() -> List[Character]:
         HerbHunter(),
         ElenaFuente(),
         BillNoface(),
+        MollyStark(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli
