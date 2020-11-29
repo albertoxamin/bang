@@ -64,7 +64,7 @@ export default {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+	background-color: rgba(0,0,0,0.7); /* Black background with opacity */
 	z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
 	display: flex;
 	color: white;
