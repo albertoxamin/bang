@@ -43,6 +43,12 @@ class MollyStark(Character):
         self.desc = "Quando usa una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
         self.icon = '🙅‍♀️'
 
+class ApacheKid(Character):
+    def __init__(self):
+        super().__init__("Molly Stark", max_lives=3)
+        self.desc = "Le carte di quadri ♦️ giocate contro di lui non hanno effetto (non vale durante i duelli)"
+        self.icon = '♦️'
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -52,6 +58,7 @@ def all_characters() -> List[Character]:
         ElenaFuente(),
         BillNoface(),
         MollyStark(),
+        ApacheKid(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

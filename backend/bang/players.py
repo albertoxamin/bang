@@ -266,6 +266,8 @@ class Player:
             withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = card.play_card(self, against, withCard)
+        if against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.suit == cs.Suit.DIAMONDS:
+            did_play_card = False
         if not card.is_equipment and not card.usable_next_turn:
             if did_play_card:
                 self.game.deck.scrap(card)
