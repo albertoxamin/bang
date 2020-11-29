@@ -173,7 +173,7 @@ class Bang(Card):
             super().play_card(player, against=against)
             player.has_played_bang = not isinstance(
                 player.character, chars.WillyTheKid)
-            player.game.attack(player, against)
+            player.game.attack(player, against, double=isinstance(player.character, chars.SlabTheKiller))
             return True
         return False
 
