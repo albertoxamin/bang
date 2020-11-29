@@ -45,7 +45,7 @@ class MollyStark(Character):
 
 class ApacheKid(Character):
     def __init__(self):
-        super().__init__("Molly Stark", max_lives=3)
+        super().__init__("Apache Kid", max_lives=3)
         self.desc = "Le carte di quadri ♦️ giocate contro di lui non hanno effetto (non vale durante i duelli)"
         self.icon = '♦️'
 

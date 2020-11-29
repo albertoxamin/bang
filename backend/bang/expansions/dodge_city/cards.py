@@ -216,6 +216,7 @@ class Borraccia(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Borraccia', number)
         self.icon = '🍼'
+        self.desc = 'Recupera 1 vita'
         self.usable_next_turn = True
         self.can_be_used_now = False
 
