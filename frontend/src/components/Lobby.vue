@@ -19,7 +19,7 @@
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
-					<span style="position:absolute;top:0;" class="center-stuff">{{getActionEmoji(p)}}</span>
+					<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" @click.native="selectedInfo = p.equipment"/>
 					</div>
@@ -239,24 +239,22 @@ export default {
 	top: 0;
 }
 .tiny-health {
-	position: absolute;
 	display: flex;
 	justify-content: space-evenly;
-	top: -16pt;
 	transform: scale(0.8);
-	right: 0;
-	left: 0;
+	margin-bottom: -4pt;
 }
 .tiny-equipment .card:nth-child(n+2) {
 	margin-top: -60pt;
 }
 .tiny-character {
 	position: absolute;
-	transform: scale(0.6) translate(-80px, -50px);
+	transform: scale(0.5) translate(-80px, -40px);
 	top: 0;
 }
 .players-table {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-evenly;
 	margin-bottom: 12pt;
 }
