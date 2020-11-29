@@ -42,10 +42,11 @@ class Player:
         self.on_failed_response_cb = None
         self.event_type: str = None
         self.expected_response = []
-        self.attacker = None
+        self.attacker: Player = None
         self.target_p: str = None
         self.is_drawing = False
         self.mancato_needed = 0
+        self.molly_discarded_cards = 0
 
     def join_game(self, game):
         self.game = game
@@ -421,6 +422,8 @@ class Player:
         while self.lives <= 0 and len(self.game.players) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
             for i in range(len(self.hand)):
                 if isinstance(self.hand[i], cs.Birra):
+                    if isinstance(self.character, chd.MollyStark) and not self.is_my_turn:
+                        self.hand.append(self.game.deck.draw())
                     self.lives += 1
                     self.game.deck.scrap(self.hand.pop(i))
                     self.sio.emit('chat_message', room=self.game.name,
@@ -437,7 +440,7 @@ class Player:
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
             self.equipment[hand_index-len(self.hand)].name in self.expected_response):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
-            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand):
+            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw())
             card.use_card(self)
             self.game.deck.scrap(card)
@@ -446,6 +449,8 @@ class Player:
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
                     self.game.duel(self, self.attacker.name)
+                    if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn:
+                        self.molly_discarded_cards += 1
                 else:
                     self.game.responders_did_respond_resume_turn()
                 self.event_type = ''
@@ -453,6 +458,16 @@ class Player:
                 self.pending_action = PendingAction.RESPOND
                 self.notify_self()
         else:
+            if isinstance(self.character, chd.MollyStark) and not self.is_my_turn:
+                for i in range(self.molly_discarded_cards):
+                    self.hand.append(self.game.deck.draw())
+                self.molly_discarded_cards = 0
+                self.notify_self()
+            elif self.attacker and isinstance(self.attacker.character, chd.MollyStark) and self.is_my_turn:
+                for i in range(self.attacker.molly_discarded_cards):
+                    self.attacker.hand.append(self.attacker.game.deck.draw())
+                self.attacker.molly_discarded_cards = 0
+                self.attacker.notify_self()
             self.on_failed_response_cb()
             self.game.responders_did_respond_resume_turn()
         if self.mancato_needed <= 0:
