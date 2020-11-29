@@ -5,48 +5,56 @@ class PixiePete(Character):
     def __init__(self):
         super().__init__("Pixie Pete", max_lives=3)
         self.desc = "All'inizio del turno pesca 3 carte invece che 2"
+        self.desc_eng = "He draws 3 cards instead of 2"
         self.icon = '☘️'
 
 class TequilaJoe(Character):
     def __init__(self):
         super().__init__("Tequila Joe", max_lives=4)
         self.desc = "Se gioca la carta Birra recupera 2 vite invece che una sola"
+        self.desc_eng = "When he plays Beer, he regains 2 Health Points"
         self.icon = '🍻'
 
 class GregDigger(Character):
     def __init__(self):
         super().__init__("Greg Digger", max_lives=4)
         self.desc = "Quando un giocatore muore, recupera fino a 2 vite"
+        self.desc_eng = "Whenever a player dies, he regains up to 2 lives"
         self.icon = '🦴'
 
 class HerbHunter(Character):
     def __init__(self):
         super().__init__("HerbHunter", max_lives=4)
         self.desc = "Quando un giocatore muore, pesca 2 carte"
+        self.desc_eng = "Whenever a player dies, he draws 2 cards"
         self.icon = '⚰️'
 
 class ElenaFuente(Character):
     def __init__(self):
         super().__init__("Elena Fuente", max_lives=3)
         self.desc = "Può usare una carta qualsiasi nella sua mano come mancato"
+        self.desc_eng = "She can use any card of her hand as missed"
         self.icon = '🧘‍♀️'
 
 class BillNoface(Character):
     def __init__(self):
         super().__init__("Bill Noface", max_lives=4)
         self.desc = "Pesca 1 carta + 1 carta per ogni ferita che ha"
+        self.desc_eng = "She can use any card of her hand as missed"
         self.icon = '🙈'
 
 class MollyStark(Character):
     def __init__(self):
         super().__init__("Molly Stark", max_lives=4)
         self.desc = "Quando usa una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
+        self.desc_eng = "When she uses a card from her hand outside her turn, he draws a card."
         self.icon = '🙅‍♀️'
 
 class ApacheKid(Character):
     def __init__(self):
         super().__init__("Apache Kid", max_lives=3)
         self.desc = "Le carte di quadri ♦️ giocate contro di lui non hanno effetto (non vale durante i duelli)"
+        self.desc_eng = "Cards of diamonds ♦️ played against him, do no have effect (doesn't work in duels)."
         self.icon = '♦️'
 
 def all_characters() -> List[Character]:

@@ -4,16 +4,16 @@
 		<!-- <button v-if="canEndTurn" @click="end_turn">Termina Turno</button> -->
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"
-					@pointerenter.native="desc=my_role.goal" @pointerleave.native="desc=''"/>
+					@pointerenter.native="desc=($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" @pointerleave.native="desc=''"/>
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
-					@pointerenter.native="desc=character.desc" @pointerleave.native="desc=''"/>
+					@pointerenter.native="desc=($i18n.locale=='it'?character.desc:character.desc_eng)" @pointerleave.native="desc=''"/>
 			<transition-group name="list" tag="div" style="display: flex;flex-direction:column; justify-content: space-evenly; margin-left: 12pt;margin-right:-10pt;">
 				<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
 			</transition-group>
 			<transition-group v-if="lives > 0" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
-					@pointerenter.native="desc=card.desc" @pointerleave.native="desc=''"
+					@pointerenter.native="desc=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="desc=''"
 					@click.native="play_card(card, true)" />
 			</transition-group>
 		</div>
@@ -25,7 +25,7 @@
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
-					@pointerenter.native="hint=card.desc" @pointerleave.native="hint=''"/>
+					@pointerenter.native="hint=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="hint=''"/>
 			</transition-group>
 		</div>
 		<transition name="list">
@@ -36,7 +36,7 @@
 		<Chooser v-if="shouldChooseCard" :text="$t('choose_card_to_get')" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
-		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="my_role.goal" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
+		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t('if_card_red')" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>

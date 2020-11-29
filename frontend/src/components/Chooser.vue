@@ -42,7 +42,7 @@ export default {
 	},
 	methods: {
 		showDesc(card) {
-			this.desc = card.desc
+			this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
 		}
 	},
 	mounted() {
