@@ -200,12 +200,13 @@ class Player:
                         if picked.suit == cs.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i))
-                            if isinstance(self.character, chars.BartCassidy):
-                                self.hand.append(self.game.deck.draw())
-                                self.sio.emit('chat_message', room=self.game.name,
-                                              data=f'{self.name} ha ricevuto un risarcimento perchè è stato ferito.')
                             self.sio.emit('chat_message', room=self.game.name,
                                           data=f'{self.name} ha fatto esplodere la dinamite.')
+                            if isinstance(self.character, chars.BartCassidy) and self.lives > 0:
+                                for i in range(3):
+                                    self.hand.append(self.game.deck.draw())
+                                self.sio.emit('chat_message', room=self.game.name,
+                                              data=f'{self.name} ha ricevuto un risarcimento perchè è stato ferito.')
                             print(f'{self.name} Boom, -3 hp')
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
