@@ -23,7 +23,6 @@ class Game:
         self.expansions = []
 
     def notify_room(self):
-        print([p.name for p in self.players])
         if len([p for p in self.players if p.character == None]) != 0:
             self.sio.emit('room', room=self.name, data={
                 'name': self.name,

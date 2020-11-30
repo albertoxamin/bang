@@ -40,7 +40,10 @@ def set_username(sid, username):
         advertise_lobbies()
     elif sio.get_session(sid).game == None or not sio.get_session(sid).game.started:
         print(f'{sid} changed username to {username}')
-        sio.get_session(sid).name = username
+        if len([p for p in sio.get_session(sid).game.players if p.name == username]) > 0:
+            sio.get_session(sid).name = f'{username}_{random.randint(0,100)}'
+        else:
+            sio.get_session(sid).name = username
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
         sio.get_session(sid).game.notify_room()
 
