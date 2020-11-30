@@ -16,6 +16,7 @@ Vue.use(VueI18n)
 
 import { languages, defaultLocale } from './i18n';
 import './registerServiceWorker'
+import router from './router'
 const messages = Object.assign(languages)
 
 const i18n = new VueI18n({
@@ -24,6 +25,7 @@ const i18n = new VueI18n({
 })
 
 new Vue({
-	i18n,
-  render: h => h(App),
+  i18n,
+  router,
+  render: h => h(App)
 }).$mount('#app')

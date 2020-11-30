@@ -38,8 +38,22 @@ def set_username(sid, username):
     advertise_lobbies()
 
 @sio.event
-def my_message(sid, data):
-    print('message ', data)
+def get_me(sid, room):
+    if isinstance(sio.get_session(sid), Player):
+        sio.emit('me', data=sio.get_session(sid).name, room=sid)
+        if sio.get_session(sid).game:
+            sio.get_session(sid).game.notify_room()
+    else:
+        sio.save_session(sid, Player('player', sid, sio))
+        de_games = [g for g in games if g.name == room['name']]
+        if len(de_games) == 1 and not de_games[0].started:
+            join_room(sid, room)
+        else:
+            create_room(sid, room['name'])
+        if sio.get_session(sid).game == None:
+            sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
+        else:
+            sio.emit('me', data=sio.get_session(sid).name, room=sid)
 
 @sio.event
 def disconnect(sid):

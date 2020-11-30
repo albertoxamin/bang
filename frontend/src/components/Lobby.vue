@@ -64,10 +64,8 @@ export default {
 		TinyHand,
 		PrettyCheck,
 	},
-	props: {
-		username: String
-	},
 	data: () => ({
+		username: '',
 		lobbyName: '',
 		started: false,
 		players: [],
@@ -104,15 +102,17 @@ export default {
 			console.log(data)
 			this.players = data
 		},
-		// self_vis(vis) {
-		// 	console.log('received visibility update')
-		// 	console.log(vis)
-		// 	this.players = JSON.parse(vis)
-		// },
+		me(username) {
+			if (username.error) { 
+				alert(username.error)
+				this.$router.push('/')
+			}
+			this.username = username
+		},
 	},
 	computed: {
 		isRoomOwner() {
-			return this.players[0].name == this.username
+			return this.players.length > 0 && this.players[0].name == this.username
 		},
 		startGameCard() {
 			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
@@ -201,7 +201,11 @@ export default {
 		privateRoom() {
 			this.$socket.emit('private')
 		}
-	}
+	},
+	mounted() {
+		console.log('mounted lobby')
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd})
+	},
 }
 </script>
 
