@@ -109,6 +109,7 @@ def join_room(sid, room):
     sio.enter_room(sid, room_name)
     while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
         sio.get_session(sid).name += f'_{random.randint(0,100)}'
+    sio.emit('me', data=sio.get_session(sid).name, room=sid)
     games[i].add_player(sio.get_session(sid))
     advertise_lobbies()
 

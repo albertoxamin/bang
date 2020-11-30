@@ -40,7 +40,7 @@
 		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-if="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
-			<full-screen-input v-if="hasToSetUsername" :text="$t('choose_username')" :val="username" :cancel="setUsername" :cancelText="$t('ok')"/>
+			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :cancel="setUsername" :cancelText="$t('ok')"/>
 		</transition>
 	</div>
 </template>
@@ -118,6 +118,11 @@ export default {
 		}
 	},
 	computed: {
+		storedUsername() {
+			if (localStorage.getItem('username'))
+				return localStorage.getItem('username')
+			return ''
+		},
 		isRoomOwner() {
 			return this.players.length > 0 && this.players[0].name == this.username
 		},

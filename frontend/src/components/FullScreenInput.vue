@@ -13,10 +13,9 @@
 <script>
 export default {
 	name: 'FullScreenInput',
-	components: {
-	},
 	props: {
 		cancel: Function,
+		defaultValue: String,
 		cancelText: {
 			type: String,
 			default: '',
@@ -47,6 +46,7 @@ export default {
 	},
 	mounted() {
 		this.realCancelText = this.cancelText
+		this.val = this.defaultValue
 		if (this.realCancelText == '') {
 			this.realCancelText = this.$t('cancel')
 		}
