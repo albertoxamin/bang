@@ -40,6 +40,7 @@
 		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-if="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
+			<full-screen-input v-if="hasToSetUsername" :text="$t('choose_username')" :val="username" :cancel="setUsername" :cancelText="$t('ok')"/>
 		</transition>
 	</div>
 </template>
@@ -52,6 +53,7 @@ import Chat from './Chat.vue'
 import Player from './Player.vue'
 import Deck from './Deck.vue'
 import TinyHand from './TinyHand.vue'
+import FullScreenInput from './FullScreenInput.vue'
 
 export default {
 	name: 'Lobby',
@@ -63,6 +65,7 @@ export default {
 		Deck,
 		TinyHand,
 		PrettyCheck,
+		FullScreenInput
 	},
 	data: () => ({
 		username: '',
@@ -80,6 +83,7 @@ export default {
 		privateRoom: false,
 		password: '',
 		useDodgeCity: false,
+		hasToSetUsername: false,
 	}),
 	sockets: {
 		room(data) {
@@ -109,6 +113,9 @@ export default {
 			}
 			this.username = username
 		},
+		change_username() {
+			this.hasToSetUsername = true
+		}
 	},
 	computed: {
 		isRoomOwner() {
@@ -195,6 +202,13 @@ export default {
 		drawFromPlayer(name) {
 			console.log(name)
 			this.$socket.emit('draw', name)
+		},
+		setUsername(name){
+			if (name.trim().length > 0){
+				localStorage.setItem('username', name)
+				this.hasToSetUsername = false
+				this.$socket.emit('set_username', name)
+			}
 		},
 	},
 	watch: {

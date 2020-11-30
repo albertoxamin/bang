@@ -33,10 +33,16 @@ def connect(sid, environ):
 @sio.event
 def set_username(sid, username):
     global online_players
-    online_players += 1
-    sio.save_session(sid, Player(username, sid, sio))
-    print(f'{sid} is now {username}')
-    advertise_lobbies()
+    if not isinstance(sio.get_session(sid), Player):
+        online_players += 1
+        sio.save_session(sid, Player(username, sid, sio))
+        print(f'{sid} is now {username}')
+        advertise_lobbies()
+    elif sio.get_session(sid).game == None or not sio.get_session(sid).game.started:
+        print(f'{sid} changed username to {username}')
+        sio.get_session(sid).name = username
+        sio.emit('me', data=sio.get_session(sid).name, room=sid)
+        sio.get_session(sid).game.notify_room()
 
 @sio.event
 def get_me(sid, room):
@@ -55,6 +61,7 @@ def get_me(sid, room):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
+            sio.emit('change_username', room=sid)
 
 @sio.event
 def disconnect(sid):
