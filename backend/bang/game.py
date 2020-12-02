@@ -206,14 +206,13 @@ class Game:
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
-        self.player_death(player=player)
-        self.dead_players.remove(player)
+        self.player_death(player=player, disconnected=True)
         if len(self.players) == 0:
             print(f'no players left in game {self.name}')
             return True
         else: return False
 
-    def player_death(self, player: players.Player):
+    def player_death(self, player: players.Player, disconnected=False):
         import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
         if player.attacker and isinstance(player.attacker, roles.Sheriff) and isinstance(player.role, roles.Vice):
@@ -234,7 +233,10 @@ class Game:
         died_in_his_turn = self.started and index == self.turn
         if self.started and index <= self.turn:
             self.turn -= 1
-        self.dead_players.append(self.players.pop(index))
+
+        corpse = self.players.pop(index)
+        if not disconnected:
+            self.dead_players.append()
         self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
         if self.started:
