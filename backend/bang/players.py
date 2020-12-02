@@ -48,6 +48,33 @@ class Player:
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
 
+    def reset(self):
+        self.hand: cs.Card = []
+        self.equipment: cs.Card = []
+        self.role: r.Role = None
+        self.character: chars.Character = None
+        self.lives = 0
+        self.max_lives = 0
+        self.is_my_turn = False
+        self.is_waiting_for_action = True
+        self.has_played_bang = False
+        self.pending_action: PendingAction = None
+        self.available_characters = []
+        self.was_shot = False
+        self.on_pick_cb = None
+        self.on_failed_response_cb = None
+        self.event_type: str = None
+        self.expected_response = []
+        self.attacker: Player = None
+        self.target_p: str = None
+        self.is_drawing = False
+        try:
+            del self.win_status
+        except:
+            pass
+        self.mancato_needed = 0
+        self.molly_discarded_cards = 0
+
     def join_game(self, game):
         self.game = game
         print(f'I {self.name} joined {self.game}')
