@@ -10,6 +10,8 @@ Vue.use(new VueSocketIO({
 
 import PrettyCheckbox from 'pretty-checkbox-vue';
 Vue.use(PrettyCheckbox)
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)

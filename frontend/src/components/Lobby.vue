@@ -6,6 +6,7 @@
 			<div v-if="!started">
 				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">{{$t("private_room")}}</PrettyCheck>
 				<label v-if="password !== ''">{{$t('password')}}<b class="selectable" style="font-size:larger;">{{ password }}</b></label>
+				<input type="button" style="margin-left: 10pt;" v-clipboard:copy="inviteLink" value="Copia"/>
 			</div>
 			
 			<div class="players-table">
@@ -118,6 +119,9 @@ export default {
 		}
 	},
 	computed: {
+		inviteLink() {
+			return `${window.location.origin}/game?code=${this.lobbyName}&pwd=${this.password}`
+		},
 		storedUsername() {
 			if (localStorage.getItem('username'))
 				return localStorage.getItem('username')
