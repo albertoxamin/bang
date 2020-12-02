@@ -6,6 +6,7 @@ import bang.players as players
 import bang.characters as characters
 from bang.deck import Deck
 import bang.roles as roles
+import eventlet
 
 class Game:
     def __init__(self, name, sio:socketio):
@@ -13,6 +14,7 @@ class Game:
         self.sio = sio
         self.name = name
         self.players: List[players.Player] = []
+        self.dead_players: List[players.Player] = []
         self.deck: Deck = None
         self.started = False
         self.turn = 0
@@ -62,10 +64,12 @@ class Game:
         self.notify_room()
 
     def notify_character_selection(self):
-        self.readyCount += 1
         self.notify_room()
-        if self.readyCount == len(self.players):
+        if len([p for p in self.players if p.character == None]) == 0:
             for i in range(len(self.players)):
+                print(self.name)
+                print(self.players[i].name)
+                print(self.players[i].character)
                 self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} ha come personaggio {self.players[i].character.name}, la sua abilità speciale è: {self.players[i].character.desc}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
@@ -74,7 +78,7 @@ class Game:
             self.players[self.turn].play_turn()
 
     def choose_characters(self):
-        char_cards = random.sample(characters.all_characters(), len(self.players)*2)
+        char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*2)
         for i in range(len(self.players)):
             self.players[i].set_available_character(char_cards[i * 2 : i * 2 + 2])
 
@@ -137,8 +141,8 @@ class Game:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
 
-    def attack(self, attacker: players.Player, target_username:str):
-        if self.players[self.players_map[target_username]].get_banged(attacker=attacker, double=isinstance(attacker.character, characters.SlabTheKiller)):
+    def attack(self, attacker: players.Player, target_username:str, double:bool=False):
+        if self.players[self.players_map[target_username]].get_banged(attacker=attacker, double=double):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
@@ -202,13 +206,14 @@ class Game:
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
-        self.player_death(player=player)
+        self.player_death(player=player, disconnected=True)
         if len(self.players) == 0:
             print(f'no players left in game {self.name}')
             return True
         else: return False
 
-    def player_death(self, player: players.Player):
+    def player_death(self, player: players.Player, disconnected=False):
+        import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
         if player.attacker and isinstance(player.attacker, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
@@ -223,22 +228,15 @@ class Game:
         print(f'player {player.name} died')
         if (self.waiting_for > 0):
             self.responders_did_respond_resume_turn()
-        vulture = [p for p in self.players if isinstance(p.character, characters.VultureSam)]
-        if len(vulture) == 0:
-            for i in range(len(player.hand)):
-                self.deck.scrap(player.hand.pop())
-            for i in range(len(player.equipment)):
-                self.deck.scrap(player.equipment.pop())
-        else:
-            for i in range(len(player.hand)):
-                vulture[0].hand.append(player.hand.pop())
-            for i in range(len(player.equipment)):
-                vulture[0].hand.append(player.equipment.pop())
+
         index = self.players.index(player)
         died_in_his_turn = self.started and index == self.turn
         if self.started and index <= self.turn:
             self.turn -= 1
-        self.players.pop(index)
+
+        corpse = self.players.pop(index)
+        if not disconnected:
+            self.dead_players.append()
         self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
         if self.started:
@@ -256,11 +254,46 @@ class Game:
                 print('WE HAVE A WINNER')
                 for p in self.players:
                     p.win_status = p in winners
+                    self.sio.emit('chat_message', room=self.name, data=f'{p.name} ha vinto.')
                     p.notify_self()
-                return
+                eventlet.sleep(5.0)
+                return self.reset()
 
+            vulture = [p for p in self.players if isinstance(p.character, characters.VultureSam)]
+            if len(vulture) == 0:
+                for i in range(len(player.hand)):
+                    self.deck.scrap(player.hand.pop())
+                for i in range(len(player.equipment)):
+                    self.deck.scrap(player.equipment.pop())
+            else:
+                for i in range(len(player.hand)):
+                    vulture[0].hand.append(player.hand.pop())
+                for i in range(len(player.equipment)):
+                    vulture[0].hand.append(player.equipment.pop())
+                vulture[0].notify_self()
+            greg = [p for p in self.players if isinstance(p.character, chd.GregDigger)]
+            if len(greg) > 0:
+                greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
+            herb = [p for p in self.players if isinstance(p.character, chd.HerbHunter)]
+            if len(herb) > 0:
+                herb[0].hand.append(self.deck.draw())
+                herb[0].hand.append(self.deck.draw())
+        
         if died_in_his_turn:
             self.next_turn()
+
+    def reset(self):
+        print('resetting lobby')
+        self.players.extend(self.dead_players)
+        self.dead_players = []
+        print(self.players)
+        self.started = False
+        self.waiting_for = 0
+        for p in self.players:
+            p.reset()
+            p.notify_self()
+        eventlet.sleep(0.5)
+        self.notify_room()
 
     def get_visible_players(self, player: players.Player):
         i = self.players.index(player)

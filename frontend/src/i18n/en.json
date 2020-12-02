@@ -51,5 +51,6 @@
 	"if_card_red":"If the card is diamonds or hearts, he picks another card.",
 	"choose_scarp_card_to": "CHOOSE WHICH CARD TO DISCARD TO USE",
 	"pick_a_card": "FLIP A CARD",
-	"to_defend_from": "TO DEFEND YOURSELF FROM"
+	"to_defend_from": "TO DEFEND YOURSELF FROM",
+	"submit": "Submit"
 }

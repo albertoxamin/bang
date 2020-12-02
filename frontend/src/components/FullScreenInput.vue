@@ -1,27 +1,21 @@
 <template>
 	<div id="overlay" class="center-stuff">
 		<h1>{{text}}</h1>
-		<div>
-			<Card v-for="c in cards" v-bind:key="c" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
-		</div>
+		<form @submit="submit">
+			<input v-model="val" class="chooserInput"/>
+		</form>
 		<p v-if="hintText">{{hintText}}</p>
-		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{realCancelText}}</span></div>
+		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn && val" @click="cancel(val)"><span>{{realCancelText}}</span></div>
 		<p v-if="desc" style="bottom:10pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
 	</div>
 </template>
 
 <script>
-import Card from '@/components/Card.vue'
-
 export default {
-	name: 'Chooser',
-	components: {
-		Card,
-	},
+	name: 'FullScreenInput',
 	props: {
-		cards: Array,
-		select: Function,
 		cancel: Function,
+		defaultValue: String,
 		cancelText: {
 			type: String,
 			default: '',
@@ -30,6 +24,7 @@ export default {
 		hintText: String,
 	},
 	data: () => ({
+		val: '',
 		desc: '',
 		realCancelText: ''
 	}),
@@ -43,10 +38,15 @@ export default {
 	methods: {
 		showDesc(card) {
 			this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
+		},
+		submit(e) {
+			e.preventDefault();
+			this.cancel(this.val);
 		}
 	},
 	mounted() {
 		this.realCancelText = this.cancelText
+		this.val = this.defaultValue
 		if (this.realCancelText == '') {
 			this.realCancelText = this.$t('cancel')
 		}
@@ -99,5 +99,10 @@ export default {
 .button:hover {
 	background-color: white; /* Green */
 	color: black;
+}
+.chooserInput {
+	background: none;
+	color: white;
+	font-size: 20pt;
 }
 </style>

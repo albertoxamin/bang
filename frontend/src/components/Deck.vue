@@ -11,7 +11,7 @@
 				<card v-if="previousScrap" :card="previousScrap"/>
 				<card v-else :card="card" class="back" style="opacity:0"/>
 				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap" @click.native="action('scrap')"
-							@pointerenter.native="desc=lastScrap.desc" @pointerleave.native="desc=''" />
+							@pointerenter.native="desc=($i18n.locale=='it'?lastScrap.desc:lastScrap.desc_eng)" @pointerleave.native="desc=''" />
 			</div>
 		</div>
 		<transition name="list">
@@ -36,7 +36,6 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
-		endTurnCard: null,
 		lastScrap: null,
 		previousScrap: null,
 		pending_action: false,
@@ -53,10 +52,12 @@ export default {
 			this.lastScrap = card
 		}
 	},
-	mounted() {
-		this.endTurnCard = {
-			name: this.$t('end_turn'),
-			icon: '⛔️'
+	computed: {
+		endTurnCard() {
+			return {
+				name: this.$t('end_turn'),
+				icon: '⛔️'
+			}
 		}
 	},
 	methods: {

@@ -6,6 +6,7 @@
 			<div v-if="!started">
 				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">{{$t("private_room")}}</PrettyCheck>
 				<label v-if="password !== ''">{{$t('password')}}<b class="selectable" style="font-size:larger;">{{ password }}</b></label>
+				<input type="button" style="margin-left: 10pt;" v-clipboard:copy="inviteLink" value="Copia"/>
 			</div>
 			
 			<div class="players-table">
@@ -19,7 +20,7 @@
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
-					<span style="position:absolute;top:0;" class="center-stuff">{{getActionEmoji(p)}}</span>
+					<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" @click.native="selectedInfo = p.equipment"/>
 					</div>
@@ -40,6 +41,7 @@
 		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-if="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
+			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :cancel="setUsername" :cancelText="$t('ok')"/>
 		</transition>
 	</div>
 </template>
@@ -52,6 +54,7 @@ import Chat from './Chat.vue'
 import Player from './Player.vue'
 import Deck from './Deck.vue'
 import TinyHand from './TinyHand.vue'
+import FullScreenInput from './FullScreenInput.vue'
 
 export default {
 	name: 'Lobby',
@@ -63,11 +66,10 @@ export default {
 		Deck,
 		TinyHand,
 		PrettyCheck,
-	},
-	props: {
-		username: String
+		FullScreenInput
 	},
 	data: () => ({
+		username: '',
 		lobbyName: '',
 		started: false,
 		players: [],
@@ -82,6 +84,7 @@ export default {
 		privateRoom: false,
 		password: '',
 		useDodgeCity: false,
+		hasToSetUsername: false,
 	}),
 	sockets: {
 		room(data) {
@@ -104,15 +107,28 @@ export default {
 			console.log(data)
 			this.players = data
 		},
-		// self_vis(vis) {
-		// 	console.log('received visibility update')
-		// 	console.log(vis)
-		// 	this.players = JSON.parse(vis)
-		// },
+		me(username) {
+			if (username.error) { 
+				alert(username.error)
+				this.$router.push('/')
+			}
+			this.username = username
+		},
+		change_username() {
+			this.hasToSetUsername = true
+		}
 	},
 	computed: {
+		inviteLink() {
+			return `${window.location.origin}/game?code=${this.lobbyName}&pwd=${this.password}`
+		},
+		storedUsername() {
+			if (localStorage.getItem('username'))
+				return localStorage.getItem('username')
+			return ''
+		},
 		isRoomOwner() {
-			return this.players[0].name == this.username
+			return this.players.length > 0 && this.players[0].name == this.username
 		},
 		startGameCard() {
 			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
@@ -196,12 +212,25 @@ export default {
 			console.log(name)
 			this.$socket.emit('draw', name)
 		},
+		setUsername(name){
+			if (name.trim().length > 0){
+				localStorage.setItem('username', name)
+				this.hasToSetUsername = false
+				this.$socket.emit('set_username', name)
+			}
+		},
 	},
 	watch: {
 		privateRoom() {
 			this.$socket.emit('private')
 		}
-	}
+	},
+	mounted() {
+		console.log('mounted lobby')
+		if (!this.$route.query.code)
+			return this.$router.push('/')
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd})
+	},
 }
 </script>
 
@@ -236,27 +265,29 @@ export default {
 	right: -35pt;
 	transform: scale(0.45);
 	transform-origin: 50% 0%;
-	top: 0;
+	top: 10pt;
 }
 .tiny-health {
-	position: absolute;
 	display: flex;
 	justify-content: space-evenly;
-	top: -16pt;
 	transform: scale(0.8);
-	right: 0;
-	left: 0;
+	margin-bottom: -4pt;
 }
 .tiny-equipment .card:nth-child(n+2) {
 	margin-top: -60pt;
 }
+.tiny-equipment .card:hover {
+	transform: translateY(10px) scale(1.1);
+	z-index: 1;
+}
 .tiny-character {
 	position: absolute;
-	transform: scale(0.6) translate(-80px, -50px);
+	transform: scale(0.5) translate(-80px, -40px);
 	top: 0;
 }
 .players-table {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-evenly;
 	margin-bottom: 12pt;
 }

@@ -17,6 +17,7 @@ class Pugno(Card):
         super().__init__(suit, 'Pugno!', number, range=1)
         self.icon = '👊'
         self.desc = "Spara a un giocatore a distanza 1"
+        self.desc_eng = "Shoot a player at distance 1"
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
@@ -31,7 +32,8 @@ class Schivata(Mancato):
         super().__init__(suit, number)
         self.name = 'Schivata'
         self.icon = '🙅‍♂️'
-        self.desc = "Usa questa carta per annullare un Bang! e poi pesca una carta"
+        self.desc += " e poi pesca una carta"
+        self.desc_eng += " and then draw a card."
         self.alt_text = '☝️🆓'
 
     def play_card(self, player, against, _with=None):
@@ -46,6 +48,7 @@ class RagTime(Panico):
         Card.__init__(self, suit, 'Rag Time', number)
         self.icon = '🎹'
         self.desc = "Ruba 1 carta dalla mano di un giocatore a prescindere dalla distanza"
+        self.desc_eng = "Steal a card from another player at any distance"
         self.need_target = True
         self.need_with = True
         self.alt_text = '2🃏'
@@ -63,6 +66,7 @@ class Rissa(CatBalou):
         self.name = 'Rissa'
         self.icon = '🥊'
         self.desc = "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
+        self.desc_eng = "Choose a card to discard from the hand/equipment ofc all the other players"
         self.need_with = True
         self.need_target = False
         self.alt_text = '2🃏'
@@ -75,7 +79,7 @@ class Rissa(CatBalou):
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
             super().play_card(player, against=players_with_cards[0])
-            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name}')
+            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name}.')
             return True
         return False
 
@@ -84,6 +88,7 @@ class SpringField(Card):
         super().__init__(suit, 'Springfield', number)
         self.icon = '🌵'
         self.desc = "Spara a un giocatore a prescindere dalla distanza"
+        self.desc_eng = "Shoot a player at any distance"
         self.need_target = True
         self.need_with = True
         self.alt_text = '2🃏'
@@ -101,6 +106,7 @@ class Tequila(Card):
         super().__init__(suit, 'Tequila', number)
         self.icon = '🍹'
         self.desc = "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
+        self.desc_eng = "Heal 1 HP to a player of your choice (can be you)"
         self.need_target = True
         self.can_target_self = True
         self.need_with = True
@@ -121,6 +127,7 @@ class Whisky(Card):
         super().__init__(suit, 'Whisky', number)
         self.icon = '🥃'
         self.desc = "Gioca questa carta per recuperare fino a 2 punti vita"
+        self.desc_eng = "Heal 2 HP"
         self.need_with = True
         self.alt_text = '2🃏'
 
@@ -148,10 +155,6 @@ class Bibbia(Schivata):
         else:
             player.equipment.append(self)
             return True
-
-    def use_card(self, player):
-        player.hand.append(player.game.deck.draw())
-        player.notify_self()
 
 class Cappello(Mancato):
     def __init__(self, suit, number):
@@ -202,6 +205,8 @@ class Derringer(Pugnale):
         self.name = 'Derringer'
         self.icon = '🚬'
         self.alt_text += ' ☝️🆓'
+        self.desc += ' e poi pesca una carta'
+        self.desc_eng += ' and then draw a card.'
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
@@ -211,17 +216,25 @@ class Derringer(Pugnale):
             player.equipment.append(self)
             return True
 
-class Borraccia(Birra):
+    def use_card(self, player):
+        player.hand.append(player.game.deck.draw())
+        player.notify_self()
+
+class Borraccia(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, number)
-        self.name = 'Borraccia'
+        super().__init__(suit, 'Borraccia', number)
         self.icon = '🍼'
+        self.desc = 'Recupera 1 vita'
+        self.desc_eng = 'Regain 1 HP'
         self.usable_next_turn = True
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
-            return super().play_card(player, against)
+            super().play_card(player, against)
+            player.lives = min(player.lives+1, player.max_lives)
+            player.notify_self()
+            return True
         else:
             player.equipment.append(self)
             return True

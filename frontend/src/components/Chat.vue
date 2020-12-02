@@ -7,7 +7,7 @@
 		</div>
 		<form @submit="sendChatMessage" id="msg-form">
 			<input v-model="text" style="flex-grow:2;"/>
-			<input type="submit"/>
+			<input type="submit" :value="$t('submit')"/>
 		</form>
 	</div>
 </template>
