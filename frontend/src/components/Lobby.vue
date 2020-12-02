@@ -261,7 +261,7 @@ export default {
 	right: -35pt;
 	transform: scale(0.45);
 	transform-origin: 50% 0%;
-	top: 0;
+	top: 10pt;
 }
 .tiny-health {
 	display: flex;
@@ -271,6 +271,10 @@ export default {
 }
 .tiny-equipment .card:nth-child(n+2) {
 	margin-top: -60pt;
+}
+.tiny-equipment .card:hover {
+	transform: translateY(10px) scale(1.1);
+	z-index: 1;
 }
 .tiny-character {
 	position: absolute;
