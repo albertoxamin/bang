@@ -139,10 +139,7 @@ class Player:
             ser['attacker'] = self.attacker.name
         ser['sight'] = self.get_sight()
         ser['lives'] = max(ser['lives'], 0)
-        self.sio.emit('self', room=self.sid, data=json.dumps(
-            ser, default=lambda o: o.__dict__))
-        self.sio.emit('self_vis', room=self.sid, data=json.dumps(
-            self.game.get_visible_players(self), default=lambda o: o.__dict__))
+
         if self.lives <= 0 and self.max_lives > 0:
             print('dying, attacker', self.attacker)
             if isinstance(self.character, chars.SidKetchum) and len(self.hand) > 1:
@@ -151,7 +148,14 @@ class Player:
                     randrange(0, len(self.hand))))
                 self.game.deck.scrap(self.hand.pop(
                     randrange(0, len(self.hand))))
+        if self.lives <= 0 and self.max_lives > 0:
+            self.pending_action = PendingAction.WAIT
             self.game.player_death(self)
+        else:
+            self.sio.emit('self_vis', room=self.sid, data=json.dumps(
+            self.game.get_visible_players(self), default=lambda o: o.__dict__))
+        self.sio.emit('self', room=self.sid, data=json.dumps(
+                ser, default=lambda o: o.__dict__))
         self.game.notify_all()
 
     def play_turn(self):
