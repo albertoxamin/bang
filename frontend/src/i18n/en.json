@@ -61,6 +61,23 @@
 		"won": "{0} won!",
 		"choose_character": "{0} has {1} as character, his special ability is: {2}!",
 		"starting": "The game is starting!",
-		"sheriff": "{0} is the sheriff!"
+		"sheriff": "{0} is the sheriff!",
+		"did_choose_character": "{0} did choose the character.",
+		"turn": "It is the turn of {0}.",
+		"draw_from_scrap": "{0} did draw the first card from the scrap pile.",
+		"draw_from_player": "{0} did draw the first card from the hand of {1}.",
+		"flipped": "{0} flipped a {1}.",
+		"explode": "{0} blew up the dynamite.",
+		"beer_save": "{0} used a beer to save his life.",
+		"play_card": "{0} played {1}.",
+		"play_card_against": "{0} played {1} against {2}.",
+		"play_card_for": "{0} played {1} for {2}.",
+		"spilled_beer": "{0} spilled a {1}.",
+		"diligenza": "{0} played {1} and draws 2 cards.",
+		"wellsfargo": "{0} played {1} and draws 3 cards.",
+		"saloon": "{0} player {1} and heals 1 HP to everyone alive.",
+		"special_bart_cassidy": "{0} received a compensation because he was injured.",
+		"special_el_gringo": "{0} stole a card from {1} when he was was injured.",
+		"special_calamity": "{0} played {1} as Bang! against {2}."
 	}
 }
