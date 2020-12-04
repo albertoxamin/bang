@@ -95,7 +95,7 @@ class Player:
         self.available_characters = []
         print(f'I {self.name} chose character {self.character.name}')
         self.sio.emit('chat_message', room=self.game.name,
-                      data=f'{self.name} ha scelto il personaggio.')
+                      data=f'_did_choose_character|{self.name}')
         self.game.notify_character_selection()
 
     def prepare(self):
@@ -159,7 +159,7 @@ class Player:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.sio.emit('chat_message', room=self.game.name,
-                      data=f'È il turno di {self.name}.')
+                      data=f'_turn|{self.name}')
         print(f'I {self.name} was notified that it is my turn')
         self.was_shot = False
         self.is_my_turn = True
@@ -185,13 +185,13 @@ class Player:
                 self.hand.append(self.game.deck.draw_from_scrap_pile())
                 self.hand.append(self.game.deck.draw())
                 self.sio.emit('chat_message', room=self.game.name,
-                              data=f'{self.name} ha ha pescato la prima carta dall pila delle carte scartate.')
+                              data=f'_draw_from_scrap|{self.name}')
             elif type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
                 self.hand.append(self.game.get_player_named(pile).hand.pop(
                     randrange(0, len(self.game.get_player_named(pile).hand))))
                 self.game.get_player_named(pile).notify_self()
                 self.sio.emit('chat_message', room=self.game.name,
-                              data=f'{self.name} ha pescato la prima carta dalla mano di {pile}.')
+                              data=f'_draw_from_player|{self.name}|{pile}')
                 self.hand.append(self.game.deck.draw())
             elif isinstance(self.character, chd.BillNoface):
                 self.hand.append(self.game.deck.draw())
@@ -223,17 +223,17 @@ class Player:
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
-                                      data=f'{self.name} ha estratto {picked}.')
+                                      data=f'_flipped|{self.name}|{picked}')
                         if picked.suit == cs.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i))
                             self.sio.emit('chat_message', room=self.game.name,
-                                          data=f'{self.name} ha fatto esplodere la dinamite.')
+                                          data=f'_explode|{self.name}')
                             if isinstance(self.character, chars.BartCassidy) and self.lives > 0:
                                 for i in range(3):
                                     self.hand.append(self.game.deck.draw())
                                 self.sio.emit('chat_message', room=self.game.name,
-                                              data=f'{self.name} ha ricevuto un risarcimento perchè è stato ferito.')
+                                              data=f'_special_bart_cassidy|{self.name}')
                             print(f'{self.name} Boom, -3 hp')
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
@@ -249,7 +249,7 @@ class Player:
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
-                                      data=f'{self.name} ha estratto {picked}.')
+                                      data=f'_flipped|{self.name}|{picked}')
                         if picked.suit != cs.Suit.HEARTS and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i))
                             self.end_turn(forced=True)
@@ -358,7 +358,7 @@ class Player:
             picked: cs.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
             self.sio.emit('chat_message', room=self.game.name,
-                          data=f'{self.name} ha estratto {picked}.')
+                            data=f'_flipped|{self.name}|{picked}')
             if picked.suit == cs.Suit.HEARTS:
                 self.mancato_needed -= 1
                 self.notify_self()
@@ -439,13 +439,13 @@ class Player:
         if self.lives > 0:
             if isinstance(self.character, chars.BartCassidy):
                 self.sio.emit('chat_message', room=self.game.name,
-                              data=f'{self.name} ha ricevuto un risarcimento perchè è stato ferito.')
+                                data=f'_special_bart_cassidy|{self.name}')
                 self.hand.append(self.game.deck.draw())
             elif isinstance(self.character, chars.ElGringo) and self.attacker and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(
                     randrange(0, len(self.attacker.hand))))
                 self.sio.emit('chat_message', room=self.game.name,
-                              data=f'{self.name} ha rubato una carta a {self.attacker.name} mentre veniva colpito.')
+                              data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
         while self.lives <= 0 and len(self.game.players) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
             for i in range(len(self.hand)):
@@ -455,7 +455,7 @@ class Player:
                     self.lives += 1
                     self.game.deck.scrap(self.hand.pop(i))
                     self.sio.emit('chat_message', room=self.game.name,
-                                  data=f'{self.name} ha usato una birra per recuperare una vita.')
+                                  data=f'_beer_save|{self.name}')
                     break
         self.mancato_needed = 0
         self.event_type = ''

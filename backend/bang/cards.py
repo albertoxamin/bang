@@ -66,9 +66,12 @@ class Card(ABC):
                         break
             else:
                 player.equipment.append(self)
-        contro = f' contro {against}' if against else ''
-        player.sio.emit('chat_message', room=player.game.name,
-                        data=f'{player.name} ha giocato {self.name}{contro}.')
+        if against:
+            player.sio.emit('chat_message', room=player.game.name,
+                        data=f'_play_card_against|{player.name}|{self.name}|{against}')
+        else:
+            player.sio.emit('chat_message', room=player.game.name,
+                        data=f'_play_card|{player.name}|{self.name}')
         return True
 
     def use_card(self, player):
@@ -118,7 +121,7 @@ class Prigione(Card):
     def play_card(self, player, against, _with=None):
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
             player.sio.emit('chat_message', room=player.game.name,
-                          data=f'{player.name} ha giocato {self.name} contro {against}.')
+                          data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
             player.game.get_player_named(against).notify_self()
         return False
@@ -206,7 +209,7 @@ class Birra(Card):
             return True
         elif len(player.game.players) == 2:
             player.sio.emit('chat_message', room=player.game.name,
-                            data=f'{player.name} ha rovesciato una {self.name}.')
+                            data=f'_spilled_beer|{player.name}|{self.name}')
             return True
         return False
 
@@ -241,7 +244,7 @@ class Diligenza(Card):
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
-                        data=f'{player.name} ha giocato {self.name} e ha pescato 2 carte.')
+                        data=f'_diligenza|{player.name}|{self.name}')
         for i in range(2):
             player.hand.append(player.game.deck.draw())
         return True
@@ -313,7 +316,7 @@ class Mancato(Card):
         import bang.characters as chars
         if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
             player.sio.emit('chat_message', room=player.game.name,
-                            data=f'{player.name} ha giocato {self.name} come un BANG! contro {against}.')
+                            data=f'_calamity_special|{player.name}|{self.name}|{against}')
             player.has_played_bang = True
             player.game.attack(player, against)
             return True
@@ -349,7 +352,7 @@ class Saloon(Card):
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
-                        data=f'{player.name} ha giocato {self.name} e ha curato 1 punto vita a tutti.')
+                        data=f'_saloon|{player.name}|{self.name}')
         for p in player.game.players:
             p.lives = min(p.lives+1, p.max_lives)
             p.notify_self()
@@ -365,7 +368,7 @@ class WellsFargo(Card):
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
-                        data=f'{player.name} ha giocato {self.name} e ha pescato 3 carte.')
+                        data=f'_wellsfargo|{player.name}|{self.name}')
         for i in range(3):
             player.hand.append(player.game.deck.draw())
         return True

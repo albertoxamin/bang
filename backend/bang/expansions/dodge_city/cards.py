@@ -79,7 +79,7 @@ class Rissa(CatBalou):
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
             super().play_card(player, against=players_with_cards[0])
-            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name}.')
+            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
             return True
         return False
 
@@ -114,8 +114,7 @@ class Tequila(Card):
 
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
-            beneficiario = f'{against}' if against != player.name else 'se stesso'
-            player.sio.emit('chat_message', room=player.game.name, data=f'{player.name} ha giocato {self.name} per {beneficiario}')
+            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_for|{player.name}|{self.name}|{against}')
             player.game.deck.scrap(_with)
             player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
             player.game.get_player_named(against).notify_self()
