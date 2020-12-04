@@ -236,7 +236,7 @@ class Game:
 
         corpse = self.players.pop(index)
         if not disconnected:
-            self.dead_players.append()
+            self.dead_players.append(corpse)
         self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
         if self.started:
