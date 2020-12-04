@@ -8,7 +8,6 @@
 	"lobby_name": "Name:",
 	"warning": "Warning!",
 	"connection_error": "Cannot connect to server.",
-	"chat": "Chat",
 	"end_turn": "End Turn!",
 	"start_game": "Start!",
 	"expansions": "Expansions",
@@ -52,5 +51,16 @@
 	"choose_scarp_card_to": "CHOOSE WHICH CARD TO DISCARD TO USE",
 	"pick_a_card": "FLIP A CARD",
 	"to_defend_from": "TO DEFEND YOURSELF FROM",
-	"submit": "Submit"
+	"submit": "Submit",
+	"copy": "Copy",
+	"chat": {
+		"chat": "Chat",
+		"joined": "{0} joined the lobby",
+		"died": "{0} died",
+		"died_role": "{0} was a {1}!",
+		"won": "{0} won!",
+		"choose_character": "{0} has {1} as character, his special ability is: {2}!",
+		"starting": "The game is starting!",
+		"sheriff": "{0} is the sheriff!"
+	}
 }

@@ -1,6 +1,6 @@
 <template>
 	<div class="chat">
-		<h3>{{$t("chat")}}</h3>
+		<h3>{{$t("chat.chat")}}</h3>
 		<div id="chatbox">
 			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
 			<p class="end">.</p>
@@ -21,7 +21,13 @@ export default {
 	}),
 	sockets: {
 		chat_message(msg) {
-			this.messages.push(msg)
+			if (msg.indexOf('_') === 0) {
+				let params = msg.split('|')
+				let type = params.shift().substring(1)
+				this.messages.push(this.$t(`chat.${type}`, params))
+			}else {
+				this.messages.push(msg)
+			}
 			let container = this.$el.querySelector("#chatbox");
 			container.scrollTop = container.scrollHeight;
 		},

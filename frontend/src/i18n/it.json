@@ -8,7 +8,6 @@
 	"lobby_name": "Nome:",
 	"warning": "Attenzione!",
 	"connection_error": "Connessione al server assente.",
-	"chat": "Chat",
 	"end_turn": "Termina turno!",
 	"start_game": "Avvia!",
 	"expansions": "Espansioni",
@@ -52,5 +51,16 @@
 	"choose_scarp_card_to": "SCEGLI CHE CARTA SCARTARE PER USARE",
 	"pick_a_card": "ESTRAI UNA CARTA",
 	"to_defend_from": "PER DIFENDERTI DA",
-	"submit": "Invia"
+	"submit": "Invia",
+	"copy": "Copia",
+	"chat": {
+		"chat": "Chat",
+		"joined": "{0} è entrato nella stanza",
+		"died": "{0} è morto",
+		"died_role": "{0} era {1}!",
+		"won": "{0} ha vinto!",
+		"choose_character": "{0} ha come personaggio {1}, la sua abilità speciale è: {2}!",
+		"starting": "La partita sta iniziando!",
+		"sheriff": "{0} è lo sceriffo!"
+	}
 }

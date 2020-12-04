@@ -53,7 +53,7 @@ class Game:
         self.players.append(player)
         print(f'Added player {player.name} to game')
         self.notify_room()
-        self.sio.emit('chat_message', room=self.name, data=f'{player.name} è entrato nella lobby.')
+        self.sio.emit('chat_message', room=self.name, data=f'_joined|{player.name}')
 
     def set_private(self):
         if self.password == '':
@@ -70,7 +70,7 @@ class Game:
                 print(self.name)
                 print(self.players[i].name)
                 print(self.players[i].character)
-                self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} ha come personaggio {self.players[i].character.name}, la sua abilità speciale è: {self.players[i].character.desc}')
+                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}|{self.players[i].character.desc}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
@@ -87,7 +87,7 @@ class Game:
         if self.started:
             return
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
-        self.sio.emit('chat_message', room=self.name, data=f'La partita sta iniziando...')
+        self.sio.emit('chat_message', room=self.name, data=f'_starting')
         self.sio.emit('start', room=self.name)
         self.started = True
         self.deck = Deck(self)
@@ -111,7 +111,7 @@ class Game:
             self.players[i].set_role(available_roles[i])
             if isinstance(available_roles[i], roles.Sheriff) or (len(available_roles) == 3 and isinstance(available_roles[i], roles.Vice)):
                 if isinstance(available_roles[i], roles.Sheriff):
-                    self.sio.emit('chat_message', room=self.name, data=f'{self.players[i].name} È lo sceriffo')
+                    self.sio.emit('chat_message', room=self.name, data=f'_sheriff|{self.players[i].name}')
                 self.turn = i
             self.players[i].notify_self()
 
@@ -238,9 +238,9 @@ class Game:
         if not disconnected:
             self.dead_players.append()
         self.notify_room()
-        self.sio.emit('chat_message', room=self.name, data=f'{player.name} è morto.')
+        self.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
         if self.started:
-            self.sio.emit('chat_message', room=self.name, data=f'{player.name} era {player.role.name}!')
+            self.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
         for p in self.players:
             p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
@@ -254,7 +254,7 @@ class Game:
                 print('WE HAVE A WINNER')
                 for p in self.players:
                     p.win_status = p in winners
-                    self.sio.emit('chat_message', room=self.name, data=f'{p.name} ha vinto.')
+                    self.sio.emit('chat_message', room=self.name, data=f'_won|{p.name}')
                     p.notify_self()
                 eventlet.sleep(5.0)
                 return self.reset()
