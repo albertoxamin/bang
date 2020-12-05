@@ -246,7 +246,8 @@ class Game:
         if self.started:
             self.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
         for p in self.players:
-            p.notify_self()
+            if not p.is_bot:
+                p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         if self.started:
             print('Check win status')
