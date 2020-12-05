@@ -120,6 +120,11 @@ def join_room(sid, room):
 def chat_message(sid, msg):
     ses: Player = sio.get_session(sid)
     sio.emit('chat_message', room=ses.game.name, data=f'[{ses.name}]: {msg}')
+    if '/addbot' in msg and not ses.game.started:
+        ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+    elif '/removebot' in msg and not ses.game.started:
+        if any([p.is_bot for p in ses.game.players]):
+            [p for p in ses.game.players if p.is_bot][-1].disconnect()
 
 @sio.event
 def start_game(sid):

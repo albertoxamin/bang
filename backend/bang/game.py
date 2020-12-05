@@ -124,6 +124,7 @@ class Game:
             if p != attacker:
                 if p.get_banged(attacker=attacker):
                     self.waiting_for += 1
+                    p.notify_self()
         if self.waiting_for == 0:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
@@ -137,23 +138,26 @@ class Game:
             if p != attacker:
                 if p.get_indians(attacker=attacker):
                     self.waiting_for += 1
+                    p.notify_self()
         if self.waiting_for == 0:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
 
     def attack(self, attacker: players.Player, target_username:str, double:bool=False):
-        if self.players[self.players_map[target_username]].get_banged(attacker=attacker, double=double):
+        if self.get_player_named(target_username).get_banged(attacker=attacker, double=double):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
+            self.get_player_named(target_username).notify_self()
 
     def duel(self, attacker: players.Player, target_username:str):
-        if self.players[self.players_map[target_username]].get_dueled(attacker=attacker):
+        if self.get_player_named(target_username).get_dueled(attacker=attacker):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
+            self.get_player_named(target_username).notify_self()
 
     def emporio(self):
         self.available_cards = [self.deck.draw() for i in range(len(self.players))]
@@ -207,7 +211,7 @@ class Game:
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
         self.player_death(player=player, disconnected=True)
-        if len(self.players) == 0:
+        if len([p for p in self.players if not p.is_bot]) == 0:
             print(f'no players left in game {self.name}')
             return True
         else: return False
