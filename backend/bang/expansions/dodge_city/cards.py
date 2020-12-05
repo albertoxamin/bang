@@ -47,7 +47,7 @@ class RagTime(Panico):
     def __init__(self, suit, number):
         Card.__init__(self, suit, 'Rag Time', number)
         self.icon = '🎹'
-        self.desc = "Ruba 1 carta dalla mano di un giocatore a prescindere dalla distanza"
+        self.desc = "Ruba 1 carta da un giocatore a prescindere dalla distanza"
         self.desc_eng = "Steal a card from another player at any distance"
         self.need_target = True
         self.need_with = True
@@ -287,7 +287,8 @@ class Conestoga(Panico):
     def __init__(self, suit, number):
         Card.__init__(self, suit, 'Conestoga', number)
         self.icon = '🏕'
-        self.desc = "Ruba 1 carta dalla mano di un giocatore a prescindere dalla distanza"
+        self.desc = "Ruba 1 carta da un giocatore a prescindere dalla distanza"
+        self.desc_eng = "Steal a card from another player at any distance"
         self.need_target = True
         self.usable_next_turn = True
         self.can_be_used_now = False
