@@ -292,6 +292,7 @@ class Game:
             if len(herb) > 0:
                 herb[0].hand.append(self.deck.draw())
                 herb[0].hand.append(self.deck.draw())
+                herb[0].notify_self()
         
         if died_in_his_turn:
             self.next_turn()
