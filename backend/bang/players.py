@@ -334,6 +334,7 @@ class Player:
                                 self.sio.emit('chat_message', room=self.game.name,
                                               data=f'_special_bart_cassidy|{self.name}')
                             print(f'{self.name} Boom, -3 hp')
+                            break
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
                             self.game.next_player().notify_self()
