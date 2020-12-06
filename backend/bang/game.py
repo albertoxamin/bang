@@ -23,6 +23,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions = []
+        self.shutting_down = False
 
     def notify_room(self):
         if len([p for p in self.players if p.character == None]) != 0:
@@ -197,6 +198,7 @@ class Game:
         self.players[self.turn].play_turn()
 
     def next_turn(self):
+        if self.shutting_down: return
         if len(self.players) > 0:
             self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
@@ -210,9 +212,16 @@ class Game:
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
-        self.player_death(player=player, disconnected=True)
-        if len([p for p in self.players if not p.is_bot]) == 0:
+        if player in self.players:
+            self.player_death(player=player, disconnected=True)
+        else:
+            self.dead_players.remove(player)
+        if len([p for p in self.players if not p.is_bot])+len([p for p in self.dead_players if not p.is_bot]) == 0:
             print(f'no players left in game {self.name}')
+            self.shutting_down = True
+            self.players = []
+            self.dead_players = []
+            self.deck = None
             return True
         else: return False
 

@@ -130,7 +130,8 @@ def chat_message(sid, msg):
         if any([p.is_bot for p in ses.game.players]):
             [p for p in ses.game.players if p.is_bot][-1].disconnect()
     elif '/suicide' in msg and ses.game.started:
-        ses.game.player_death(player=ses)
+        ses.lives = 0
+        ses.notify_self()
 
 @sio.event
 def start_game(sid):

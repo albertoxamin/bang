@@ -155,6 +155,10 @@ class Player:
                     randrange(0, len(self.hand))))
         if self.lives <= 0 and self.max_lives > 0:
             self.pending_action = PendingAction.WAIT
+            ser['hand'] = []
+            ser['equipment'] = []
+            self.sio.emit('self', room=self.sid, data=json.dumps(
+                ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
         elif not self.is_bot:
             self.sio.emit('self_vis', room=self.sid, data=json.dumps(
@@ -169,6 +173,7 @@ class Player:
             self.game.notify_all()
 
     def bot_logic(self):
+        if self.game.shutting_down: return
         if self.pending_action != PendingAction.WAIT:
             eventlet.sleep(uniform(0.6, 1.5))
         else:
@@ -218,7 +223,7 @@ class Player:
                         if not c.need_target:
                             self.play_card(len(self.hand)+i)
                         else:
-                            _range = self.get_sight() if c.name == "Pepperbox" else self.hand[i].range
+                            _range = self.get_sight() if c.name == "Pepperbox" else c.range
                             others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'])]
                             if len(others) == 0:
                                 continue
