@@ -45,6 +45,8 @@ class Game:
             self.notify_room()
 
     def add_player(self, player: players.Player):
+        if player.is_bot and len(self.players) >= 8:
+            return
         if player in self.players or len(self.players) >= 10:
             return
         if len(self.players) > 7:

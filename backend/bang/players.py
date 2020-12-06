@@ -174,7 +174,7 @@ class Player:
 
     def bot_logic(self):
         if self.game.shutting_down: return
-        if self.pending_action != PendingAction.WAIT:
+        if self.pending_action != None and self.pending_action != PendingAction.WAIT:
             eventlet.sleep(uniform(0.6, 1.5))
         else:
             return
