@@ -23,6 +23,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions = []
+        self.shutting_down = False
 
     def notify_room(self):
         if len([p for p in self.players if p.character == None]) != 0:
@@ -44,6 +45,8 @@ class Game:
             self.notify_room()
 
     def add_player(self, player: players.Player):
+        if player.is_bot and len(self.players) >= 8:
+            return
         if player in self.players or len(self.players) >= 10:
             return
         if len(self.players) > 7:
@@ -124,6 +127,7 @@ class Game:
             if p != attacker:
                 if p.get_banged(attacker=attacker):
                     self.waiting_for += 1
+                    p.notify_self()
         if self.waiting_for == 0:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
@@ -137,23 +141,26 @@ class Game:
             if p != attacker:
                 if p.get_indians(attacker=attacker):
                     self.waiting_for += 1
+                    p.notify_self()
         if self.waiting_for == 0:
             attacker.pending_action = players.PendingAction.PLAY
             attacker.notify_self()
 
     def attack(self, attacker: players.Player, target_username:str, double:bool=False):
-        if self.players[self.players_map[target_username]].get_banged(attacker=attacker, double=double):
+        if self.get_player_named(target_username).get_banged(attacker=attacker, double=double):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
+            self.get_player_named(target_username).notify_self()
 
     def duel(self, attacker: players.Player, target_username:str):
-        if self.players[self.players_map[target_username]].get_dueled(attacker=attacker):
+        if self.get_player_named(target_username).get_dueled(attacker=attacker):
             self.readyCount = 0
             self.waiting_for = 1
             attacker.pending_action = players.PendingAction.WAIT
             attacker.notify_self()
+            self.get_player_named(target_username).notify_self()
 
     def emporio(self):
         self.available_cards = [self.deck.draw() for i in range(len(self.players))]
@@ -193,6 +200,7 @@ class Game:
         self.players[self.turn].play_turn()
 
     def next_turn(self):
+        if self.shutting_down: return
         if len(self.players) > 0:
             self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
@@ -206,9 +214,16 @@ class Game:
 
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
-        self.player_death(player=player, disconnected=True)
-        if len(self.players) == 0:
+        if player in self.players:
+            self.player_death(player=player, disconnected=True)
+        else:
+            self.dead_players.remove(player)
+        if len([p for p in self.players if not p.is_bot])+len([p for p in self.dead_players if not p.is_bot]) == 0:
             print(f'no players left in game {self.name}')
+            self.shutting_down = True
+            self.players = []
+            self.dead_players = []
+            self.deck = None
             return True
         else: return False
 
@@ -242,7 +257,8 @@ class Game:
         if self.started:
             self.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
         for p in self.players:
-            p.notify_self()
+            if not p.is_bot:
+                p.notify_self()
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         if self.started:
             print('Check win status')
@@ -278,6 +294,7 @@ class Game:
             if len(herb) > 0:
                 herb[0].hand.append(self.deck.draw())
                 herb[0].hand.append(self.deck.draw())
+                herb[0].notify_self()
         
         if died_in_his_turn:
             self.next_turn()

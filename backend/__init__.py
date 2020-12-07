@@ -119,7 +119,30 @@ def join_room(sid, room):
 @sio.event
 def chat_message(sid, msg):
     ses: Player = sio.get_session(sid)
-    sio.emit('chat_message', room=ses.game.name, data=f'[{ses.name}]: {msg}')
+    if len(msg) > 0:
+        if msg[0] == '/':
+            if '/addbot' in msg and not ses.game.started:
+                if len(msg.split()) > 1:
+                    for _ in range(int(msg.split()[1])):
+                        ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+                else:
+                    ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+            elif '/removebot' in msg and not ses.game.started:
+                if any([p.is_bot for p in ses.game.players]):
+                    [p for p in ses.game.players if p.is_bot][-1].disconnect()
+            elif '/suicide' in msg and ses.game.started:
+                ses.lives = 0
+                ses.notify_self()
+            elif '/cancelgame' in msg and ses.game.started:
+                ses.game.reset()
+            elif '/gameinfo' in msg:
+                sio.emit('chat_message', room=sid, data=f'info: {ses.game.__dict__}')
+            elif '/meinfo' in msg:
+                sio.emit('chat_message', room=sid, data=f'info: {ses.__dict__}')
+            else:
+                sio.emit('chat_message', room=sid, data=f'{msg} COMMAND NOT FOUND')
+        else:
+            sio.emit('chat_message', room=ses.game.name, data=f'[{ses.name}]: {msg}')
 
 @sio.event
 def start_game(sid):

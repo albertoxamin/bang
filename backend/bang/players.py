@@ -1,6 +1,6 @@
 from enum import IntEnum
 import json
-from random import randrange
+from random import random, randrange, sample, uniform
 import socketio
 import bang.deck as deck
 import bang.roles as r
@@ -8,6 +8,7 @@ import bang.cards as cs
 import bang.expansions.dodge_city.cards as csd
 import bang.characters as chars
 import bang.expansions.dodge_city.characters as chd
+import eventlet
 
 class PendingAction(IntEnum):
     PICK = 0
@@ -19,7 +20,7 @@ class PendingAction(IntEnum):
 
 class Player:
 
-    def __init__(self, name, sid, sio):
+    def __init__(self, name, sid, sio, bot=False):
         import bang.game as g
         super().__init__()
         self.name = name
@@ -47,6 +48,7 @@ class Player:
         self.is_drawing = False
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
+        self.is_bot = bot
 
     def reset(self):
         self.hand: cs.Card = []
@@ -108,8 +110,11 @@ class Player:
     def set_available_character(self, available):
         self.available_characters = available
         print(f'I {self.name} have to choose between {available}')
-        self.sio.emit('characters', room=self.sid, data=json.dumps(
-            available, default=lambda o: o.__dict__))
+        if not self.is_bot:
+            self.sio.emit('characters', room=self.sid, data=json.dumps(
+                available, default=lambda o: o.__dict__))
+        else:
+            self.set_character(available[randrange(0, len(available))].name)
 
     def notify_card(self, player, card):
         mess = {
@@ -150,13 +155,108 @@ class Player:
                     randrange(0, len(self.hand))))
         if self.lives <= 0 and self.max_lives > 0:
             self.pending_action = PendingAction.WAIT
+            ser['hand'] = []
+            ser['equipment'] = []
+            self.sio.emit('self', room=self.sid, data=json.dumps(
+                ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
-        else:
+        elif not self.is_bot:
             self.sio.emit('self_vis', room=self.sid, data=json.dumps(
             self.game.get_visible_players(self), default=lambda o: o.__dict__))
-        self.sio.emit('self', room=self.sid, data=json.dumps(
+        if not self.is_bot:
+            self.sio.emit('self', room=self.sid, data=json.dumps(
                 ser, default=lambda o: o.__dict__))
-        self.game.notify_all()
+            self.game.notify_all()
+        else:
+            self.game.notify_all()
+            self.bot_logic()
+            self.game.notify_all()
+
+    def bot_logic(self):
+        if self.game.shutting_down: return
+        if self.pending_action != None and self.pending_action != PendingAction.WAIT:
+            eventlet.sleep(uniform(0.6, 1.5))
+        else:
+            return
+        if self.pending_action == PendingAction.PICK:
+            self.pick()
+        elif self.pending_action == PendingAction.DRAW:
+            self.draw('')
+        elif self.pending_action == PendingAction.PLAY:
+            has_played = False
+            if len([c for c in self.hand if c.is_equipment or c.usable_next_turn]) > 0:
+                for i in range(len(self.hand)):
+                    if self.hand[i].is_equipment or self.hand[i].usable_next_turn:
+                        self.play_card(i)
+                        has_played = True
+                        break
+            elif any([isinstance(c, cs.WellsFargo) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or isinstance(c, cs.Birra)  for c in self.hand]):
+                for i in range(len(self.hand)):
+                    c = self.hand[i]
+                    if isinstance(c, cs.WellsFargo) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives):
+                        self.play_card(i)
+                        has_played = True
+                        break
+            elif len([c for c in self.hand if c.need_target and not (self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment]))]) > 0:
+                for i in range(len(self.hand)):
+                    if self.hand[i].need_target and not (self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment])):
+                        if self.hand[i].need_with and len(self.hand) < 2:
+                            continue
+                        _range = self.get_sight() if self.hand[i].name == 'Bang!' or self.hand[i].name == "Pepperbox" else self.hand[i].range
+                        others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'])]
+                        if len(others) == 0:
+                            continue
+                        target = others[randrange(0, len(others))]
+                        if target['is_sheriff'] and isinstance(self.role, r.Renegade):
+                            target = others[randrange(0, len(others))]
+                        if not self.hand[i].need_with:
+                            self.play_card(i, against=target['name'])
+                        else:
+                            self.play_card(i, against=target['name'], _with=sample([j for j in range(len(self.hand)) if j != i], 1)[0])
+                        has_played = True
+                        break
+            elif any([not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment]):
+                print('hmm', [not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment])
+                for i in range(len(self.equipment)):
+                    c = self.equipment[i]
+                    if not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now:
+                        if not c.need_target:
+                            self.play_card(len(self.hand)+i)
+                        else:
+                            _range = self.get_sight() if c.name == "Pepperbox" else c.range
+                            others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'])]
+                            if len(others) == 0:
+                                continue
+                            target = others[randrange(0, len(others))]
+                            if target['is_sheriff'] and isinstance(self.role, r.Renegade):
+                                target = others[randrange(0, len(others))]
+                            self.play_card(len(self.hand)+i, against=target['name'])
+                        has_played = True
+                        break
+            if not has_played and len(self.hand) > self.lives:
+                self.scrap(0)
+            else:
+                self.end_turn()
+        elif self.pending_action == PendingAction.RESPOND:
+            did_respond = False
+            for i in range(len(self.hand)):
+                if self.hand[i].name in self.expected_response:
+                    self.respond(i)
+                    did_respond = True
+                    break
+            for i in range(len(self.equipment)):
+                if self.equipment[i].name in self.expected_response:
+                    self.respond(len(self.hand)+i)
+                    did_respond = True
+                    break
+            if not did_respond:
+                self.respond(-1)
+        elif self.pending_action == PendingAction.CHOOSE:
+            if not self.target_p:
+                self.choose(randrange(0, len(self.available_cards)))
+            else:
+                target = self.game.get_player_named(self.target_p)
+                self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
     def play_turn(self):
         if self.lives == 0:
@@ -239,6 +339,7 @@ class Player:
                                 self.sio.emit('chat_message', room=self.game.name,
                                               data=f'_special_bart_cassidy|{self.name}')
                             print(f'{self.name} Boom, -3 hp')
+                            break
                         else:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
                             self.game.next_player().notify_self()
@@ -405,7 +506,6 @@ class Player:
                 if isinstance(self.character, chd.ElenaFuente):
                     self.expected_response = self.game.deck.all_cards_str
                 self.on_failed_response_cb = self.take_damage_response
-            self.notify_self()
             return True
 
     def get_indians(self, attacker):
@@ -420,7 +520,6 @@ class Player:
             self.expected_response = [cs.Bang(0, 0).name]
             self.event_type = 'indians'
             self.on_failed_response_cb = self.take_damage_response
-            self.notify_self()
             return True
 
     def get_dueled(self, attacker):
@@ -435,7 +534,6 @@ class Player:
             self.expected_response = [cs.Bang(0, 0).name]
             self.event_type = 'duel'
             self.on_failed_response_cb = self.take_damage_response
-            self.notify_self()
             return True
 
     def take_damage_response(self):
@@ -467,6 +565,7 @@ class Player:
         self.attacker = None
 
     def respond(self, hand_index):
+        if self.pending_action != PendingAction.RESPOND: return
         self.pending_action = PendingAction.WAIT
         if hand_index != -1 and (
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
@@ -540,7 +639,7 @@ class Player:
         if len(self.hand) > self.max_lives and not forced:
             print(
                 f"I {self.name} have to many cards in my hand and I can't end the turn")
-        else:
+        elif self.pending_action == PendingAction.PLAY or forced:
             self.is_my_turn = False
             for i in range(len(self.equipment)):
                 if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
