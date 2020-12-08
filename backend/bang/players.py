@@ -256,7 +256,11 @@ class Player:
                 self.choose(randrange(0, len(self.available_cards)))
             else:
                 target = self.game.get_player_named(self.target_p)
-                self.choose(randrange(0, len(target.hand)+len(target.equipment)))
+                if len(target.hand)+len(target.equipment) == 0:
+                    self.pending_action = PendingAction.PLAY
+                    self.notify_self()
+                else:
+                    self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
     def play_turn(self):
         if self.lives == 0:
