@@ -91,6 +91,7 @@ export default {
 			this.lobbyName = data.name
 			this.started = data.started
 			this.password = data.password
+			this.privateRoom = data.password !== ''
 			this.useDodgeCity = data.expansions.indexOf('dodge_city') !== -1
 			this.players = data.players.map(x => {
 				return {
@@ -221,8 +222,9 @@ export default {
 		},
 	},
 	watch: {
-		privateRoom() {
-			this.$socket.emit('private')
+		privateRoom(old, _new) {
+			if (this.isRoomOwner && old !== _new)
+				this.$socket.emit('private')
 		}
 	},
 	mounted() {
