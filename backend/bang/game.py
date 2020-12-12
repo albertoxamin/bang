@@ -230,7 +230,7 @@ class Game:
     def player_death(self, player: players.Player, disconnected=False):
         import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
-        if player.attacker and isinstance(player.attacker, roles.Sheriff) and isinstance(player.role, roles.Vice):
+        if player.attacker and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
                 self.deck.scrap(player.attacker.hand.pop())
             for i in range(len(player.attacker.equipment)):
