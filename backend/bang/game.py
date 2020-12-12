@@ -228,6 +228,7 @@ class Game:
         else: return False
 
     def player_death(self, player: players.Player, disconnected=False):
+        if not player in self.players: return
         import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
         if player.attacker and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
