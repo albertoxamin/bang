@@ -50,7 +50,7 @@ class Vice(Role):
 class Outlaw(Role):
     def __init__(self, alternative_goal=None, alternative_goal_eng=None):
         super().__init__("Fuorilegge", "Elimina lo Sceriffo!")
-        self.goal_eng = "Kill the sSheriff!"
+        self.goal_eng = "Kill the Sheriff!"
         if alternative_goal:
             self.goal = alternative_goal
             self.goal_eng = alternative_goal_eng

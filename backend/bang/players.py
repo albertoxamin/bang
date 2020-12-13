@@ -233,7 +233,8 @@ class Player:
                             self.play_card(len(self.hand)+i, against=target['name'])
                         has_played = True
                         break
-            if not has_played and len(self.hand) > self.lives:
+            maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
+            if not has_played and len(self.hand) > maxcards:
                 self.scrap(0)
             else:
                 self.end_turn()
@@ -640,7 +641,8 @@ class Player:
     def end_turn(self, forced=False):
         if not self.is_my_turn:
             return
-        if len(self.hand) > self.max_lives and not forced:
+        maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
+        if len(self.hand) > maxcards and not forced:
             print(
                 f"I {self.name} have to many cards in my hand and I can't end the turn")
         elif self.pending_action == PendingAction.PLAY or forced:

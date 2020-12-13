@@ -57,6 +57,13 @@ class ApacheKid(Character):
         self.desc_eng = "Cards of diamonds ♦️ played against him, do no have effect (doesn't work in duels)."
         self.icon = '♦️'
 
+class SeanMallory(Character):
+    def __init__(self):
+        super().__init__("Sean Mallory", max_lives=3)
+        self.desc = "Quando finisce il suo turno può tenere fino a 10 carte in mano"
+        self.desc_eng = "He can keep up to 10 cards in his hand when ending the turn."
+        self.icon = '🍟'
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -67,6 +74,7 @@ def all_characters() -> List[Character]:
         BillNoface(),
         MollyStark(),
         ApacheKid(),
+        SeanMallory(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

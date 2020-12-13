@@ -189,7 +189,7 @@ export default {
 			return x[this.pending_action]
 		},
 		canEndTurn() {
-			return (this.pending_action == 2 && this.hand.length <= this.lives)
+			return (this.pending_action == 2 && this.hand.length <= (this.character.name === "Sean Mallory"?10:this.lives))
 		},
 		respondCards() {
 			let cc = [{
