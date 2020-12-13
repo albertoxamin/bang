@@ -34,6 +34,8 @@ class Deck:
     def pick_and_scrap(self) -> cs.Card:
         card = self.cards.pop(0)
         self.scrap_pile.append(card)
+        if len(self.cards) == 0:
+            self.reshuffle()
         self.game.notify_scrap_pile()
         return card
 
@@ -43,10 +45,13 @@ class Deck:
     def draw(self) -> cs.Card:
         card = self.cards.pop(0)
         if len(self.cards) == 0:
-            self.cards = self.scrap_pile[:-1].copy()
-            random.shuffle(self.cards)
-            self.scrap_pile = self.scrap_pile[-1:]
+            self.reshuffle()
         return card
+
+    def reshuffle(self):
+        self.cards = self.scrap_pile[:-1].copy()
+        random.shuffle(self.cards)
+        self.scrap_pile = self.scrap_pile[-1:]
 
     def draw_from_scrap_pile(self) -> cs.Card:
         if len(self.scrap_pile) > 0:
