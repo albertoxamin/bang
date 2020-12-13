@@ -247,7 +247,7 @@ export default {
 		console.log('mounted lobby')
 		if (!this.$route.query.code)
 			return this.$router.push('/')
-		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd})
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username')})
 	},
 }
 </script>

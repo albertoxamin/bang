@@ -227,7 +227,7 @@ class Game:
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
         if player in self.players:
-            if self.disconnect_bot:
+            if self.disconnect_bot and self.started:
                 player.is_bot = True
             else:
                 self.player_death(player=player, disconnected=True)
@@ -319,6 +319,7 @@ class Game:
         print('resetting lobby')
         self.players.extend(self.dead_players)
         self.dead_players = []
+        self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False
         self.waiting_for = 0

@@ -64,7 +64,12 @@ def get_me(sid, room):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            sio.emit('change_username', room=sid)
+            if room['username'] == None or any([p.name == room['username'] for p in sio.get_session(sid).game.players]):
+                sio.emit('change_username', room=sid)
+            else:
+                sio.get_session(sid).name = room['username']
+                sio.emit('me', data=sio.get_session(sid).name, room=sid)
+                sio.get_session(sid).game.notify_room()
 
 @sio.event
 def disconnect(sid):
