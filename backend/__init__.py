@@ -11,6 +11,7 @@ sio = socketio.Server(cors_allowed_origins="*")
 app = socketio.WSGIApp(sio, static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
     '/game': {'content_type': 'text/html', 'filename': 'index.html'},
+    '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
     '/favicon.ico': {'filename': 'favicon.ico'},
     '/img/icons': './img/icons',
     '/manifest.json': {'filename': 'manifest.json'},
