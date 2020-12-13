@@ -575,7 +575,7 @@ class Player:
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
             self.equipment[hand_index-len(self.hand)].name in self.expected_response):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
-            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn and self.event_type != 'duel':
+            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw())
             card.use_card(self)
             self.game.deck.scrap(card)
@@ -584,7 +584,7 @@ class Player:
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
                     self.game.duel(self, self.attacker.name)
-                    if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn:
+                    if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn:
                         self.molly_discarded_cards += 1
                 else:
                     self.game.responders_did_respond_resume_turn()
