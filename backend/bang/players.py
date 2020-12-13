@@ -508,6 +508,8 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards
+                if self.attacker and isinstance(self.attacker.character, chd.BelleStar):
+                    self.expected_response = self.game.deck.mancato_cards_not_green
                 if isinstance(self.character, chd.ElenaFuente):
                     self.expected_response = self.game.deck.all_cards_str
                 self.on_failed_response_cb = self.take_damage_response
