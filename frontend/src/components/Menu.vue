@@ -8,7 +8,7 @@
 			<div v-if="!didSetUsername">
 				<p>{{$t("choose_username")}}</p>
 				<form @submit="setUsername">
-					<input v-model="username" />
+					<input id="username" v-model="username" />
 					<input type="submit" :value="$t('submit')"/>
 				</form>
 				<p>{{$t("online_players")}}{{onlinePlayers}}</p>
@@ -25,12 +25,14 @@
 					<form @submit="createLobby">
 						<h2>{{$t("create_lobby")}}</h2>
 						<p>{{$t("lobby_name")}}</p>
-						<input v-model="lobbyName"/>
+						<input id="lobbyname" v-model="lobbyName"/>
 						<input type="submit" :value="$t('submit')"/>
 					</form>
 				</div>
 			</div>
 		</div>
+		<label for="username" style="opacity:0">Username</label>
+		<label for="lobbyname" style="opacity:0">Lobby Name</label>
 	</div>
 </template>
 

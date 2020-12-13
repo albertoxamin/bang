@@ -7,7 +7,7 @@
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
 		</div>
-		<select style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale" @change="storeLangPref">
+		<select id="lang" style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale" @change="storeLangPref">
 			<option
 				v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
 				:key="`lang-${i}`"
@@ -15,6 +15,7 @@
 					{{lang.split('.')[1]}} {{lang.split('.')[2]}}
 			</option>
 		</select>
+		<label for="lang" style="opacity:0" >Language</label>
 	</div>
 </template>
 
