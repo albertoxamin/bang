@@ -12,7 +12,7 @@ const routes = [
 	{
 		path: '/',
 		name: 'Home',
-		component: () => import(/* webpackChunkName: "game" */ '../components/Menu.vue')
+		component: () => import(/* webpackChunkName: "home" */ '../components/Menu.vue')
 	},
 ]
 

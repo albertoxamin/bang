@@ -6,6 +6,7 @@
 	"no_lobby_available": "No lobbies available",
 	"create_lobby": "Open a lobby:",
 	"lobby_name": "Name:",
+	"leave_room": "Leave lobby",
 	"warning": "Warning!",
 	"connection_error": "Cannot connect to server.",
 	"end_turn": "End Turn!",
@@ -52,7 +53,7 @@
 	"pick_a_card": "FLIP A CARD",
 	"to_defend_from": "TO DEFEND YOURSELF FROM",
 	"submit": "Submit",
-	"copy": "Copy",
+	"copy": "Copy invite",
 	"chat": {
 		"chat": "Chat",
 		"joined": "{0} joined the lobby",
@@ -82,5 +83,8 @@
 	},
 	"mods": "Modifiers",
 	"mod_comp": "Competitive mode (disables automatic take damage)",
-	"disconnect_bot": "Replace players that disconnect with bots"
+	"disconnect_bot": "Replace players that disconnect with bots",
+	"your_turn": "Play your turn!",
+	"your_response": "Respond!",
+	"your_choose": "Choose a card!"
 }

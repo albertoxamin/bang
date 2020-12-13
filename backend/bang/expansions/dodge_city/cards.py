@@ -66,7 +66,7 @@ class Rissa(CatBalou):
         self.name = 'Rissa'
         self.icon = '🥊'
         self.desc = "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
-        self.desc_eng = "Choose a card to discard from the hand/equipment ofc all the other players"
+        self.desc_eng = "Choose a card to discard from the hand/equipment of all the other players"
         self.need_with = True
         self.need_target = False
         self.alt_text = '2🃏'

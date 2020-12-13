@@ -233,7 +233,8 @@ class Player:
                             self.play_card(len(self.hand)+i, against=target['name'])
                         has_played = True
                         break
-            if not has_played and len(self.hand) > self.lives:
+            maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
+            if not has_played and len(self.hand) > maxcards:
                 self.scrap(0)
             else:
                 self.end_turn()
@@ -507,6 +508,8 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards
+                if self.attacker and isinstance(self.attacker.character, chd.BelleStar):
+                    self.expected_response = self.game.deck.mancato_cards_not_green
                 if isinstance(self.character, chd.ElenaFuente):
                     self.expected_response = self.game.deck.all_cards_str
                 self.on_failed_response_cb = self.take_damage_response
@@ -575,7 +578,7 @@ class Player:
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
             self.equipment[hand_index-len(self.hand)].name in self.expected_response):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
-            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn and self.event_type != 'duel':
+            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw())
             card.use_card(self)
             self.game.deck.scrap(card)
@@ -584,7 +587,7 @@ class Player:
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
                     self.game.duel(self, self.attacker.name)
-                    if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn:
+                    if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn:
                         self.molly_discarded_cards += 1
                 else:
                     self.game.responders_did_respond_resume_turn()
@@ -640,7 +643,8 @@ class Player:
     def end_turn(self, forced=False):
         if not self.is_my_turn:
             return
-        if len(self.hand) > self.max_lives and not forced:
+        maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
+        if len(self.hand) > maxcards and not forced:
             print(
                 f"I {self.name} have to many cards in my hand and I can't end the turn")
         elif self.pending_action == PendingAction.PLAY or forced:

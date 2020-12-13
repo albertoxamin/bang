@@ -173,13 +173,14 @@ def chat_message(sid, msg):
             elif '/cancelgame' in msg and ses.game.started:
                 ses.game.reset()
             elif '/gameinfo' in msg:
-                sio.emit('chat_message', room=sid, data=f'info: {ses.game.__dict__}')
+                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
-                sio.emit('chat_message', room=sid, data=f'info: {ses.__dict__}')
+                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'info: {ses.__dict__}'})
             else:
-                sio.emit('chat_message', room=sid, data=f'{msg} COMMAND NOT FOUND')
+                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'{msg} COMMAND NOT FOUND'})
         else:
-            sio.emit('chat_message', room=ses.game.name, data=f'[{ses.name}]: {msg}')
+            color = sid.encode('utf-8').hex()[-3:]
+            sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})
 
 @sio.event
 def start_game(sid):

@@ -20,8 +20,8 @@
 		<transition name="list">
 			<p v-if="desc"><i>{{desc}}</i></p>
 		</transition>
-		<div v-if="lives > 0">
-			<span>{{$t('hand')}}</span>
+		<div v-if="lives > 0" style="position:relative">
+			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
@@ -117,7 +117,9 @@ export default {
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.is_my_turn = self.is_my_turn
-			if (this.is_my_turn) document.title = 'È il tuo turno! | PewPew!'
+			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'
+			else if (this.pending_action == 3) document.title = this.$t('your_response')+' | PewPew!'
+			else if (this.pending_action == 5) document.title = this.$t('your_choose')+' | PewPew!'
 			else document.title = 'PewPew!'
 			this.expected_response = self.expected_response
 			this.available_cards = self.available_cards
@@ -187,7 +189,7 @@ export default {
 			return x[this.pending_action]
 		},
 		canEndTurn() {
-			return (this.pending_action == 2 && this.hand.length <= this.lives)
+			return (this.pending_action == 2 && this.hand.length <= (this.character.name === "Sean Mallory"?10:this.lives))
 		},
 		respondCards() {
 			let cc = [{
@@ -328,14 +330,13 @@ export default {
 	opacity: 0.5;
 }
 .hand {
-	margin-top: -16pt;
 	position: relative;
 	display:flex;
-	border: 1px solid #ccc;
+	border: 2px dashed #ccc;
 	padding: 10pt 40pt 0pt 40pt;
 	overflow:auto;
 	border-radius: 4pt;
-	min-height: 20pt;
+	min-height: 40pt;
 }
 .hand>.card{
 	margin-left: -30pt;
@@ -343,6 +344,14 @@ export default {
 .hand>.card:hover {
 	margin-right:35pt;
 	transform: translateY(-15px);
+}
+#hand_text{
+	color: #ccc;
+	position: absolute;
+	font-size: xxx-large;
+	font-weight: 300;
+	bottom: 0;
+	right: 10pt;
 }
 .equipment-slot {
 	display:flex;

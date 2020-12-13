@@ -6,6 +6,7 @@
 	"no_lobby_available": "Nessuna stanza disponibile",
 	"create_lobby": "Crea una stanza:",
 	"lobby_name": "Nome:",
+	"leave_room": "Esci dalla stanza",
 	"warning": "Attenzione!",
 	"connection_error": "Connessione al server assente.",
 	"end_turn": "Termina turno!",
@@ -52,7 +53,7 @@
 	"pick_a_card": "ESTRAI UNA CARTA",
 	"to_defend_from": "PER DIFENDERTI DA",
 	"submit": "Invia",
-	"copy": "Copia",
+	"copy": "Copia invito",
 	"chat": {
 		"chat": "Chat",
 		"joined": "{0} è entrato nella stanza",
@@ -82,5 +83,8 @@
 	},
 	"mods": "Modificatori",
 	"mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",
-	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot"
+	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot",
+	"your_turn": "È il tuo turno!",
+	"your_response": "Rispondi!",
+	"your_choose": "Scegli una carta!"
 }

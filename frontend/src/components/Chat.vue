@@ -2,7 +2,7 @@
 	<div class="chat">
 		<h3>{{$t("chat.chat")}}</h3>
 		<div id="chatbox">
-			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg">{{msg}}</p>
+			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg" :style="`color:${msg.color}`">{{msg.text}}</p>
 			<p class="end">.</p>
 		</div>
 		<form @submit="sendChatMessage" id="msg-form">
@@ -21,10 +21,11 @@ export default {
 	}),
 	sockets: {
 		chat_message(msg) {
-			if (msg.indexOf('_') === 0) {
+			console.log(msg)
+			if ((typeof msg === "string") && msg.indexOf('_') === 0) {
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
-				this.messages.push(this.$t(`chat.${type}`, params))
+				this.messages.push({text:this.$t(`chat.${type}`, params)})
 			}else {
 				this.messages.push(msg)
 			}
@@ -45,8 +46,8 @@ export default {
 </script>
 <style scoped>
 #chatbox {
+	flex: 1;
 	width:100%;
-	max-height:150px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	overflow-wrap: break-word;
@@ -61,14 +62,27 @@ input {
 	height: 0pt;
 	margin-top: -1.5pt;
 }
+.chat {
+	display: flex;
+	flex-direction: column;
+}
 #msg-form {
 	width:100%;
 	padding:0;
 	display:flex;
 }
+@media only screen and (min-width:1000px) {
+	.chat { 
+		height: 90vh;
+		margin-left: 10pt;
+	}
+}
 @media only screen and (max-width:1000px) {
 	#msg-form {
 		flex-direction: column;
+	}
+	#chatbox {
+		max-height:150px;
 	}
 }
 </style>

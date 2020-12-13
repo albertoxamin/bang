@@ -8,7 +8,7 @@
 				<card :card="card" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
 			</div>
 			<div style="position:relative;">
-				<card v-if="previousScrap" :card="previousScrap"/>
+				<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
 				<card v-else :card="card" class="back" style="opacity:0"/>
 				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap" @click.native="action('scrap')"
 							@pointerenter.native="desc=($i18n.locale=='it'?lastScrap.desc:lastScrap.desc_eng)" @pointerleave.native="desc=''" />
@@ -92,6 +92,10 @@ export default {
 	top: 0;
 	animation-duration: 0.8s;
 	animation-name: slidein;
+}
+.last-scrap:hover {
+	opacity: 0.8;
+	transform: translateY(-10px);
 }
 @keyframes slidein {
 	from {
