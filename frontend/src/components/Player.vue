@@ -20,8 +20,8 @@
 		<transition name="list">
 			<p v-if="desc"><i>{{desc}}</i></p>
 		</transition>
-		<div v-if="lives > 0">
-			<span>{{$t('hand')}}</span>
+		<div v-if="lives > 0" style="position:relative">
+			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
@@ -328,10 +328,9 @@ export default {
 	opacity: 0.5;
 }
 .hand {
-	margin-top: -16pt;
 	position: relative;
 	display:flex;
-	border: 1px solid #ccc;
+	border: 2px dashed #ccc;
 	padding: 10pt 40pt 0pt 40pt;
 	overflow:auto;
 	border-radius: 4pt;
@@ -343,6 +342,14 @@ export default {
 .hand>.card:hover {
 	margin-right:35pt;
 	transform: translateY(-15px);
+}
+#hand_text{
+	color: #ccc;
+	position: absolute;
+	font-size: xxx-large;
+	font-weight: 300;
+	bottom: 0;
+	right: 10pt;
 }
 .equipment-slot {
 	display:flex;
