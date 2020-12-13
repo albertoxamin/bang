@@ -58,6 +58,25 @@ def get_me(sid, room):
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
+        elif len(de_games) == 1 and de_games[0].started:
+            print('room exists')
+            if room['username'] != None and any([p.name == room['username'] for p in de_games[0].players if p.is_bot]):
+                print('getting inside the bot')
+                bot = [p for p in de_games[0].players if p.is_bot][0]
+                bot.sid = sid
+                bot.is_bot = False
+                sio.enter_room(sid, de_games[0].name)
+                sio.save_session(sid, bot)
+                de_games[0].notify_room(sid)
+                eventlet.sleep(0.1)
+                de_games[0].notify_all()
+                sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
+                bot.notify_self()
+            else: #spectate
+                de_games[0].dead_players.append(sio.get_session(sid))
+                sio.get_session(sid).game = de_games[0]
+                sio.enter_room(sid, de_games[0].name)
+                de_games[0].notify_room(sid)
         else:
             create_room(sid, room['name'])
         if sio.get_session(sid).game == None:
@@ -69,7 +88,8 @@ def get_me(sid, room):
             else:
                 sio.get_session(sid).name = room['username']
                 sio.emit('me', data=sio.get_session(sid).name, room=sid)
-                sio.get_session(sid).game.notify_room()
+                if not sio.get_session(sid).game.started:
+                    sio.get_session(sid).game.notify_room()
 
 @sio.event
 def disconnect(sid):

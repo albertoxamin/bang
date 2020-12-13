@@ -27,9 +27,9 @@ class Game:
         self.is_competitive = False
         self.disconnect_bot = True
 
-    def notify_room(self):
-        if len([p for p in self.players if p.character == None]) != 0:
-            self.sio.emit('room', room=self.name, data={
+    def notify_room(self, sid=None):
+        if len([p for p in self.players if p.character == None]) != 0 or sid:
+            self.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
                 'players': [{'name':p.name, 'ready': p.character != None} for p in self.players],
