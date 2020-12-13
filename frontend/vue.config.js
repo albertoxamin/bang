@@ -1,6 +1,7 @@
 const { GenerateSW } = require("workbox-webpack-plugin");
 
 module.exports = {
+	publicPath: "./",
 	pwa: {
 		name: 'PewPew!',
 		appleMobileWebAppCache: "yes",
@@ -8,7 +9,11 @@ module.exports = {
 		}
 	},
 	configureWebpack: {
-		plugins: [new GenerateSW()],
+		plugins: [new GenerateSW({
+			clientsClaim: true,
+			skipWaiting: true,
+			navigateFallback: 'index.html',
+		})],
 		output: {
 			crossOriginLoading: 'anonymous'
 		},

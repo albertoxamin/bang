@@ -1,3 +1,4 @@
+import os
 import json
 import random
 from typing import List
@@ -8,7 +9,7 @@ from bang.game import Game
 from bang.players import Player
 
 sio = socketio.Server(cors_allowed_origins="*")
-app = socketio.WSGIApp(sio, static_files={
+static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
     '/game': {'content_type': 'text/html', 'filename': 'index.html'},
     '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
@@ -17,8 +18,11 @@ app = socketio.WSGIApp(sio, static_files={
     '/manifest.json': {'filename': 'manifest.json'},
     '/css': './css',
     '/js': './js',
-})
+}
+for file in [f for f in os.listdir('.') if '.js' in f or '.map' in f or '.html' in f]:
+    static_files[f'/{file}'] = f'./{file}'
 
+app = socketio.WSGIApp(sio, static_files=static_files)
 games: List[Game] = []
 online_players = 0
 
