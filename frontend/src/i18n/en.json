@@ -6,6 +6,7 @@
 	"no_lobby_available": "No lobbies available",
 	"create_lobby": "Open a lobby:",
 	"lobby_name": "Name:",
+	"leave_room": "Leave lobby",
 	"warning": "Warning!",
 	"connection_error": "Cannot connect to server.",
 	"end_turn": "End Turn!",

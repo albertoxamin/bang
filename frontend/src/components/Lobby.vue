@@ -1,7 +1,10 @@
 <template>
 	<div class="lobby">
 		<div style="flex-grow: 4;">
-			<h2 v-if="!started">{{$t('room')}}{{ lobbyName }}</h2>
+			<div style="position:relative;">
+				<h2 v-if="!started">{{$t('room')}}{{ lobbyName }}</h2>
+				<input style="position:absolute;top:0;right:0;max-height:100pt" v-if="!started" type="button" @click="leaveRoom" :value="$t('leave_room')"/>
+			</div>
 			<h3>{{$t('room_players', {username:username})}}</h3>
 			<div v-if="!started">
 				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">{{$t("private_room")}}</PrettyCheck>
@@ -19,7 +22,7 @@
 					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
-					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)"/>
+					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
 					<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" @click.native="selectedInfo = p.equipment"/>
@@ -165,6 +168,9 @@ export default {
 		}
 	},
 	methods: {
+		leaveRoom() {
+			window.location.replace(window.location.origin)
+		},
 		toggleExpansions(name) {
 			if (!this.isRoomOwner) return;
 			this.$socket.emit('toggle_expansion', name)
@@ -257,8 +263,8 @@ export default {
 .is_my_turn {
 	box-shadow: 0 0 0 3pt rgb(138, 12, 12), 0 0 0 6pt white, 0 0 5pt 6pt #aaa !important;
 	animation-name: turn-animation;
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
 }
 @media (prefers-color-scheme: dark) {
 	.is_my_turn {
@@ -270,7 +276,7 @@ export default {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   100% {
     transform: scale(1);

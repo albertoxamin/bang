@@ -334,7 +334,7 @@ export default {
 	padding: 10pt 40pt 0pt 40pt;
 	overflow:auto;
 	border-radius: 4pt;
-	min-height: 20pt;
+	min-height: 40pt;
 }
 .hand>.card{
 	margin-left: -30pt;

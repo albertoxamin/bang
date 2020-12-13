@@ -6,6 +6,7 @@
 	"no_lobby_available": "Nessuna stanza disponibile",
 	"create_lobby": "Crea una stanza:",
 	"lobby_name": "Nome:",
+	"leave_room": "Esci dalla stanza",
 	"warning": "Attenzione!",
 	"connection_error": "Connessione al server assente.",
 	"end_turn": "Termina turno!",
