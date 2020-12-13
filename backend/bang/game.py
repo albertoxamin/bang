@@ -85,7 +85,7 @@ class Game:
                 print(self.name)
                 print(self.players[i].name)
                 print(self.players[i].character)
-                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}|{self.players[i].character.desc}')
+                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}|{self.players[i].character.desc}|{self.players[i].character.desc_eng}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
@@ -114,9 +114,9 @@ class Game:
         available_roles: List[roles.Role] = []
         if len(self.players) == 3:
             available_roles = [
-                roles.Vice('Elimina il Rinnegato 🦅, se non lo elimini tu elimina anche il Fuorilegge'),
-                roles.Renegade('Elimina il Fuorilegge 🐺, se non lo elimini tu elimina anche il Vice'),
-                roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato')
+                roles.Vice('Elimina il Rinnegato 🦅, se non lo elimini tu elimina anche il Fuorilegge', 'Kill the Renegade 🦅, if you are not the one who kills him then kill the Outlaw!'),
+                roles.Renegade('Elimina il Fuorilegge 🐺, se non lo elimini tu elimina anche il Vice', 'Kill the Outlaw 🐺, if you are not the one who kills him then kill the Vice!'),
+                roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato', 'Kill the Vice 🎖, if you are not the one who kills him then kill the Renegade!')
             ]
         elif len(self.players) >= 4:
             available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Renegade(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]

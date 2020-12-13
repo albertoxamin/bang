@@ -59,7 +59,7 @@
 		"died": "{0} died",
 		"died_role": "{0} was a {1}!",
 		"won": "{0} won!",
-		"choose_character": "{0} has {1} as character, his special ability is: {2}!",
+		"choose_character": "{0} has {1} as character, his special ability is: {3}!",
 		"starting": "The game is starting!",
 		"sheriff": "{0} is the sheriff!",
 		"did_choose_character": "{0} did choose the character.",
