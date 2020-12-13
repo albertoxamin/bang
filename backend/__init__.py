@@ -102,6 +102,14 @@ def toggle_expansion(sid, expansion_name):
     g.toggle_expansion(expansion_name)
 
 @sio.event
+def toggle_comp(sid):
+    sio.get_session(sid).game.toggle_competitive()
+
+@sio.event
+def toggle_replace_with_bot(sid):
+    sio.get_session(sid).game.toggle_disconnect_bot()
+
+@sio.event
 def join_room(sid, room):
     room_name = room['name']
     print(f'{sid} joined a room named {room_name}')
@@ -130,9 +138,13 @@ def chat_message(sid, msg):
             elif '/removebot' in msg and not ses.game.started:
                 if any([p.is_bot for p in ses.game.players]):
                     [p for p in ses.game.players if p.is_bot][-1].disconnect()
-            elif '/suicide' in msg and ses.game.started:
+            elif '/suicide' in msg and ses.game.started and ses.lives > 0:
                 ses.lives = 0
                 ses.notify_self()
+            elif '/togglecomp' in msg and ses.game:
+                ses.game.toggle_competitive()
+            elif '/togglebot' in msg and ses.game:
+                ses.game.toggle_disconnect_bot()
             elif '/cancelgame' in msg and ses.game.started:
                 ses.game.reset()
             elif '/gameinfo' in msg:

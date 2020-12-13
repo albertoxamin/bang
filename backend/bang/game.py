@@ -24,6 +24,8 @@ class Game:
         self.password = ''
         self.expansions = []
         self.shutting_down = False
+        self.is_competitive = False
+        self.disconnect_bot = True
 
     def notify_room(self):
         if len([p for p in self.players if p.character == None]) != 0:
@@ -32,6 +34,8 @@ class Game:
                 'started': self.started,
                 'players': [{'name':p.name, 'ready': p.character != None} for p in self.players],
                 'password': self.password,
+                'is_competitive': self.is_competitive,
+                'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
             })
 
@@ -43,6 +47,14 @@ class Game:
             else:
                 self.expansions.append(expansion_name)
             self.notify_room()
+
+    def toggle_competitive(self):
+        self.is_competitive = not self.is_competitive
+        self.notify_room()
+
+    def toggle_disconnect_bot(self):
+        self.disconnect_bot = not self.disconnect_bot
+        self.notify_room()
 
     def add_player(self, player: players.Player):
         if player.is_bot and len(self.players) >= 8:
@@ -215,7 +227,10 @@ class Game:
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
         if player in self.players:
-            self.player_death(player=player, disconnected=True)
+            if self.disconnect_bot:
+                player.is_bot = True
+            else:
+                self.player_death(player=player, disconnected=True)
         else:
             self.dead_players.remove(player)
         if len([p for p in self.players if not p.is_bot])+len([p for p in self.dead_players if not p.is_bot]) == 0:

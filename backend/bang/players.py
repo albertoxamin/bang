@@ -474,7 +474,7 @@ class Player:
                 if self.mancato_needed <= 0:
                     self.game.responders_did_respond_resume_turn()
                     return
-        if len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
@@ -492,7 +492,7 @@ class Player:
         for i in range(len(self.equipment)):
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])
-        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not isinstance(self.character, chars.Jourdonnais)\
+        if not self.game.is_competitive and len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not isinstance(self.character, chars.Jourdonnais)\
              and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             print('Cant defend')
@@ -514,7 +514,7 @@ class Player:
 
     def get_indians(self, attacker):
         self.attacker = attacker
-        if len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
             return False
@@ -528,7 +528,7 @@ class Player:
 
     def get_dueled(self, attacker):
         self.attacker = attacker
-        if len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn()
