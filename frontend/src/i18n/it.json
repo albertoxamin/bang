@@ -83,5 +83,8 @@
 	},
 	"mods": "Modificatori",
 	"mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",
-	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot"
+	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot",
+	"your_turn": "È il tuo turno!",
+	"your_response": "Rispondi!",
+	"your_choose": "Scegli una carta!"
 }

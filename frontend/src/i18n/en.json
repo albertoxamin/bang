@@ -83,5 +83,8 @@
 	},
 	"mods": "Modifiers",
 	"mod_comp": "Competitive mode (disables automatic take damage)",
-	"disconnect_bot": "Replace players that disconnect with bots"
+	"disconnect_bot": "Replace players that disconnect with bots",
+	"your_turn": "Play your turn!",
+	"your_response": "Respond!",
+	"your_choose": "Choose a card!"
 }

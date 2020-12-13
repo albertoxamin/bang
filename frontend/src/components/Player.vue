@@ -117,7 +117,9 @@ export default {
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.is_my_turn = self.is_my_turn
-			if (this.is_my_turn) document.title = 'È il tuo turno! | PewPew!'
+			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'
+			else if (this.pending_action == 3) document.title = this.$t('your_response')+' | PewPew!'
+			else if (this.pending_action == 5) document.title = this.$t('your_choose')+' | PewPew!'
 			else document.title = 'PewPew!'
 			this.expected_response = self.expected_response
 			this.available_cards = self.available_cards
