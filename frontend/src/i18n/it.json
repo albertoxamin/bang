@@ -79,5 +79,8 @@
 		"special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
 		"special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
 		"special_calamity": "{0} ha giovato {1} come un Bang! contro {2}."
-	}
+	},
+	"mods": "Modificatori",
+	"mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",
+	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot"
 }

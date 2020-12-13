@@ -316,7 +316,7 @@ class Mancato(Card):
         import bang.characters as chars
         if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
             player.sio.emit('chat_message', room=player.game.name,
-                            data=f'_calamity_special|{player.name}|{self.name}|{against}')
+                            data=f'_special_calamity|{player.name}|{self.name}|{against}')
             player.has_played_bang = True
             player.game.attack(player, against)
             return True

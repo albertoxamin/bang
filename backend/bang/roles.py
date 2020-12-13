@@ -28,11 +28,12 @@ class Sheriff(Role):
 
 
 class Vice(Role):
-    def __init__(self, alternative_goal=None):
+    def __init__(self, alternative_goal=None, alternative_goal_eng=None):
         super().__init__("Vice", "Proteggi lo Sceriffo! Elimina tutti i Fuorilegge e il Rinnegato!")
         self.goal_eng = "Protect the Sheriff! Kill the Outlaws and the Renegade!"
         if alternative_goal:
             self.goal = alternative_goal
+            self.goal_eng = alternative_goal_eng
         self.max_players = 2
         self.icon = '🎖'
     
@@ -47,11 +48,12 @@ class Vice(Role):
         return False
 
 class Outlaw(Role):
-    def __init__(self, alternative_goal=None):
+    def __init__(self, alternative_goal=None, alternative_goal_eng=None):
         super().__init__("Fuorilegge", "Elimina lo Sceriffo!")
-        self.goal_eng = "Kill the Sheriff!"
+        self.goal_eng = "Kill the sSheriff!"
         if alternative_goal:
             self.goal = alternative_goal
+            self.goal_eng = alternative_goal_eng
         self.max_players = 3
         self.icon = '🐺'
 
@@ -66,11 +68,12 @@ class Outlaw(Role):
         return False
 
 class Renegade(Role):
-    def __init__(self, alternative_goal=None):
+    def __init__(self, alternative_goal=None, alternative_goal_eng=None):
         super().__init__("Rinnegato", "Rimani l'ultimo personaggio in gioco!")
         self.goal_eng = "Be the last man standing!"
         if alternative_goal:
             self.goal = alternative_goal
+            self.goal_eng = alternative_goal_eng
         self.max_players = 1
         self.icon = '🦅'
 

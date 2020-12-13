@@ -58,13 +58,38 @@ def get_me(sid, room):
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
+        elif len(de_games) == 1 and de_games[0].started:
+            print('room exists')
+            if room['username'] != None and any([p.name == room['username'] for p in de_games[0].players if p.is_bot]):
+                print('getting inside the bot')
+                bot = [p for p in de_games[0].players if p.is_bot][0]
+                bot.sid = sid
+                bot.is_bot = False
+                sio.enter_room(sid, de_games[0].name)
+                sio.save_session(sid, bot)
+                de_games[0].notify_room(sid)
+                eventlet.sleep(0.1)
+                de_games[0].notify_all()
+                sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
+                bot.notify_self()
+            else: #spectate
+                de_games[0].dead_players.append(sio.get_session(sid))
+                sio.get_session(sid).game = de_games[0]
+                sio.enter_room(sid, de_games[0].name)
+                de_games[0].notify_room(sid)
         else:
             create_room(sid, room['name'])
         if sio.get_session(sid).game == None:
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            sio.emit('change_username', room=sid)
+            if room['username'] == None or any([p.name == room['username'] for p in sio.get_session(sid).game.players]):
+                sio.emit('change_username', room=sid)
+            else:
+                sio.get_session(sid).name = room['username']
+                sio.emit('me', data=sio.get_session(sid).name, room=sid)
+                if not sio.get_session(sid).game.started:
+                    sio.get_session(sid).game.notify_room()
 
 @sio.event
 def disconnect(sid):
@@ -102,6 +127,14 @@ def toggle_expansion(sid, expansion_name):
     g.toggle_expansion(expansion_name)
 
 @sio.event
+def toggle_comp(sid):
+    sio.get_session(sid).game.toggle_competitive()
+
+@sio.event
+def toggle_replace_with_bot(sid):
+    sio.get_session(sid).game.toggle_disconnect_bot()
+
+@sio.event
 def join_room(sid, room):
     room_name = room['name']
     print(f'{sid} joined a room named {room_name}')
@@ -130,9 +163,13 @@ def chat_message(sid, msg):
             elif '/removebot' in msg and not ses.game.started:
                 if any([p.is_bot for p in ses.game.players]):
                     [p for p in ses.game.players if p.is_bot][-1].disconnect()
-            elif '/suicide' in msg and ses.game.started:
+            elif '/suicide' in msg and ses.game.started and ses.lives > 0:
                 ses.lives = 0
                 ses.notify_self()
+            elif '/togglecomp' in msg and ses.game:
+                ses.game.toggle_competitive()
+            elif '/togglebot' in msg and ses.game:
+                ses.game.toggle_disconnect_bot()
             elif '/cancelgame' in msg and ses.game.started:
                 ses.game.reset()
             elif '/gameinfo' in msg:

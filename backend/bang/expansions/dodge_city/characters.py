@@ -47,7 +47,7 @@ class MollyStark(Character):
     def __init__(self):
         super().__init__("Molly Stark", max_lives=4)
         self.desc = "Quando usa volontariamente una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
-        self.desc_eng = "When she uses a card from her hand outside her turn, he draws a card."
+        self.desc_eng = "When she uses a card from her hand outside her turn, she draws a card."
         self.icon = '🙅‍♀️'
 
 class ApacheKid(Character):

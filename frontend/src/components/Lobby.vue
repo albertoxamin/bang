@@ -31,6 +31,10 @@
 			<div v-if="!started">
 				<h3>{{$t("expansions")}}</h3>
 				<PrettyCheck @click.native="toggleExpansions('dodge_city')" :disabled="!isRoomOwner" v-model="useDodgeCity" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">Dodge City</PrettyCheck>
+				<h3>{{$t('mods')}}</h3>
+				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
+				<br>
+				<PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck>
 			</div>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
@@ -85,12 +89,17 @@ export default {
 		password: '',
 		useDodgeCity: false,
 		hasToSetUsername: false,
+		is_competitive: false,
+		disconnect_bot: false,
 	}),
 	sockets: {
 		room(data) {
 			this.lobbyName = data.name
 			this.started = data.started
 			this.password = data.password
+			this.privateRoom = data.password !== ''
+			this.is_competitive = data.is_competitive
+			this.disconnect_bot = data.disconnect_bot
 			this.useDodgeCity = data.expansions.indexOf('dodge_city') !== -1
 			this.players = data.players.map(x => {
 				return {
@@ -160,6 +169,14 @@ export default {
 			if (!this.isRoomOwner) return;
 			this.$socket.emit('toggle_expansion', name)
 		},
+		toggleCompetitive() {
+			if (!this.isRoomOwner) return;
+			this.$socket.emit('toggle_comp')
+		},
+		toggleReplaceWithBot() {
+			if (!this.isRoomOwner) return;
+			this.$socket.emit('toggle_replace_with_bot')
+		},
 		getActionEmoji(p) {
 			if (p.is_my_turn === undefined || p.pending_action === undefined) return '';
 			if (p.pending_action != 4) {
@@ -221,15 +238,16 @@ export default {
 		},
 	},
 	watch: {
-		privateRoom() {
-			this.$socket.emit('private')
+		privateRoom(old, _new) {
+			if (this.isRoomOwner && old !== _new)
+				this.$socket.emit('private')
 		}
 	},
 	mounted() {
 		console.log('mounted lobby')
 		if (!this.$route.query.code)
 			return this.$router.push('/')
-		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd})
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username')})
 	},
 }
 </script>

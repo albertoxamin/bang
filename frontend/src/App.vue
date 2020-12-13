@@ -7,7 +7,7 @@
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
 		</div>
-		<select style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale">
+		<select style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale" @change="storeLangPref">
 			<option
 				v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
 				:key="`lang-${i}`"
@@ -42,8 +42,13 @@ export default {
 		},
 	},
 	methods: {
+		storeLangPref() {
+			localStorage.setItem('lang', this.$i18n.locale)
+		}
 	},
 	mounted() {
+		if (localStorage.getItem('lang'))
+			this.$i18n.locale = localStorage.getItem('lang')
 	},
 }
 </script>

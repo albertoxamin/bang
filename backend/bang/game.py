@@ -24,14 +24,18 @@ class Game:
         self.password = ''
         self.expansions = []
         self.shutting_down = False
+        self.is_competitive = False
+        self.disconnect_bot = True
 
-    def notify_room(self):
-        if len([p for p in self.players if p.character == None]) != 0:
-            self.sio.emit('room', room=self.name, data={
+    def notify_room(self, sid=None):
+        if len([p for p in self.players if p.character == None]) != 0 or sid:
+            self.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
                 'players': [{'name':p.name, 'ready': p.character != None} for p in self.players],
                 'password': self.password,
+                'is_competitive': self.is_competitive,
+                'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
             })
 
@@ -43,6 +47,14 @@ class Game:
             else:
                 self.expansions.append(expansion_name)
             self.notify_room()
+
+    def toggle_competitive(self):
+        self.is_competitive = not self.is_competitive
+        self.notify_room()
+
+    def toggle_disconnect_bot(self):
+        self.disconnect_bot = not self.disconnect_bot
+        self.notify_room()
 
     def add_player(self, player: players.Player):
         if player.is_bot and len(self.players) >= 8:
@@ -73,7 +85,7 @@ class Game:
                 print(self.name)
                 print(self.players[i].name)
                 print(self.players[i].character)
-                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}|{self.players[i].character.desc}')
+                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}|{self.players[i].character.desc}|{self.players[i].character.desc_eng}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
@@ -102,9 +114,9 @@ class Game:
         available_roles: List[roles.Role] = []
         if len(self.players) == 3:
             available_roles = [
-                roles.Vice('Elimina il Rinnegato 🦅, se non lo elimini tu elimina anche il Fuorilegge'),
-                roles.Renegade('Elimina il Fuorilegge 🐺, se non lo elimini tu elimina anche il Vice'),
-                roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato')
+                roles.Vice('Elimina il Rinnegato 🦅, se non lo elimini tu elimina anche il Fuorilegge', 'Kill the Renegade 🦅, if you are not the one who kills him then kill the Outlaw!'),
+                roles.Renegade('Elimina il Fuorilegge 🐺, se non lo elimini tu elimina anche il Vice', 'Kill the Outlaw 🐺, if you are not the one who kills him then kill the Vice!'),
+                roles.Outlaw('Elimina il Vice 🎖, se non lo elimini tu elimina anche il Rinnegato', 'Kill the Vice 🎖, if you are not the one who kills him then kill the Renegade!')
             ]
         elif len(self.players) >= 4:
             available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Renegade(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
@@ -215,7 +227,10 @@ class Game:
     def handle_disconnect(self, player: players.Player):
         print(f'player {player.name} left the game {self.name}')
         if player in self.players:
-            self.player_death(player=player, disconnected=True)
+            if self.disconnect_bot and self.started:
+                player.is_bot = True
+            else:
+                self.player_death(player=player, disconnected=True)
         else:
             self.dead_players.remove(player)
         if len([p for p in self.players if not p.is_bot])+len([p for p in self.dead_players if not p.is_bot]) == 0:
@@ -228,9 +243,10 @@ class Game:
         else: return False
 
     def player_death(self, player: players.Player, disconnected=False):
+        if not player in self.players: return
         import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
-        if player.attacker and isinstance(player.attacker, roles.Sheriff) and isinstance(player.role, roles.Vice):
+        if player.attacker and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
                 self.deck.scrap(player.attacker.hand.pop())
             for i in range(len(player.attacker.equipment)):
@@ -303,6 +319,7 @@ class Game:
         print('resetting lobby')
         self.players.extend(self.dead_players)
         self.dead_players = []
+        self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False
         self.waiting_for = 0
