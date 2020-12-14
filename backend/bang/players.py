@@ -117,9 +117,13 @@ class Player:
             self.set_character(available[randrange(0, len(available))].name)
 
     def notify_card(self, player, card):
+        try:
+            card = card.__dict__
+        except:
+            pass
         mess = {
             'player': player.name,
-            'card': card.__dict__
+            'card': card
         }
         print('notifying card')
         self.sio.emit('notify_card', room=self.sid, data=mess)

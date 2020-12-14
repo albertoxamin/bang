@@ -171,18 +171,42 @@ def chat_message(sid, msg):
             elif '/suicide' in msg and ses.game.started and ses.lives > 0:
                 ses.lives = 0
                 ses.notify_self()
+            elif '/notify' in msg and ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 3:
+                    if cmd[1] in ses.game.players_map:
+                        ses.game.get_player_named(cmd[1]).notify_card(ses, {
+                            'name': cmd[2],
+                            'icon': '🚨',
+                            'suit': 4,
+                            'number': cmd[2]
+                        })
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
+            elif '/debug_show_cards' in msg and ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    if cmd[1] in ses.game.players_map:
+                        sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and is looking at {cmd[1]} hand'})
+                        for c in ses.game.get_player_named(cmd[1]).hand:
+                            ses.notify_card(ses, c)
+                            eventlet.sleep(0.3)
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/togglecomp' in msg and ses.game:
                 ses.game.toggle_competitive()
             elif '/togglebot' in msg and ses.game:
                 ses.game.toggle_disconnect_bot()
             elif '/cancelgame' in msg and ses.game.started:
                 ses.game.reset()
+            elif '/startgame' in msg and not ses.game.started:
+                ses.game.start_game()
             elif '/gameinfo' in msg:
-                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'info: {ses.game.__dict__}'})
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
-                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'info: {ses.__dict__}'})
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
             else:
-                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'{msg} COMMAND NOT FOUND'})
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
             color = sid.encode('utf-8').hex()[-3:]
             sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})

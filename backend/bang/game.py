@@ -121,6 +121,8 @@ class Game:
         elif len(self.players) >= 4:
             available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Renegade(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
             available_roles = available_roles[:len(self.players)]
+        else:
+            available_roles = [roles.Renegade(), roles.Renegade()]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
             self.players[i].set_role(available_roles[i])
