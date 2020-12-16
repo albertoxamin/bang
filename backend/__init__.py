@@ -201,6 +201,14 @@ def chat_message(sid, msg):
                 ses.game.reset()
             elif '/startgame' in msg and not ses.game.started:
                 ses.game.start_game()
+            elif '/addex' in msg and not ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    if cmd[1] not in ses.game.available_expansions:
+                        ses.game.available_expansions.append(cmd[1])
+                        ses.game.notify_room()
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:

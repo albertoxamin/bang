@@ -23,6 +23,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions = []
+        self.available_expansions = ['dodge_city']
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True
@@ -37,6 +38,7 @@ class Game:
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
+                'available_expansions': self.available_expansions
             })
 
     def toggle_expansion(self, expansion_name):
