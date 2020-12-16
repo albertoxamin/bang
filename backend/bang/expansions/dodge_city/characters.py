@@ -71,6 +71,14 @@ class BelleStar(Character):
         self.desc_eng = "During her turn the green cards of the other players do not work."
         self.icon = '❎'
 
+class VeraCuster(Character):
+    def __init__(self):
+        super().__init__("Vera Custer", max_lives=3)
+        self.desc = "Prima di pescare le sue carte può scegliere l'abilità speciale di un altro giocatore fino al prossimo turno."
+        self.desc_eng = "Before drawing, she may choose the special ability on another alive player. This ability is used until next turn."
+        self.icon = '🎭'
+
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -83,6 +91,7 @@ def all_characters() -> List[Character]:
         ApacheKid(),
         SeanMallory(),
         BelleStar(),
+        VeraCuster(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

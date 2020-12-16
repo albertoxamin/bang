@@ -30,6 +30,7 @@ class Player:
         self.equipment: cs.Card = []
         self.role: r.Role = None
         self.character: chars.Character = None
+        self.real_character: chars.Character = None
         self.lives = 0
         self.max_lives = 0
         self.game: g = None
@@ -55,6 +56,7 @@ class Player:
         self.equipment: cs.Card = []
         self.role: r.Role = None
         self.character: chars.Character = None
+        self.real_character: chars.Character = None
         self.lives = 0
         self.max_lives = 0
         self.is_my_turn = False
@@ -92,13 +94,24 @@ class Player:
 
     def set_character(self, character: str):
         print(self.available_characters, character)
-        self.character = next(
-            x for x in self.available_characters if x.name == character)
-        self.available_characters = []
-        print(f'I {self.name} chose character {self.character.name}')
-        self.sio.emit('chat_message', room=self.game.name,
-                      data=f'_did_choose_character|{self.name}')
-        self.game.notify_character_selection()
+        if self.character == None:
+            self.character = next(
+                x for x in self.available_characters if x.name == character)
+            self.real_character = self.character
+            self.available_characters = []
+            print(f'I {self.name} chose character {self.character.name}')
+            self.sio.emit('chat_message', room=self.game.name,
+                        data=f'_did_choose_character|{self.name}')
+            self.game.notify_character_selection()
+        elif self.real_character and isinstance(self.real_character, chd.VeraCuster):
+            self.character = next(
+                x for x in self.available_characters if x.name == character)
+            self.available_characters = []
+            self.sio.emit('chat_message', room=self.game.name,
+                        data=f'_did_choose_character|{self.name}')
+            self.pending_action = PendingAction.DRAW
+            self.notify_self()
+
 
     def prepare(self):
         self.max_lives = self.character.max_lives + self.role.health_mod
@@ -281,7 +294,10 @@ class Player:
         if any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
             self.pending_action = PendingAction.PICK
         else:
-            self.pending_action = PendingAction.DRAW
+            if isinstance(self.real_character, chd.VeraCuster):
+                self.set_available_character([p.character for p in self.game.players if p != self])
+            else:
+                self.pending_action = PendingAction.DRAW
         self.notify_self()
 
     def draw(self, pile):
