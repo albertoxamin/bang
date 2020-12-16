@@ -90,6 +90,7 @@ class Game:
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
                 self.players[i].notify_self()
+            self.sio.emit('chat_message', room=self.name, data=f'_allroles|{", ".join([type(x.role).__name__ for x in self.players])}')
             self.players[self.turn].play_turn()
 
     def choose_characters(self):

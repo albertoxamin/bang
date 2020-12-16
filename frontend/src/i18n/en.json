@@ -79,7 +79,8 @@
 		"saloon": "{0} player {1} and heals 1 HP to everyone alive.",
 		"special_bart_cassidy": "{0} received a compensation because he was injured.",
 		"special_el_gringo": "{0} stole a card from {1} when he was was injured.",
-		"special_calamity": "{0} played {1} as Bang! against {2}."
+		"special_calamity": "{0} played {1} as Bang! against {2}.",
+		"allroles": "In the game there are: {0}."
 	},
 	"mods": "Modifiers",
 	"mod_comp": "Competitive mode (disables automatic take damage)",
