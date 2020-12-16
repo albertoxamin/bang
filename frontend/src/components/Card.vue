@@ -72,6 +72,14 @@ export default {
 	box-shadow: 
 		0 0 0 3pt  #6aa16e, 0 0 0 6pt white, 0 0 5pt 6pt #aaa
 }
+.card.high-noon{
+	box-shadow: 0 0 0pt 6pt #181a1b, 0 0 5pt 6pt #aaa;
+	border: 2pt dotted rgb(198 78 45);
+}
+.card.fistful-of-cards{
+	box-shadow: 0 0 0pt 6pt #181a1b, 0 0 5pt 6pt #aaa;
+	border: 2pt dotted rgb(50 122 172);
+}
 .card h4 {
 	position: absolute;
 	text-align: center;

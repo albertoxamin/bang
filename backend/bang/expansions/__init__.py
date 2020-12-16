@@ -7,6 +7,3 @@ class DodgeCity():
     def get_cards():
         from bang.expansions.dodge_city import cards
         return cards.get_starting_deck()
-
-class HighNoon():
-    pass
