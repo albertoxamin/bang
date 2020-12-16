@@ -78,6 +78,12 @@ class VeraCuster(Character):
         self.desc_eng = "Before drawing, she may choose the special ability on another alive player. This ability is used until next turn."
         self.icon = '🎭'
 
+class ChuckWengam(Character):
+    def __init__(self):
+        super().__init__("Chuck Wengam", max_lives=4)
+        self.desc = "Durante il suo turno può perdere una vita per pescare 2 carte dal mazzo."
+        self.desc_eng = "On his turn he may decide to lose 1 HP to draw 2 cards from the deck."
+        self.icon = '💰'
 
 def all_characters() -> List[Character]:
     return [
@@ -92,6 +98,7 @@ def all_characters() -> List[Character]:
         SeanMallory(),
         BelleStar(),
         VeraCuster(),
+        ChuckWengam(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

@@ -262,5 +262,10 @@ def scrap(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.scrap(card_index)
 
+@sio.event
+def chuck_lose_hp_draw(sid):
+    ses: Player = sio.get_session(sid)
+    ses.chuck_lose_hp_draw()
+
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)

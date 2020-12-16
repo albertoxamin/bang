@@ -20,6 +20,8 @@
 		<transition name="list">
 			<p v-if="desc"><i>{{desc}}</i></p>
 		</transition>
+		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
+		<button v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
 		<div v-if="lives > 0" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
@@ -46,7 +48,6 @@
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`${$t('discard')} ${2 - sidScrapForHealth.length} ${$t('to_regain_1_hp')}`"
 							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
-		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
 	</div>
 </template>
 
@@ -219,6 +220,9 @@ export default {
 				this.sidScrapForHealth = []
 				this.sidWantsScrapForHealth = false
 			}
+		},
+		chuckSpecial(){
+			this.$socket.emit('chuck_lose_hp_draw')
 		},
 		end_turn(){
 			console.log('ending turn')

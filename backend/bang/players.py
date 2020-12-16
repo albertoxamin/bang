@@ -660,6 +660,13 @@ class Player:
             self.game.deck.scrap(self.hand.pop(card_index))
             self.notify_self()
 
+    def chuck_lose_hp_draw(self):
+        if isinstance(self.character, chd.ChuckWengam) and self.lives > 1 and self.is_my_turn:
+            self.lives -= 1
+            self.hand.append(self.game.deck.draw())
+            self.hand.append(self.game.deck.draw())
+            self.notify_self()
+
     def end_turn(self, forced=False):
         if not self.is_my_turn:
             return
