@@ -391,7 +391,10 @@ class Player:
             if any([isinstance(c, cs.Prigione) for c in self.equipment]):
                 self.notify_self()
                 return
-            self.pending_action = PendingAction.DRAW
+            if isinstance(self.real_character, chd.VeraCuster):
+                self.set_available_character([p.character for p in self.game.players if p != self])
+            else:
+                self.pending_action = PendingAction.DRAW
             self.notify_self()
         else:
             self.pending_action = PendingAction.WAIT

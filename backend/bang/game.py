@@ -236,6 +236,8 @@ class Game:
         if player in self.players:
             if self.disconnect_bot and self.started:
                 player.is_bot = True
+                eventlet.sleep(15) # he may reconnect
+                player.notify_self()
             else:
                 self.player_death(player=player, disconnected=True)
         else:
