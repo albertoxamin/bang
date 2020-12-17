@@ -93,6 +93,10 @@ export default {
 	font-size:26pt;
 	top: 35%;
 } 
+.fistful-of-cards .emoji, .high-noon .emoji{
+	top:auto !important;
+	bottom:15% !important;
+}
 .card .suit {
 	position: absolute;
 	bottom: 3pt;

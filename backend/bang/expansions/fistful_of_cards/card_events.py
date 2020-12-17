@@ -25,7 +25,7 @@ class DeadMan(CardEvent):
 
 class FratelliDiSangue(CardEvent):
     def __init__(self):
-        super().__init__('Fratelli Di Sangue', '🩸')
+        super().__init__('Fratelli Di Sangue', '💉')
         self.desc = 'All\'inizio del proprio turno i giocatori possono perdere 1 vita per darla a un altro giocatore'
         self.desc_eng = ''
 
