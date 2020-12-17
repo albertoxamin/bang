@@ -67,7 +67,7 @@ def get_me(sid, room):
             print('room exists')
             if room['username'] != None and any([p.name == room['username'] for p in de_games[0].players if p.is_bot]):
                 print('getting inside the bot')
-                bot = [p for p in de_games[0].players if p.is_bot][0]
+                bot = [p for p in de_games[0].players if p.is_bot and p.name == room['username'] ][0]
                 bot.sid = sid
                 bot.is_bot = False
                 sio.enter_room(sid, de_games[0].name)
@@ -82,6 +82,7 @@ def get_me(sid, room):
                 sio.get_session(sid).game = de_games[0]
                 sio.enter_room(sid, de_games[0].name)
                 de_games[0].notify_room(sid)
+                de_games[0].notify_all()
             de_games[0].notify_event_card()
         else:
             create_room(sid, room['name'])
@@ -172,15 +173,17 @@ def chat_message(sid, msg):
             elif '/suicide' in msg and ses.game.started and ses.lives > 0:
                 ses.lives = 0
                 ses.notify_self()
+            elif '/nextevent' in msg and ses.game.started:
+                ses.game.deck.flip_event()
             elif '/notify' in msg and ses.game.started:
                 cmd = msg.split()
-                if len(cmd) == 3:
+                if len(cmd) >= 3:
                     if cmd[1] in ses.game.players_map:
                         ses.game.get_player_named(cmd[1]).notify_card(ses, {
-                            'name': cmd[2],
+                            'name': ' '.join(cmd[2:]),
                             'icon': '🚨',
                             'suit': 4,
-                            'number': cmd[2]
+                            'number': ' '.join(cmd[2:])
                         })
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
@@ -205,6 +208,7 @@ def chat_message(sid, msg):
             elif '/addex' in msg and not ses.game.started:
                 cmd = msg.split()
                 if len(cmd) == 2:
+                    cmd[1] = cmd[1].replace('foc', 'fistful_of_cards')
                     if cmd[1] not in ses.game.available_expansions:
                         ses.game.available_expansions.append(cmd[1])
                         ses.game.notify_room()

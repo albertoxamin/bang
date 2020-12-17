@@ -6,6 +6,7 @@ import bang.players as players
 import bang.characters as characters
 from bang.deck import Deck
 import bang.roles as roles
+import bang.expansions.fistful_of_cards.card_events as ce
 import eventlet
 
 class Game:
@@ -93,7 +94,8 @@ class Game:
                     self.players[i].hand.append(self.deck.draw())
                 self.players[i].notify_self()
             current_roles = [type(x.role).__name__ for x in self.players]
-            current_roles = {x:current_roles.count(x) for x in current_roles}
+            random.shuffle(current_roles)
+            current_roles = str({x:current_roles.count(x) for x in current_roles}).replace('{','').replace('}','')
             self.sio.emit('chat_message', room=self.name, data=f'_allroles|{current_roles}')
             self.play_turn()
 
@@ -344,12 +346,17 @@ class Game:
         eventlet.sleep(0.5)
         self.notify_room()
 
+    def check_event(self, ev):
+        if len(self.deck.event_cards) == 0: return False
+        return isinstance(self.deck.event_cards[0], ev)
+
     def get_visible_players(self, player: players.Player):
         i = self.players.index(player)
         sight = player.get_sight()
+        mindist = 99 if self.check_event(ce.Agguato) else 1
         return [{
             'name': self.players[j].name,
-            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
+            'dist': min([abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players))), mindist]) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
             'lives': self.players[j].lives,
             'max_lives': self.players[j].max_lives,
             'is_sheriff': isinstance(self.players[j].role, roles.Sheriff),
@@ -367,6 +374,7 @@ class Game:
                 'is_my_turn': p.is_my_turn,
                 'pending_action': p.pending_action,
                 'character': p.character.__dict__ if p.character else None,
+                'real_character': p.real_character.__dict__ if p.real_character else None,
                 'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
             } for p in self.players]
             self.sio.emit('players_update', room=self.name, data=data)
