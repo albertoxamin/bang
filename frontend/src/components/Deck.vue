@@ -2,6 +2,11 @@
 	<div>
 		<div class="deck">
 			<card v-if="endTurnAction && isPlaying" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
+			<div v-if="eventCard" style="position:relative">
+				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
+				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
+				<card :card="eventCard" :key="eventCard" :class="{'last-event':true,'fistful-of-cards':true}"/>
+			</div>
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
 				<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -15,6 +20,7 @@
 			</div>
 		</div>
 		<transition name="list">
+			<p v-if="eventCard" class="center-stuff"><i>{{($i18n.locale=='it'?eventCard.desc:eventCard.desc_eng)}}</i></p>
 			<p v-if="desc" class="center-stuff"><i>{{desc}}</i></p>
 		</transition>
 	</div>
@@ -37,6 +43,7 @@ export default {
 			icon: '💥',
 		},
 		lastScrap: null,
+		eventCard: null,
 		previousScrap: null,
 		pending_action: false,
 		isPlaying: true,
@@ -50,7 +57,10 @@ export default {
 		},
 		scrap(card) {
 			this.lastScrap = card
-		}
+		},
+		event_card(card) {
+			this.eventCard = card
+		},
 	},
 	computed: {
 		endTurnCard() {
@@ -81,10 +91,10 @@ export default {
 </script>
 <style scoped>
 .deck {
-  display:flex;
-  margin:0;
-  align-items: center;
-  justify-content: center;
+	display:flex;
+	margin:0;
+	align-items: center;
+	justify-content: center;
 	flex-direction: row-reverse;
 }
 .last-scrap {
@@ -100,6 +110,20 @@ export default {
 @keyframes slidein {
 	from {
 		transform: translate(-100px, 10px) scale(1.3) rotate(-10deg);
+	}
+	to {
+		transform: translate(0, 0) scale(1);
+	}
+}
+.last-event {
+	position: absolute;
+	top: 0;
+	animation-duration: 0.8s;
+	animation-name: slidein;
+}
+@keyframes slidein {
+	from {
+		transform: translate(30px, 20px) scale(1.3) rotate(-10deg);
 	}
 	to {
 		transform: translate(0, 0) scale(1);

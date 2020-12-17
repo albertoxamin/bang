@@ -82,6 +82,7 @@ def get_me(sid, room):
                 sio.get_session(sid).game = de_games[0]
                 sio.enter_room(sid, de_games[0].name)
                 de_games[0].notify_room(sid)
+            de_games[0].notify_event_card()
         else:
             create_room(sid, room['name'])
         if sio.get_session(sid).game == None:

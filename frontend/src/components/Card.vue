@@ -73,12 +73,12 @@ export default {
 		0 0 0 3pt  #6aa16e, 0 0 0 6pt white, 0 0 5pt 6pt #aaa
 }
 .card.high-noon{
-	box-shadow: 0 0 0pt 6pt #181a1b, 0 0 5pt 6pt #aaa;
+	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
 	border: 2pt dotted rgb(198 78 45);
 }
 .card.fistful-of-cards{
-	box-shadow: 0 0 0pt 6pt #181a1b, 0 0 5pt 6pt #aaa;
-	border: 2pt dotted rgb(50 122 172);
+	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
+	border: 2pt dashed rgb(50 122 172);
 }
 .card h4 {
 	position: absolute;
@@ -142,6 +142,12 @@ export default {
 	.card.usable-next-turn {
 		box-shadow: 
 			0 0 0 3pt #6aa16e, 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
+	}
+	.card.high-noon{
+		box-shadow: 0 0 0pt 4pt #181a1b, 0 0 5pt 4pt #aaa;
+	}
+	.card.fistful-of-cards{
+		box-shadow: 0 0 0pt 4pt #181a1b, 0 0 5pt 4pt #aaa;
 	}
 }
 </style>

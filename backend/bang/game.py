@@ -95,7 +95,7 @@ class Game:
             current_roles = [type(x.role).__name__ for x in self.players]
             current_roles = {x:current_roles.count(x) for x in current_roles}
             self.sio.emit('chat_message', room=self.name, data=f'_allroles|{current_roles}')
-            self.players[self.turn].play_turn()
+            self.play_turn()
 
     def choose_characters(self):
         char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*2)
@@ -216,6 +216,8 @@ class Game:
         return self.players[(self.turn + 1) % len(self.players)]
 
     def play_turn(self):
+        if isinstance(self.players[self.turn].role, roles.Sheriff):
+            self.deck.flip_event()
         self.players[self.turn].play_turn()
 
     def next_turn(self):
@@ -223,6 +225,10 @@ class Game:
         if len(self.players) > 0:
             self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
+
+    def notify_event_card(self):
+        if len(self.deck.event_cards) > 0:
+            self.sio.emit('event_card', room=self.name, data=self.deck.event_cards[0].__dict__)
 
     def notify_scrap_pile(self):
         print('scrap')

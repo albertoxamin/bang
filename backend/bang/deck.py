@@ -1,6 +1,7 @@
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import bang.cards as cs
+import bang.expansions.fistful_of_cards.card_events as ce
 
 class Deck:
     def __init__(self, game):
@@ -18,9 +19,18 @@ class Deck:
             if c.name not in self.all_cards_str:
                 self.all_cards_str.append(c.name)
         self.game = game
+        self.event_cards: List[ce.CardEvent] = []
+        if 'fistful_of_cards' in game.expansions:
+            self.event_cards.extend(ce.get_all_events())
+        random.shuffle(self.event_cards)
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
+
+    def flip_event(self):
+        if len(self.event_cards) > 0:
+            self.event_cards.append(self.event_cards.pop(0))
+            self.game.notify_event_card()
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
