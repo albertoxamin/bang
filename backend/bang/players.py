@@ -677,10 +677,14 @@ class Player:
     def scrap(self, card_index):
         if self.is_my_turn or isinstance(self.character, chars.SidKetchum):
             self.scrapped_cards += 1
+            card = self.hand.pop(card_index)
             if isinstance(self.character, chars.SidKetchum) and self.scrapped_cards == 2:
                 self.scrapped_cards = 0
                 self.lives = min(self.lives+1, self.max_lives)
-            self.game.deck.scrap(self.hand.pop(card_index))
+            elif isinstance(self.character, chd.JoseDelgrado) and card.is_equipment:
+                self.hand.append(self.game.deck.draw())
+                self.hand.append(self.game.deck.draw())
+            self.game.deck.scrap(card)
             self.notify_self()
 
     def chuck_lose_hp_draw(self):

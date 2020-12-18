@@ -20,8 +20,9 @@
 		<transition name="list">
 			<p v-if="desc"><i>{{desc}}</i></p>
 		</transition>
-		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
+		<button v-if="is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
 		<button v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
+		<button v-if="is_my_turn && character.name === 'José Delgrado' && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
 		<div v-if="lives > 0" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
@@ -48,6 +49,8 @@
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`${$t('discard')} ${2 - sidScrapForHealth.length} ${$t('to_regain_1_hp')}`"
 							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
+		<Chooser v-if="joseScrap" :text="`${$t('discard')}`"
+							:cards="hand.filter(x => x.is_equipment)" :select="(card) => {joseScrap=false;scrap(card)}" :cancel="() => {joseScrap=false}"/>
 	</div>
 </template>
 
@@ -94,6 +97,7 @@ export default {
 		desc: '',
 		sidScrapForHealth: [],
 		sidWantsScrapForHealth: false,
+		joseScrap:false,
 		mancato_needed: 0,
 		name: '',
 	}),
