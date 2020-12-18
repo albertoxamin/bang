@@ -180,7 +180,8 @@ class Bang(Card):
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
-        if player.has_played_bang and not any([isinstance(c, Volcanic) for c in player.equipment]) and against != None:
+        import bang.expansions.fistful_of_cards.card_events as ce
+        if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None:
             return False
         elif against != None:
             import bang.characters as chars

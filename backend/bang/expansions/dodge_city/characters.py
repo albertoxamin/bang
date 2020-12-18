@@ -99,6 +99,13 @@ class JoseDelgrado(Character):
         self.desc_eng = "He can discard a blue card to draw 2 cards."
         self.icon = '🎒'
 
+class DocHolyday(Character):
+    def __init__(self):
+        super().__init__("Doc Holyday", max_lives=4)
+        self.desc = "Nel suo turno può scartare 2 carte per fare un bang."
+        self.desc_eng = "He can discard 2 cards to play a bang."
+        self.icon = '✌🏻'
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -115,6 +122,7 @@ def all_characters() -> List[Character]:
         ChuckWengam(),
         PatBrennan(),
         JoseDelgrado(),
+        # DocHolyday(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

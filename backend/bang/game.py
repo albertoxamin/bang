@@ -225,6 +225,7 @@ class Game:
                 self.players[-1].lives = 2
                 self.players[-1].hand.append(self.deck.draw())
                 self.players[-1].hand.append(self.deck.draw())
+                self.players_map = {c.name: i for i, c in enumerate(self.players)}
                 self.players[-1].notify_self()
         self.players[self.turn].play_turn()
 
