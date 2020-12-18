@@ -310,6 +310,11 @@ class Player:
             self.available_cards = [self.game.deck.draw() for i in range(3)]
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
+        elif isinstance(self.character, chd.PatBrennan) and type(pile) == str and pile != self.name and pile in self.game.players_map and len(self.game.get_player_named(pile).equipment) > 0:
+            self.is_drawing = True
+            self.available_cards = self.game.get_player_named(pile).equipment
+            self.pending_action = PendingAction.CHOOSE
+            self.notify_self()
         else:
             self.pending_action = PendingAction.PLAY
             if pile == 'scrap' and isinstance(self.character, chars.PedroRamirez):
@@ -481,6 +486,14 @@ class Player:
                 self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif self.is_drawing and isinstance(self.character, chd.PatBrennan):
+            card = self.available_cards.pop(card_index)
+            if card.usable_next_turn:
+                card.can_be_used_now = False
+            self.hand.append(card)
+            self.available_cards = []
+            self.pending_action = PendingAction.PLAY
             self.notify_self()
         else:  # emporio
             self.game.respond_emporio(self, card_index)

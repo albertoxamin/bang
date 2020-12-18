@@ -85,6 +85,13 @@ class ChuckWengam(Character):
         self.desc_eng = "On his turn he may decide to lose 1 HP to draw 2 cards from the deck."
         self.icon = '💰'
 
+class PatBrennan(Character):
+    def __init__(self):
+        super().__init__("Pat Brennan", max_lives=4)
+        self.desc = "Invece di pescare può prendere una carta dall'equipaggiamento di un altro giocatore."
+        self.desc_eng = "Instead of drawing he can steal a card from the equipment of another player."
+        self.icon = '🤗'
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -99,6 +106,7 @@ def all_characters() -> List[Character]:
         BelleStar(),
         VeraCuster(),
         ChuckWengam(),
+        PatBrennan(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli
