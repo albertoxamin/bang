@@ -48,7 +48,7 @@
 	"play_your_turn": "GIOCA IL TUO TURNO",
 	"you_are": "Tu sei",
 	"did_pick_as": "ha pescato come seconda carta",
-	"if_card_red": "Se la carta è cuori o quadri ne pesca un'altra",
+	"blackjack_special": "Se la carta è cuori o quadri ne pesca un'altra",
 	"choose_scarp_card_to": "SCEGLI CHE CARTA SCARTARE PER USARE",
 	"pick_a_card": "ESTRAI UNA CARTA",
 	"to_defend_from": "PER DIFENDERTI DA",
@@ -81,6 +81,9 @@
 		"special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
 		"special_calamity": "{0} ha giovato {1} come un Bang! contro {2}.",
 		"allroles": "Nella partita ci sono: {0}."
+	},
+	"foc": {
+		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
 	},
 	"mods": "Modificatori",
 	"mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",

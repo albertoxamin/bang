@@ -220,6 +220,12 @@ class Game:
     def play_turn(self):
         if isinstance(self.players[self.turn].role, roles.Sheriff):
             self.deck.flip_event()
+            if self.check_event(ce.DeadMan) and len(self.dead_players) > 0:
+                self.players.append(self.dead_players.pop(0))
+                self.players[-1].lives = 2
+                self.players[-1].hand.append(self.deck.draw())
+                self.players[-1].hand.append(self.deck.draw())
+                self.players[-1].notify_self()
         self.players[self.turn].play_turn()
 
     def next_turn(self):
@@ -353,7 +359,7 @@ class Game:
     def get_visible_players(self, player: players.Player):
         i = self.players.index(player)
         sight = player.get_sight()
-        mindist = 99 if self.check_event(ce.Agguato) else 1
+        mindist = 99 if not self.check_event(ce.Agguato) else 1
         return [{
             'name': self.players[j].name,
             'dist': min([abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players))), mindist]) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),

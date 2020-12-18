@@ -130,14 +130,15 @@ class Player:
         else:
             self.set_character(available[randrange(0, len(available))].name)
 
-    def notify_card(self, player, card):
+    def notify_card(self, player, card, message=''):
         try:
             card = card.__dict__
         except:
             pass
         mess = {
             'player': player.name,
-            'card': card
+            'card': card,
+            'message':message
         }
         print('notifying card')
         self.sio.emit('notify_card', room=self.sid, data=mess)
@@ -331,11 +332,11 @@ class Player:
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
                     self.hand.append(card)
-                    if i == 1 and isinstance(self.character, chars.BlackJack):
+                    if i == 1 and isinstance(self.character, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest):
                         for p in self.game.players:
                             if p != self:
-                                p.notify_card(self, card)
-                        if card.suit == cs.Suit.HEARTS or card.suit == cs.Suit.DIAMONDS:
+                                p.notify_card(self, card, 'blackjack_special' if isinstance(self.character, chars.BlackJack) else 'foc.leggedelwest')
+                        if card.suit == cs.Suit.HEARTS or card.suit == cs.Suit.DIAMONDS and isinstance(self.character, chars.BlackJack):
                             self.hand.append(self.game.deck.draw())
                 if isinstance(self.character, chd.PixiePete):
                     self.hand.append(self.game.deck.draw())
@@ -430,8 +431,6 @@ class Player:
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now)
-        print('giudice', self.game.check_event(ce.IlGiudice), 'and', card.is_equipment, 'or (', card.usable_next_turn ,'and' ,not card.can_be_used_now)
-        print('lazo', (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now))
         if not(against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.suit == cs.Suit.DIAMONDS) and not event_blocks_card:
             did_play_card = card.play_card(self, against, withCard)
         if not card.is_equipment and not card.usable_next_turn or event_blocks_card:
