@@ -34,8 +34,8 @@
 			</div>
 			<div v-if="!started">
 				<h3>{{$t("expansions")}}</h3>
-				<div v-for="ex in togglable_expansions" v-bind:key="ex">
-					<PrettyCheck @click.native="toggleExpansions(ex)" :disabled="!isRoomOwner" :value="is_toggled_expansion(ex)" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{get_expansion_name(ex)}}</PrettyCheck>
+				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
+					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}</PrettyCheck>
 					<br>
 				</div>
 				<h3>{{$t('mods')}}</h3>
@@ -139,6 +139,15 @@ export default {
 		inviteLink() {
 			return `${window.location.origin}/game?code=${this.lobbyName}&pwd=${this.password}`
 		},
+		expansionsStatus() { 
+			return this.togglable_expansions.map(x=>{
+				return {
+					id: x,
+					name: x.replace(/(^|_)([a-z])/g, function($0,$1,$2) {return ' ' + $2.toUpperCase()}),
+					enabled: this.expansions.indexOf(x) !== -1
+				}
+			})
+		},
 		storedUsername() {
 			if (localStorage.getItem('username'))
 				return localStorage.getItem('username')
@@ -174,10 +183,8 @@ export default {
 	},
 	methods: {
 		is_toggled_expansion(ex) {
+			console.log(ex+' '+ this.expansions+ (this.expansions.indexOf(ex) !== -1))
 			return this.expansions.indexOf(ex) !== -1
-		},
-		get_expansion_name(ex) {
-			return ex.replace('_', ' ').replace(/\w\S*/g, m => m.charAt(0).toUpperCase()+m.substr(1).toLowerCase())
 		},
 		leaveRoom() {
 			window.location.replace(window.location.origin)

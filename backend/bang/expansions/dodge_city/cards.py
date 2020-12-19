@@ -341,7 +341,6 @@ class FucileDaCaccia(Card):
 
 def get_starting_deck() -> List[Card]:
     return [
-        #TODO: aggiungere anche le carte normalmente presenti https://bang.dvgiochi.com/cardslist.php?id=3
         Barile(Suit.CLUBS, 'A'),
         Binocolo(Suit.DIAMONDS, 10),
         Dinamite(Suit.CLUBS, 10),
