@@ -137,7 +137,7 @@ export default {
 	},
 	computed: {
 		inviteLink() {
-			return `${window.location.origin}/game?code=${this.lobbyName}&pwd=${this.password}`
+			return `${window.location.origin}/game?code=${this.lobbyName}${this.password?`&pwd=${this.password}`:''}`
 		},
 		expansionsStatus() { 
 			return this.togglable_expansions.map(x=>{

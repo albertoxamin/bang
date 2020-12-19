@@ -39,7 +39,10 @@ export default {
 		},
 		room(data) {
 			this.isInLobby = true;
-			this.$router.push({path:'game', query: { code: data.name, pwd: data.password }})
+			if (data.password)
+				this.$router.replace({path:'game', query: { code: data.name, pwd: data.password }})
+			else
+				this.$router.replace({path:'game', query: { code: data.name }})
 		},
 	},
 	methods: {
