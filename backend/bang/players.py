@@ -308,7 +308,11 @@ class Player:
     def draw(self, pile):
         if self.pending_action != PendingAction.DRAW:
             return
-        if isinstance(self.character, chars.KitCarlson):
+        if pile == 'event' and self.lives < self.max_lives and self.game.check_event(ce.LiquoreForte):
+            self.lives += 1
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif isinstance(self.character, chars.KitCarlson):
             self.is_drawing = True
             self.available_cards = [self.game.deck.draw() for i in range(3)]
             self.pending_action = PendingAction.CHOOSE

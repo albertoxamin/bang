@@ -48,10 +48,10 @@ class LeggeDelWest(CardEvent):
         self.desc_eng = 'Every player shows the second card that they draw and must use it in that round'
 
 class LiquoreForte(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__('Liquore Forte', '🥃')
-        self.desc = 'I giocatori possono evitare di pescare per recuperare 1 vita'
-        self.desc_eng = 'Players can skip drawing to regain 1 HP'
+        self.desc = 'I giocatori possono evitare di pescare per recuperare 1 vita (clicca sulla carta evento per farlo)'
+        self.desc_eng = 'Players can skip drawing to regain 1 HP (click on the event card to use)'
 
 class MinieraAbbandonata(CardEvent):
     def __init__(self):#TODO
@@ -104,7 +104,7 @@ def get_all_events():
         IlGiudice(),
         Lazo(),
         LeggeDelWest(),
-        # LiquoreForte(),
+        LiquoreForte(),
         # MinieraAbbandonata(),
         # PerUnPugnoDiCarte(),
         # Peyote(),

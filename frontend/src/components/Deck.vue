@@ -5,7 +5,7 @@
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="eventCard" :key="eventCard" :class="{'last-event':true,'fistful-of-cards':true}"/>
+				<card :card="eventCard" :key="eventCard" :class="{'last-event':true,'fistful-of-cards':true}" @click.native="event"/>
 			</div>
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
@@ -78,6 +78,11 @@ export default {
 					this.$socket.emit('pick')
 				else if (this.pending_action == 1)
 					this.$socket.emit('draw', pile)
+			}
+		},
+		event() {
+			if (this.pending_action !== false && this.pending_action < 2) {
+				this.$socket.emit('draw', 'event')
 			}
 		}
 	},
