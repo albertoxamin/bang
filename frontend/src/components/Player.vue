@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<p v-if="instruction" class="center-stuff">{{instruction}}</p>
+		<p v-if="instruction && lives > 0" class="center-stuff">{{instruction}}</p>
 		<!-- <button v-if="canEndTurn" @click="end_turn">Termina Turno</button> -->
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"
@@ -238,8 +238,9 @@ export default {
 		sidScrap(c) {
 			this.scrapHand.push(this.hand.indexOf(c))
 			if (this.scrapHand.length == 2) {
-				this.$socket.emit('scrap', this.hand.indexOf(this.scrapHand[0]))
-				this.$socket.emit('scrap', this.hand.indexOf(this.scrapHand[1]))
+				let x = [this.hand.indexOf(this.scrapHand[0]), this.hand.indexOf(this.scrapHand[1])].sort().reverse()
+				this.$socket.emit('scrap', x[0])
+				this.$socket.emit('scrap', x[1])
 				this.scrapHand = []
 				this.sidWantsScrapForHealth = false
 			}

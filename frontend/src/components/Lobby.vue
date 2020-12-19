@@ -86,7 +86,6 @@ export default {
 		players: [],
 		messages: [],
 		distances: {},
-		self: {},
 		hasToChoose: false,
 		target_p: '', 
 		chooseCards: [],

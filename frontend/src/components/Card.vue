@@ -3,7 +3,7 @@
 		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
-		<div class="suit">{{card.number}}{{suit}}</div>
+		<div class="suit">{{number}}{{suit}}</div>
 	</div>
 </template>
 
@@ -20,6 +20,13 @@ export default {
 				return x[this.card.suit];
 			}
 			return '';
+		},
+		number() {
+			if (this.card.number === 1) return 'A'
+			else if (this.card.number === 11) return 'J'
+			else if (this.card.number === 12) return 'Q'
+			else if (this.card.number === 13) return 'K'
+			else return this.card.number
 		}
 	}
 }
