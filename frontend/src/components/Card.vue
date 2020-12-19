@@ -3,7 +3,7 @@
 		<h4>{{card.name}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
-		<div class="suit">{{card.number}}{{suit}}</div>
+		<div class="suit">{{number}}{{suit}}</div>
 	</div>
 </template>
 
@@ -20,6 +20,13 @@ export default {
 				return x[this.card.suit];
 			}
 			return '';
+		},
+		number() {
+			if (this.card.number === 1) return 'A'
+			else if (this.card.number === 11) return 'J'
+			else if (this.card.number === 12) return 'Q'
+			else if (this.card.number === 13) return 'K'
+			else return this.card.number
 		}
 	}
 }
@@ -72,6 +79,14 @@ export default {
 	box-shadow: 
 		0 0 0 3pt  #6aa16e, 0 0 0 6pt white, 0 0 5pt 6pt #aaa
 }
+.card.high-noon{
+	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
+	border: 2pt dotted rgb(198 78 45);
+}
+.card.fistful-of-cards{
+	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
+	border: 2pt dashed rgb(50 122 172);
+}
 .card h4 {
 	position: absolute;
 	text-align: center;
@@ -85,6 +100,10 @@ export default {
 	font-size:26pt;
 	top: 35%;
 } 
+.fistful-of-cards .emoji, .high-noon .emoji{
+	top:auto !important;
+	bottom:15% !important;
+}
 .card .suit {
 	position: absolute;
 	bottom: 3pt;
@@ -134,6 +153,12 @@ export default {
 	.card.usable-next-turn {
 		box-shadow: 
 			0 0 0 3pt #6aa16e, 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
+	}
+	.card.high-noon{
+		box-shadow: 0 0 0pt 4pt #181a1b, 0 0 5pt 4pt #aaa;
+	}
+	.card.fistful-of-cards{
+		box-shadow: 0 0 0pt 4pt #181a1b, 0 0 5pt 4pt #aaa;
 	}
 }
 </style>

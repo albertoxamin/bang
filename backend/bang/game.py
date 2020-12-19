@@ -6,6 +6,7 @@ import bang.players as players
 import bang.characters as characters
 from bang.deck import Deck
 import bang.roles as roles
+import bang.expansions.fistful_of_cards.card_events as ce
 import eventlet
 
 class Game:
@@ -23,6 +24,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions = []
+        self.available_expansions = ['dodge_city']
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True
@@ -37,6 +39,7 @@ class Game:
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
+                'available_expansions': self.available_expansions
             })
 
     def toggle_expansion(self, expansion_name):
@@ -90,7 +93,11 @@ class Game:
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
                 self.players[i].notify_self()
-            self.players[self.turn].play_turn()
+            current_roles = [type(x.role).__name__ for x in self.players]
+            random.shuffle(current_roles)
+            current_roles = str({x:current_roles.count(x) for x in current_roles}).replace('{','').replace('}','')
+            self.sio.emit('chat_message', room=self.name, data=f'_allroles|{current_roles}')
+            self.play_turn()
 
     def choose_characters(self):
         char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*2)
@@ -121,6 +128,8 @@ class Game:
         elif len(self.players) >= 4:
             available_roles = [roles.Sheriff(), roles.Renegade(), roles.Outlaw(), roles.Outlaw(), roles.Vice(), roles.Outlaw(), roles.Vice(), roles.Renegade(), roles.Outlaw(), roles.Vice(), roles.Outlaw()]
             available_roles = available_roles[:len(self.players)]
+        else:
+            available_roles = [roles.Renegade(), roles.Renegade()]
         random.shuffle(available_roles)
         for i in range(len(self.players)):
             self.players[i].set_role(available_roles[i])
@@ -209,6 +218,15 @@ class Game:
         return self.players[(self.turn + 1) % len(self.players)]
 
     def play_turn(self):
+        if isinstance(self.players[self.turn].role, roles.Sheriff):
+            self.deck.flip_event()
+            if self.check_event(ce.DeadMan) and len(self.dead_players) > 0:
+                self.players.append(self.dead_players.pop(0))
+                self.players[-1].lives = 2
+                self.players[-1].hand.append(self.deck.draw())
+                self.players[-1].hand.append(self.deck.draw())
+                self.players_map = {c.name: i for i, c in enumerate(self.players)}
+                self.players[-1].notify_self()
         self.players[self.turn].play_turn()
 
     def next_turn(self):
@@ -216,6 +234,10 @@ class Game:
         if len(self.players) > 0:
             self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
+
+    def notify_event_card(self):
+        if len(self.deck.event_cards) > 0:
+            self.sio.emit('event_card', room=self.name, data=self.deck.event_cards[0].__dict__)
 
     def notify_scrap_pile(self):
         print('scrap')
@@ -229,6 +251,8 @@ class Game:
         if player in self.players:
             if self.disconnect_bot and self.started:
                 player.is_bot = True
+                eventlet.sleep(15) # he may reconnect
+                player.notify_self()
             else:
                 self.player_death(player=player, disconnected=True)
         else:
@@ -329,12 +353,17 @@ class Game:
         eventlet.sleep(0.5)
         self.notify_room()
 
+    def check_event(self, ev):
+        if len(self.deck.event_cards) == 0: return False
+        return isinstance(self.deck.event_cards[0], ev)
+
     def get_visible_players(self, player: players.Player):
         i = self.players.index(player)
         sight = player.get_sight()
+        mindist = 99 if not self.check_event(ce.Agguato) else 1
         return [{
             'name': self.players[j].name,
-            'dist': min(abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players)))) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
+            'dist': min([abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players))), mindist]) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
             'lives': self.players[j].lives,
             'max_lives': self.players[j].max_lives,
             'is_sheriff': isinstance(self.players[j].role, roles.Sheriff),
@@ -352,6 +381,7 @@ class Game:
                 'is_my_turn': p.is_my_turn,
                 'pending_action': p.pending_action,
                 'character': p.character.__dict__ if p.character else None,
+                'real_character': p.real_character.__dict__ if p.real_character else None,
                 'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
             } for p in self.players]
             self.sio.emit('players_update', room=self.name, data=data)

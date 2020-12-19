@@ -48,7 +48,7 @@
 	"play_your_turn": "PLAY YOUR TURN",
 	"you_are": "You are",
 	"did_pick_as": "picked this as second card",
-	"if_card_red":"If the card is diamonds or hearts, he picks another card.",
+	"blackjack_special":"If the card is diamonds or hearts, he picks another card.",
 	"choose_scarp_card_to": "CHOOSE WHICH CARD TO DISCARD TO USE",
 	"pick_a_card": "FLIP A CARD",
 	"to_defend_from": "TO DEFEND YOURSELF FROM",
@@ -79,7 +79,11 @@
 		"saloon": "{0} player {1} and heals 1 HP to everyone alive.",
 		"special_bart_cassidy": "{0} received a compensation because he was injured.",
 		"special_el_gringo": "{0} stole a card from {1} when he was was injured.",
-		"special_calamity": "{0} played {1} as Bang! against {2}."
+		"special_calamity": "{0} played {1} as Bang! against {2}.",
+		"allroles": "In the game there are: {0}."
+	},
+	"foc": {
+		"leggedelwest": "He must play this card on this turn if possible."
 	},
 	"mods": "Modifiers",
 	"mod_comp": "Competitive mode (disables automatic take damage)",

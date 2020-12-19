@@ -71,6 +71,41 @@ class BelleStar(Character):
         self.desc_eng = "During her turn the green cards of the other players do not work."
         self.icon = '❎'
 
+class VeraCuster(Character):
+    def __init__(self):
+        super().__init__("Vera Custer", max_lives=3)
+        self.desc = "Prima di pescare le sue carte può scegliere l'abilità speciale di un altro giocatore fino al prossimo turno."
+        self.desc_eng = "Before drawing, she may choose the special ability on another alive player. This ability is used until next turn."
+        self.icon = '🎭'
+
+class ChuckWengam(Character):
+    def __init__(self):
+        super().__init__("Chuck Wengam", max_lives=4)
+        self.desc = "Durante il suo turno può perdere una vita per pescare 2 carte dal mazzo."
+        self.desc_eng = "On his turn he may decide to lose 1 HP to draw 2 cards from the deck."
+        self.icon = '💰'
+
+class PatBrennan(Character):
+    def __init__(self):
+        super().__init__("Pat Brennan", max_lives=4)
+        self.desc = "Invece di pescare può prendere una carta dall'equipaggiamento di un altro giocatore."
+        self.desc_eng = "Instead of drawing he can steal a card from the equipment of another player."
+        self.icon = '🤗'
+
+class JoseDelgrado(Character):
+    def __init__(self):
+        super().__init__("José Delgrado", max_lives=4)
+        self.desc = "Può scartare una carta blu per pescare 2 carte."
+        self.desc_eng = "He can discard a blue card to draw 2 cards."
+        self.icon = '🎒'
+
+class DocHolyday(Character):
+    def __init__(self):
+        super().__init__("Doc Holyday", max_lives=4)
+        self.desc = "Nel suo turno può scartare 2 carte per fare un bang."
+        self.desc_eng = "He can discard 2 cards to play a bang."
+        self.icon = '✌🏻'
+
 def all_characters() -> List[Character]:
     return [
         PixiePete(),
@@ -83,6 +118,11 @@ def all_characters() -> List[Character]:
         ApacheKid(),
         SeanMallory(),
         BelleStar(),
+        VeraCuster(),
+        ChuckWengam(),
+        PatBrennan(),
+        JoseDelgrado(),
+        DocHolyday(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

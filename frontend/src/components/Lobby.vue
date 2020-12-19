@@ -22,6 +22,7 @@
 					</transition-group>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
+					<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
 					<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
@@ -33,7 +34,10 @@
 			</div>
 			<div v-if="!started">
 				<h3>{{$t("expansions")}}</h3>
-				<PrettyCheck @click.native="toggleExpansions('dodge_city')" :disabled="!isRoomOwner" v-model="useDodgeCity" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">Dodge City</PrettyCheck>
+				<div v-for="ex in togglable_expansions" v-bind:key="ex">
+					<PrettyCheck @click.native="toggleExpansions(ex)" :disabled="!isRoomOwner" :value="is_toggled_expansion(ex)" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{get_expansion_name(ex)}}</PrettyCheck>
+					<br>
+				</div>
 				<h3>{{$t('mods')}}</h3>
 				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
 				<br>
@@ -82,7 +86,6 @@ export default {
 		players: [],
 		messages: [],
 		distances: {},
-		self: {},
 		hasToChoose: false,
 		target_p: '', 
 		chooseCards: [],
@@ -90,7 +93,8 @@ export default {
 		selectedInfo: null,
 		privateRoom: false,
 		password: '',
-		useDodgeCity: false,
+		togglable_expansions: [],
+		expansions: [],
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,
@@ -103,7 +107,8 @@ export default {
 			this.privateRoom = data.password !== ''
 			this.is_competitive = data.is_competitive
 			this.disconnect_bot = data.disconnect_bot
-			this.useDodgeCity = data.expansions.indexOf('dodge_city') !== -1
+			this.togglable_expansions = data.available_expansions
+			this.expansions = data.expansions
 			this.players = data.players.map(x => {
 				return {
 					name: x.name,
@@ -168,6 +173,12 @@ export default {
 		}
 	},
 	methods: {
+		is_toggled_expansion(ex) {
+			return this.expansions.indexOf(ex) !== -1
+		},
+		get_expansion_name(ex) {
+			return ex.replace('_', ' ').replace(/\w\S*/g, m => m.charAt(0).toUpperCase()+m.substr(1).toLowerCase())
+		},
 		leaveRoom() {
 			window.location.replace(window.location.origin)
 		},

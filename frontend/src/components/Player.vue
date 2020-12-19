@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<p v-if="instruction" class="center-stuff">{{instruction}}</p>
+		<p v-if="instruction && lives > 0" class="center-stuff">{{instruction}}</p>
 		<!-- <button v-if="canEndTurn" @click="end_turn">Termina Turno</button> -->
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"
@@ -20,6 +20,10 @@
 		<transition name="list">
 			<p v-if="desc"><i>{{desc}}</i></p>
 		</transition>
+		<button v-if="is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
+		<button v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
+		<button v-if="is_my_turn && character.name === 'José Delgrado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
+		<button v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
 		<div v-if="lives > 0" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
@@ -38,15 +42,19 @@
 		<Chooser v-if="lives <= 0 && max_lives > 0" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
 		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
-		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t('if_card_red')" class="turn-notify-4s"/>
+		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t(notifycard.message)" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
 		<Chooser v-if="hasToPickResponse" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
-		<Chooser v-if="sidWantsScrapForHealth && sidScrapForHealth.length < 2" :text="`${$t('discard')} ${2 - sidScrapForHealth.length} ${$t('to_regain_1_hp')}`"
-							:cards="sidScrapHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;sidScrapForHealth=[]}"/>
-		<button v-if="is_my_turn && character.name === 'Sid Ketchum'" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
+		<Chooser v-if="sidWantsScrapForHealth && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length} ${$t('to_regain_1_hp')}`"
+							:cards="notScrappedHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;scrapHand=[]}"/>
+		<Chooser v-if="joseScrap" :text="`${$t('discard')}`"
+							:cards="hand.filter(x => x.is_equipment)" :select="(card) => {joseScrap=false;scrap(card)}" :cancel="() => {joseScrap=false}"/>
+		<Chooser v-if="holydayScrap && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length}`"
+							:cards="notScrappedHand" :select="holydayScrapAdd" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
+		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="otherPlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 	</div>
 </template>
 
@@ -91,8 +99,11 @@ export default {
 		attacker: undefined,
 		notifycard: null,
 		desc: '',
-		sidScrapForHealth: [],
+		scrapHand: [],
 		sidWantsScrapForHealth: false,
+		joseScrap: false,
+		holydayScrap: false,
+		special_use_count: 0,
 		mancato_needed: 0,
 		name: '',
 	}),
@@ -116,6 +127,7 @@ export default {
 			this.lives = self.lives
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
+			this.special_use_count = self.special_use_count
 			this.is_my_turn = self.is_my_turn
 			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'
 			else if (this.pending_action == 3) document.title = this.$t('your_response')+' | PewPew!'
@@ -152,8 +164,20 @@ export default {
 		showScrapScreen() {
 			return this.isEndingTurn && !this.canEndTurn && this.is_my_turn;
 		},
-		sidScrapHand() {
-			return this.hand.filter((x, i) => (this.sidScrapForHealth.indexOf(i) === -1))
+		notScrappedHand() {
+			return this.hand.filter((x, i) => (this.scrapHand.indexOf(i) === -1))
+		},
+		otherPlayers() {
+			let vis = this.playersDistances.filter(x => {
+					return x.name !== this.name
+				}).map(player => {
+				return {
+					name: player.name,
+					number: player.dist !== undefined ? `${player.dist}⛰` : '',
+					icon: player.is_sheriff ? '⭐' : '🤠',
+					is_character: true,
+				}})
+			return vis
 		},
 		visiblePlayers() {
 			this.range;
@@ -212,13 +236,28 @@ export default {
 			this.$socket.emit('set_character', char.name)
 		},
 		sidScrap(c) {
-			this.sidScrapForHealth.push(this.hand.indexOf(c))
-			if (this.sidScrapForHealth.length == 2) {
-				this.$socket.emit('scrap', this.hand.indexOf(this.sidScrapForHealth[0]))
-				this.$socket.emit('scrap', this.hand.indexOf(this.sidScrapForHealth[1]))
-				this.sidScrapForHealth = []
+			this.scrapHand.push(this.hand.indexOf(c))
+			if (this.scrapHand.length == 2) {
+				let x = [this.hand.indexOf(this.scrapHand[0]), this.hand.indexOf(this.scrapHand[1])].sort().reverse()
+				this.$socket.emit('scrap', x[0])
+				this.$socket.emit('scrap', x[1])
+				this.scrapHand = []
 				this.sidWantsScrapForHealth = false
 			}
+		},
+		holydayScrapAdd(c) {
+			this.scrapHand.push(this.hand.indexOf(c))
+		},
+		holydayScrapBang(other) {
+			this.$socket.emit('holyday_special', {
+				cards : [this.hand.indexOf(this.scrapHand[0]), this.hand.indexOf(this.scrapHand[1])],
+				against: other.name
+			})
+			this.scrapHand = []
+			this.holydayScrap = false
+		},
+		chuckSpecial(){
+			this.$socket.emit('chuck_lose_hp_draw')
 		},
 		end_turn(){
 			console.log('ending turn')

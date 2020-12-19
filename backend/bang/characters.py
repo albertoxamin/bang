@@ -137,7 +137,7 @@ class VultureSam(Character):
         super().__init__("Vulture Sam", max_lives=4)
         self.desc = "Quando un personaggio viene eliminato prendi tutte le carte di quel giocatore e aggiungile alla tua mano, sia le carte in mano che quelle in gioco"
         self.desc_eng = "When a player dies, he gets all the cards in the dead's hand and equipments"
-        self.icon = '💰'
+        self.icon = '🦉'
 
 class WillyTheKid(Character):
     def __init__(self):

@@ -4,6 +4,8 @@ on:
 jobs:
   test_build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: '1'
     steps:
     - uses: actions/checkout@v2
     - name: Build the Unified Docker image

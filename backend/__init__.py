@@ -67,7 +67,7 @@ def get_me(sid, room):
             print('room exists')
             if room['username'] != None and any([p.name == room['username'] for p in de_games[0].players if p.is_bot]):
                 print('getting inside the bot')
-                bot = [p for p in de_games[0].players if p.is_bot][0]
+                bot = [p for p in de_games[0].players if p.is_bot and p.name == room['username'] ][0]
                 bot.sid = sid
                 bot.is_bot = False
                 sio.enter_room(sid, de_games[0].name)
@@ -82,6 +82,8 @@ def get_me(sid, room):
                 sio.get_session(sid).game = de_games[0]
                 sio.enter_room(sid, de_games[0].name)
                 de_games[0].notify_room(sid)
+                de_games[0].notify_all()
+            de_games[0].notify_event_card()
         else:
             create_room(sid, room['name'])
         if sio.get_session(sid).game == None:
@@ -171,18 +173,53 @@ def chat_message(sid, msg):
             elif '/suicide' in msg and ses.game.started and ses.lives > 0:
                 ses.lives = 0
                 ses.notify_self()
+            elif '/nextevent' in msg and ses.game.started:
+                ses.game.deck.flip_event()
+            elif '/notify' in msg and ses.game.started:
+                cmd = msg.split()
+                if len(cmd) >= 3:
+                    if cmd[1] in ses.game.players_map:
+                        ses.game.get_player_named(cmd[1]).notify_card(ses, {
+                            'name': ' '.join(cmd[2:]),
+                            'icon': '🚨',
+                            'suit': 4,
+                            'number': ' '.join(cmd[2:])
+                        })
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
+            elif '/debug_show_cards' in msg and ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    if cmd[1] in ses.game.players_map:
+                        sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and is looking at {cmd[1]} hand'})
+                        for c in ses.game.get_player_named(cmd[1]).hand:
+                            ses.notify_card(ses, c)
+                            eventlet.sleep(0.3)
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/togglecomp' in msg and ses.game:
                 ses.game.toggle_competitive()
             elif '/togglebot' in msg and ses.game:
                 ses.game.toggle_disconnect_bot()
             elif '/cancelgame' in msg and ses.game.started:
                 ses.game.reset()
+            elif '/startgame' in msg and not ses.game.started:
+                ses.game.start_game()
+            elif '/addex' in msg and not ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    cmd[1] = cmd[1].replace('foc', 'fistful_of_cards')
+                    if cmd[1] not in ses.game.available_expansions:
+                        ses.game.available_expansions.append(cmd[1])
+                        ses.game.notify_room()
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/gameinfo' in msg:
-                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'info: {ses.game.__dict__}'})
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
-                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'info: {ses.__dict__}'})
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
             else:
-                sio.emit('chat_message', room=sid, data={'color': f'#black','text':f'{msg} COMMAND NOT FOUND'})
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
             color = sid.encode('utf-8').hex()[-3:]
             sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})
@@ -237,6 +274,16 @@ def choose(sid, card_index):
 def scrap(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.scrap(card_index)
+
+@sio.event
+def chuck_lose_hp_draw(sid):
+    ses: Player = sio.get_session(sid)
+    ses.chuck_lose_hp_draw()
+
+@sio.event
+def holyday_special(sid, data):
+    ses: Player = sio.get_session(sid)
+    ses.holyday_special(data)
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)
