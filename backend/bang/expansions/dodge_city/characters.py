@@ -122,7 +122,7 @@ def all_characters() -> List[Character]:
         ChuckWengam(),
         PatBrennan(),
         JoseDelgrado(),
-        # DocHolyday(),
+        DocHolyday(),
     ]
 
 #Apache Kid: il suo effetto non conta nei duelli

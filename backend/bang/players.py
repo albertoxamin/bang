@@ -51,6 +51,7 @@ class Player:
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
         self.is_bot = bot
+        self.special_use_count = 0
 
     def reset(self):
         self.hand: cs.Card = []
@@ -73,6 +74,7 @@ class Player:
         self.attacker: Player = None
         self.target_p: str = None
         self.is_drawing = False
+        self.special_use_count = 0
         try:
             del self.win_status
         except:
@@ -293,6 +295,7 @@ class Player:
         self.is_my_turn = True
         self.is_waiting_for_action = True
         self.has_played_bang = False
+        self.special_use_count = 0
         if not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
             self.pending_action = PendingAction.PICK
         else:
@@ -681,11 +684,21 @@ class Player:
             if isinstance(self.character, chars.SidKetchum) and self.scrapped_cards == 2:
                 self.scrapped_cards = 0
                 self.lives = min(self.lives+1, self.max_lives)
-            elif isinstance(self.character, chd.JoseDelgrado) and card.is_equipment:
+            elif isinstance(self.character, chd.JoseDelgrado) and card.is_equipment and self.special_use_count < 2:
                 self.hand.append(self.game.deck.draw())
                 self.hand.append(self.game.deck.draw())
+                self.special_use_count += 1
             self.game.deck.scrap(card)
             self.notify_self()
+
+    def holyday_special(self, data):
+        if isinstance(self.character, chd.DocHolyday) and self.special_use_count < 1:
+            self.special_use_count += 1
+            cards = sorted(data['cards'], reverse=True)
+            for c in cards:
+                self.game.deck.scrap(self.hand.pop(c))
+            self.notify_self()
+            self.game.attack(self, data['against'])
 
     def chuck_lose_hp_draw(self):
         if isinstance(self.character, chd.ChuckWengam) and self.lives > 1 and self.is_my_turn:

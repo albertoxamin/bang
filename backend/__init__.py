@@ -280,5 +280,10 @@ def chuck_lose_hp_draw(sid):
     ses: Player = sio.get_session(sid)
     ses.chuck_lose_hp_draw()
 
+@sio.event
+def holyday_special(sid, data):
+    ses: Player = sio.get_session(sid)
+    ses.holyday_special(data)
+
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)
