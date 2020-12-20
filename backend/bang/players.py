@@ -223,7 +223,7 @@ class Player:
                         self.play_card(i)
                         has_played = True
                         break
-            elif len([c for c in self.hand if c.need_target and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo)))]) > 0:
+            elif len([c for c in self.hand if c.need_target and c.can_be_used_now and not (c.is_equipment and self.game.check_event(ce.IlGiudice)) and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo)))]) > 0:
                 for i in range(len(self.hand)):
                     if self.hand[i].need_target and not (self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment])):
                         if self.hand[i].need_with and len(self.hand) < 2:
@@ -267,7 +267,7 @@ class Player:
         elif self.pending_action == PendingAction.RESPOND:
             did_respond = False
             for i in range(len(self.hand)):
-                if self.hand[i].name in self.expected_response:
+                if self.hand[i].can_be_used_now and self.hand[i].name in self.expected_response:
                     self.respond(i)
                     did_respond = True
                     break
@@ -305,7 +305,8 @@ class Player:
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.players if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,
-                'icon': isinstance(p.role, r.Sheriff),
+                'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
+                'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives))
             } for p in self.game.players if p != self and p.lives < p.max_lives]
             self.available_cards.append({'icon': '❌'})
             self.pending_action = PendingAction.CHOOSE
@@ -460,7 +461,10 @@ class Player:
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now)
         if not(against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.suit == cs.Suit.DIAMONDS) and not event_blocks_card:
-            did_play_card = card.play_card(self, against, withCard)
+            if against == self.name and not isinstance(card, csd.Tequila):
+                did_play_card = False
+            else:
+                did_play_card = card.play_card(self, against, withCard)
         if not card.is_equipment and not card.usable_next_turn or event_blocks_card:
             if did_play_card:
                 self.game.deck.scrap(card)

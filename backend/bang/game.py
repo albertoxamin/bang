@@ -330,6 +330,7 @@ class Game:
         if (self.waiting_for > 0):
             self.responders_did_respond_resume_turn()
 
+        if not player in self.players: return
         index = self.players.index(player)
         died_in_his_turn = self.started and index == self.turn
         if self.started and index <= self.turn:
