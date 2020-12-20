@@ -225,6 +225,7 @@ def chat_message(sid, msg):
                 if len(cmd) >= 2:
                     chs = characters.all_characters(ses.game.expansions)
                     ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
+                    ses.real_character = ses.character
                     ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
