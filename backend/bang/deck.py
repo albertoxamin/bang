@@ -42,8 +42,12 @@ class Deck:
             return None
 
     def pick_and_scrap(self) -> cs.Card:
-        card = self.cards.pop(0)
-        self.scrap_pile.append(card)
+        if self.game.check_event(ce.MinieraAbbandonata) and len(self.scrap_pile) > 0:
+            card = self.draw_from_scrap_pile()
+            self.put_on_top(card)
+        else:
+            card = self.cards.pop(0)
+            self.scrap_pile.append(card)
         if len(self.cards) == 0:
             self.reshuffle()
         self.game.notify_scrap_pile()
@@ -53,6 +57,8 @@ class Deck:
         self.cards.insert(0, card)
 
     def draw(self) -> cs.Card:
+        if self.game.check_event(ce.MinieraAbbandonata) and len(self.scrap_pile) > 0:
+            return self.draw_from_scrap_pile()
         card = self.cards.pop(0)
         if len(self.cards) == 0:
             self.reshuffle()
@@ -74,5 +80,8 @@ class Deck:
     def scrap(self, card: cs.Card):
         if card.usable_next_turn:
             card.can_be_used_now = False
-        self.scrap_pile.append(card)
-        self.game.notify_scrap_pile()
+        if self.game.check_event(ce.MinieraAbbandonata):
+            self.put_on_top(card)
+        else:
+            self.scrap_pile.append(card)
+            self.game.notify_scrap_pile()

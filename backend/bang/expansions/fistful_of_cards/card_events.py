@@ -54,7 +54,7 @@ class LiquoreForte(CardEvent):
         self.desc_eng = "Players can skip drawing to regain 1 HP (click on the event card to use)"
 
 class MinieraAbbandonata(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Miniera Abbandonata", "⛏")
         self.desc = "I giocatori pescano dagli scarti e scartano in cima al mazzo"
         self.desc_eng = "Players draw from the discarded pile and discard to the deck"
@@ -62,11 +62,11 @@ class MinieraAbbandonata(CardEvent):
 class PerUnPugnoDiCarte(CardEvent):
     def __init__(self):#TODO
         super().__init__("Per Un Pugno Di Carte", "🎴")
-        self.desc = "Il giocatore subisce tanti bang quante carte ha in mano"
+        self.desc = "Nel suo turno giocatore subisce tanti bang quante carte ha in mano"
         self.desc_eng = "On his turn the player is target of as many Bang as how many cards he has in his hand"
 
 class Peyote(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Peyote", "🌵")
         self.desc = "Invece che pescare il giocatore prova a indovinare il colore del seme, se lo indovina continua"
         self.desc_eng = "Instead of drawing, the player tries to guess the color of the suit, if he's right he repeats"
@@ -105,7 +105,7 @@ def get_all_events():
         Lazo(),
         LeggeDelWest(),
         LiquoreForte(),
-        # MinieraAbbandonata(),
+        MinieraAbbandonata(),
         # PerUnPugnoDiCarte(),
         Peyote(),
         # Ranch(),
