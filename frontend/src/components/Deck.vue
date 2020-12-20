@@ -81,7 +81,7 @@ export default {
 			}
 		},
 		event() {
-			if (this.pending_action !== false && this.pending_action < 2) {
+			if (this.pending_action !== false) {
 				this.$socket.emit('draw', 'event')
 			}
 		}

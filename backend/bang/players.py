@@ -50,6 +50,7 @@ class Player:
         self.is_drawing = False
         self.can_play_vendetta = True
         self.is_giving_life = False
+        self.is_using_checchino = False
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.mancato_needed = 0
@@ -63,6 +64,7 @@ class Player:
         self.role: r.Role = None
         self.character: chars.Character = None
         self.real_character: chars.Character = None
+        self.is_using_checchino = False
         self.lives = 0
         self.max_lives = 0
         self.is_my_turn = False
@@ -336,6 +338,17 @@ class Player:
         self.notify_self()
 
     def draw(self, pile):
+        if self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Cecchino) and len([c for c in self.hand if c.name == cs.Bang(0,0).name]) >= 2:
+            self.is_using_checchino = True
+            self.available_cards = [{
+                'name': p['name'],
+                'icon': '⭐️' if p['is_sheriff'] else '🤠',
+                'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives']))
+            } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
+            self.available_cards.append({'icon': '❌'})
+            self.pending_action = PendingAction.CHOOSE
+            self.is_giving_life = True
+            self.notify_self()
         if self.pending_action != PendingAction.DRAW:
             return
         if pile == 'event' and self.lives < self.max_lives and self.game.check_event(ce.LiquoreForte):
@@ -528,6 +541,18 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
             except: pass
             self.play_turn()
+        elif self.is_using_checchino and self.game.check_event(ce.Cecchino):
+            try:
+                if self.available_cards[card_index]['name'] != '':
+                    for _ in range(2):
+                        card = next(c for c in self.hand if c.name == cs.Bang(0,0).name)
+                        self.hand.remove(card)
+                        self.game.deck.scrap(card)
+                    self.game.attack(self, self.available_cards[card_index]['name'], double=True)
+            except: pass
+            self.is_using_checchino = False
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
         elif self.is_playing_ranch and self.game.check_event(ce.Ranch):
             if card_index == len(self.available_cards) - 1:
                 self.hand = [c for c in self.hand if c not in self.discarded_cards]

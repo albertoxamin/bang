@@ -13,10 +13,10 @@ class Agguato(CardEvent):
         self.desc_eng = "The base distance from any 2 players is 1"
 
 class Cecchino(CardEvent):
-    def __init__(self): #TODO
+    def __init__(self):
         super().__init__("Cecchino", "👁")
-        self.desc = "Nel proprio turno i giocatori possono scartare 2 Bang assieme per sparare un bang che necessita 2 mancato"
-        self.desc_eng = "During their turn, players can discard 2 Bang! to shoot a bang that requires 2 missed"
+        self.desc = "Nel proprio turno i giocatori possono scartare 2 Bang assieme per sparare un bang che necessita 2 mancato (clicca la carta)"
+        self.desc_eng = "During their turn, players can discard 2 Bang! to shoot a bang that requires 2 missed (click the card)"
 
 class DeadMan(CardEvent):
     def __init__(self):
@@ -99,7 +99,7 @@ class Vendetta(CardEvent):
 def get_all_events():
     cards = [
         Agguato(),
-        # Cecchino(),
+        Cecchino(),
         DeadMan(),
         FratelliDiSangue(),
         IlGiudice(),
