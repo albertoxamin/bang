@@ -48,6 +48,7 @@ class Player:
         self.attacker: Player = None
         self.target_p: str = None
         self.is_drawing = False
+        self.can_play_vendetta = True
         self.is_giving_life = False
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
@@ -288,10 +289,11 @@ class Player:
                 else:
                     self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
-    def play_turn(self):
+    def play_turn(self, can_play_vendetta = True):
         if self.lives == 0:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
+        self.can_play_vendetta = can_play_vendetta
         self.sio.emit('chat_message', room=self.game.name,
                       data=f'_turn|{self.name}')
         print(f'I {self.name} was notified that it is my turn')
@@ -763,11 +765,11 @@ class Player:
             print(
                 f"I {self.name} have to many cards in my hand and I can't end the turn")
         elif self.pending_action == PendingAction.PLAY or forced:
-            if not forced and self.game.check_event(ce.Vendetta):
+            if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
                 self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked}')
                 if picked.suit == cs.Suit.HEARTS:
-                    self.play_turn()
+                    self.play_turn(can_play_vendetta=False)
                     return
             self.is_my_turn = False
             for i in range(len(self.equipment)):
