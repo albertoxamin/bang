@@ -48,6 +48,7 @@ class Player:
         self.attacker: Player = None
         self.target_p: str = None
         self.is_drawing = False
+        self.is_giving_life = False
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
         self.is_bot = bot
@@ -304,9 +305,19 @@ class Player:
         self.is_waiting_for_action = True
         self.has_played_bang = False
         self.special_use_count = 0
-        if not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
+        if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.players if p != self and p.lives < p.max_lives]):
+            self.available_cards = [{
+                'name': p.name,
+                'icon': isinstance(p.role, r.Sheriff),
+            } for p in self.game.players if p != self and p.lives < p.max_lives]
+            self.available_cards.append({'icon': '❌'})
+            self.pending_action = PendingAction.CHOOSE
+            self.is_giving_life = True
+        elif not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
+            self.is_giving_life = False
             self.pending_action = PendingAction.PICK
         else:
+            self.is_giving_life = False
             if isinstance(self.real_character, chd.VeraCuster):
                 self.set_available_character([p.character for p in self.game.players if p != self])
             else:
@@ -494,6 +505,15 @@ class Player:
                 while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
                     self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
             self.notify_self()
+        elif self.is_giving_life and self.game.check_event(ce.FratelliDiSangue):
+            try:
+                player = self.game.get_player_named(self.available_cards[card_index]['name'])
+                player.lives += 1
+                self.lives -= 1
+                player.notify_self()
+                self.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
+            except: pass
+            self.play_turn()
         elif self.is_drawing and self.game.check_event(ce.Peyote):
             self.is_drawing = False
             card = self.game.deck.draw()

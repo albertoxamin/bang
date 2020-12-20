@@ -83,7 +83,8 @@
 		"allroles": "Nella partita ci sono: {0}.",
 		"guess": "{0} pensa sia {1}.",
 		"guess_right": "{0} ha indovinato.",
-		"guess_wrong": "{0} ha sbagliato."
+		"guess_wrong": "{0} ha sbagliato.",
+		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}."
 	},
 	"foc": {
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"

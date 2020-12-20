@@ -24,7 +24,7 @@ class DeadMan(CardEvent):
         self.desc_eng = "The first player that died return back to life with 2 hp and 2 cards"
 
 class FratelliDiSangue(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Fratelli Di Sangue", "💉")
         self.desc = "All'inizio del proprio turno i giocatori possono perdere 1 vita per darla a un altro giocatore"
         self.desc_eng = "At the begin of their turn, payers can lose 1 hp to give it to another player"
@@ -100,7 +100,7 @@ def get_all_events():
         Agguato(),
         # Cecchino(),
         DeadMan(),
-        # FratelliDiSangue(),
+        FratelliDiSangue(),
         IlGiudice(),
         Lazo(),
         LeggeDelWest(),

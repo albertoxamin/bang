@@ -83,7 +83,8 @@
 		"allroles": "In the game there are: {0}.",
 		"guess": "{0} guesses {1}.",
 		"guess_right": "{0} was right.",
-		"guess_wrong": "{0} was wrong."
+		"guess_wrong": "{0} was wrong.",
+		"fratelli_sangue": "{0} gave one of his lives to {1}."
 	},
 	"foc": {
 		"leggedelwest": "He must play this card on this turn if possible."
