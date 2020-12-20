@@ -227,7 +227,7 @@ class Player:
                         self.play_card(i)
                         has_played = True
                         break
-            elif len([c for c in self.hand if c.need_target and not (self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment]))]) > 0:
+            elif len([c for c in self.hand if c.need_target and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo)))]) > 0:
                 for i in range(len(self.hand)):
                     if self.hand[i].need_target and not (self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment])):
                         if self.hand[i].need_with and len(self.hand) < 2:
@@ -245,7 +245,7 @@ class Player:
                             self.play_card(i, against=target['name'], _with=sample([j for j in range(len(self.hand)) if j != i], 1)[0])
                         has_played = True
                         break
-            elif any([not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment]):
+            elif any([not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment if not self.game.check_event(ce.Lazo)]):
                 print('hmm', [not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment])
                 for i in range(len(self.equipment)):
                     c = self.equipment[i]

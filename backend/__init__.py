@@ -8,6 +8,9 @@ import socketio
 from bang.game import Game
 from bang.players import Player
 
+import sys 
+sys.setrecursionlimit(10**6) # this should prevents bots from stopping
+
 sio = socketio.Server(cors_allowed_origins="*")
 static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
