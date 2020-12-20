@@ -139,3 +139,5 @@ cython_debug/
 
 frontend/package-lock.json
 bang-workspace.code-workspace
+
+.vscode/
