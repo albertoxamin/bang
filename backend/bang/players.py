@@ -50,6 +50,8 @@ class Player:
         self.is_drawing = False
         self.can_play_vendetta = True
         self.is_giving_life = False
+        self.can_play_ranch = True
+        self.is_playing_ranch = False
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
         self.is_bot = bot
@@ -66,6 +68,8 @@ class Player:
         self.is_my_turn = False
         self.is_waiting_for_action = True
         self.has_played_bang = False
+        self.can_play_ranch = True
+        self.is_playing_ranch = False
         self.pending_action: PendingAction = None
         self.available_characters = []
         self.was_shot = False
@@ -155,6 +159,13 @@ class Player:
                 'icon': '⚫'
             }]
             self.is_drawing = True
+            self.pending_action = PendingAction.CHOOSE
+        elif self.can_play_ranch and self.pending_action == PendingAction.PLAY and self.game.check_event(ce.Ranch):
+            self.can_play_ranch = False
+            self.available_cards = [c for c in self.hand]
+            self.discarded_cards = []
+            self.available_cards.append({'icon': '✅'})
+            self.is_playing_ranch = True
             self.pending_action = PendingAction.CHOOSE
         elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0:
             self.hand.append(self.game.deck.draw())
@@ -293,6 +304,8 @@ class Player:
         if self.lives == 0:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
+        self.can_play_ranch = True
+        self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
         self.sio.emit('chat_message', room=self.game.name,
                       data=f'_turn|{self.name}')
@@ -515,6 +528,18 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
             except: pass
             self.play_turn()
+        elif self.is_playing_ranch and self.game.check_event(ce.Ranch):
+            if card_index == len(self.available_cards) - 1:
+                self.hand = [c for c in self.hand if c not in self.discarded_cards]
+                for i in range(len(self.discarded_cards)):
+                    self.game.deck.scrap(self.discarded_cards[i])
+                    self.hand.append(self.game.deck.draw())
+                self.discarded_cards = []
+                self.is_playing_ranch = False
+                self.pending_action = PendingAction.PLAY
+            else:
+                self.discarded_cards.append(self.available_cards.pop(card_index))
+            self.notify_self()
         elif self.is_drawing and self.game.check_event(ce.Peyote):
             self.is_drawing = False
             card = self.game.deck.draw()

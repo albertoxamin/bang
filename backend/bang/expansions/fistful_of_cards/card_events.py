@@ -73,7 +73,7 @@ class Peyote(CardEvent):
         self.desc_eng = "Instead of drawing, the player tries to guess the color of the suit, if he's right he adds the card to the hand and continues trying to guess the next card"
 
 class Ranch(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Ranch", "🐮")
         self.desc = "Dopo aver pescato il giocatore può scartare quante carte vuole dalla mano e pescarne altrettante dal mazzo"
         self.desc_eng = "After drawing, the player can discard as many cards as he wants from his hand and draw as many from the deck"
@@ -108,7 +108,7 @@ def get_all_events():
         LiquoreForte(),
         MinieraAbbandonata(),
         Peyote(),
-        # Ranch(),
+        Ranch(),
         # Rimbalzo(),
         RouletteRussa(),
         Vendetta(),
