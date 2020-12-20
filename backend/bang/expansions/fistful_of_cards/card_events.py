@@ -84,7 +84,7 @@ class Rimbalzo(CardEvent):
         self.desc_eng = "The player can play bang against the cards equipped by the other players, if they do not play miss they are discarded"
 
 class RouletteRussa(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Roulette Russa", "🇷🇺")
         self.desc = "A partire dallo sceriffo, ogni giocatore scarta 1 mancato, il primo che non lo fa perde 2 vite"
         self.desc_eng = "Starting from the sheriff, every player discards 1 missed, the first one that doesn't loses 2 HP"
@@ -110,6 +110,6 @@ def get_all_events():
         Peyote(),
         # Ranch(),
         # Rimbalzo(),
-        # RouletteRussa(),
+        RouletteRussa(),
         Vendetta(),
     ]

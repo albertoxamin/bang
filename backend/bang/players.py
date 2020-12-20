@@ -540,12 +540,12 @@ class Player:
                 self.mancato_needed -= 1
                 self.notify_self()
                 if self.mancato_needed <= 0:
-                    self.game.responders_did_respond_resume_turn()
+                    self.game.responders_did_respond_resume_turn(did_lose=False)
                     return
         if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             self.take_damage_response()
-            self.game.responders_did_respond_resume_turn()
+            self.game.responders_did_respond_resume_turn(did_lose=True)
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = self.game.deck.mancato_cards
@@ -575,7 +575,7 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards
-                if self.attacker and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
+                if self.attacker and self.attacker in self.game.players and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
                     self.expected_response = self.game.deck.mancato_cards_not_green
                 if isinstance(self.character, chd.ElenaFuente):
                     self.expected_response = self.game.deck.all_cards_str
@@ -601,7 +601,7 @@ class Player:
         if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
-            self.game.responders_did_respond_resume_turn()
+            self.game.responders_did_respond_resume_turn(did_lose=True)
             return False
         else:
             self.pending_action = PendingAction.RESPOND
@@ -657,7 +657,7 @@ class Player:
                     if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn:
                         self.molly_discarded_cards += 1
                 else:
-                    self.game.responders_did_respond_resume_turn()
+                    self.game.responders_did_respond_resume_turn(did_lose=False)
                 self.event_type = ''
             else:
                 self.pending_action = PendingAction.RESPOND
@@ -674,7 +674,7 @@ class Player:
                 self.attacker.molly_discarded_cards = 0
                 self.attacker.notify_self()
             self.on_failed_response_cb()
-            self.game.responders_did_respond_resume_turn()
+            self.game.responders_did_respond_resume_turn(did_lose=True)
         if self.mancato_needed <= 0:
             self.attacker = None
 
