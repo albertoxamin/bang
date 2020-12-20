@@ -219,6 +219,13 @@ def chat_message(sid, msg):
                         ses.game.notify_room()
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
+            elif '/setcharacter' in msg:
+                import bang.characters as characters
+                cmd = msg.split()
+                if len(cmd) >= 2:
+                    chs = characters.all_characters(ses.game.expansions)
+                    ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
+                    ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:

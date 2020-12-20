@@ -349,7 +349,7 @@ class Game:
         if self.started:
             print('Check win status')
             attacker_role = None
-            if player.attacker:
+            if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
             winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.players, initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             if len(winners) > 0:
