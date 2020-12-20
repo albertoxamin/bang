@@ -205,7 +205,7 @@ class Player:
     def bot_logic(self):
         if self.game.shutting_down: return
         if self.pending_action != None and self.pending_action != PendingAction.WAIT:
-            eventlet.sleep(uniform(0.6, 1.5))
+            eventlet.sleep(uniform(self.game.bot_speed/2-0.1, self.game.bot_speed))
         else:
             return
         if self.pending_action == PendingAction.PICK:
@@ -264,7 +264,7 @@ class Player:
                         has_played = True
                         break
             maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
-            if not has_played and len(self.hand) > maxcards:
+            if len(self.hand) > maxcards:
                 self.scrap(0)
             else:
                 self.end_turn()
@@ -379,7 +379,7 @@ class Player:
         pickable_cards = 1 + self.character.pick_mod
         if self.is_my_turn:
             for i in range(len(self.equipment)):
-                if isinstance(self.equipment[i], cs.Dinamite):
+                if i < len(self.equipment) and isinstance(self.equipment[i], cs.Dinamite):
                     while pickable_cards > 0:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
@@ -637,7 +637,7 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                                 data=f'_special_bart_cassidy|{self.name}')
                 self.hand.append(self.game.deck.draw())
-            elif isinstance(self.character, chars.ElGringo) and self.attacker and len(self.attacker.hand) > 0:
+            elif isinstance(self.character, chars.ElGringo) and self.attacker and self.attacker in self.game.players and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(
                     randrange(0, len(self.attacker.hand))))
                 self.sio.emit('chat_message', room=self.game.name,
@@ -688,7 +688,7 @@ class Player:
                     self.hand.append(self.game.deck.draw())
                 self.molly_discarded_cards = 0
                 self.notify_self()
-            elif self.attacker and isinstance(self.attacker.character, chd.MollyStark) and self.is_my_turn:
+            elif self.attacker and self.attacker in self.game.players and isinstance(self.attacker.character, chd.MollyStark) and self.is_my_turn:
                 for i in range(self.attacker.molly_discarded_cards):
                     self.attacker.hand.append(self.attacker.game.deck.draw())
                 self.attacker.molly_discarded_cards = 0

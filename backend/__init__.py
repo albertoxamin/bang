@@ -208,6 +208,8 @@ def chat_message(sid, msg):
                 ses.game.reset()
             elif '/startgame' in msg and not ses.game.started:
                 ses.game.start_game()
+            elif '/setbotspeed' in msg:
+                ses.game.bot_speed = float(msg.split()[1])
             elif '/addex' in msg and not ses.game.started:
                 cmd = msg.split()
                 if len(cmd) == 2:

@@ -30,6 +30,7 @@ class Game:
         self.disconnect_bot = True
         self.player_bangs = 0
         self.is_russian_roulette_on = False
+        self.bot_speed = 1.5
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
