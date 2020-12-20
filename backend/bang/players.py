@@ -565,7 +565,7 @@ class Player:
             self.game.responders_did_respond_resume_turn(did_lose=True)
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = self.game.deck.mancato_cards
+            self.expected_response = self.game.deck.mancato_cards.copy()
             if isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
             elif isinstance(self.character, chd.ElenaFuente):
@@ -593,7 +593,7 @@ class Player:
             else:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
-                self.expected_response = self.game.deck.mancato_cards
+                self.expected_response = self.game.deck.mancato_cards.copy()
                 if self.attacker and self.attacker in self.game.players and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
                     self.expected_response = self.game.deck.mancato_cards_not_green
                 elif isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
@@ -659,6 +659,7 @@ class Player:
                                   data=f'_beer_save|{self.name}')
                     break
         self.mancato_needed = 0
+        self.expected_response = []
         self.event_type = ''
         self.notify_self()
         self.attacker = None
@@ -684,6 +685,7 @@ class Player:
                 else:
                     self.game.responders_did_respond_resume_turn(did_lose=False)
                 self.event_type = ''
+                self.expected_response = []
             else:
                 self.pending_action = PendingAction.RESPOND
                 self.notify_self()
