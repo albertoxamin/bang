@@ -169,7 +169,7 @@ class Player:
             self.available_cards.append({'icon': '✅'})
             self.is_playing_ranch = True
             self.pending_action = PendingAction.CHOOSE
-        elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0:
+        elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
             self.hand.append(self.game.deck.draw())
         ser = self.__dict__.copy()
         ser.pop('game')
