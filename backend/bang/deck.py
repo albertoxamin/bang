@@ -22,15 +22,14 @@ class Deck:
         self.event_cards: List[ce.CardEvent] = []
         if 'fistful_of_cards' in game.expansions:
             self.event_cards.extend(ce.get_all_events())
-        random.shuffle(self.event_cards)
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
 
     def flip_event(self):
-        if len(self.event_cards) > 0:
+        if len(self.event_cards) > 0 and not isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte):
             self.event_cards.append(self.event_cards.pop(0))
-            self.game.notify_event_card()
+        self.game.notify_event_card()
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]

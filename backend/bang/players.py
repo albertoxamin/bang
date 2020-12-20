@@ -671,9 +671,9 @@ class Player:
     def respond(self, hand_index):
         if self.pending_action != PendingAction.RESPOND: return
         self.pending_action = PendingAction.WAIT
-        if hand_index != -1 and (
+        if hand_index != -1 and hand_index < (len(self.hand)+len(self.equipment)) and (
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
-            self.equipment[hand_index-len(self.hand)].name in self.expected_response):
+            (hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
             if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw())

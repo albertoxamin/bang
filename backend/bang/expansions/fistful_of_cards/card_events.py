@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import random
 
 class CardEvent(ABC):
     def __init__(self, name, icon):
@@ -96,7 +97,7 @@ class Vendetta(CardEvent):
         self.desc_eng = "When ending the turn, the player flips a card from the deck, if it's ♥️ he plays another turn (but he does not flip another card)"
 
 def get_all_events():
-    return [
+    cards = [
         Agguato(),
         # Cecchino(),
         DeadMan(),
@@ -106,10 +107,12 @@ def get_all_events():
         LeggeDelWest(),
         LiquoreForte(),
         MinieraAbbandonata(),
-        PerUnPugnoDiCarte(),
         Peyote(),
         # Ranch(),
         # Rimbalzo(),
         RouletteRussa(),
         Vendetta(),
     ]
+    random.shuffle(cards)
+    cards.append(PerUnPugnoDiCarte())
+    return cards

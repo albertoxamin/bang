@@ -266,7 +266,7 @@ class Game:
                 else:
                     self.responders_did_respond_resume_turn(did_lose=True)
                 return
-        if self.check_event(ce.PerUnPugnoDiCarte):
+        if self.check_event(ce.PerUnPugnoDiCarte) and len(self.players[self.turn].hand) > 0:
             self.player_bangs = len(self.players[self.turn].hand)
             if self.players[self.turn].get_banged(self.deck.event_cards[0]):
                 self.players[self.turn].notify_self()
