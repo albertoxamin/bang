@@ -368,6 +368,13 @@ class Game:
                     self.deck.scrap(player.hand.pop())
                 for i in range(len(player.equipment)):
                     self.deck.scrap(player.equipment.pop())
+            elif len(vulture) == 2:
+                for i in range(len(player.hand)):
+                    vulture[i%2].hand.append(player.hand.pop())
+                for i in range(len(player.equipment)):
+                    vulture[i%2].hand.append(player.equipment.pop())
+                vulture[0].notify_self()
+                vulture[1].notify_self()
             else:
                 for i in range(len(player.hand)):
                     vulture[0].hand.append(player.hand.pop())
