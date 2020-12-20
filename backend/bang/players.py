@@ -155,11 +155,6 @@ class Player:
             }]
             self.is_drawing = True
             self.pending_action = PendingAction.CHOOSE
-        if isinstance(self.character, chars.CalamityJanet):
-            if cs.Mancato(0, 0).name not in self.expected_response:
-                self.expected_response.append(cs.Mancato(0, 0).name)
-            elif cs.Bang(0, 0).name not in self.expected_response:
-                self.expected_response.append(cs.Bang(0, 0).name)
         elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0:
             self.hand.append(self.game.deck.draw())
         ser = self.__dict__.copy()
@@ -569,7 +564,9 @@ class Player:
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = self.game.deck.mancato_cards
-            if isinstance(self.character, chd.ElenaFuente):
+            if isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+                self.expected_response.append(cs.Bang(0, 0).name)
+            elif isinstance(self.character, chd.ElenaFuente):
                 self.expected_response = self.game.deck.all_cards_str
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
@@ -597,7 +594,9 @@ class Player:
                 self.expected_response = self.game.deck.mancato_cards
                 if self.attacker and self.attacker in self.game.players and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
                     self.expected_response = self.game.deck.mancato_cards_not_green
-                if isinstance(self.character, chd.ElenaFuente):
+                elif isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+                    self.expected_response.append(cs.Bang(0, 0).name)
+                elif isinstance(self.character, chd.ElenaFuente):
                     self.expected_response = self.game.deck.all_cards_str
                 self.on_failed_response_cb = self.take_damage_response
             return True
@@ -612,6 +611,8 @@ class Player:
             print('has bang')
             self.pending_action = PendingAction.RESPOND
             self.expected_response = [cs.Bang(0, 0).name]
+            if isinstance(self.character, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
+                self.expected_response.append(cs.Mancato(0, 0).name)
             self.event_type = 'indians'
             self.on_failed_response_cb = self.take_damage_response
             return True
@@ -626,6 +627,8 @@ class Player:
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = [cs.Bang(0, 0).name]
+            if isinstance(self.character, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
+                self.expected_response.append(cs.Mancato(0, 0).name)
             self.event_type = 'duel'
             self.on_failed_response_cb = self.take_damage_response
             return True
