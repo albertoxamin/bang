@@ -146,6 +146,14 @@ class Player:
         self.sio.emit('notify_card', room=self.sid, data=mess)
 
     def notify_self(self):
+        if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
+            self.available_cards = [{
+                'icon': '🔴'
+            },{
+                'icon': '⚫'
+            }]
+            self.is_drawing = True
+            self.pending_action = PendingAction.CHOOSE
         if isinstance(self.character, chars.CalamityJanet):
             if cs.Mancato(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Mancato(0, 0).name)
@@ -485,6 +493,19 @@ class Player:
                 self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
                 while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
                     self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
+            self.notify_self()
+        elif self.is_drawing and self.game.check_event(ce.Peyote):
+            self.is_drawing = False
+            card = self.game.deck.draw()
+            self.hand.append(card)
+            self.sio.emit('chat_message', room=self.game.name, data=f"_guess|{self.name}|{self.available_cards[card_index]['icon']}")
+            self.available_cards = []
+            if card_index == card.suit%2:
+                self.sio.emit('chat_message', room=self.game.name, data=f"_guess_right|{self.name}")
+                self.pending_action = PendingAction.DRAW
+            else:
+                self.sio.emit('chat_message', room=self.game.name, data=f"_guess_wrong|{self.name}")
+                self.pending_action = PendingAction.PLAY
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and isinstance(self.character, chars.KitCarlson):

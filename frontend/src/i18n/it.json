@@ -80,7 +80,10 @@
 		"special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
 		"special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
 		"special_calamity": "{0} ha giovato {1} come un Bang! contro {2}.",
-		"allroles": "Nella partita ci sono: {0}."
+		"allroles": "Nella partita ci sono: {0}.",
+		"guess": "{0} pensa sia {1}.",
+		"guess_right": "{0} ha indovinato.",
+		"guess_wrong": "{0} ha sbagliato."
 	},
 	"foc": {
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"

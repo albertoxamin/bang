@@ -80,7 +80,10 @@
 		"special_bart_cassidy": "{0} received a compensation because he was injured.",
 		"special_el_gringo": "{0} stole a card from {1} when he was was injured.",
 		"special_calamity": "{0} played {1} as Bang! against {2}.",
-		"allroles": "In the game there are: {0}."
+		"allroles": "In the game there are: {0}.",
+		"guess": "{0} guesses {1}.",
+		"guess_right": "{0} was right.",
+		"guess_wrong": "{0} was wrong."
 	},
 	"foc": {
 		"leggedelwest": "He must play this card on this turn if possible."
