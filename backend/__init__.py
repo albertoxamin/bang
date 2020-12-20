@@ -220,12 +220,27 @@ def chat_message(sid, msg):
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/setcharacter' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed character'})
                 import bang.characters as characters
                 cmd = msg.split()
                 if len(cmd) >= 2:
                     chs = characters.all_characters(ses.game.expansions)
                     ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
                     ses.real_character = ses.character
+                    ses.notify_self()
+            elif '/removecard' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    ses.hand.pop(int(cmd[1]))
+                    ses.notify_self()
+            elif '/getcard' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
+                import bang.cards as cs
+                cmd = msg.split()
+                if len(cmd) >= 2:
+                    cards  = cs.get_starting_deck(ses.game.expansions)
+                    ses.hand.append = [c for c in cards if c.name == ' '.join(cmd[1:])][0]
                     ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
