@@ -28,6 +28,7 @@ class Game:
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True
+        self.player_bangs = 0
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
@@ -207,6 +208,14 @@ class Game:
         return self.players[self.players_map[name]]
 
     def responders_did_respond_resume_turn(self):
+        if self.player_bangs > 0 and self.check_event(ce.PerUnPugnoDiCarte):
+            self.player_bangs -= 1
+            if self.player_bangs > 1:
+                self.players[self.turn].get_banged('')
+                self.players[self.turn].notify_self()
+            else:
+                self.player_bangs = 0
+                self.players[self.turn].play_turn()
         self.readyCount += 1
         if self.readyCount == self.waiting_for:
             self.waiting_for = 0
@@ -218,6 +227,7 @@ class Game:
         return self.players[(self.turn + 1) % len(self.players)]
 
     def play_turn(self):
+        self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff):
             self.deck.flip_event()
             if self.check_event(ce.DeadMan) and len(self.dead_players) > 0:
@@ -227,7 +237,12 @@ class Game:
                 self.players[-1].hand.append(self.deck.draw())
                 self.players_map = {c.name: i for i, c in enumerate(self.players)}
                 self.players[-1].notify_self()
-        self.players[self.turn].play_turn()
+        if self.check_event(ce.PerUnPugnoDiCarte):
+            self.player_bangs = len(self.players[self.turn].hand)
+            self.players[self.turn].get_banged('')
+            self.players[self.turn].notify_self()
+        else:
+            self.players[self.turn].play_turn()
 
     def next_turn(self):
         if self.shutting_down: return

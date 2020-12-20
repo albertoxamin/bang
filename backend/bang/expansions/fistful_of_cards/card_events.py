@@ -60,7 +60,7 @@ class MinieraAbbandonata(CardEvent):
         self.desc_eng = "Players draw from the discarded pile and discard to the deck"
 
 class PerUnPugnoDiCarte(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Per Un Pugno Di Carte", "🎴")
         self.desc = "Nel suo turno giocatore subisce tanti bang quante carte ha in mano"
         self.desc_eng = "On his turn the player is target of as many Bang as how many cards he has in his hand"
@@ -106,7 +106,7 @@ def get_all_events():
         LeggeDelWest(),
         LiquoreForte(),
         MinieraAbbandonata(),
-        # PerUnPugnoDiCarte(),
+        PerUnPugnoDiCarte(),
         Peyote(),
         # Ranch(),
         # Rimbalzo(),
