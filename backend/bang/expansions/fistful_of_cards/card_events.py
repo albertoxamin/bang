@@ -92,8 +92,8 @@ class RouletteRussa(CardEvent):
 class Vendetta(CardEvent):
     def __init__(self):
         super().__init__("Vendetta", "😤")
-        self.desc = "Alla fine del proprio turno il giocatore estrae, se esce ♥️ gioca un altro turno"
-        self.desc_eng = "When ending the turn, the player flips a card, if it's ♥️ he plays another turn"
+        self.desc = "Alla fine del proprio turno il giocatore estrae dal mazzo, se esce ♥️ gioca un altro turno (ma non estrae di nuovo)"
+        self.desc_eng = "When ending the turn, the player flips a card from the deck, if it's ♥️ he plays another turn (but he does not flip another card)"
 
 def get_all_events():
     return [
