@@ -15,7 +15,7 @@ class Agguato(CardEvent):
 class Cecchino(CardEvent):
     def __init__(self): #TODO
         super().__init__("Cecchino", "👁")
-        self.desc = "Nel proprio turno i giocatori possono scartare 2 Bang assieme per sparare un bang a cui servono 2 mancato"
+        self.desc = "Nel proprio turno i giocatori possono scartare 2 Bang assieme per sparare un bang che necessita 2 mancato"
         self.desc_eng = "During their turn, players can discard 2 Bang! to shoot a bang that requires 2 missed"
 
 class DeadMan(CardEvent):
@@ -27,8 +27,8 @@ class DeadMan(CardEvent):
 class FratelliDiSangue(CardEvent):
     def __init__(self):
         super().__init__("Fratelli Di Sangue", "💉")
-        self.desc = "All'inizio del proprio turno i giocatori possono perdere 1 vita per darla a un altro giocatore"
-        self.desc_eng = "At the begin of their turn, payers can lose 1 hp to give it to another player"
+        self.desc = "All'inizio del proprio turno, i giocatori possono perdere 1 vita (tranne l'ultimo) per darla a un altro giocatore"
+        self.desc_eng = "At the begin of their turn, payers can lose 1 hp (except the last one) to give it to another player"
 
 class IlGiudice(CardEvent):
     def __init__(self):
@@ -46,7 +46,7 @@ class LeggeDelWest(CardEvent):
     def __init__(self):
         super().__init__("Legge Del West", "⚖️")
         self.desc = "I giocatori mostrano la seconda carta che pescano e sono obbligati a usarla in quel turno (se possibile)"
-        self.desc_eng = "Every player shows the second card that they draw and must use it in that round"
+        self.desc_eng = "Every player shows the second card that they draw and must use it in that round (if it is possible)"
 
 class LiquoreForte(CardEvent):
     def __init__(self):
@@ -57,20 +57,20 @@ class LiquoreForte(CardEvent):
 class MinieraAbbandonata(CardEvent):
     def __init__(self):
         super().__init__("Miniera Abbandonata", "⛏")
-        self.desc = "I giocatori pescano dagli scarti e scartano in cima al mazzo"
-        self.desc_eng = "Players draw from the discarded pile and discard to the deck"
+        self.desc = "I giocatori pescano dagli scarti e scartano in cima al mazzo (se gli scarti finiscono, è necessario pescare e scartare in cima al mazzo)"
+        self.desc_eng = "Players draw from the discarded pile and discard to the top of the deck (if the discards run out, they must draw and discard on top of the deck)"
 
 class PerUnPugnoDiCarte(CardEvent):
     def __init__(self):
         super().__init__("Per Un Pugno Di Carte", "🎴")
-        self.desc = "Nel suo turno giocatore subisce tanti bang quante carte ha in mano"
-        self.desc_eng = "On his turn the player is target of as many Bang as how many cards he has in his hand"
+        self.desc = "All'inizio del proprio turno, il giocatore subisce tanti bang quante carte ha in mano"
+        self.desc_eng = "On the beginning of his turn, the player is target of as many Bang as how many cards he has in his hand"
 
 class Peyote(CardEvent):
     def __init__(self):
         super().__init__("Peyote", "🌵")
-        self.desc = "Invece che pescare il giocatore prova a indovinare il colore del seme, se lo indovina continua"
-        self.desc_eng = "Instead of drawing, the player tries to guess the color of the suit, if he's right he repeats"
+        self.desc = "Invece che pescare il giocatore prova a indovinare il colore del seme, se lo indovina aggiunge la carta alla mano e continua provando ad indovinare la carta successiva"
+        self.desc_eng = "Instead of drawing, the player tries to guess the color of the suit, if he's right he adds the card to the hand and continues trying to guess the next card"
 
 class Ranch(CardEvent):
     def __init__(self):#TODO
