@@ -503,6 +503,10 @@ class Player:
                 self.game.deck.scrap(card)
             else:
                 self.equipment.insert(hand_index-len(self.hand), card)
+        elif card.is_equipment or (card.usable_next_turn and not card.can_be_used_now):
+            if not did_play_card:
+                self.hand.insert(hand_index, card)
+        print("did play card:", did_play_card)
         self.notify_self()
 
     def choose(self, card_index):

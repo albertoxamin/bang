@@ -58,12 +58,7 @@ class Card(ABC):
                 if not has_weapon:
                     player.equipment.append(self)
             elif self.name in [c.name for c in player.equipment if not isinstance(c, Dinamite)]:
-                for i in range(len(player.equipment)):
-                    print('tipo',type(self))
-                    if type(player.equipment[i]) == type(self):
-                        player.game.deck.scrap(player.equipment[i])
-                        player.equipment[i] = self
-                        break
+                return False
             else:
                 player.equipment.append(self)
         if against:
@@ -76,6 +71,9 @@ class Card(ABC):
 
     def use_card(self, player):
         pass
+
+    def is_duplicate_card(self, player):
+        return self.name in [c.name for c in player.equipment]
 
 
 class Barile(Card):

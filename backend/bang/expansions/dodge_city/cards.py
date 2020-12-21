@@ -152,8 +152,11 @@ class Bibbia(Schivata):
             pass
             return False
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class Cappello(Mancato):
     def __init__(self, suit, number):
@@ -168,8 +171,11 @@ class Cappello(Mancato):
             pass
             return False
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class PlaccaDiFerro(Cappello):
     def __init__(self, suit, number):
@@ -195,8 +201,11 @@ class Pugnale(Pugno):
         if self.can_be_used_now:
             return super().play_card(player, against=against)
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class Derringer(Pugnale):
     def __init__(self, suit, number):
@@ -212,8 +221,11 @@ class Derringer(Pugnale):
             player.hand.append(player.game.deck.draw())
             return super().play_card(player, against=against)
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
     def use_card(self, player):
         player.hand.append(player.game.deck.draw())
@@ -235,8 +247,11 @@ class Borraccia(Card):
             player.notify_self()
             return True
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class PonyExpress(WellsFargo):
     def __init__(self, suit, number):
@@ -250,8 +265,11 @@ class PonyExpress(WellsFargo):
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class Howitzer(Gatling):
     def __init__(self, suit, number):
@@ -265,8 +283,11 @@ class Howitzer(Gatling):
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class CanCan(CatBalou):
     def __init__(self, suit, number):
@@ -280,8 +301,11 @@ class CanCan(CatBalou):
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class Conestoga(Panico):
     def __init__(self, suit, number):
@@ -297,8 +321,11 @@ class Conestoga(Panico):
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class Pepperbox(Bang):
     def __init__(self, suit, number):
@@ -316,8 +343,11 @@ class Pepperbox(Bang):
                 return True
             return False
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 class FucileDaCaccia(Card):
     def __init__(self, suit, number):
@@ -336,8 +366,11 @@ class FucileDaCaccia(Card):
                 return True
             return False
         else:
-            player.equipment.append(self)
-            return True
+            if not self.is_duplicate_card(player):
+                player.equipment.append(self)
+                return True
+            else:
+                return False
 
 def get_starting_deck() -> List[Card]:
     return [
