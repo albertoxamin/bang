@@ -381,6 +381,13 @@ class Game:
                 for i in range(len(player.equipment)):
                     vulture[0].hand.append(player.equipment.pop())
                 vulture[0].notify_self()
+
+            #se Vulture Sam è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
+            if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
+                for i in range(len(player.attacker.hand)):
+                    self.deck.scrap(player.attacker.hand.pop())
+                player.attacker.notify_self()
+
             greg = [p for p in self.players if isinstance(p.character, chd.GregDigger)]
             if len(greg) > 0:
                 greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
