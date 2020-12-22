@@ -226,7 +226,7 @@ class Player:
         elif self.pending_action == PendingAction.PLAY:
             equippables = [c for c in self.hand if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any([type(c) == type(x) for x in self.equipment])]
             misc = [c for c in self.hand if isinstance(c, cs.WellsFargo) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives)]
-            need_target = [c for c in self.hand if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo)))]
+            need_target = [c for c in self.hand if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo))) and not ( isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice))]
             green_cards = [c for c in self.equipment if not self.game.check_event(ce.Lazo) and not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now]
             if len(equippables) > 0 and not self.game.check_event(ce.IlGiudice):
                 for c in equippables:
