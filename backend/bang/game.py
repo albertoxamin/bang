@@ -187,7 +187,7 @@ class Game:
             self.get_player_named(target_username).notify_self()
 
     def emporio(self):
-        self.available_cards = [self.deck.draw() for i in range(len(self.players))]
+        self.available_cards = [self.deck.draw(True) for i in range(len(self.players))]
         self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
         self.players[self.turn].available_cards = self.available_cards
         self.players[self.turn].notify_self()
@@ -318,13 +318,13 @@ class Game:
         print(player.attacker)
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
-                self.deck.scrap(player.attacker.hand.pop())
+                self.deck.scrap(player.attacker.hand.pop(), True)
             for i in range(len(player.attacker.equipment)):
-                self.deck.scrap(player.attacker.equipment.pop())
+                self.deck.scrap(player.attacker.equipment.pop(), True)
             player.attacker.notify_self()
         elif player.attacker and player.attacker in self.players and (isinstance(player.role, roles.Outlaw) or self.initial_players == 3):
             for i in range(3):
-                player.attacker.hand.append(self.deck.draw())
+                player.attacker.hand.append(self.deck.draw(True))
             player.attacker.notify_self()
         print(f'player {player.name} died')
         if (self.waiting_for > 0):
@@ -365,9 +365,9 @@ class Game:
             vulture = [p for p in self.players if isinstance(p.character, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
-                    self.deck.scrap(player.hand.pop())
+                    self.deck.scrap(player.hand.pop(), True)
                 for i in range(len(player.equipment)):
-                    self.deck.scrap(player.equipment.pop())
+                    self.deck.scrap(player.equipment.pop(), True)
             elif len(vulture) == 2:
                 for i in range(len(player.hand)):
                     vulture[i%2].hand.append(player.hand.pop())
@@ -385,7 +385,7 @@ class Game:
             #se Vulture Sam è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
             if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
                 for i in range(len(player.attacker.hand)):
-                    self.deck.scrap(player.attacker.hand.pop())
+                    self.deck.scrap(player.attacker.hand.pop(), True)
                 player.attacker.notify_self()
 
             greg = [p for p in self.players if isinstance(p.character, chd.GregDigger)]
@@ -393,8 +393,8 @@ class Game:
                 greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
             herb = [p for p in self.players if isinstance(p.character, chd.HerbHunter)]
             if len(herb) > 0:
-                herb[0].hand.append(self.deck.draw())
-                herb[0].hand.append(self.deck.draw())
+                herb[0].hand.append(self.deck.draw(True))
+                herb[0].hand.append(self.deck.draw(True))
                 herb[0].notify_self()
         
         if died_in_his_turn:

@@ -57,7 +57,8 @@ class LiquoreForte(CardEvent):
 class MinieraAbbandonata(CardEvent):
     def __init__(self):
         super().__init__("Miniera Abbandonata", "⛏")
-        self.desc = "I giocatori pescano dagli scarti e scartano in cima al mazzo (se gli scarti finiscono, è necessario pescare e scartare in cima al mazzo)"
+        self.desc = "I giocatori pescano dagli scarti nella loro fase 1 e scartano in cima al mazzo nella loro fase 3 (se gli scarti finiscono, è necessario pescare e scartare in cima al mazzo)"
+        #TODO: cambiare anche la descrizione inglese
         self.desc_eng = "Players draw from the discarded pile and discard to the top of the deck (if the discards run out, they must draw and discard on top of the deck)"
 
 class PerUnPugnoDiCarte(CardEvent):
