@@ -80,7 +80,7 @@ class Ranch(CardEvent):
         self.desc_eng = "After drawing, the player can discard as many cards as he wants from his hand and draw as many from the deck"
 
 class Rimbalzo(CardEvent):
-    def __init__(self):#TODO
+    def __init__(self):
         super().__init__("Rimbalzo", "⏮")
         self.desc = "Il giocatore di turno può giocare bang contro le carte equipaggiate dagli altri giocatori, se non giocano mancato vengono scartate"
         self.desc_eng = "The player can play bang against the cards equipped by the other players, if they do not play miss they are discarded"
@@ -110,10 +110,12 @@ def get_all_events():
         MinieraAbbandonata(),
         Peyote(),
         Ranch(),
-        # Rimbalzo(),
+        Rimbalzo(),
         RouletteRussa(),
         Vendetta(),
     ]
     random.shuffle(cards)
     cards.append(PerUnPugnoDiCarte())
+    for c in cards:
+        c.expansion = 'fistful-of-cards'
     return cards

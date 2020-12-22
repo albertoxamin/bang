@@ -179,6 +179,14 @@ class Game:
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
 
+    def rimbalzo(self, attacker: pl.Player, target_username:str, card_index:int):
+        if self.get_player_named(target_username).get_banged(attacker=attacker, no_dmg=True, card_index=card_index):
+            self.readyCount = 0
+            self.waiting_for = 1
+            attacker.pending_action = pl.PendingAction.WAIT
+            attacker.notify_self()
+            self.get_player_named(target_username).notify_self()
+
     def duel(self, attacker: pl.Player, target_username:str):
         if self.get_player_named(target_username).get_dueled(attacker=attacker):
             self.readyCount = 0

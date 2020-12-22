@@ -51,6 +51,7 @@ class Player:
         self.can_play_vendetta = True
         self.is_giving_life = False
         self.is_using_checchino = False
+        self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.mancato_needed = 0
@@ -342,7 +343,15 @@ class Player:
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌'})
             self.pending_action = PendingAction.CHOOSE
-            self.is_giving_life = True
+            self.notify_self()
+        elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and len([c for c in self.hand if c.name == cs.Bang(0,0).name]) > 0:
+            self.available_cards = [{
+                'name': p.name,
+                'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠'
+            } for p in self.game.players if len(p.equipment) > 0 and p != self]
+            self.available_cards.append({'icon': '❌'})
+            self.pending_action = PendingAction.CHOOSE
+            self.using_rimbalzo = 1
             self.notify_self()
         if self.pending_action != PendingAction.DRAW:
             return
@@ -550,10 +559,29 @@ class Player:
                         card = next(c for c in self.hand if c.name == cs.Bang(0,0).name)
                         self.hand.remove(card)
                         self.game.deck.scrap(card, True)
+                    self.pending_action = PendingAction.PLAY
                     self.game.attack(self, self.available_cards[card_index]['name'], double=True)
-            except: pass
+            except:
+                self.pending_action = PendingAction.PLAY
             self.is_using_checchino = False
-            self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif self.using_rimbalzo > 0 and self.game.check_event(ce.Rimbalzo):
+            if self.using_rimbalzo == 1 and 'name' in self.available_cards[card_index]:
+                self.rimbalzo_p = self.available_cards[card_index]['name']
+                self.available_cards = self.game.get_player_named(self.available_cards[card_index]['name']).equipment
+                self.using_rimbalzo = 2
+            elif self.using_rimbalzo == 2 and 'name' in self.available_cards[card_index].__dict__:
+                card = next(c for c in self.hand if c.name == cs.Bang(0,0).name)
+                self.hand.remove(card)
+                self.game.deck.scrap(card, True)
+                self.using_rimbalzo = 0
+                self.available_cards = []
+                self.pending_action = PendingAction.PLAY
+                self.game.rimbalzo(self, self.rimbalzo_p, card_index)
+            else:
+                self.using_rimbalzo = 0
+                self.rimbalzo_p = ''
+                self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.is_playing_ranch and self.game.check_event(ce.Ranch):
             if card_index == len(self.available_cards) - 1:
@@ -630,9 +658,41 @@ class Player:
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
-    def get_banged(self, attacker, double=False):
+    def barrel_pick_no_dmg(self):
+        pickable_cards = 1 + self.character.pick_mod
+        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and isinstance(self.character, chars.Jourdonnais):
+            pickable_cards = 2
+        while pickable_cards > 0:
+            pickable_cards -= 1
+            picked: cs.Card = self.game.deck.pick_and_scrap()
+            print(f'Did pick {picked}')
+            self.sio.emit('chat_message', room=self.game.name,
+                            data=f'_flipped|{self.name}|{picked}')
+            if picked.suit == cs.Suit.HEARTS:
+                self.mancato_needed -= 1
+                self.notify_self()
+                if self.mancato_needed <= 0:
+                    self.game.responders_did_respond_resume_turn(did_lose=False)
+                    return
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
+             and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
+            self.take_no_damage_response()
+            self.game.responders_did_respond_resume_turn(did_lose=True)
+        else:
+            self.pending_action = PendingAction.RESPOND
+            self.expected_response = self.game.deck.mancato_cards.copy()
+            if isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+                self.expected_response.append(cs.Bang(0, 0).name)
+            elif isinstance(self.character, chd.ElenaFuente):
+                self.expected_response = self.game.deck.all_cards_str
+            self.on_failed_response_cb = self.take_no_damage_response
+            self.notify_self()
+
+    def get_banged(self, attacker, double=False, no_dmg=False, card_index=None):
         self.attacker = attacker
         self.mancato_needed = 1 if not double else 2
+        if card_index != None:
+            self.dmg_card_index = None
         for i in range(len(self.equipment)):
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])
@@ -640,13 +700,19 @@ class Player:
              and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             print('Cant defend')
-            self.take_damage_response()
+            if not no_dmg:
+                self.take_damage_response()
+            else:
+                self.take_no_damage_response()
             return False
         else:
             if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) or isinstance(self.character, chars.Jourdonnais):
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
-                self.on_pick_cb = self.barrel_pick
+                if not no_dmg:
+                    self.on_pick_cb = self.barrel_pick
+                else:
+                    self.on_pick_cb = self.barrel_pick_no_dmg
             else:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
@@ -657,7 +723,10 @@ class Player:
                     self.expected_response.append(cs.Bang(0, 0).name)
                 elif isinstance(self.character, chd.ElenaFuente):
                     self.expected_response = self.game.deck.all_cards_str
-                self.on_failed_response_cb = self.take_damage_response
+                if not no_dmg:
+                    self.on_failed_response_cb = self.take_damage_response
+                else:
+                    self.on_failed_response_cb = self.take_no_damage_response
             return True
 
     def get_indians(self, attacker):
@@ -718,6 +787,16 @@ class Player:
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
         self.heal_if_needed()
+        self.mancato_needed = 0
+        self.expected_response = []
+        self.event_type = ''
+        self.notify_self()
+        self.attacker = None
+
+    def take_no_damage_response(self):
+        if self.dmg_card_index != None and self.dmg_card_index != -1 and self.game.check_event(ce.Rimbalzo):
+            self.game.deck.scrap(self.equipment.pop(self.dmg_card_index))
+        self.dmg_card_index = -1
         self.mancato_needed = 0
         self.expected_response = []
         self.event_type = ''
