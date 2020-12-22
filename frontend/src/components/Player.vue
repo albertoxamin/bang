@@ -191,6 +191,7 @@ export default {
 					name: player.name,
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
 					icon: player.is_sheriff ? '⭐' : '🤠',
+					alt_text: Array(player.lives+1).join('❤️')+Array(player.max_lives-player.lives+1).join('💀'),
 					is_character: true,
 				}})
 			if (this.card_against && this.card_against.can_target_self) {
