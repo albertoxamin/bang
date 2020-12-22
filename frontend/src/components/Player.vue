@@ -54,7 +54,7 @@
 							:cards="hand.filter(x => x.is_equipment)" :select="(card) => {joseScrap=false;scrap(card)}" :cancel="() => {joseScrap=false}"/>
 		<Chooser v-if="holydayScrap && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length}`"
 							:cards="notScrappedHand" :select="holydayScrapAdd" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
-		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="otherPlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
+		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="visiblePlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 	</div>
 </template>
 
