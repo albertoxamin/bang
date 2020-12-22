@@ -38,7 +38,7 @@
 		<Chooser v-if="is_my_turn && pending_action == 4" :text="$t('wait')" :cards="[]"/>
 		<Chooser v-if="card_against" :text="$t('card_against')" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond"/>
-		<Chooser v-if="shouldChooseCard" :text="$t('choose_card_to_get')" :cards="available_cards" :select="choose"/>
+		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
 		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
@@ -101,6 +101,7 @@ export default {
 		desc: '',
 		scrapHand: [],
 		sidWantsScrapForHealth: false,
+		choose_text: '',
 		joseScrap: false,
 		holydayScrap: false,
 		special_use_count: 0,
@@ -128,6 +129,7 @@ export default {
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.special_use_count = self.special_use_count
+			this.choose_text = self.choose_text
 			this.is_my_turn = self.is_my_turn
 			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'
 			else if (this.pending_action == 3) document.title = this.$t('your_response')+' | PewPew!'

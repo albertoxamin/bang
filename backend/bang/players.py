@@ -51,6 +51,7 @@ class Player:
         self.can_play_vendetta = True
         self.is_giving_life = False
         self.is_using_checchino = False
+        self.choose_text = 'choose_card_to_get'
         self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
         self.can_play_ranch = True
         self.is_playing_ranch = False
@@ -162,6 +163,7 @@ class Player:
                 'icon': '⚫'
             }]
             self.is_drawing = True
+            self.choose_text = 'choose_guess'
             self.pending_action = PendingAction.CHOOSE
         elif self.can_play_ranch and self.pending_action == PendingAction.PLAY and self.game.check_event(ce.Ranch):
             self.can_play_ranch = False
@@ -169,6 +171,7 @@ class Player:
             self.discarded_cards = []
             self.available_cards.append({'icon': '✅'})
             self.is_playing_ranch = True
+            self.choose_text = 'choose_ranch'
             self.pending_action = PendingAction.CHOOSE
         elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
             self.hand.append(self.game.deck.draw(True))
@@ -320,6 +323,7 @@ class Player:
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives))
             } for p in self.game.players if p != self and p.lives < p.max_lives]
             self.available_cards.append({'icon': '❌'})
+            self.choose_text = 'choose_fratelli_di_sangue'
             self.pending_action = PendingAction.CHOOSE
             self.is_giving_life = True
         elif not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
@@ -342,6 +346,7 @@ class Player:
                 'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives']))
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌'})
+            self.choose_text = 'choose_cecchino'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
         elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and len([c for c in self.hand if c.name == cs.Bang(0,0).name]) > 0:
@@ -350,6 +355,7 @@ class Player:
                 'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠'
             } for p in self.game.players if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌'})
+            self.choose_text = 'choose_rimbalzo_player'
             self.pending_action = PendingAction.CHOOSE
             self.using_rimbalzo = 1
             self.notify_self()
@@ -362,11 +368,13 @@ class Player:
         elif isinstance(self.character, chars.KitCarlson):
             self.is_drawing = True
             self.available_cards = [self.game.deck.draw() for i in range(3)]
+            self.choose_text = 'choose_card_to_get'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
         elif isinstance(self.character, chd.PatBrennan) and type(pile) == str and pile != self.name and pile in self.game.players_map and len(self.game.get_player_named(pile).equipment) > 0:
             self.is_drawing = True
             self.available_cards = self.game.get_player_named(pile).equipment
+            self.choose_text = 'choose_card_to_get'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
         else:
@@ -569,6 +577,7 @@ class Player:
             if self.using_rimbalzo == 1 and 'name' in self.available_cards[card_index]:
                 self.rimbalzo_p = self.available_cards[card_index]['name']
                 self.available_cards = self.game.get_player_named(self.available_cards[card_index]['name']).equipment
+                self.choose_text = 'choose_rimbalzo_card'
                 self.using_rimbalzo = 2
             elif self.using_rimbalzo == 2 and 'name' in self.available_cards[card_index].__dict__:
                 card = next(c for c in self.hand if c.name == cs.Bang(0,0).name)

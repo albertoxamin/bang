@@ -198,6 +198,7 @@ class Game:
     def emporio(self):
         self.available_cards = [self.deck.draw(True) for i in range(len([p for p in self.players if p.lives > 0]))]
         self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
+        self.players[self.turn].choose_text = 'choose_card_to_get'
         self.players[self.turn].available_cards = self.available_cards
         self.players[self.turn].notify_self()
 
@@ -212,6 +213,7 @@ class Game:
             self.players[self.turn].notify_self()
         else:
             nextPlayer.pending_action = pl.PendingAction.CHOOSE
+            self.players[self.turn].choose_text = 'choose_card_to_get'
             nextPlayer.available_cards = self.available_cards
             nextPlayer.notify_self()
 
