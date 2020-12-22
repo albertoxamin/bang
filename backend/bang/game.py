@@ -187,7 +187,7 @@ class Game:
             self.get_player_named(target_username).notify_self()
 
     def emporio(self):
-        self.available_cards = [self.deck.draw(True) for i in range(len(self.players))]
+        self.available_cards = [self.deck.draw(True) for i in range(len([p for p in self.players if p.lives > 0]))]
         self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
         self.players[self.turn].available_cards = self.available_cards
         self.players[self.turn].notify_self()

@@ -122,6 +122,7 @@ class Prigione(Card):
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
             player.game.get_player_named(against).notify_self()
+            return True
         return False
 
 class Remington(Card):

@@ -223,37 +223,35 @@ class Player:
         elif self.pending_action == PendingAction.DRAW:
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
-            has_played = False
-            if len([c for c in self.hand if (c.is_equipment or c.usable_next_turn) and not self.game.check_event(ce.IlGiudice)]) > 0:
-                for i in range(len(self.hand)):
-                    if self.hand[i].is_equipment or self.hand[i].usable_next_turn:
-                        self.play_card(i)
-                        has_played = True
-                        break
+            equippables = [c for c in self.hand if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not self.game.check_event(ce.IlGiudice) and not any([type(c) == type(x) for x in self.equipment])]
+            if len(equippables) > 0:
+                for c in equippables:
+                    if self.play_card(self.hand.index(c)):
+                        return
             elif any([isinstance(c, cs.WellsFargo) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or isinstance(c, cs.Birra)  for c in self.hand]):
                 for i in range(len(self.hand)):
                     c = self.hand[i]
                     if isinstance(c, cs.WellsFargo) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives):
-                        self.play_card(i)
-                        has_played = True
-                        break
+                        if self.play_card(i):
+                            return
             elif len([c for c in self.hand if c.need_target and c.can_be_used_now and not (c.is_equipment and self.game.check_event(ce.IlGiudice)) and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo)))]) > 0:
                 for i in range(len(self.hand)):
                     if self.hand[i].need_target and not (self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment])):
                         if self.hand[i].need_with and len(self.hand) < 2:
                             continue
                         _range = self.get_sight() if self.hand[i].name == 'Bang!' or self.hand[i].name == "Pepperbox" else self.hand[i].range
-                        others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'])]
+                        others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff']) and p['lives'] > 0]
                         if len(others) == 0:
                             continue
                         target = others[randrange(0, len(others))]
                         if target['is_sheriff'] and isinstance(self.role, r.Renegade):
                             target = others[randrange(0, len(others))]
                         if not self.hand[i].need_with:
-                            self.play_card(i, against=target['name'])
+                            if self.play_card(i, against=target['name']):
+                                return
                         else:
-                            self.play_card(i, against=target['name'], _with=sample([j for j in range(len(self.hand)) if j != i], 1)[0])
-                        has_played = True
+                            if self.play_card(i, against=target['name'], _with=sample([j for j in range(len(self.hand)) if j != i], 1)[0]):
+                                return
                         break
             elif any([not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment if not self.game.check_event(ce.Lazo)]):
                 print('hmm', [not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now for c in self.equipment])
@@ -261,7 +259,8 @@ class Player:
                     c = self.equipment[i]
                     if not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now:
                         if not c.need_target:
-                            self.play_card(len(self.hand)+i)
+                            if self.play_card(len(self.hand)+i):
+                                return
                         else:
                             _range = self.get_sight() if c.name == "Pepperbox" else c.range
                             others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'])]
@@ -270,8 +269,8 @@ class Player:
                             target = others[randrange(0, len(others))]
                             if target['is_sheriff'] and isinstance(self.role, r.Renegade):
                                 target = others[randrange(0, len(others))]
-                            self.play_card(len(self.hand)+i, against=target['name'])
-                        has_played = True
+                            if self.play_card(len(self.hand)+i, against=target['name']):
+                                return
                         break
             maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
             if len(self.hand) > maxcards:
@@ -507,8 +506,12 @@ class Player:
         elif card.is_equipment or (card.usable_next_turn and not card.can_be_used_now):
             if not did_play_card:
                 self.hand.insert(hand_index, card)
+            else:
+                did_play_card = True
         print("did play card:", did_play_card)
         self.notify_self()
+        if self.is_bot:
+            return did_play_card or card.is_equipment or (card.usable_next_turn and not card.can_be_used_now)
 
     def choose(self, card_index):
         if self.pending_action != PendingAction.CHOOSE:

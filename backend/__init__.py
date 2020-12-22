@@ -232,7 +232,10 @@ def chat_message(sid, msg):
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
                 cmd = msg.split()
                 if len(cmd) == 2:
-                    ses.hand.pop(int(cmd[1]))
+                    if len(ses.hand) > int(cmd[1]):
+                        ses.hand.pop(int(cmd[1]))
+                    else:
+                        ses.hand.pop(int(cmd[1])-len(ses.hand))
                     ses.notify_self()
             elif '/getcard' in msg:
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
@@ -246,6 +249,9 @@ def chat_message(sid, msg):
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
+            elif '/mebot' in msg:
+                ses.is_bot = not ses.is_bot
+                ses.notify_self()
             else:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
