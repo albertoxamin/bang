@@ -171,6 +171,15 @@ class Player:
             self.pending_action = PendingAction.CHOOSE
         elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
             self.hand.append(self.game.deck.draw(True))
+        if self.lives <= 0 and self.max_lives > 0:
+            print('dying, attacker', self.attacker)
+            if isinstance(self.character, chars.SidKetchum) and len(self.hand) > 1:
+                self.lives += 1
+                #TODO Sid dovrebbe poter decidere cosa scartare
+                self.game.deck.scrap(self.hand.pop(
+                    randrange(0, len(self.hand))), True)
+                self.game.deck.scrap(self.hand.pop(
+                    randrange(0, len(self.hand))), True)
         ser = self.__dict__.copy()
         ser.pop('game')
         ser.pop('sio')
@@ -184,15 +193,6 @@ class Player:
         ser['sight'] = self.get_sight()
         ser['lives'] = max(ser['lives'], 0)
 
-        if self.lives <= 0 and self.max_lives > 0:
-            print('dying, attacker', self.attacker)
-            if isinstance(self.character, chars.SidKetchum) and len(self.hand) > 1:
-                self.lives += 1
-                #TODO Sid dovrebbe poter decidere cosa scartare
-                self.game.deck.scrap(self.hand.pop(
-                    randrange(0, len(self.hand))), True)
-                self.game.deck.scrap(self.hand.pop(
-                    randrange(0, len(self.hand))), True)
         if self.lives <= 0 and self.max_lives > 0:
             self.pending_action = PendingAction.WAIT
             ser['hand'] = []
@@ -408,13 +408,12 @@ class Player:
                         if picked.suit == cs.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i), True)
-                            self.sio.emit('chat_message', room=self.game.name,
-                                          data=f'_explode|{self.name}')
+                            self.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
+                            self.heal_if_needed()
                             if isinstance(self.character, chars.BartCassidy) and self.lives > 0:
                                 for i in range(3):
                                     self.hand.append(self.game.deck.draw(True))
-                                self.sio.emit('chat_message', room=self.game.name,
-                                              data=f'_special_bart_cassidy|{self.name}')
+                                self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
                             print(f'{self.name} Boom, -3 hp')
                             break
                         else:
@@ -693,6 +692,18 @@ class Player:
             self.on_failed_response_cb = self.take_damage_response
             return True
 
+    def heal_if_needed(self):
+        while self.lives <= 0 and len(self.game.players) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
+            for i in range(len(self.hand)):
+                if isinstance(self.hand[i], cs.Birra):
+                    if isinstance(self.character, chd.MollyStark) and not self.is_my_turn:
+                        self.hand.append(self.game.deck.draw(True))
+                    self.lives += 1 if not isinstance(self.character, chd.TequilaJoe) else 2
+                    self.game.deck.scrap(self.hand.pop(i), True)
+                    self.sio.emit('chat_message', room=self.game.name,
+                                  data=f'_beer_save|{self.name}')
+                    break
+
     def take_damage_response(self):
         self.lives -= 1
         if self.lives > 0:
@@ -706,16 +717,7 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
-        while self.lives <= 0 and len(self.game.players) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
-            for i in range(len(self.hand)):
-                if isinstance(self.hand[i], cs.Birra):
-                    if isinstance(self.character, chd.MollyStark) and not self.is_my_turn:
-                        self.hand.append(self.game.deck.draw(True))
-                    self.lives += 1
-                    self.game.deck.scrap(self.hand.pop(i), True)
-                    self.sio.emit('chat_message', room=self.game.name,
-                                  data=f'_beer_save|{self.name}')
-                    break
+        self.heal_if_needed()
         self.mancato_needed = 0
         self.expected_response = []
         self.event_type = ''
