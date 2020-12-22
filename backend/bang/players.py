@@ -692,7 +692,9 @@ class Player:
         self.attacker = attacker
         self.mancato_needed = 1 if not double else 2
         if card_index != None:
-            self.dmg_card_index = None
+            self.dmg_card_index = card_index
+        else:
+            self.dmg_card_index = -1
         for i in range(len(self.equipment)):
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])

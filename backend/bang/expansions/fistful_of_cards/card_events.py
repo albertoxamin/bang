@@ -82,8 +82,8 @@ class Ranch(CardEvent):
 class Rimbalzo(CardEvent):
     def __init__(self):
         super().__init__("Rimbalzo", "⏮")
-        self.desc = "Il giocatore di turno può giocare bang contro le carte equipaggiate dagli altri giocatori, se non giocano mancato vengono scartate"
-        self.desc_eng = "The player can play bang against the cards equipped by the other players, if they do not play miss they are discarded"
+        self.desc = "Il giocatore di turno può giocare bang contro le carte equipaggiate dagli altri giocatori, se non giocano mancato vengono scartate (clicca la carta evento)"
+        self.desc_eng = "The player can play bang against the cards equipped by the other players, if they do not play miss they are discarded (click the event card)"
 
 class RouletteRussa(CardEvent):
     def __init__(self):
