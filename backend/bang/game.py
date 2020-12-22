@@ -428,6 +428,7 @@ class Game:
             'lives': self.players[j].lives,
             'max_lives': self.players[j].max_lives,
             'is_sheriff': isinstance(self.players[j].role, roles.Sheriff),
+            'cards': len(self.players[j].hand)+len(self.players[j].equipment)
         } for j in range(len(self.players)) if i != j]
 
     def notify_all(self):
