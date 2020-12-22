@@ -571,13 +571,14 @@ class Player:
         elif self.is_drawing and self.game.check_event(ce.Peyote):
             self.is_drawing = False
             card = self.game.deck.draw()
-            self.hand.append(card)
             self.sio.emit('chat_message', room=self.game.name, data=f"_guess|{self.name}|{self.available_cards[card_index]['icon']}")
             self.available_cards = []
             if card_index == card.suit%2:
+                self.hand.append(card)
                 self.sio.emit('chat_message', room=self.game.name, data=f"_guess_right|{self.name}")
                 self.pending_action = PendingAction.DRAW
             else:
+                self.game.deck.scrap(card)
                 self.sio.emit('chat_message', room=self.game.name, data=f"_guess_wrong|{self.name}")
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
