@@ -141,6 +141,7 @@ class Game:
                     self.sio.emit('chat_message', room=self.name, data=f'_sheriff|{self.players[i].name}')
                 self.turn = i
             self.players[i].notify_self()
+        self.notify_event_card()
 
     def attack_others(self, attacker: pl.Player):
         attacker.pending_action = pl.PendingAction.WAIT
@@ -283,7 +284,10 @@ class Game:
 
     def notify_event_card(self):
         if len(self.deck.event_cards) > 0:
-            self.sio.emit('event_card', room=self.name, data=self.deck.event_cards[0].__dict__)
+            if self.deck.event_cards[0] != None:
+                self.sio.emit('event_card', room=self.name, data=self.deck.event_cards[0].__dict__)
+            else:
+                self.sio.emit('event_card', room=self.name, data=None)
 
     def notify_scrap_pile(self):
         print('scrap')

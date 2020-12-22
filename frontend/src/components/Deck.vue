@@ -5,7 +5,7 @@
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="eventCard" :key="eventCard" :class="{'last-event':true,'fistful-of-cards':true}" @click.native="event"/>
+				<card :card="eventCard" :key="eventCard" :class="{'last-event':true,'fistful-of-cards':true, 'back':eventCard.back}" @click.native="event"/>
 			</div>
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
@@ -59,7 +59,11 @@ export default {
 			this.lastScrap = card
 		},
 		event_card(card) {
-			this.eventCard = card
+			this.eventCard = card == false ? {
+				name: 'PewPew!',
+				icon: '🎲',
+				back: true
+			} : card
 		},
 	},
 	computed: {
