@@ -733,6 +733,7 @@ class Player:
 
     def get_indians(self, attacker):
         self.attacker = attacker
+        if isinstance(self.character, chd.ApacheKid): return False
         if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
