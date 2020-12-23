@@ -5,7 +5,7 @@
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="eventCard" :key="eventCard" :class="{'last-event':true,'fistful-of-cards':true}"/>
+				<card :card="eventCard" :key="eventCard" :class="eventClasses" @click.native="event"/>
 			</div>
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
@@ -59,7 +59,12 @@ export default {
 			this.lastScrap = card
 		},
 		event_card(card) {
-			this.eventCard = card
+			this.eventCard = card == false ? {
+				name: 'PewPew!',
+				icon: '🎲',
+				back: true,
+				expansion: 'fistful-of-cards',
+			} : card
 		},
 	},
 	computed: {
@@ -68,6 +73,14 @@ export default {
 				name: this.$t('end_turn'),
 				icon: '⛔️'
 			}
+		},
+		eventClasses() {
+			let classes = {
+				'last-event':true,
+				'back':this.eventCard.back
+			}
+			classes[this.eventCard.expansion] = true
+			return classes
 		}
 	},
 	methods: {
@@ -78,6 +91,11 @@ export default {
 					this.$socket.emit('pick')
 				else if (this.pending_action == 1)
 					this.$socket.emit('draw', pile)
+			}
+		},
+		event() {
+			if (this.pending_action !== false) {
+				this.$socket.emit('draw', 'event')
 			}
 		}
 	},

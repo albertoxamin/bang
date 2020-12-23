@@ -87,6 +87,17 @@ export default {
 	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
 	border: 2pt dashed rgb(50 122 172);
 }
+.card.back.fistful-of-cards{
+	color:white;
+	background: repeating-linear-gradient(
+		45deg,
+		rgb(50 122 172),
+		rgb(50 122 172) 5px,
+		rgb(30 102 152) 5px,
+		rgb(30 102 152) 10px
+	);
+	border: 2pt solid rgb(50 122 172);
+}
 .card h4 {
 	position: absolute;
 	text-align: center;
@@ -124,12 +135,12 @@ export default {
 }
 @media (prefers-color-scheme: dark) {
 	:root, #app {
-    background-color: #181a1b;
-    color: rgb(174, 194, 211);
-  }
+		background-color: #181a1b;
+		color: rgb(174, 194, 211);
+	}
 	.card {
 		background-color: #181a1b;
-    color: rgb(174, 194, 211);
+		color: rgb(174, 194, 211);
 		box-shadow: 
 			0 0 0 3pt #987e51,
 			0 0 0 6pt #181a1b,

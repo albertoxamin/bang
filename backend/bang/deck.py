@@ -22,15 +22,16 @@ class Deck:
         self.event_cards: List[ce.CardEvent] = []
         if 'fistful_of_cards' in game.expansions:
             self.event_cards.extend(ce.get_all_events())
-        random.shuffle(self.event_cards)
+            self.event_cards.insert(0, None)
+            self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
 
     def flip_event(self):
-        if len(self.event_cards) > 0:
+        if len(self.event_cards) > 0 and not isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte):
             self.event_cards.append(self.event_cards.pop(0))
-            self.game.notify_event_card()
+        self.game.notify_event_card()
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
@@ -52,7 +53,9 @@ class Deck:
     def put_on_top(self, card: cs.Card):
         self.cards.insert(0, card)
 
-    def draw(self) -> cs.Card:
+    def draw(self, ignore_event = False) -> cs.Card:
+        if self.game.check_event(ce.MinieraAbbandonata) and len(self.scrap_pile) > 0 and not ignore_event:
+            return self.draw_from_scrap_pile()
         card = self.cards.pop(0)
         if len(self.cards) == 0:
             self.reshuffle()
@@ -71,8 +74,11 @@ class Deck:
         else:
             return self.draw()
 
-    def scrap(self, card: cs.Card):
+    def scrap(self, card: cs.Card, ignore_event = False):
         if card.usable_next_turn:
             card.can_be_used_now = False
-        self.scrap_pile.append(card)
-        self.game.notify_scrap_pile()
+        if self.game.check_event(ce.MinieraAbbandonata) and not ignore_event:
+            self.put_on_top(card)
+        else:
+            self.scrap_pile.append(card)
+            self.game.notify_scrap_pile()

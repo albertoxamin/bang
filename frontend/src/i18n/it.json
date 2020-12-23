@@ -38,6 +38,12 @@
 	"hand": "MANO",
 	"card_against": "Contro chi vuoi giocare la carta",
 	"choose_card_to_get": "Scegli che carta pescare",
+	"choose_guess": "Indovina il colore del seme",
+	"choose_ranch": "Scegli le carte da sostituire",
+	"choose_fratelli_di_sangue": "Scegli a chi donare una delle tue vite",
+	"choose_cecchino": "Scegli contro chi sparare",
+	"choose_rimbalzo_player": "Scegli contro chi scartare il bang",
+	"choose_rimbalzo_card": "Scegli contro che carta scartare il bang",
 	"you_died": "SEI MORTO",
 	"spectate": "SPETTATORE",
 	"you_win": "HAI VINTO",
@@ -80,7 +86,11 @@
 		"special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
 		"special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
 		"special_calamity": "{0} ha giovato {1} come un Bang! contro {2}.",
-		"allroles": "Nella partita ci sono: {0}."
+		"allroles": "Nella partita ci sono: {0}.",
+		"guess": "{0} pensa sia {1}.",
+		"guess_right": "{0} ha indovinato.",
+		"guess_wrong": "{0} ha sbagliato.",
+		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}."
 	},
 	"foc": {
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"

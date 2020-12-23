@@ -16,6 +16,15 @@
 			</option>
 		</select>
 		<label for="lang" style="opacity:0" >Language</label>
+		<div v-if="showUpdateUI" style="position: fixed;bottom: 0;z-index: 1;background: rgba(0,0,0,0.5);padding: 20pt;" class="center-stuff">
+			<p class="update-dialog__content">
+				A new version is available. Refresh to load it?
+			</p>
+			<div class="update-dialog__actions">
+				<button @click="update">Update</button>
+				<button @click="showUpdateUI = false">Cancel</button>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -26,6 +35,7 @@ export default {
 	name: 'App',
 	data: () => ({
 		isConnected: false,
+		c: false,
 	}),
 	computed: {
 	},
@@ -39,18 +49,32 @@ export default {
 		},
 		room(data) {
 			this.isInLobby = true;
-			this.$router.push({path:'game', query: { code: data.name, pwd: data.password }})
+			if (data.password)
+				this.$router.replace({path:'game', query: { code: data.name, pwd: data.password }})
+			else
+				this.$router.replace({path:'game', query: { code: data.name }})
 		},
 	},
 	methods: {
 		storeLangPref() {
 			localStorage.setItem('lang', this.$i18n.locale)
+		},
+		async update() {
+			this.showUpdateUI = false;
+			await this.$workbox.messageSW({ type: "SKIP_WAITING" });
 		}
 	},
 	mounted() {
 		if (localStorage.getItem('lang'))
 			this.$i18n.locale = localStorage.getItem('lang')
 	},
+	created() {
+		if (this.$workbox) {
+			this.$workbox.addEventListener("waiting", () => {
+				this.showUpdateUI = true;
+			});
+		}
+	}
 }
 </script>
 

@@ -8,6 +8,9 @@ import socketio
 from bang.game import Game
 from bang.players import Player
 
+import sys 
+sys.setrecursionlimit(10**6) # this should prevents bots from stopping
+
 sio = socketio.Server(cors_allowed_origins="*")
 static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
@@ -205,6 +208,8 @@ def chat_message(sid, msg):
                 ses.game.reset()
             elif '/startgame' in msg and not ses.game.started:
                 ses.game.start_game()
+            elif '/setbotspeed' in msg:
+                ses.game.bot_speed = float(msg.split()[1])
             elif '/addex' in msg and not ses.game.started:
                 cmd = msg.split()
                 if len(cmd) == 2:
@@ -214,10 +219,39 @@ def chat_message(sid, msg):
                         ses.game.notify_room()
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
+            elif '/setcharacter' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed character'})
+                import bang.characters as characters
+                cmd = msg.split()
+                if len(cmd) >= 2:
+                    chs = characters.all_characters(ses.game.expansions)
+                    ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
+                    ses.real_character = ses.character
+                    ses.notify_self()
+            elif '/removecard' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    if len(ses.hand) > int(cmd[1]):
+                        ses.hand.pop(int(cmd[1]))
+                    else:
+                        ses.hand.pop(int(cmd[1])-len(ses.hand))
+                    ses.notify_self()
+            elif '/getcard' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
+                import bang.cards as cs
+                cmd = msg.split()
+                if len(cmd) >= 2:
+                    cards  = cs.get_starting_deck(ses.game.expansions)
+                    ses.hand.append([c for c in cards if c.name == ' '.join(cmd[1:])][0])
+                    ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
+            elif '/mebot' in msg:
+                ses.is_bot = not ses.is_bot
+                ses.notify_self()
             else:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
