@@ -2,6 +2,7 @@ from typing import List, Set, Dict, Tuple, Optional
 import random
 import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
+import bang.expansions.high_noon.card_events as ceh
 
 class Deck:
     def __init__(self, game):
@@ -22,6 +23,9 @@ class Deck:
         self.event_cards: List[ce.CardEvent] = []
         if 'fistful_of_cards' in game.expansions:
             self.event_cards.extend(ce.get_all_events())
+        if 'high_noon' in game.expansions:
+            self.event_cards.extend(ceh.get_all_events())
+        if len(self.event_cards) > 0:
             self.event_cards.insert(0, None)
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
         random.shuffle(self.cards)

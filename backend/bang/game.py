@@ -24,7 +24,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions = []
-        self.available_expansions = ['dodge_city', 'fistful_of_cards']
+        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon']
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True

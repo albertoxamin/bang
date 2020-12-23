@@ -75,6 +75,15 @@ class Card(ABC):
     def is_duplicate_card(self, player):
         return self.name in [c.name for c in player.equipment]
 
+    def check_suit(self, game, accepted):
+        import bang.expansions.high_noon.card_events as ceh
+        if game.check_event(ceh.Benedizione):
+            return Suit.HEARTS in accepted
+        elif game.check_event(ceh.Maledizione):
+            return Suit.SPADES in accepted
+        return self.suit in accepted
+
+
 
 class Barile(Card):
     def __init__(self, suit, number):
