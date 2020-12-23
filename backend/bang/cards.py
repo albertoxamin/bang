@@ -209,6 +209,9 @@ class Birra(Card):
         self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.IlReverendo):
+            return False
         if len(player.game.players) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)

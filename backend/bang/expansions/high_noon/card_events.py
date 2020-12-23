@@ -31,6 +31,12 @@ class IlTreno(CardEvent):
         self.desc = "I giocatori pescano 1 carta extra"
         self.desc_eng = ""
 
+class IlReverendo(CardEvent):
+    def __init__(self):
+        super().__init__("Il Reverendo", "⛪️")
+        self.desc = "Non si possono giocare birre"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -45,7 +51,7 @@ def get_all_events():
     #    CorsaAllOro(),
     #    IDalton(),
     #    IlDottore(),
-    #    IlReverendo(),
+       IlReverendo(),
        IlTreno(),
        Sbornia(),
     #    Seromone(),
