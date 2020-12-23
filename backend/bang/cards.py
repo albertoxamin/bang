@@ -196,7 +196,7 @@ class Bang(Card):
             super().play_card(player, against=against)
             player.has_played_bang = not isinstance(
                 player.character, chars.WillyTheKid)
-            player.game.attack(player, against, double=isinstance(player.character, chars.SlabTheKiller))
+            player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
             return True
         return False
 
@@ -213,7 +213,7 @@ class Birra(Card):
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd
-            if isinstance(player.character, chd.TequilaJoe):
+            if player.character.check(player.game, chd.TequilaJoe):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
         elif len(player.game.players) == 2:
@@ -323,7 +323,7 @@ class Mancato(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
-        if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
+        if (not player.has_played_bang and against != None and player.character.check(player.game, chars.CalamityJanet)):
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
             player.has_played_bang = True

@@ -376,7 +376,7 @@ class Game:
                 eventlet.sleep(5.0)
                 return self.reset()
 
-            vulture = [p for p in self.players if isinstance(p.character, characters.VultureSam)]
+            vulture = [p for p in self.players if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
                     self.deck.scrap(player.hand.pop(), True)
@@ -402,10 +402,10 @@ class Game:
                     self.deck.scrap(player.attacker.hand.pop(), True)
                 player.attacker.notify_self()
 
-            greg = [p for p in self.players if isinstance(p.character, chd.GregDigger)]
+            greg = [p for p in self.players if p.character.check(self, chd.GregDigger)]
             if len(greg) > 0:
                 greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
-            herb = [p for p in self.players if isinstance(p.character, chd.HerbHunter)]
+            herb = [p for p in self.players if p.character.check(self, chd.HerbHunter)]
             if len(herb) > 0:
                 herb[0].hand.append(self.deck.draw(True))
                 herb[0].hand.append(self.deck.draw(True))

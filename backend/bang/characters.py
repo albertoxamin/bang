@@ -13,21 +13,11 @@ class Character(ABC):
         self.icon = '🤷‍♂️'
         self.number = ''.join(['❤️']*self.max_lives)
 
-    # @abstractmethod
-    # def on_hurt(self, dmg: int):
-    #     pass
-
-    # @abstractmethod
-    # def on_pick(self, card): # tipo dinamite e prigione
-    #     pass
-
-    # @abstractmethod
-    # def on_empty_hand(self):
-    #     pass
-
-    # @abstractmethod
-    # def on_empty_hand(self):
-    #     pass
+    def check(self, game, character):
+        import bang.expansions.high_noon.card_events as ceh
+        if game.check_event(ceh.Sbornia):
+            return False
+        return isinstance(self, character)
 
 class BartCassidy(Character):
     def __init__(self):

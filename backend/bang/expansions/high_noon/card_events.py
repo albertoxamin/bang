@@ -13,6 +13,12 @@ class Maledizione(CardEvent):
         self.desc = "Tutte le carte sono considerate di picche ♠"
         self.desc_eng = ""
 
+class Sbornia(CardEvent):
+    def __init__(self):
+        super().__init__("Sbornia", "🥴")
+        self.desc = "I personaggi perdono la loro abilità speciale"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -29,13 +35,13 @@ def get_all_events():
     #    IlDottore(),
     #    IlReverendo(),
     #    IlTreno(),
-    #    Sbornia(),
+       Sbornia(),
     #    Seromone(),
     #    Sete(),
     #    Sparatoria(),
     ]
     random.shuffle(cards)
-    cards.append(MezzogiornoDiFuoco())
+    # cards.append(MezzogiornoDiFuoco())
     for c in cards:
         c.expansion = 'high-noon'
     return cards
