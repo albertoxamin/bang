@@ -50,6 +50,12 @@ class Sermone(CardEvent):
         self.desc = "I giocatori non possono giocare Bang!"
         self.desc_eng = ""
 
+class Sparatoria(CardEvent):
+    def __init__(self):
+        super().__init__("Sparatoria", "‼️")
+        self.desc = "Il limite di bang è 2 invece che 1!"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -69,7 +75,7 @@ def get_all_events():
        Sbornia(),
        Sermone(),
        Sete(),
-    #    Sparatoria(),
+       Sparatoria(),
     ]
     random.shuffle(cards)
     # cards.append(MezzogiornoDiFuoco())

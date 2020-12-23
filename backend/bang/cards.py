@@ -197,8 +197,11 @@ class Bang(Card):
         elif against != None:
             import bang.characters as chars
             super().play_card(player, against=against)
+            player.bang_used += 1
             player.has_played_bang = not isinstance(
                 player.character, chars.WillyTheKid)
+            if player.game.check_event(ceh.Sparatoria) and player.has_played_bang:
+                player.has_played_bang = player.bang_used > 1
             player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
             return True
         return False
@@ -335,7 +338,8 @@ class Mancato(Card):
                 return False
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
-            player.has_played_bang = True
+            player.bang_used += 1
+            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             player.game.attack(player, against)
             return True
         return False

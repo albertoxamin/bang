@@ -59,6 +59,7 @@ class Player:
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
         self.is_bot = bot
+        self.bang_used = 0
         self.special_use_count = 0
 
     def reset(self):
@@ -319,6 +320,7 @@ class Player:
         self.is_waiting_for_action = True
         self.has_played_bang = False
         self.special_use_count = 0
+        self.bang_used = 0
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.players if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,
