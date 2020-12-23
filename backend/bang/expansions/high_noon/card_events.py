@@ -25,6 +25,12 @@ class Sete(CardEvent):
         self.desc = "I giocatori pescano solo 1 carta"
         self.desc_eng = ""
 
+class IlTreno(CardEvent):
+    def __init__(self):
+        super().__init__("Il Treno", "🚂")
+        self.desc = "I giocatori pescano 1 carta extra"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -40,7 +46,7 @@ def get_all_events():
     #    IDalton(),
     #    IlDottore(),
     #    IlReverendo(),
-    #    IlTreno(),
+       IlTreno(),
        Sbornia(),
     #    Seromone(),
        Sete(),

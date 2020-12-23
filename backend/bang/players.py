@@ -413,6 +413,8 @@ class Player:
                         return self.notify_self()
                 if self.character.check(self.game, chd.PixiePete):
                     self.hand.append(self.game.deck.draw())
+            if self.game.check_event(ceh.IlTreno):
+                self.hand.append(self.game.deck.draw())
             self.notify_self()
 
     def pick(self):
@@ -627,7 +629,10 @@ class Player:
         # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, chars.KitCarlson):
             self.hand.append(self.available_cards.pop(card_index))
-            if len(self.available_cards) == 1:
+            pickable_stop = 1
+            if self.game.check_event(ceh.Sete): pickable_stop = 2
+            if self.game.check_event(ceh.IlTreno): pickable_stop = 0
+            if len(self.available_cards) == pickable_stop:
                 self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
