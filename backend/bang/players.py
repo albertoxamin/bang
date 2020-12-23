@@ -321,6 +321,13 @@ class Player:
         self.has_played_bang = False
         self.special_use_count = 0
         self.bang_used = 0
+        if self.game.check_event(ceh.MezzogiornoDiFuoco):
+            self.lives -= 1
+            if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
+                self.hand.append(self.game.deck.draw(True))
+                self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
+            if self.lives <= 0:
+                return self.notify_self()
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.players if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,

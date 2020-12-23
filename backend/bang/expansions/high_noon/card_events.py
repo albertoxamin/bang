@@ -78,7 +78,7 @@ def get_all_events():
        Sparatoria(),
     ]
     random.shuffle(cards)
-    # cards.append(MezzogiornoDiFuoco())
+    cards.append(MezzogiornoDiFuoco())
     for c in cards:
         c.expansion = 'high-noon'
     return cards
