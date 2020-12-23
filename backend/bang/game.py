@@ -259,6 +259,8 @@ class Game:
                 self.players[self.turn].notify_self()
 
     def next_player(self):
+        if self.check_event(ceh.CorsaAllOro):
+            return self.players[(self.turn - 1) % len(self.players)]
         return self.players[(self.turn + 1) % len(self.players)]
 
     def play_turn(self):
@@ -300,7 +302,10 @@ class Game:
     def next_turn(self):
         if self.shutting_down: return
         if len(self.players) > 0:
-            self.turn = (self.turn + 1) % len(self.players)
+            if self.check_event(ceh.CorsaAllOro):
+                self.turn = (self.turn - 1) % len(self.players)
+            else:
+                self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
 
     def notify_event_card(self):

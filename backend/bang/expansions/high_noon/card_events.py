@@ -56,6 +56,12 @@ class Sparatoria(CardEvent):
         self.desc = "Il limite di bang è 2 invece che 1!"
         self.desc_eng = ""
 
+class CorsaAllOro(CardEvent):
+    def __init__(self):
+        super().__init__("Corsa All'Oro", "‼️")
+        self.desc = "Si gioca in senso antiorario!"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -67,7 +73,7 @@ def get_all_events():
        Benedizione(),
        Maledizione(),
     #    CittaFantasma(),
-    #    CorsaAllOro(),
+       CorsaAllOro(),
     #    IDalton(),
        IlDottore(),
        IlReverendo(),
