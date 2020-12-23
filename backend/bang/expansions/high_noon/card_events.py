@@ -67,6 +67,12 @@ class IDalton(CardEvent):
         self.desc = "Chi ha carte blu in gioco ne scarta 1 a sua scelta"
         self.desc_eng = ""
 
+class CittaFantasma(CardEvent):
+    def __init__(self):
+        super().__init__("Città Fantasma", "👻")
+        self.desc = "Tutti i giocatori morti tornano in vita al proprio turno, non possono morire e pescano 3 carte invece che 2. Quando terminano il turno tornano morti."
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -77,7 +83,7 @@ def get_all_events():
     cards = [
        Benedizione(),
        Maledizione(),
-    #    CittaFantasma(),
+       CittaFantasma(),
        CorsaAllOro(),
        IDalton(),
        IlDottore(),

@@ -151,7 +151,7 @@ class Game:
         attacker.notify_self()
         self.waiting_for = 0
         self.readyCount = 0
-        for p in self.players:
+        for p in self.get_alive_players():
             if p != attacker:
                 if p.get_banged(attacker=attacker):
                     self.waiting_for += 1
@@ -165,7 +165,7 @@ class Game:
         attacker.notify_self()
         self.waiting_for = 0
         self.readyCount = 0
-        for p in self.players:
+        for p in self.get_alive_players():
             if p != attacker:
                 if p.get_indians(attacker=attacker):
                     self.waiting_for += 1
@@ -199,24 +199,26 @@ class Game:
             self.get_player_named(target_username).notify_self()
 
     def emporio(self):
-        self.available_cards = [self.deck.draw(True) for i in range(len([p for p in self.players if p.lives > 0]))]
-        self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
-        self.players[self.turn].choose_text = 'choose_card_to_get'
-        self.players[self.turn].available_cards = self.available_cards
-        self.players[self.turn].notify_self()
+        pls = self.get_alive_players()
+        self.available_cards = [self.deck.draw(True) for i in range(len(pls))]
+        pls[self.turn].pending_action = pl.PendingAction.CHOOSE
+        pls[self.turn].choose_text = 'choose_card_to_get'
+        pls[self.turn].available_cards = self.available_cards
+        pls[self.turn].notify_self()
 
     def respond_emporio(self, player, i):
         player.hand.append(self.available_cards.pop(i))
         player.available_cards = []
         player.pending_action = pl.PendingAction.WAIT
         player.notify_self()
-        nextPlayer = self.players[(self.turn + (len(self.players)-len(self.available_cards))) % len(self.players)]
+        pls = self.get_alive_players()
+        nextPlayer = pls[(pls.index(self.players[self.turn])+(len(pls)-len(self.available_cards))) % len(pls)]
         if nextPlayer == self.players[self.turn]:
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
         else:
             nextPlayer.pending_action = pl.PendingAction.CHOOSE
-            self.players[self.turn].choose_text = 'choose_card_to_get'
+            nextPlayer.choose_text = 'choose_card_to_get'
             nextPlayer.available_cards = self.available_cards
             nextPlayer.notify_self()
 
@@ -260,11 +262,14 @@ class Game:
                 self.players[self.turn].notify_self()
 
     def next_player(self):
+        pls = self.get_alive_players()
         if self.check_event(ceh.CorsaAllOro):
-            return self.players[(self.turn - 1) % len(self.players)]
-        return self.players[(self.turn + 1) % len(self.players)]
+            return pls[(pls.index(self.players[self.turn]) - 1) % len(pls)]
+        return pls[(pls.index(self.players[self.turn]) + 1) % len(pls)]
 
     def play_turn(self):
+        if self.players[self.turn].lives <= 0:
+            return self.next_turn()
         self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff):
             self.deck.flip_event()
@@ -313,11 +318,12 @@ class Game:
 
     def next_turn(self):
         if self.shutting_down: return
-        if len(self.players) > 0:
+        pls = self.get_alive_players()
+        if len(pls) > 0:
             if self.check_event(ceh.CorsaAllOro):
-                self.turn = (self.turn - 1) % len(self.players)
+                self.turn = (pls.index(self.players[self.turn]) - 1) % len(pls)
             else:
-                self.turn = (self.turn + 1) % len(self.players)
+                self.turn = (pls.index(self.players[self.turn]) + 1) % len(pls)
             self.play_turn()
 
     def notify_event_card(self):
@@ -336,15 +342,16 @@ class Game:
 
     def handle_disconnect(self, player: pl.Player):
         print(f'player {player.name} left the game {self.name}')
-        if player in self.players:
-            if self.disconnect_bot and self.started:
-                player.is_bot = True
-                eventlet.sleep(15) # he may reconnect
-                player.notify_self()
-            else:
-                self.player_death(player=player, disconnected=True)
+        # if player in self.players:
+        if self.disconnect_bot and self.started:
+            player.is_bot = True
+            eventlet.sleep(15) # he may reconnect
+            player.notify_self()
         else:
-            self.dead_players.remove(player)
+            self.player_death(player=player, disconnected=True)
+        # else:
+        #     player.lives = 0
+            # self.players.remove(player)
         if len([p for p in self.players if not p.is_bot])+len([p for p in self.dead_players if not p.is_bot]) == 0:
             print(f'no players left in game {self.name}')
             self.shutting_down = True
@@ -372,13 +379,16 @@ class Game:
         if (self.waiting_for > 0):
             self.responders_did_respond_resume_turn()
 
-        if not player in self.players: return
-        index = self.players.index(player)
-        died_in_his_turn = self.started and index == self.turn
-        if self.started and index <= self.turn:
-            self.turn -= 1
+        if player.is_dead: return
+        # if not player in self.players: return
+        # index = self.players.index(player)
+        # died_in_his_turn = self.started and index == self.turn
+        # if self.started and index <= self.turn:
+        #     self.turn -= 1
+        player.lives = 0
 
-        corpse = self.players.pop(index)
+        # corpse = self.players.pop(index)
+        corpse = player
         if not disconnected:
             self.dead_players.append(corpse)
         self.notify_room()
@@ -388,23 +398,23 @@ class Game:
         for p in self.players:
             if not p.is_bot:
                 p.notify_self()
-        self.players_map = {c.name: i for i, c in enumerate(self.players)}
+        # self.players_map = {c.name: i for i, c in enumerate(self.players)}
         if self.started:
             print('Check win status')
             attacker_role = None
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
-            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.players, initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
+            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             if len(winners) > 0:
                 print('WE HAVE A WINNER')
-                for p in self.players:
+                for p in self.get_alive_players():
                     p.win_status = p in winners
                     self.sio.emit('chat_message', room=self.name, data=f'_won|{p.name}')
                     p.notify_self()
                 eventlet.sleep(5.0)
                 return self.reset()
 
-            vulture = [p for p in self.players if p.character.check(self, characters.VultureSam)]
+            vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
                     self.deck.scrap(player.hand.pop(), True)
@@ -425,21 +435,21 @@ class Game:
                 vulture[0].notify_self()
 
             #se Vulture Sam è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
-            if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
+            if player.attacker and player.attacker in self.get_alive_players() and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
                 for i in range(len(player.attacker.hand)):
                     self.deck.scrap(player.attacker.hand.pop(), True)
                 player.attacker.notify_self()
 
-            greg = [p for p in self.players if p.character.check(self, chd.GregDigger)]
+            greg = [p for p in self.get_alive_players() if p.character.check(self, chd.GregDigger)]
             if len(greg) > 0:
                 greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
-            herb = [p for p in self.players if p.character.check(self, chd.HerbHunter)]
+            herb = [p for p in self.get_alive_players() if p.character.check(self, chd.HerbHunter)]
             if len(herb) > 0:
                 herb[0].hand.append(self.deck.draw(True))
                 herb[0].hand.append(self.deck.draw(True))
                 herb[0].notify_self()
         
-        if died_in_his_turn:
+        if corpse.is_my_turn:
             self.next_turn()
 
     def reset(self):
@@ -461,17 +471,22 @@ class Game:
         return isinstance(self.deck.event_cards[0], ev)
 
     def get_visible_players(self, player: pl.Player):
-        i = self.players.index(player)
+        pls = self.get_alive_players()
+        if len(pls) == 0: return []
+        i = pls.index(player)
         sight = player.get_sight()
         mindist = 99 if not self.check_event(ce.Agguato) else 1
         return [{
-            'name': self.players[j].name,
-            'dist': min([abs(i - j), (i+ abs(j-len(self.players))), (j+ abs(i-len(self.players))), mindist]) + self.players[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
-            'lives': self.players[j].lives,
-            'max_lives': self.players[j].max_lives,
-            'is_sheriff': isinstance(self.players[j].role, roles.Sheriff),
-            'cards': len(self.players[j].hand)+len(self.players[j].equipment)
-        } for j in range(len(self.players)) if i != j]
+            'name': pls[j].name,
+            'dist': min([abs(i - j), (i+ abs(j-len(pls))), (j+ abs(i-len(pls))), mindist]) + pls[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
+            'lives': pls[j].lives,
+            'max_lives': pls[j].max_lives,
+            'is_sheriff': isinstance(pls[j].role, roles.Sheriff),
+            'cards': len(pls[j].hand)+len(pls[j].equipment)
+        } for j in range(len(pls)) if i != j]
+
+    def get_alive_players(self):
+        return [p for p in self.players if p.lives > 0]
 
     def notify_all(self):
         if self.started:
@@ -487,5 +502,5 @@ class Game:
                 'character': p.character.__dict__ if p.character else None,
                 'real_character': p.real_character.__dict__ if p.real_character else None,
                 'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
-            } for p in self.players]
+            } for p in self.get_alive_players()]
             self.sio.emit('players_update', room=self.name, data=data)
