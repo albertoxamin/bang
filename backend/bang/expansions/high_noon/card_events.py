@@ -43,6 +43,13 @@ class IlDottore(CardEvent):
         self.desc = "Il giocatore con meno vite recupera 1 vita"
         self.desc_eng = ""
 
+
+class Sermone(CardEvent):
+    def __init__(self):
+        super().__init__("Sermone", "✝️")
+        self.desc = "I giocatori non possono giocare Bang!"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -60,7 +67,7 @@ def get_all_events():
        IlReverendo(),
        IlTreno(),
        Sbornia(),
-    #    Seromone(),
+       Sermone(),
        Sete(),
     #    Sparatoria(),
     ]

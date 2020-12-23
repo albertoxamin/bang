@@ -189,6 +189,9 @@ class Bang(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.expansions.fistful_of_cards.card_events as ce
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.Sermone):
+            return False
         if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None:
             return False
         elif against != None:
@@ -327,6 +330,9 @@ class Mancato(Card):
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
         if (not player.has_played_bang and against != None and player.character.check(player.game, chars.CalamityJanet)):
+            import bang.expansions.high_noon.card_events as ceh
+            if player.game.check_event(ceh.Sermone):
+                return False
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
             player.has_played_bang = True
