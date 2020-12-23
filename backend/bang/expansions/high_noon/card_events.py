@@ -37,6 +37,12 @@ class IlReverendo(CardEvent):
         self.desc = "Non si possono giocare birre"
         self.desc_eng = ""
 
+class IlDottore(CardEvent):
+    def __init__(self):
+        super().__init__("Il Dottore", "👨‍⚕️")
+        self.desc = "Il giocatore con meno vite recupera 1 vita"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -50,7 +56,7 @@ def get_all_events():
     #    CittaFantasma(),
     #    CorsaAllOro(),
     #    IDalton(),
-    #    IlDottore(),
+       IlDottore(),
        IlReverendo(),
        IlTreno(),
        Sbornia(),

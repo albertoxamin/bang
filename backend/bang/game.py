@@ -2,12 +2,14 @@
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
+import eventlet
+
 import bang.players as pl
 import bang.characters as characters
 from bang.deck import Deck
 import bang.roles as roles
 import bang.expansions.fistful_of_cards.card_events as ce
-import eventlet
+import bang.expansions.high_noon.card_events as ceh
 
 class Game:
     def __init__(self, name, sio:socketio):
@@ -277,6 +279,15 @@ class Game:
                 else:
                     self.responders_did_respond_resume_turn(did_lose=True)
                 return
+            elif self.check_event(ceh.IlDottore):
+                most_hurt = [p.lives for p in self.players if p.lives > 0 and p.max_lives > p.lives]
+                if len(most_hurt) > 0:
+                    hurt_players = [p for p in self.players if p.lives == min(most_hurt)]
+                    for p in hurt_players:
+                        p.lives += 1
+                        self.sio.emit('chat_message', room=self.name, data=f'_doctor_heal|{p.name}')
+                        p.notify_self()
+
         if self.check_event(ce.PerUnPugnoDiCarte) and len(self.players[self.turn].hand) > 0:
             self.player_bangs = len(self.players[self.turn].hand)
             if self.players[self.turn].get_banged(self.deck.event_cards[0]):

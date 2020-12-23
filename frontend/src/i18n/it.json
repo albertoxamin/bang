@@ -90,7 +90,8 @@
 		"guess": "{0} pensa sia {1}.",
 		"guess_right": "{0} ha indovinato.",
 		"guess_wrong": "{0} ha sbagliato.",
-		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}."
+		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}.",
+		"doctor_heal": "{0} è stato curato dal dottore."
 	},
 	"foc": {
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
