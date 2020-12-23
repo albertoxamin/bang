@@ -19,6 +19,12 @@ class Sbornia(CardEvent):
         self.desc = "I personaggi perdono la loro abilità speciale"
         self.desc_eng = ""
 
+class Sete(CardEvent):
+    def __init__(self):
+        super().__init__("Sete", "🥵")
+        self.desc = "I giocatori pescano solo 1 carta"
+        self.desc_eng = ""
+
 class MezzogiornoDiFuoco(CardEvent):
     def __init__(self):
         super().__init__("Mezzogiorno di Fuoco", "🔥")
@@ -37,7 +43,7 @@ def get_all_events():
     #    IlTreno(),
        Sbornia(),
     #    Seromone(),
-    #    Sete(),
+       Sete(),
     #    Sparatoria(),
     ]
     random.shuffle(cards)

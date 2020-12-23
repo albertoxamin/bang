@@ -382,7 +382,8 @@ class Player:
             self.pending_action = PendingAction.PLAY
             if pile == 'scrap' and self.character.check(self.game, chars.PedroRamirez):
                 self.hand.append(self.game.deck.draw_from_scrap_pile())
-                self.hand.append(self.game.deck.draw())
+                if not self.game.check_event(ceh.Sete):
+                    self.hand.append(self.game.deck.draw())
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_draw_from_scrap|{self.name}')
             elif type(pile) == str and pile != self.name and pile in self.game.players_map and self.character.check(self.game, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
@@ -391,11 +392,13 @@ class Player:
                 self.game.get_player_named(pile).notify_self()
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_draw_from_player|{self.name}|{pile}')
-                self.hand.append(self.game.deck.draw())
+                if not self.game.check_event(ceh.Sete):
+                    self.hand.append(self.game.deck.draw())
             elif self.character.check(self.game, chd.BillNoface):
                 self.hand.append(self.game.deck.draw())
-                for i in range(self.max_lives-self.lives):
-                    self.hand.append(self.game.deck.draw())
+                if not self.game.check_event(ceh.Sete):
+                    for i in range(self.max_lives-self.lives):
+                        self.hand.append(self.game.deck.draw())
             else:
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
@@ -406,6 +409,8 @@ class Player:
                                 p.notify_card(self, card, 'blackjack_special' if self.character.check(self.game, chars.BlackJack) else 'foc.leggedelwest')
                         if card.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]) and self.character.check(self.game, chars.BlackJack):
                             self.hand.append(self.game.deck.draw())
+                    if self.game.check_event(ceh.Sete):
+                        return self.notify_self()
                 if self.character.check(self.game, chd.PixiePete):
                     self.hand.append(self.game.deck.draw())
             self.notify_self()
