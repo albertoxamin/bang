@@ -259,9 +259,7 @@ class Game:
                 self.players[self.turn].pending_action = pl.PendingAction.PLAY
                 self.players[self.turn].notify_self()
 
-    def next_player(self):
-        if self.check_event(ceh.CorsaAllOro):
-            return self.players[(self.turn - 1) % len(self.players)]
+    def next_player(self): #viene usato solo per passare la dinamite
         return self.players[(self.turn + 1) % len(self.players)]
 
     def play_turn(self):

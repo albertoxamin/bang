@@ -326,6 +326,7 @@ class Player:
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                 self.hand.append(self.game.deck.draw(True))
                 self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
+            self.heal_if_needed()
             if self.lives <= 0:
                 return self.notify_self()
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.players if p != self and p.lives < p.max_lives]):
