@@ -32,6 +32,7 @@ class Game:
         self.disconnect_bot = True
         self.player_bangs = 0
         self.is_russian_roulette_on = False
+        self.dalton_on = False
         self.bot_speed = 1.5
 
     def notify_room(self, sid=None):
@@ -289,6 +290,17 @@ class Game:
                         p.lives += 1
                         self.sio.emit('chat_message', room=self.name, data=f'_doctor_heal|{p.name}')
                         p.notify_self()
+            elif self.check_event(ceh.IDalton):
+                self.waiting_for = 0
+                self.readyCount = 0
+                self.dalton_on = True
+                for p in self.players:
+                    if p.get_dalton():
+                        self.waiting_for += 1
+                        p.notify_self()
+                if self.waiting_for != 0:
+                    return
+                self.dalton_on = False
 
         if self.check_event(ce.PerUnPugnoDiCarte) and len(self.players[self.turn].hand) > 0:
             self.player_bangs = len(self.players[self.turn].hand)

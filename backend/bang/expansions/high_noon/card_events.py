@@ -43,7 +43,6 @@ class IlDottore(CardEvent):
         self.desc = "Il giocatore con meno vite recupera 1 vita"
         self.desc_eng = ""
 
-
 class Sermone(CardEvent):
     def __init__(self):
         super().__init__("Sermone", "✝️")
@@ -58,8 +57,14 @@ class Sparatoria(CardEvent):
 
 class CorsaAllOro(CardEvent):
     def __init__(self):
-        super().__init__("Corsa All'Oro", "‼️")
+        super().__init__("Corsa All'Oro", "🌟")
         self.desc = "Si gioca in senso antiorario!"
+        self.desc_eng = ""
+
+class IDalton(CardEvent):
+    def __init__(self):
+        super().__init__("I Dalton", "🙇‍♂️")
+        self.desc = "Chi ha carte blu in gioco ne scarta 1 a sua scelta"
         self.desc_eng = ""
 
 class MezzogiornoDiFuoco(CardEvent):
@@ -74,7 +79,7 @@ def get_all_events():
        Maledizione(),
     #    CittaFantasma(),
        CorsaAllOro(),
-    #    IDalton(),
+       IDalton(),
        IlDottore(),
        IlReverendo(),
        IlTreno(),

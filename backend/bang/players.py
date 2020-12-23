@@ -623,6 +623,13 @@ class Player:
             else:
                 self.discarded_cards.append(self.available_cards.pop(card_index))
             self.notify_self()
+        elif self.game.dalton_on and self.game.check_event(ceh.IDalton):
+            card = next(c for c in self.equipment if c == self.available_cards[card_index])
+            self.equipment.remove(card)
+            self.game.deck.scrap(card, True)
+            self.pending_action = PendingAction.WAIT
+            self.notify_self()
+            self.game.responders_did_respond_resume_turn()
         elif self.is_drawing and self.game.check_event(ce.Peyote):
             self.is_drawing = False
             card = self.game.deck.draw()
@@ -760,6 +767,16 @@ class Player:
                     self.on_failed_response_cb = self.take_damage_response
                 else:
                     self.on_failed_response_cb = self.take_no_damage_response
+            return True
+
+    def get_dalton(self):
+        equipments = [c for c in self.equipment if not c.usable_next_turn]
+        if len(equipments) == 0:
+            return False
+        else:
+            self.sio.emit('chat_message', room=self.game.name, data=f"_dalton|{self.name}")
+            self.pending_action = PendingAction.CHOOSE
+            self.available_cards = equipments
             return True
 
     def get_indians(self, attacker):
