@@ -874,6 +874,7 @@ class Player:
             if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw(True))
             card.use_card(self)
+            self.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card}')
             self.game.deck.scrap(card, True)
             self.notify_self()
             self.mancato_needed -= 1
