@@ -395,7 +395,8 @@ class Player:
             self.notify_self()
         elif self.character.check(self.game, chd.PatBrennan) and type(pile) == str and pile != self.name and pile in self.game.players_map and len(self.game.get_player_named(pile).equipment) > 0:
             self.is_drawing = True
-            self.available_cards = self.game.get_player_named(pile).equipment
+            self.available_cards = c.equipment
+            self.pat_target = pile
             self.choose_text = 'choose_card_to_get'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
@@ -666,11 +667,13 @@ class Player:
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
+            self.is_drawing = False
             card = self.available_cards.pop(card_index)
             if card.usable_next_turn:
                 card.can_be_used_now = False
             self.hand.append(card)
             self.available_cards = []
+            self.game.get_player_named(self.pat_target).notify_self()
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         else:  # emporio
@@ -886,7 +889,6 @@ class Player:
                 else:
                     self.game.responders_did_respond_resume_turn(did_lose=False)
                 self.event_type = ''
-                self.expected_response = []
             else:
                 self.pending_action = PendingAction.RESPOND
                 self.notify_self()
