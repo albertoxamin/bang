@@ -263,8 +263,6 @@ class Game:
 
     def next_player(self):
         pls = self.get_alive_players()
-        if self.check_event(ceh.CorsaAllOro):
-            return pls[(pls.index(self.players[self.turn]) - 1) % len(pls)]
         return pls[(pls.index(self.players[self.turn]) + 1) % len(pls)]
 
     def play_turn(self):
