@@ -203,10 +203,10 @@ class Game:
     def emporio(self):
         pls = self.get_alive_players()
         self.available_cards = [self.deck.draw(True) for i in range(len(pls))]
-        pls[self.turn].pending_action = pl.PendingAction.CHOOSE
-        pls[self.turn].choose_text = 'choose_card_to_get'
-        pls[self.turn].available_cards = self.available_cards
-        pls[self.turn].notify_self()
+        self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
+        self.players[self.turn].choose_text = 'choose_card_to_get'
+        self.players[self.turn].available_cards = self.available_cards
+        self.players[self.turn].notify_self()
 
     def respond_emporio(self, player, i):
         player.hand.append(self.available_cards.pop(i))
@@ -269,7 +269,7 @@ class Game:
 
     def play_turn(self):
         self.incremental_turn += 1
-        if self.players[self.turn].lives <= 0 or self.players[self.turn].is_dead:
+        if self.players[self.turn].is_dead:
             pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
             if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl != self.players[self.turn]:
                 print(f'{self.players[self.turn]} is dead, revive')

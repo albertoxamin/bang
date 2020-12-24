@@ -702,7 +702,7 @@ class Player:
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
             elif self.character.check(self.game, chd.ElenaFuente):
-                self.expected_response = self.game.deck.all_cards_str
+                self.expected_response = self.game.deck.all_cards_str.copy()
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -732,7 +732,7 @@ class Player:
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
             elif self.character.check(self.game, chd.ElenaFuente):
-                self.expected_response = self.game.deck.all_cards_str
+                self.expected_response = self.game.deck.all_cards_str.copy()
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
@@ -768,11 +768,11 @@ class Player:
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards.copy()
                 if self.attacker and self.attacker in self.game.get_alive_players() and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
-                    self.expected_response = self.game.deck.mancato_cards_not_green
+                    self.expected_response = self.game.deck.mancato_cards_not_green.copy()
                 elif self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
                 elif self.character.check(self.game, chd.ElenaFuente):
-                    self.expected_response = self.game.deck.all_cards_str
+                    self.expected_response = self.game.deck.all_cards_str.copy()
                 if not no_dmg:
                     self.on_failed_response_cb = self.take_damage_response
                 else:
@@ -808,7 +808,7 @@ class Player:
 
     def get_dueled(self, attacker):
         self.attacker = attacker
-        if self.game.check_event(ceh.Sermone) or (not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0):
+        if (self.game.check_event(ceh.Sermone) and self.is_my_turn) or (not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0):
             print('Cant defend')
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn(did_lose=True)
