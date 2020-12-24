@@ -21,13 +21,17 @@ class Deck:
                 self.all_cards_str.append(c.name)
         self.game = game
         self.event_cards: List[ce.CardEvent] = []
+        endgame_cards = []
         if 'fistful_of_cards' in game.expansions:
             self.event_cards.extend(ce.get_all_events())
+            endgame_cards.append(ce.get_endgame_card())
         if 'high_noon' in game.expansions:
             self.event_cards.extend(ceh.get_all_events())
+            endgame_cards.append(ceh.get_endgame_card())
         if len(self.event_cards) > 0:
             self.event_cards.insert(0, None)
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
+        self.event_cards.append(random.choice(endgame_cards))
         random.shuffle(self.cards)
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')

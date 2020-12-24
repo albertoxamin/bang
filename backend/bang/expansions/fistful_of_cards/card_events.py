@@ -97,6 +97,11 @@ class Vendetta(CardEvent):
         self.desc = "Alla fine del proprio turno il giocatore estrae dal mazzo, se esce ♥️ gioca un altro turno (ma non estrae di nuovo)"
         self.desc_eng = "When ending the turn, the player flips a card from the deck, if it's ♥️ he plays another turn (but he does not flip another card)"
 
+def get_endgame_card():
+    end_game = PerUnPugnoDiCarte()
+    end_game.expansion = 'fistful-of-cards'
+    return end_game
+
 def get_all_events():
     cards = [
         Agguato(),
@@ -115,7 +120,6 @@ def get_all_events():
         Vendetta(),
     ]
     random.shuffle(cards)
-    cards.append(PerUnPugnoDiCarte())
     for c in cards:
         c.expansion = 'fistful-of-cards'
     return cards

@@ -91,6 +91,11 @@ class MezzogiornoDiFuoco(CardEvent):
         self.desc = "Ogni giocatore perde 1 punto vita all'inizio del turno"
         self.desc_eng = "Every player loses 1 HP when their turn starts"
 
+def get_endgame_card():
+    end_game = MezzogiornoDiFuoco()
+    end_game.expansion = 'high-noon'
+    return end_game
+
 def get_all_events():
     cards = [
        Benedizione(),
@@ -109,7 +114,6 @@ def get_all_events():
     #    NuovaIdentita(),
     ]
     random.shuffle(cards)
-    cards.append(MezzogiornoDiFuoco())
     for c in cards:
         c.expansion = 'high-noon'
     return cards
