@@ -17,7 +17,7 @@ class Game:
         self.sio = sio
         self.name = name
         self.players: List[pl.Player] = []
-        self.dead_players: List[pl.Player] = []
+        self.spectators: List[pl.Player] = []
         self.deck: Deck = None
         self.started = False
         self.turn = 0
@@ -357,7 +357,9 @@ class Game:
 
     def handle_disconnect(self, player: pl.Player):
         print(f'player {player.name} left the game {self.name}')
-        # if player in self.players:
+        if player in self.spectators:
+            self.spectators.remove(player)
+            return
         if self.disconnect_bot and self.started:
             player.is_bot = True
             eventlet.sleep(15) # he may reconnect
@@ -367,11 +369,11 @@ class Game:
         # else:
         #     player.lives = 0
             # self.players.remove(player)
-        if len([p for p in self.players if not p.is_bot])+len([p for p in self.dead_players if not p.is_bot]) == 0:
+        if len([p for p in self.players if not p.is_bot]) == 0:
             print(f'no players left in game {self.name}')
             self.shutting_down = True
             self.players = []
-            self.dead_players = []
+            self.spectators = []
             self.deck = None
             return True
         else: return False
@@ -395,11 +397,14 @@ class Game:
             self.responders_did_respond_resume_turn()
 
         if player.is_dead: return
-        # if not player in self.players: return
-        # index = self.players.index(player)
-        # died_in_his_turn = self.started and index == self.turn
-        # if self.started and index <= self.turn:
-        #     self.turn -= 1
+        if not self.started:
+            self.players.remove(player)
+        elif disconnected:
+            index = self.players.index(player)
+            if self.started and index <= self.turn:
+                self.turn -= 1
+            self.players.remove(player)
+            self.players_map = {c.name: i for i, c in enumerate(self.players)}
         player.lives = 0
         player.is_dead = True
         player.death_turn = self.incremental_turn
@@ -471,8 +476,8 @@ class Game:
 
     def reset(self):
         print('resetting lobby')
-        self.players.extend(self.dead_players)
-        self.dead_players = []
+        self.players.extend(self.spectators)
+        self.spectators = []
         self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False
