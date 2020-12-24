@@ -34,6 +34,8 @@ class Game:
         self.is_russian_roulette_on = False
         self.dalton_on = False
         self.bot_speed = 1.5
+        self.incremental_turn = 0
+        self.did_resuscitate_deadman = False
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
@@ -266,18 +268,23 @@ class Game:
         return pls[(pls.index(self.players[self.turn]) + 1) % len(pls)]
 
     def play_turn(self):
-        if self.players[self.turn].lives <= 0:
-            return self.next_turn()
+        self.incremental_turn += 1
+        if self.players[self.turn].lives <= 0 or self.players[self.turn].is_dead:
+            if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and len(self.get_dead_players()) > 0:
+                self.did_resuscitate_deadman = True
+                pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
+                pl.is_dead = False
+                pl.lives = 2
+                pl.hand.append(self.deck.draw())
+                pl.hand.append(self.deck.draw())
+                pl.notify_self()
+            else:
+                return self.next_turn()
         self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff):
             self.deck.flip_event()
-            if self.check_event(ce.DeadMan) and len(self.dead_players) > 0:
-                self.players.append(self.dead_players.pop(0))
-                self.players[-1].lives = 2
-                self.players[-1].hand.append(self.deck.draw())
-                self.players[-1].hand.append(self.deck.draw())
-                self.players_map = {c.name: i for i, c in enumerate(self.players)}
-                self.players[-1].notify_self()
+            if self.check_event(ce.DeadMan):
+                self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):
                 self.is_russian_roulette_on = True
                 if self.players[self.turn].get_banged(self.deck.event_cards[0]):
@@ -317,11 +324,12 @@ class Game:
     def next_turn(self):
         if self.shutting_down: return
         pls = self.get_alive_players()
+        print(self.turn)
         if len(pls) > 0:
             if self.check_event(ceh.CorsaAllOro):
-                self.turn = (pls.index(self.players[self.turn]) - 1) % len(pls)
+                self.turn = (self.turn - 1) % len(self.players)
             else:
-                self.turn = (pls.index(self.players[self.turn]) + 1) % len(pls)
+                self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
 
     def notify_event_card(self):
@@ -384,11 +392,13 @@ class Game:
         # if self.started and index <= self.turn:
         #     self.turn -= 1
         player.lives = 0
+        player.is_dead = True
+        player.death_turn = self.incremental_turn
 
         # corpse = self.players.pop(index)
         corpse = player
-        if not disconnected:
-            self.dead_players.append(corpse)
+        # if not disconnected:
+        #     self.dead_players.append(corpse)
         self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
         if self.started:
@@ -458,6 +468,7 @@ class Game:
         print(self.players)
         self.started = False
         self.waiting_for = 0
+        self.incremental_turn = 0
         for p in self.players:
             p.reset()
             p.notify_self()
@@ -484,7 +495,10 @@ class Game:
         } for j in range(len(pls)) if i != j]
 
     def get_alive_players(self):
-        return [p for p in self.players if p.lives > 0]
+        return [p for p in self.players if not p.is_dead]
+
+    def get_dead_players(self):
+        return [p for p in self.players if p.is_dead]
 
     def notify_all(self):
         if self.started:

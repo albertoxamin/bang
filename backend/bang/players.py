@@ -61,6 +61,8 @@ class Player:
         self.is_bot = bot
         self.bang_used = 0
         self.special_use_count = 0
+        self.is_dead = False
+        self.death_turn = 0
 
     def reset(self):
         self.hand: cs.Card = []
@@ -93,6 +95,8 @@ class Player:
             pass
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
+        self.is_dead = False
+        self.death_turn = 0
 
     def join_game(self, game):
         self.game = game
@@ -306,7 +310,7 @@ class Player:
                     self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
     def play_turn(self, can_play_vendetta = True):
-        if self.lives == 0:
+        if self.lives == 0 or self.is_dead:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.can_play_ranch = True
