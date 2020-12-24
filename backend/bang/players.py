@@ -63,6 +63,7 @@ class Player:
         self.special_use_count = 0
         self.is_dead = False
         self.death_turn = 0
+        self.is_ghost = False
 
     def reset(self):
         self.hand: cs.Card = []
@@ -96,6 +97,7 @@ class Player:
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
         self.is_dead = False
+        self.is_ghost = False
         self.death_turn = 0
 
     def join_game(self, game):
@@ -181,7 +183,7 @@ class Player:
             self.pending_action = PendingAction.CHOOSE
         elif self.character and self.character.check(self.game, chars.SuzyLafayette) and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
             self.hand.append(self.game.deck.draw(True))
-        if self.lives <= 0 and self.max_lives > 0:
+        if self.lives <= 0 and self.max_lives > 0 and not self.is_ghost:
             print('dying, attacker', self.attacker)
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1:
                 self.lives += 1
@@ -203,7 +205,7 @@ class Player:
         ser['sight'] = self.get_sight()
         ser['lives'] = max(ser['lives'], 0)
 
-        if self.lives <= 0 and self.max_lives > 0:
+        if self.lives <= 0 and self.max_lives > 0 and not self.is_ghost:
             self.pending_action = PendingAction.WAIT
             ser['hand'] = []
             ser['equipment'] = []
@@ -310,7 +312,7 @@ class Player:
                     self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
     def play_turn(self, can_play_vendetta = True):
-        if self.lives == 0 or self.is_dead:
+        if (self.lives == 0 or self.is_dead) and not self.is_ghost:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.can_play_ranch = True
@@ -333,6 +335,8 @@ class Player:
             self.heal_if_needed()
             if self.lives <= 0:
                 return self.notify_self()
+
+        #non è un elif perchè vera custer deve fare questo poi cambiare personaggio
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,

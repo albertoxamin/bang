@@ -270,13 +270,17 @@ class Game:
     def play_turn(self):
         self.incremental_turn += 1
         if self.players[self.turn].lives <= 0 or self.players[self.turn].is_dead:
-            if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and len(self.get_dead_players()) > 0:
+            pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
+            if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl != self.players[self.turn]:
                 self.did_resuscitate_deadman = True
-                pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
                 pl.is_dead = False
+                pl.is_ghost = False
                 pl.lives = 2
                 pl.hand.append(self.deck.draw())
                 pl.hand.append(self.deck.draw())
+                pl.notify_self()
+            elif self.check_event(ceh.CittaFantasma):
+                pl.is_ghost = True
                 pl.notify_self()
             else:
                 return self.next_turn()
@@ -323,8 +327,14 @@ class Game:
 
     def next_turn(self):
         if self.shutting_down: return
+        if self.players[self.turn].is_dead and self.players[self.turn].is_ghost and self.check_event(ceh.CittaFantasma):
+            self.players[self.turn].is_ghost = False
+            for i in range(len(self.players[self.turn].attacker.hand)):
+                self.deck.scrap(self.players[self.turn].attacker.hand.pop(), True)
+            for i in range(len(self.players[self.turn].attacker.equipment)):
+                self.deck.scrap(self.players[self.turn].attacker.equipment.pop(), True)
+            self.players[self.turn].notify_self()
         pls = self.get_alive_players()
-        print(self.turn)
         if len(pls) > 0:
             if self.check_event(ceh.CorsaAllOro):
                 self.turn = (self.turn - 1) % len(self.players)
@@ -368,7 +378,7 @@ class Game:
         else: return False
 
     def player_death(self, player: pl.Player, disconnected=False):
-        if not player in self.players: return
+        if not player in self.players or player.is_ghost: return
         import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
@@ -481,7 +491,7 @@ class Game:
 
     def get_visible_players(self, player: pl.Player):
         pls = self.get_alive_players()
-        if len(pls) == 0: return []
+        if len(pls) == 0 or player not in pls: return []
         i = pls.index(player)
         sight = player.get_sight()
         mindist = 99 if not self.check_event(ce.Agguato) else 1
@@ -491,11 +501,12 @@ class Game:
             'lives': pls[j].lives,
             'max_lives': pls[j].max_lives,
             'is_sheriff': isinstance(pls[j].role, roles.Sheriff),
-            'cards': len(pls[j].hand)+len(pls[j].equipment)
+            'cards': len(pls[j].hand)+len(pls[j].equipment),
+            'is_ghost': pls[j].is_ghost,
         } for j in range(len(pls)) if i != j]
 
     def get_alive_players(self):
-        return [p for p in self.players if not p.is_dead]
+        return [p for p in self.players if not p.is_dead or p.is_ghost]
 
     def get_dead_players(self):
         return [p for p in self.players if p.is_dead]
@@ -513,6 +524,7 @@ class Game:
                 'pending_action': p.pending_action,
                 'character': p.character.__dict__ if p.character else None,
                 'real_character': p.real_character.__dict__ if p.real_character else None,
-                'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠'
+                'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠',
+                'is_ghost': p.is_ghost,
             } for p in self.get_alive_players()]
             self.sio.emit('players_update', room=self.name, data=data)
