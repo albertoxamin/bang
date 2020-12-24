@@ -15,7 +15,7 @@ sio = socketio.Server(cors_allowed_origins="*")
 static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
     '/game': {'content_type': 'text/html', 'filename': 'index.html'},
-    '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
+    # '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
     '/favicon.ico': {'filename': 'favicon.ico'},
     '/img/icons': './img/icons',
     '/manifest.json': {'filename': 'manifest.json'},
@@ -167,9 +167,9 @@ def chat_message(sid, msg):
             if '/addbot' in msg and not ses.game.started:
                 if len(msg.split()) > 1:
                     for _ in range(int(msg.split()[1])):
-                        ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+                        ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
                 else:
-                    ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+                    ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
             elif '/removebot' in msg and not ses.game.started:
                 if any([p.is_bot for p in ses.game.players]):
                     [p for p in ses.game.players if p.is_bot][-1].disconnect()

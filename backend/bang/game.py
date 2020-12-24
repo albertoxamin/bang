@@ -490,7 +490,7 @@ class Game:
         self.notify_room()
 
     def check_event(self, ev):
-        if len(self.deck.event_cards) == 0: return False
+        if self.deck == None or len(self.deck.event_cards) == 0: return False
         return isinstance(self.deck.event_cards[0], ev)
 
     def get_visible_players(self, player: pl.Player):
