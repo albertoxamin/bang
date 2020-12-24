@@ -198,7 +198,7 @@ class Bang(Card):
             import bang.characters as chars
             super().play_card(player, against=against)
             player.bang_used += 1
-            player.has_played_bang = player.bang_used > 1
+            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             if player.character.check(player.game, chars.WillyTheKid):
                 player.has_played_bang = False
             player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
