@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<p v-if="instruction && lives > 0" class="center-stuff">{{instruction}}</p>
+		<p v-if="instruction && (lives > 0 || is_ghost)" class="center-stuff">{{instruction}}</p>
 		<!-- <button v-if="canEndTurn" @click="end_turn">Termina Turno</button> -->
 		<div class="equipment-slot">
 			<Card v-if="my_role" :card="my_role" class="back"
@@ -11,7 +11,7 @@
 				<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
 			</transition-group>
-			<transition-group v-if="lives > 0" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
+			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
 					@pointerenter.native="desc=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="desc=''"
 					@click.native="play_card(card, true)" />
@@ -24,7 +24,7 @@
 		<button v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
 		<button v-if="is_my_turn && character.name === 'José Delgrado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
 		<button v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
-		<div v-if="lives > 0" style="position:relative">
+		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
 				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
@@ -39,7 +39,7 @@
 		<Chooser v-if="card_against" :text="$t('card_against')" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose"/>
-		<Chooser v-if="lives <= 0 && max_lives > 0" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
+		<Chooser v-if="lives <= 0 && max_lives > 0 && !is_ghost" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
 		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t(notifycard.message)" class="turn-notify-4s"/>
@@ -106,6 +106,7 @@ export default {
 		holydayScrap: false,
 		special_use_count: 0,
 		mancato_needed: 0,
+		is_ghost: false,
 		name: '',
 	}),
 	sockets: {
@@ -141,6 +142,7 @@ export default {
 			this.sight = self.sight
 			this.attacker = self.attacker
 			this.mancato_needed = self.mancato_needed
+			this.is_ghost = self.is_ghost
 			if (this.pending_action == 5 && self.target_p) {
 				this.chooseCardFromPlayer(self.target_p)
 			} else if (this.pending_action == 5) {

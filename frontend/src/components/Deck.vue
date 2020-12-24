@@ -52,7 +52,7 @@ export default {
 	sockets: {
 		self(self){
 			self = JSON.parse(self)
-			this.isPlaying = self.lives > 0
+			this.isPlaying = self.lives > 0 || self.is_ghost
 			this.pending_action = self.pending_action
 		},
 		scrap(card) {

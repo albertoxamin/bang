@@ -16,10 +16,13 @@
 				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
 				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
 				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
-					<transition-group v-if="p.max_lives" name="list" tag="div" class="tiny-health">
+					<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">
 						<span v-for="(n, i) in p.lives" v-bind:key="n" :alt="i">❤️</span>
 						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="n" :alt="i">💀</span>
 					</transition-group>
+					<div v-else-if="p.is_ghost" class="tiny-health">
+						<span :alt="i">👻</span>
+					</div>
 					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
@@ -40,8 +43,8 @@
 				</div>
 				<h3>{{$t('mods')}}</h3>
 				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
-				<br>
-				<PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck>
+				<!-- <br> -->
+				<!-- <PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck> -->
 			</div>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>

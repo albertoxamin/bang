@@ -9,6 +9,7 @@ import bang.expansions.dodge_city.cards as csd
 import bang.characters as chars
 import bang.expansions.dodge_city.characters as chd
 import bang.expansions.fistful_of_cards.card_events as ce
+import bang.expansions.high_noon.card_events as ceh
 import eventlet
 
 class PendingAction(IntEnum):
@@ -58,7 +59,11 @@ class Player:
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
         self.is_bot = bot
+        self.bang_used = 0
         self.special_use_count = 0
+        self.is_dead = False
+        self.death_turn = 0
+        self.is_ghost = False
 
     def reset(self):
         self.hand: cs.Card = []
@@ -91,6 +96,9 @@ class Player:
             pass
         self.mancato_needed = 0
         self.molly_discarded_cards = 0
+        self.is_dead = False
+        self.is_ghost = False
+        self.death_turn = 0
 
     def join_game(self, game):
         self.game = game
@@ -156,6 +164,7 @@ class Player:
         self.sio.emit('notify_card', room=self.sid, data=mess)
 
     def notify_self(self):
+        if self.is_ghost: self.lives = 0
         if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
             self.available_cards = [{
                 'icon': '🔴'
@@ -173,11 +182,11 @@ class Player:
             self.is_playing_ranch = True
             self.choose_text = 'choose_ranch'
             self.pending_action = PendingAction.CHOOSE
-        elif isinstance(self.character, chars.SuzyLafayette) and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
+        elif self.character and self.character.check(self.game, chars.SuzyLafayette) and self.lives > 0 and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
             self.hand.append(self.game.deck.draw(True))
-        if self.lives <= 0 and self.max_lives > 0:
+        if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             print('dying, attacker', self.attacker)
-            if isinstance(self.character, chars.SidKetchum) and len(self.hand) > 1:
+            if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1:
                 self.lives += 1
                 #TODO Sid dovrebbe poter decidere cosa scartare
                 self.game.deck.scrap(self.hand.pop(
@@ -197,7 +206,7 @@ class Player:
         ser['sight'] = self.get_sight()
         ser['lives'] = max(ser['lives'], 0)
 
-        if self.lives <= 0 and self.max_lives > 0:
+        if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             self.pending_action = PendingAction.WAIT
             ser['hand'] = []
             ser['equipment'] = []
@@ -228,8 +237,10 @@ class Player:
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
             equippables = [c for c in self.hand if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any([type(c) == type(x) for x in self.equipment])]
-            misc = [c for c in self.hand if (isinstance(c, cs.WellsFargo) and not c.usable_next_turn) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives)]
-            need_target = [c for c in self.hand if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and not self.game.check_event(ce.Lazo))) and not ( isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice))]
+            misc = [c for c in self.hand if (isinstance(c, cs.WellsFargo) and not c.usable_next_turn) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives and not self.game.check_event(ceh.IlReverendo))]
+            need_target = [c for c in self.hand if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (
+                (self.game.check_event(ceh.Sermone) or self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(c) == type(cs.Bang)
+            ) and not self.game.check_event(ce.Lazo))) and not ( isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice))]
             green_cards = [c for c in self.equipment if not self.game.check_event(ce.Lazo) and not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now]
             if len(equippables) > 0 and not self.game.check_event(ce.IlGiudice):
                 for c in equippables:
@@ -271,7 +282,7 @@ class Player:
                             if self.play_card(len(self.hand)+self.equipment.index(c), against=target['name']):
                                 return
                         break
-            maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
+            maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
             if len(self.hand) > maxcards:
                 self.scrap(0)
             else:
@@ -302,7 +313,7 @@ class Player:
                     self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
     def play_turn(self, can_play_vendetta = True):
-        if self.lives == 0:
+        if (self.lives == 0 or self.is_dead) and not self.is_ghost:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.can_play_ranch = True
@@ -316,12 +327,23 @@ class Player:
         self.is_waiting_for_action = True
         self.has_played_bang = False
         self.special_use_count = 0
-        if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.players if p != self and p.lives < p.max_lives]):
+        self.bang_used = 0
+        if self.game.check_event(ceh.MezzogiornoDiFuoco):
+            self.lives -= 1
+            if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
+                self.hand.append(self.game.deck.draw(True))
+                self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
+            self.heal_if_needed()
+            if self.lives <= 0:
+                return self.notify_self()
+
+        #non è un elif perchè vera custer deve fare questo poi cambiare personaggio
+        if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,
                 'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives))
-            } for p in self.game.players if p != self and p.lives < p.max_lives]
+            } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
             self.available_cards.append({'icon': '❌'})
             self.choose_text = 'choose_fratelli_di_sangue'
             self.pending_action = PendingAction.CHOOSE
@@ -332,7 +354,7 @@ class Player:
         else:
             self.is_giving_life = False
             if isinstance(self.real_character, chd.VeraCuster):
-                self.set_available_character([p.character for p in self.game.players if p != self])
+                self.set_available_character([p.character for p in self.game.get_alive_players() if p != self])
             else:
                 self.pending_action = PendingAction.DRAW
         self.notify_self()
@@ -353,7 +375,7 @@ class Player:
             self.available_cards = [{
                 'name': p.name,
                 'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠'
-            } for p in self.game.players if len(p.equipment) > 0 and p != self]
+            } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌'})
             self.choose_text = 'choose_rimbalzo_player'
             self.pending_action = PendingAction.CHOOSE
@@ -365,13 +387,13 @@ class Player:
             self.lives += 1
             self.pending_action = PendingAction.PLAY
             self.notify_self()
-        elif isinstance(self.character, chars.KitCarlson):
+        elif self.character.check(self.game, chars.KitCarlson):
             self.is_drawing = True
             self.available_cards = [self.game.deck.draw() for i in range(3)]
             self.choose_text = 'choose_card_to_get'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
-        elif isinstance(self.character, chd.PatBrennan) and type(pile) == str and pile != self.name and pile in self.game.players_map and len(self.game.get_player_named(pile).equipment) > 0:
+        elif self.character.check(self.game, chd.PatBrennan) and type(pile) == str and pile != self.name and pile in self.game.players_map and len(self.game.get_player_named(pile).equipment) > 0:
             self.is_drawing = True
             self.available_cards = self.game.get_player_named(pile).equipment
             self.choose_text = 'choose_card_to_get'
@@ -379,34 +401,41 @@ class Player:
             self.notify_self()
         else:
             self.pending_action = PendingAction.PLAY
-            if pile == 'scrap' and isinstance(self.character, chars.PedroRamirez):
+            if pile == 'scrap' and self.character.check(self.game, chars.PedroRamirez):
                 self.hand.append(self.game.deck.draw_from_scrap_pile())
-                self.hand.append(self.game.deck.draw())
+                if not self.game.check_event(ceh.Sete):
+                    self.hand.append(self.game.deck.draw())
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_draw_from_scrap|{self.name}')
-            elif type(pile) == str and pile != self.name and pile in self.game.players_map and isinstance(self.character, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
+            elif type(pile) == str and pile != self.name and pile in self.game.players_map and self.character.check(self.game, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
                 self.hand.append(self.game.get_player_named(pile).hand.pop(
                     randrange(0, len(self.game.get_player_named(pile).hand))))
                 self.game.get_player_named(pile).notify_self()
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_draw_from_player|{self.name}|{pile}')
-                self.hand.append(self.game.deck.draw())
-            elif isinstance(self.character, chd.BillNoface):
-                self.hand.append(self.game.deck.draw())
-                for i in range(self.max_lives-self.lives):
+                if not self.game.check_event(ceh.Sete):
                     self.hand.append(self.game.deck.draw())
+            elif self.character.check(self.game, chd.BillNoface):
+                self.hand.append(self.game.deck.draw())
+                if not self.game.check_event(ceh.Sete):
+                    for i in range(self.max_lives-self.lives):
+                        self.hand.append(self.game.deck.draw())
             else:
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
                     self.hand.append(card)
-                    if i == 1 and isinstance(self.character, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest):
-                        for p in self.game.players:
+                    if i == 1 and self.character.check(self.game, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest):
+                        for p in self.game.get_alive_players():
                             if p != self:
-                                p.notify_card(self, card, 'blackjack_special' if isinstance(self.character, chars.BlackJack) else 'foc.leggedelwest')
-                        if card.suit == cs.Suit.HEARTS or card.suit == cs.Suit.DIAMONDS and isinstance(self.character, chars.BlackJack):
+                                p.notify_card(self, card, 'blackjack_special' if self.character.check(self.game, chars.BlackJack) else 'foc.leggedelwest')
+                        if card.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]) and self.character.check(self.game, chars.BlackJack):
                             self.hand.append(self.game.deck.draw())
-                if isinstance(self.character, chd.PixiePete):
+                    if self.game.check_event(ceh.Sete):
+                        return self.notify_self()
+                if self.character.check(self.game, chd.PixiePete):
                     self.hand.append(self.game.deck.draw())
+            if self.game.check_event(ceh.IlTreno):
+                self.hand.append(self.game.deck.draw())
             self.notify_self()
 
     def pick(self):
@@ -422,12 +451,12 @@ class Player:
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked}')
-                        if picked.suit == cs.Suit.SPADES and 2 <= picked.number <= 9 and pickable_cards == 0:
+                        if picked.check_suit(self.game, [cs.Suit.SPADES]) and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i), True)
                             self.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
                             self.heal_if_needed()
-                            if isinstance(self.character, chars.BartCassidy) and self.lives > 0:
+                            if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                                 for i in range(3):
                                     self.hand.append(self.game.deck.draw(True))
                                 self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
@@ -448,7 +477,7 @@ class Player:
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked}')
-                        if picked.suit != cs.Suit.HEARTS and pickable_cards == 0:
+                        if not picked.check_suit(self.game, [cs.Suit.HEARTS]) and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
                             self.end_turn(forced=True)
                             return
@@ -460,7 +489,7 @@ class Player:
                 self.notify_self()
                 return
             if isinstance(self.real_character, chd.VeraCuster):
-                self.set_available_character([p.character for p in self.game.players if p != self])
+                self.set_available_character([p.character for p in self.game.get_alive_players() if p != self])
             else:
                 self.pending_action = PendingAction.DRAW
             self.notify_self()
@@ -497,7 +526,7 @@ class Player:
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now)
-        if not(against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.suit == cs.Suit.DIAMONDS) and not event_blocks_card:
+        if not(against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
             if against == self.name and not isinstance(card, csd.Tequila):
                 did_play_card = False
             else:
@@ -541,7 +570,7 @@ class Player:
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card, True)
-            if self.event_type != 'rissa' or (self.event_type == 'rissa' and (len([p.name for p in self.game.players if p != self and (len(p.hand)+len(p.equipment)) > 0]) == 0 or self.target_p == [p.name for p in self.game.players if p != self and (len(p.hand)+len(p.equipment)) > 0][-1])):
+            if self.event_type != 'rissa' or (self.event_type == 'rissa' and (len([p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0]) == 0 or self.target_p == [p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0][-1])):
                 self.event_type = ''
                 self.target_p = ''
                 self.choose_action = ''
@@ -604,6 +633,13 @@ class Player:
             else:
                 self.discarded_cards.append(self.available_cards.pop(card_index))
             self.notify_self()
+        elif self.game.dalton_on and self.game.check_event(ceh.IDalton):
+            card = next(c for c in self.equipment if c == self.available_cards[card_index])
+            self.equipment.remove(card)
+            self.game.deck.scrap(card, True)
+            self.pending_action = PendingAction.WAIT
+            self.notify_self()
+            self.game.responders_did_respond_resume_turn()
         elif self.is_drawing and self.game.check_event(ce.Peyote):
             self.is_drawing = False
             card = self.game.deck.draw()
@@ -619,14 +655,17 @@ class Player:
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
         # specifico per personaggio
-        elif self.is_drawing and isinstance(self.character, chars.KitCarlson):
+        elif self.is_drawing and self.character.check(self.game, chars.KitCarlson):
             self.hand.append(self.available_cards.pop(card_index))
-            if len(self.available_cards) == 1:
+            pickable_stop = 1
+            if self.game.check_event(ceh.Sete): pickable_stop = 2
+            if self.game.check_event(ceh.IlTreno): pickable_stop = 0
+            if len(self.available_cards) == pickable_stop:
                 self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
-        elif self.is_drawing and isinstance(self.character, chd.PatBrennan):
+        elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
             card = self.available_cards.pop(card_index)
             if card.usable_next_turn:
                 card.can_be_used_now = False
@@ -639,7 +678,7 @@ class Player:
 
     def barrel_pick(self):
         pickable_cards = 1 + self.character.pick_mod
-        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and isinstance(self.character, chars.Jourdonnais):
+        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and self.character.check(self.game, chars.Jourdonnais):
             pickable_cards = 2
         while pickable_cards > 0:
             pickable_cards -= 1
@@ -647,29 +686,29 @@ class Player:
             print(f'Did pick {picked}')
             self.sio.emit('chat_message', room=self.game.name,
                             data=f'_flipped|{self.name}|{picked}')
-            if picked.suit == cs.Suit.HEARTS:
+            if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                 self.mancato_needed -= 1
                 self.notify_self()
                 if self.mancato_needed <= 0:
                     self.game.responders_did_respond_resume_turn(did_lose=False)
                     return
-        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn(did_lose=True)
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = self.game.deck.mancato_cards.copy()
-            if isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+            if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
-            elif isinstance(self.character, chd.ElenaFuente):
-                self.expected_response = self.game.deck.all_cards_str
+            elif self.character.check(self.game, chd.ElenaFuente):
+                self.expected_response = self.game.deck.all_cards_str.copy()
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
     def barrel_pick_no_dmg(self):
         pickable_cards = 1 + self.character.pick_mod
-        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and isinstance(self.character, chars.Jourdonnais):
+        if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and self.character.check(self.game, chars.Jourdonnais):
             pickable_cards = 2
         while pickable_cards > 0:
             pickable_cards -= 1
@@ -677,23 +716,23 @@ class Player:
             print(f'Did pick {picked}')
             self.sio.emit('chat_message', room=self.game.name,
                             data=f'_flipped|{self.name}|{picked}')
-            if picked.suit == cs.Suit.HEARTS:
+            if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                 self.mancato_needed -= 1
                 self.notify_self()
                 if self.mancato_needed <= 0:
                     self.game.responders_did_respond_resume_turn(did_lose=False)
                     return
-        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Mancato) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             self.take_no_damage_response()
             self.game.responders_did_respond_resume_turn(did_lose=True)
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = self.game.deck.mancato_cards.copy()
-            if isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+            if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
-            elif isinstance(self.character, chd.ElenaFuente):
-                self.expected_response = self.game.deck.all_cards_str
+            elif self.character.check(self.game, chd.ElenaFuente):
+                self.expected_response = self.game.deck.all_cards_str.copy()
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
@@ -707,8 +746,8 @@ class Player:
         for i in range(len(self.equipment)):
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])
-        if not self.game.is_competitive and len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not isinstance(self.character, chars.Jourdonnais)\
-             and len([c for c in self.hand if isinstance(c, cs.Mancato) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Bang)) or isinstance(self.character, chd.ElenaFuente)]) == 0\
+        if not self.game.is_competitive and len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not self.character.check(self.game, chars.Jourdonnais)\
+             and len([c for c in self.hand if isinstance(c, cs.Mancato) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             print('Cant defend')
             if not no_dmg:
@@ -717,7 +756,7 @@ class Player:
                 self.take_no_damage_response()
             return False
         else:
-            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) or isinstance(self.character, chars.Jourdonnais):
+            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) or self.character.check(self.game, chars.Jourdonnais):
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
                 if not no_dmg:
@@ -728,22 +767,32 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards.copy()
-                if self.attacker and self.attacker in self.game.players and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
-                    self.expected_response = self.game.deck.mancato_cards_not_green
-                elif isinstance(self.character, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+                if self.attacker and self.attacker in self.game.get_alive_players() and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
+                    self.expected_response = self.game.deck.mancato_cards_not_green.copy()
+                elif self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
-                elif isinstance(self.character, chd.ElenaFuente):
-                    self.expected_response = self.game.deck.all_cards_str
+                elif self.character.check(self.game, chd.ElenaFuente):
+                    self.expected_response = self.game.deck.all_cards_str.copy()
                 if not no_dmg:
                     self.on_failed_response_cb = self.take_damage_response
                 else:
                     self.on_failed_response_cb = self.take_no_damage_response
             return True
 
+    def get_dalton(self):
+        equipments = [c for c in self.equipment if not c.usable_next_turn]
+        if len(equipments) == 0:
+            return False
+        else:
+            self.sio.emit('chat_message', room=self.game.name, data=f"_dalton|{self.name}")
+            self.pending_action = PendingAction.CHOOSE
+            self.available_cards = equipments
+            return True
+
     def get_indians(self, attacker):
         self.attacker = attacker
-        if isinstance(self.character, chd.ApacheKid): return False
-        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
+        if self.character.check(self.game, chd.ApacheKid): return False
+        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
             return False
@@ -751,7 +800,7 @@ class Player:
             print('has bang')
             self.pending_action = PendingAction.RESPOND
             self.expected_response = [cs.Bang(0, 0).name]
-            if isinstance(self.character, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
+            if self.character.check(self.game, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Mancato(0, 0).name)
             self.event_type = 'indians'
             self.on_failed_response_cb = self.take_damage_response
@@ -759,7 +808,7 @@ class Player:
 
     def get_dueled(self, attacker):
         self.attacker = attacker
-        if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (isinstance(self.character, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
+        if (self.game.check_event(ceh.Sermone) and self.is_my_turn) or (not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0):
             print('Cant defend')
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn(did_lose=True)
@@ -767,19 +816,19 @@ class Player:
         else:
             self.pending_action = PendingAction.RESPOND
             self.expected_response = [cs.Bang(0, 0).name]
-            if isinstance(self.character, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
+            if self.character.check(self.game, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Mancato(0, 0).name)
             self.event_type = 'duel'
             self.on_failed_response_cb = self.take_damage_response
             return True
 
     def heal_if_needed(self):
-        while self.lives <= 0 and len(self.game.players) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
+        while self.lives <= 0 and len(self.game.get_alive_players()) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
             for i in range(len(self.hand)):
                 if isinstance(self.hand[i], cs.Birra):
-                    if isinstance(self.character, chd.MollyStark) and not self.is_my_turn:
+                    if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
                         self.hand.append(self.game.deck.draw(True))
-                    self.lives += 1 if not isinstance(self.character, chd.TequilaJoe) else 2
+                    self.lives += 1 if not self.character.check(self.game, chd.TequilaJoe) else 2
                     self.game.deck.scrap(self.hand.pop(i), True)
                     self.sio.emit('chat_message', room=self.game.name,
                                   data=f'_beer_save|{self.name}')
@@ -788,11 +837,11 @@ class Player:
     def take_damage_response(self):
         self.lives -= 1
         if self.lives > 0:
-            if isinstance(self.character, chars.BartCassidy):
+            if self.character.check(self.game, chars.BartCassidy):
                 self.sio.emit('chat_message', room=self.game.name,
                                 data=f'_special_bart_cassidy|{self.name}')
                 self.hand.append(self.game.deck.draw(True))
-            elif isinstance(self.character, chars.ElGringo) and self.attacker and self.attacker in self.game.players and len(self.attacker.hand) > 0:
+            elif self.character.check(self.game, chars.ElGringo) and self.attacker and self.attacker in self.game.get_alive_players() and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(
                     randrange(0, len(self.attacker.hand))))
                 self.sio.emit('chat_message', room=self.game.name,
@@ -822,7 +871,7 @@ class Player:
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
             (hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
-            if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
+            if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw(True))
             card.use_card(self)
             self.game.deck.scrap(card, True)
@@ -831,7 +880,7 @@ class Player:
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
                     self.game.duel(self, self.attacker.name)
-                    if isinstance(self.character, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn:
+                    if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn:
                         self.molly_discarded_cards += 1
                 else:
                     self.game.responders_did_respond_resume_turn(did_lose=False)
@@ -841,12 +890,12 @@ class Player:
                 self.pending_action = PendingAction.RESPOND
                 self.notify_self()
         else:
-            if isinstance(self.character, chd.MollyStark) and not self.is_my_turn:
+            if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
                 for i in range(self.molly_discarded_cards):
                     self.hand.append(self.game.deck.draw(True))
                 self.molly_discarded_cards = 0
                 self.notify_self()
-            elif self.attacker and self.attacker in self.game.players and isinstance(self.attacker.character, chd.MollyStark) and self.is_my_turn:
+            elif self.attacker and self.attacker in self.game.get_alive_players() and isinstance(self.attacker.character, chd.MollyStark) and self.is_my_turn:
                 for i in range(self.attacker.molly_discarded_cards):
                     self.attacker.hand.append(self.attacker.game.deck.draw(True))
                 self.attacker.molly_discarded_cards = 0
@@ -881,13 +930,13 @@ class Player:
         return self.character.visibility_mod + covers
 
     def scrap(self, card_index):
-        if self.is_my_turn or isinstance(self.character, chars.SidKetchum):
+        if self.is_my_turn or self.character.check(self.game, chars.SidKetchum):
             self.scrapped_cards += 1
             card = self.hand.pop(card_index)
-            if isinstance(self.character, chars.SidKetchum) and self.scrapped_cards == 2:
+            if self.character.check(self.game, chars.SidKetchum) and self.scrapped_cards == 2:
                 self.scrapped_cards = 0
                 self.lives = min(self.lives+1, self.max_lives)
-            elif isinstance(self.character, chd.JoseDelgrado) and card.is_equipment and self.special_use_count < 2:
+            elif self.character.check(self.game, chd.JoseDelgrado) and card.is_equipment and self.special_use_count < 2:
                 self.hand.append(self.game.deck.draw(True))
                 self.hand.append(self.game.deck.draw(True))
                 self.special_use_count += 1
@@ -895,7 +944,7 @@ class Player:
             self.notify_self()
 
     def holyday_special(self, data):
-        if isinstance(self.character, chd.DocHolyday) and self.special_use_count < 1:
+        if self.character.check(self.game, chd.DocHolyday) and self.special_use_count < 1:
             self.special_use_count += 1
             cards = sorted(data['cards'], reverse=True)
             for c in cards:
@@ -904,16 +953,17 @@ class Player:
             self.game.attack(self, data['against'])
 
     def chuck_lose_hp_draw(self):
-        if isinstance(self.character, chd.ChuckWengam) and self.lives > 1 and self.is_my_turn:
+        if self.character.check(self.game, chd.ChuckWengam) and self.lives > 1 and self.is_my_turn:
             self.lives -= 1
             self.hand.append(self.game.deck.draw(True))
             self.hand.append(self.game.deck.draw(True))
             self.notify_self()
 
     def end_turn(self, forced=False):
+        print(f"{self.name} wants to end his turn")
         if not self.is_my_turn:
             return
-        maxcards = self.lives if not isinstance(self.character, chd.SeanMallory) else 10
+        maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
         if len(self.hand) > maxcards and not forced:
             print(
                 f"I {self.name} have to many cards in my hand and I can't end the turn")
@@ -921,13 +971,19 @@ class Player:
             if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
                 self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked}')
-                if picked.suit == cs.Suit.HEARTS:
+                if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                     self.play_turn(can_play_vendetta=False)
                     return
             self.is_my_turn = False
             for i in range(len(self.equipment)):
                 if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
                     self.equipment[i].can_be_used_now = True
+            if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
+                self.is_ghost = False
+                for i in range(len(self.hand)):
+                    self.game.deck.scrap(self.hand.pop(), True)
+                for i in range(len(self.equipment)):
+                    self.game.deck.scrap(self.equipment.pop(), True)
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.next_turn()

@@ -75,6 +75,15 @@ class Card(ABC):
     def is_duplicate_card(self, player):
         return self.name in [c.name for c in player.equipment]
 
+    def check_suit(self, game, accepted):
+        import bang.expansions.high_noon.card_events as ceh
+        if game.check_event(ceh.Benedizione):
+            return Suit.HEARTS in accepted
+        elif game.check_event(ceh.Maledizione):
+            return Suit.SPADES in accepted
+        return self.suit in accepted
+
+
 
 class Barile(Card):
     def __init__(self, suit, number):
@@ -180,14 +189,19 @@ class Bang(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.expansions.fistful_of_cards.card_events as ce
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.Sermone):
+            return False
         if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None:
             return False
         elif against != None:
             import bang.characters as chars
             super().play_card(player, against=against)
-            player.has_played_bang = not isinstance(
-                player.character, chars.WillyTheKid)
-            player.game.attack(player, against, double=isinstance(player.character, chars.SlabTheKiller))
+            player.bang_used += 1
+            player.has_played_bang = player.bang_used > 1
+            if player.character.check(player.game, chars.WillyTheKid):
+                player.has_played_bang = False
+            player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
             return True
         return False
 
@@ -200,11 +214,14 @@ class Birra(Card):
         self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.IlReverendo):
+            return False
         if len(player.game.players) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd
-            if isinstance(player.character, chd.TequilaJoe):
+            if player.character.check(player.game, chd.TequilaJoe):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
         elif len(player.game.players) == 2:
@@ -314,10 +331,14 @@ class Mancato(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
-        if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
+        if (not player.has_played_bang and against != None and player.character.check(player.game, chars.CalamityJanet)):
+            import bang.expansions.high_noon.card_events as ceh
+            if player.game.check_event(ceh.Sermone):
+                return False
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
-            player.has_played_bang = True
+            player.bang_used += 1
+            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             player.game.attack(player, against)
             return True
         return False
