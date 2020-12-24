@@ -217,14 +217,14 @@ class Birra(Card):
         import bang.expansions.high_noon.card_events as ceh
         if player.game.check_event(ceh.IlReverendo):
             return False
-        if len(player.game.players) != 2:
+        if len(player.get_alive_players()) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd
             if player.character.check(player.game, chd.TequilaJoe):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
-        elif len(player.game.players) == 2:
+        elif len(player.get_alive_players()) == 2:
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_spilled_beer|{player.name}|{self.name}')
             return True
@@ -374,7 +374,7 @@ class Saloon(Card):
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'_saloon|{player.name}|{self.name}')
-        for p in player.game.players:
+        for p in player.game.get_alive_players():
             p.lives = min(p.lives+1, p.max_lives)
             p.notify_self()
         return True
