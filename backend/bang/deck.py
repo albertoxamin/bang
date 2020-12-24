@@ -30,6 +30,7 @@ class Deck:
             endgame_cards.append(ceh.get_endgame_card())
         if len(self.event_cards) > 0:
             random.shuffle(self.event_cards)
+            self.event_cards = self.event_cards[:12]
             self.event_cards.insert(0, None)
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
             self.event_cards.append(random.choice(endgame_cards))

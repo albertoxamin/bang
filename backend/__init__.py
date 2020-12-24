@@ -243,8 +243,10 @@ def chat_message(sid, msg):
                 cmd = msg.split()
                 if len(cmd) >= 2:
                     cards  = cs.get_starting_deck(ses.game.expansions)
-                    ses.hand.append([c for c in cards if c.name == ' '.join(cmd[1:])][0])
-                    ses.notify_self()
+                    card_names = ' '.join(cmd[1:]).split(',')
+                    for cn in card_names:
+                        ses.hand.append([c for c in cards if c.name == cn][0])
+                        ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
