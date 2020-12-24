@@ -164,6 +164,7 @@ class Player:
         self.sio.emit('notify_card', room=self.sid, data=mess)
 
     def notify_self(self):
+        if self.is_ghost: self.lives = 0
         if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
             self.available_cards = [{
                 'icon': '🔴'
@@ -181,9 +182,9 @@ class Player:
             self.is_playing_ranch = True
             self.choose_text = 'choose_ranch'
             self.pending_action = PendingAction.CHOOSE
-        elif self.character and self.character.check(self.game, chars.SuzyLafayette) and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
+        elif self.character and self.character.check(self.game, chars.SuzyLafayette) and self.lives > 0 and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
             self.hand.append(self.game.deck.draw(True))
-        if self.lives <= 0 and self.max_lives > 0 and not self.is_ghost:
+        if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             print('dying, attacker', self.attacker)
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1:
                 self.lives += 1
@@ -205,7 +206,7 @@ class Player:
         ser['sight'] = self.get_sight()
         ser['lives'] = max(ser['lives'], 0)
 
-        if self.lives <= 0 and self.max_lives > 0 and not self.is_ghost:
+        if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             self.pending_action = PendingAction.WAIT
             ser['hand'] = []
             ser['equipment'] = []
@@ -959,6 +960,7 @@ class Player:
             self.notify_self()
 
     def end_turn(self, forced=False):
+        print(f"{self.name} wants to end his turn")
         if not self.is_my_turn:
             return
         maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
@@ -976,6 +978,12 @@ class Player:
             for i in range(len(self.equipment)):
                 if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
                     self.equipment[i].can_be_used_now = True
+            if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
+                self.is_ghost = False
+                for i in range(len(self.hand)):
+                    self.deck.scrap(self.hand.pop(), True)
+                for i in range(len(self.equipment)):
+                    self.deck.scrap(self.equipment.pop(), True)
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.next_turn()

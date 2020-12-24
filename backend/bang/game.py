@@ -272,6 +272,7 @@ class Game:
         if self.players[self.turn].lives <= 0 or self.players[self.turn].is_dead:
             pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
             if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl != self.players[self.turn]:
+                print(f'{self.players[self.turn]} is dead, revive')
                 self.did_resuscitate_deadman = True
                 pl.is_dead = False
                 pl.is_ghost = False
@@ -280,13 +281,16 @@ class Game:
                 pl.hand.append(self.deck.draw())
                 pl.notify_self()
             elif self.check_event(ceh.CittaFantasma):
-                pl.is_ghost = True
-                pl.notify_self()
+                print(f'{self.players[self.turn]} is dead, event ghost')
+                self.players[self.turn].is_ghost = True
             else:
+                print(f'{self.players[self.turn]} is dead, next turn')
                 return self.next_turn()
         self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff):
             self.deck.flip_event()
+            if len(self.deck.event_cards) > 0:
+                print(f'flip new event {self.deck.event_cards[0].name}')
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):
@@ -323,17 +327,12 @@ class Game:
             else:
                 self.responders_did_respond_resume_turn()
         else:
+            print(f'notifying {self.players[self.turn].name} about his turn')
             self.players[self.turn].play_turn()
 
     def next_turn(self):
         if self.shutting_down: return
-        if self.players[self.turn].is_dead and self.players[self.turn].is_ghost and self.check_event(ceh.CittaFantasma):
-            self.players[self.turn].is_ghost = False
-            for i in range(len(self.players[self.turn].attacker.hand)):
-                self.deck.scrap(self.players[self.turn].attacker.hand.pop(), True)
-            for i in range(len(self.players[self.turn].attacker.equipment)):
-                self.deck.scrap(self.players[self.turn].attacker.equipment.pop(), True)
-            self.players[self.turn].notify_self()
+        print(f'{self.players[self.turn].name} invoked next turn')
         pls = self.get_alive_players()
         if len(pls) > 0:
             if self.check_event(ceh.CorsaAllOro):
