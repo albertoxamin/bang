@@ -561,15 +561,15 @@ class Player:
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card, True)
-            if self.event_type != 'rissa' or (self.event_type == 'rissa' and self.target_p == [p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0][-1]):
+            if self.event_type != 'rissa' or (self.event_type == 'rissa' and (len([p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0]) == 0 or self.target_p == [p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0][-1])):
                 self.event_type = ''
                 self.target_p = ''
                 self.choose_action = ''
                 self.pending_action = PendingAction.PLAY
             else:
-                self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
+                self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
                 while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
-                    self.target_p = self.game.players[self.game.players_map[self.target_p]+1].name
+                    self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
             self.notify_self()
         elif self.is_giving_life and self.game.check_event(ce.FratelliDiSangue):
             try:
