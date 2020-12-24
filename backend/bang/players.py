@@ -981,9 +981,9 @@ class Player:
             if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
                 self.is_ghost = False
                 for i in range(len(self.hand)):
-                    self.deck.scrap(self.hand.pop(), True)
+                    self.game.deck.scrap(self.hand.pop(), True)
                 for i in range(len(self.equipment)):
-                    self.deck.scrap(self.equipment.pop(), True)
+                    self.game.deck.scrap(self.equipment.pop(), True)
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.next_turn()

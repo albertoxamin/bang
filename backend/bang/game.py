@@ -289,7 +289,7 @@ class Game:
         self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff):
             self.deck.flip_event()
-            if len(self.deck.event_cards) > 0:
+            if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'flip new event {self.deck.event_cards[0].name}')
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
