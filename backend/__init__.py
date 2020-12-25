@@ -166,10 +166,13 @@ def chat_message(sid, msg):
         if msg[0] == '/':
             if '/addbot' in msg and not ses.game.started:
                 if len(msg.split()) > 1:
-                    for _ in range(int(msg.split()[1])):
-                        ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
+                    # for _ in range(int(msg.split()[1])):
+                    #     ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                 else:
-                    ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
+                    bot = Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True)
+                    ses.game.add_player(bot)
+                    bot.bot_spin()
             elif '/removebot' in msg and not ses.game.started:
                 if any([p.is_bot for p in ses.game.players]):
                     [p for p in ses.game.players if p.is_bot][-1].disconnect()
@@ -260,7 +263,7 @@ def chat_message(sid, msg):
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
             elif '/mebot' in msg:
                 ses.is_bot = not ses.is_bot
-                ses.notify_self()
+                ses.bot_spin()
             else:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:

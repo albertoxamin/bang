@@ -66,6 +66,7 @@ export default {
 	name: 'Player',
 	props: {
 		chooseCardFromPlayer: Function,
+		cancelChooseCardFromPlayer: Function,
 		isEndingTurn: Boolean,
 		cancelEndingTurn: Function,
 	},
@@ -147,6 +148,9 @@ export default {
 				this.chooseCardFromPlayer(self.target_p)
 			} else if (this.pending_action == 5) {
 				this.shouldChooseCard = true
+			} else {
+				this.cancelChooseCardFromPlayer()
+				this.shouldChooseCard = false
 			}
 		},
 		self_vis(vis) {

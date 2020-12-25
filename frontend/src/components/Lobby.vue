@@ -48,7 +48,7 @@
 			</div>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
-				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose"/>
+				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose" :cancelChooseCardFromPlayer="()=>{hasToChoose=false}"/>
 			</div>
 		</div>
 		<chat/>

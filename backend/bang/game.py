@@ -369,10 +369,12 @@ class Game:
         if player in self.spectators:
             self.spectators.remove(player)
             return
+        if player.is_bot and not self.started:
+            player.game = None
         if self.disconnect_bot and self.started:
             player.is_bot = True
             eventlet.sleep(15) # he may reconnect
-            player.notify_self()
+            player.bot_spin()
         else:
             self.player_death(player=player, disconnected=True)
         # else:
@@ -488,6 +490,8 @@ class Game:
         print('resetting lobby')
         self.players.extend(self.spectators)
         self.spectators = []
+        for bot in [p for p in self.players if p.is_bot]:
+            bot.game = None
         self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False

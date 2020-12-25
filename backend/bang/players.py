@@ -199,7 +199,6 @@ class Player:
         ser.pop('sid')
         ser.pop('on_pick_cb')
         ser.pop('on_failed_response_cb')
-        # ser.pop('expected_response')
         ser.pop('attacker')
         if self.attacker:
             ser['attacker'] = self.attacker.name
@@ -213,22 +212,23 @@ class Player:
             self.sio.emit('self', room=self.sid, data=json.dumps(
                 ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
-        elif not self.is_bot:
-            self.sio.emit('self_vis', room=self.sid, data=json.dumps(
-            self.game.get_visible_players(self), default=lambda o: o.__dict__))
-        if not self.is_bot:
-            self.sio.emit('self', room=self.sid, data=json.dumps(
-                ser, default=lambda o: o.__dict__))
-            self.game.notify_all()
-        else:
-            self.game.notify_all()
-            self.bot_logic()
-            self.game.notify_all()
+        if self.game: # falso quando un bot viene eliminato dalla partita
+            self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
+        self.sio.emit('self', room=self.sid, data=json.dumps(
+            ser, default=lambda o: o.__dict__))
+        self.game.notify_all()
+
+    def bot_spin(self):
+        while self.is_bot and self.game != None and not self.game.shutting_down:
+            eventlet.sleep(uniform(self.game.bot_speed/2-0.1, self.game.bot_speed))
+            if self.lives > 0 or self.is_ghost:
+                self.bot_logic()
 
     def bot_logic(self):
         if self.game.shutting_down: return
         if self.pending_action != None and self.pending_action != PendingAction.WAIT:
-            eventlet.sleep(uniform(self.game.bot_speed/2-0.1, self.game.bot_speed))
+            # eventlet.sleep(uniform(self.game.bot_speed/2-0.1, self.game.bot_speed))
+            pass
         else:
             return
         if self.pending_action == PendingAction.PICK:
