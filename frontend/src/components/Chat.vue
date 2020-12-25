@@ -35,8 +35,15 @@ export default {
 	},
 	methods: {
 		sendChatMessage(e) {
-			if (this.text.trim().length > 0){
-				this.$socket.emit('chat_message', this.text.trim())
+			let msg = this.text.trim()
+			if (msg.length > 0){
+				if (msg.indexOf('/addbot') !== -1 && msg.split(' ').length > 1){
+					for (let i = 0; i < parseInt(msg.split(' ')[1]); i++) {
+						this.$socket.emit('chat_message', msg.split(' ')[0])
+					}
+				}else{
+					this.$socket.emit('chat_message', msg)
+				}
 				this.text = ''
 			}
 			e.preventDefault();
