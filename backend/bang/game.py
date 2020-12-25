@@ -36,6 +36,7 @@ class Game:
         self.bot_speed = 1.5
         self.incremental_turn = 0
         self.did_resuscitate_deadman = False
+        self.is_handling_death = False
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
@@ -244,18 +245,18 @@ class Game:
         elif self.is_russian_roulette_on and self.check_event(ce.RouletteRussa):
             pls = self.get_alive_players()
             if did_lose:
-                pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
+                target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
                 print('stop roulette')
-                pl.lives -= 1
-                pl.notify_self()
+                target_pl.lives -= 1
+                target_pl.notify_self()
                 self.is_russian_roulette_on = False
                 self.players[self.turn].play_turn()
             else:
                 self.player_bangs += 1
-                pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
-                print(f'next in line {pl.name}')
-                if pl.get_banged(self.deck.event_cards[0]):
-                    pl.notify_self()
+                target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
+                print(f'next in line {target_pl.name}')
+                if target_pl.get_banged(self.deck.event_cards[0]):
+                    target_pl.notify_self()
                 else:
                     self.responders_did_respond_resume_turn(did_lose=True)
         else:
@@ -383,6 +384,7 @@ class Game:
 
     def player_death(self, player: pl.Player, disconnected=False):
         if not player in self.players or player.is_ghost: return
+        self.is_handling_death = True
         import bang.expansions.dodge_city.characters as chd
         print(player.attacker)
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
@@ -473,7 +475,7 @@ class Game:
                 herb[0].hand.append(self.deck.draw(True))
                 herb[0].hand.append(self.deck.draw(True))
                 herb[0].notify_self()
-        
+        self.is_handling_death = False
         if corpse.is_my_turn:
             self.next_turn()
 
@@ -484,6 +486,7 @@ class Game:
         self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False
+        self.is_handling_death = False
         self.waiting_for = 0
         self.incremental_turn = 0
         for p in self.players:

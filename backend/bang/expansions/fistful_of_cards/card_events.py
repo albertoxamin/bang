@@ -22,7 +22,7 @@ class DeadMan(CardEvent):
     def __init__(self):
         super().__init__("Dead Man", "⚰️")
         self.desc = "Al proprio turno il giocatore che è morto per primo torna in vita con 2 vite e 2 carte"
-        self.desc_eng = "The first player that died return back to life with 2 hp and 2 cards"
+        self.desc_eng = "The first player that died returns back to life with 2 hp and 2 cards"
 
 class FratelliDiSangue(CardEvent):
     def __init__(self):

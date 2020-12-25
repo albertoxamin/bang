@@ -516,7 +516,7 @@ class Player:
         return s
 
     def play_card(self, hand_index: int, against=None, _with=None):
-        if not self.is_my_turn or self.pending_action != PendingAction.PLAY:
+        if not self.is_my_turn or self.pending_action != PendingAction.PLAY or self.game.is_handling_death:
             return
         if not (0 <= hand_index < len(self.hand) + len(self.equipment)):
             return
@@ -662,7 +662,8 @@ class Player:
             if self.game.check_event(ceh.Sete): pickable_stop = 2
             if self.game.check_event(ceh.IlTreno): pickable_stop = 0
             if len(self.available_cards) == pickable_stop:
-                self.game.deck.put_on_top(self.available_cards.pop())
+                if len(self.available_cards) > 0:
+                    self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
@@ -787,7 +788,7 @@ class Player:
         if len(equipments) == 0:
             return False
         else:
-            self.sio.emit('chat_message', room=self.game.name, data=f"_dalton|{self.name}")
+            self.choose_text = 'choose_dalton'
             self.pending_action = PendingAction.CHOOSE
             self.available_cards = equipments
             return True
