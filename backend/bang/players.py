@@ -254,7 +254,7 @@ class Player:
                 for c in need_target:
                     _range = self.get_sight() if c.name == 'Bang!' or c.name == "Pepperbox" else c.range
                     others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff']) and p['lives'] > 0 and not ((isinstance(c, cs.CatBalou) or isinstance(c, cs.Panico)) and p['cards'] == 0) and not (p['is_sheriff'] and isinstance(c, cs.Prigione))]
-                    if len(others) == 0:
+                    if len(others) == 0 or c not in self.hand:
                         continue
                     target = others[randrange(0, len(others))]
                     if target['is_sheriff'] and isinstance(self.role, r.Renegade):
@@ -751,7 +751,7 @@ class Player:
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])
         if not self.game.is_competitive and len([c for c in self.equipment if isinstance(c, cs.Barile)]) == 0 and not self.character.check(self.game, chars.Jourdonnais)\
-             and len([c for c in self.hand if isinstance(c, cs.Mancato) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0\
+             and len([c for c in self.hand if (isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0\
              and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
             print('Cant defend')
             if not no_dmg:

@@ -228,6 +228,13 @@ def chat_message(sid, msg):
                     ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
                     ses.real_character = ses.character
                     ses.notify_self()
+            elif '/setevent' in msg and ses.game and ses.game.deck:
+                cmd = msg.split()
+                if len(cmd) >= 3:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed event'})
+                    chs = ses.game.deck.event_cards
+                    ses.game.deck.event_cards.insert(int(cmd[1]), [c for c in chs if c!=None and c.name == ' '.join(cmd[2:])][0])
+                    ses.game.notify_event_card()
             elif '/removecard' in msg:
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
                 cmd = msg.split()

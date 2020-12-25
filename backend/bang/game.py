@@ -264,7 +264,12 @@ class Game:
             if self.readyCount == self.waiting_for:
                 self.waiting_for = 0
                 self.readyCount = 0
-                self.players[self.turn].pending_action = pl.PendingAction.PLAY
+                if self.dalton_on:
+                    self.dalton_on = False
+                    print(f'notifying {self.players[self.turn].name} about his turn')
+                    self.players[self.turn].play_turn()
+                else:
+                    self.players[self.turn].pending_action = pl.PendingAction.PLAY
                 self.players[self.turn].notify_self()
 
     def next_player(self):
