@@ -242,17 +242,20 @@ class Game:
                 self.player_bangs = 0
                 self.players[self.turn].play_turn()
         elif self.is_russian_roulette_on and self.check_event(ce.RouletteRussa):
+            pls = self.get_alive_players()
             if did_lose:
+                pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
                 print('stop roulette')
-                self.players[(self.turn+self.player_bangs) % len(self.players)].lives -= 1
-                self.players[(self.turn+self.player_bangs) % len(self.players)].notify_self()
+                pl.lives -= 1
+                pl.notify_self()
                 self.is_russian_roulette_on = False
                 self.players[self.turn].play_turn()
             else:
                 self.player_bangs += 1
-                print(f'next in line {self.players[(self.turn+self.player_bangs) % len(self.players)].name}')
-                if self.players[(self.turn+self.player_bangs) % len(self.players)].get_banged(self.deck.event_cards[0]):
-                    self.players[(self.turn+self.player_bangs) % len(self.players)].notify_self()
+                pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
+                print(f'next in line {pl.name}')
+                if pl.get_banged(self.deck.event_cards[0]):
+                    pl.notify_self()
                 else:
                     self.responders_did_respond_resume_turn(did_lose=True)
         else:
