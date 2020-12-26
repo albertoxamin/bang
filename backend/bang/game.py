@@ -280,7 +280,7 @@ class Game:
         self.incremental_turn += 1
         if self.players[self.turn].is_dead:
             pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
-            if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl != self.players[self.turn]:
+            if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl == self.players[self.turn]:
                 print(f'{self.players[self.turn]} is dead, revive')
                 self.did_resuscitate_deadman = True
                 pl.is_dead = False
