@@ -331,7 +331,9 @@ class Mancato(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
-        if (not player.has_played_bang and against != None and player.character.check(player.game, chars.CalamityJanet)):
+        if against != None and player.character.check(player.game, chars.CalamityJanet):
+            if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)):
+                return False
             import bang.expansions.high_noon.card_events as ceh
             if player.game.check_event(ceh.Sermone):
                 return False
