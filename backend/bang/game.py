@@ -374,7 +374,10 @@ class Game:
         if self.disconnect_bot and self.started:
             player.is_bot = True
             eventlet.sleep(15) # he may reconnect
-            player.bot_spin()
+            if player.is_bot:
+                if len(player.available_characters) > 0:
+                    player.set_available_character(player.available_characters)
+                player.bot_spin()
         else:
             self.player_death(player=player, disconnected=True)
         # else:

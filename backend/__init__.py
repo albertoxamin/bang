@@ -83,6 +83,8 @@ def get_me(sid, room):
                 de_games[0].notify_all()
                 sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
                 bot.notify_self()
+                if len(bot.available_characters) > 0:
+                    bot.set_available_character(bot.available_characters)
             else: #spectate
                 de_games[0].spectators.append(sio.get_session(sid))
                 sio.get_session(sid).game = de_games[0]
