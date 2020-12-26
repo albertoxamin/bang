@@ -248,10 +248,10 @@ def chat_message(sid, msg):
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
                 cmd = msg.split()
                 if len(cmd) == 2:
-                    if len(ses.hand) > int(cmd[1]):
+                    if int(cmd[1]) < len(ses.hand):
                         ses.hand.pop(int(cmd[1]))
                     else:
-                        ses.hand.pop(int(cmd[1])-len(ses.hand))
+                        ses.equipment.pop(int(cmd[1])-len(ses.hand))
                     ses.notify_self()
             elif '/getcard' in msg:
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
