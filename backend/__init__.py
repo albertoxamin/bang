@@ -42,18 +42,21 @@ def connect(sid, environ):
 
 @sio.event
 def set_username(sid, username):
-    if not isinstance(sio.get_session(sid), Player):
+    ses = sio.get_session(sid)
+    if not isinstance(ses, Player):
         sio.save_session(sid, Player(username, sid, sio))
         print(f'{sid} is now {username}')
         advertise_lobbies()
-    elif sio.get_session(sid).game == None or not sio.get_session(sid).game.started:
+    elif ses.game == None or not ses.game.started:
         print(f'{sid} changed username to {username}')
-        if len([p for p in sio.get_session(sid).game.players if p.name == username]) > 0:
-            sio.get_session(sid).name = f'{username}_{random.randint(0,100)}'
+        prev = ses.name
+        if len([p for p in ses.game.players if p.name == username]) > 0:
+            ses.name = f"{username}_{random.randint(0,100)}"
         else:
-            sio.get_session(sid).name = username
-        sio.emit('me', data=sio.get_session(sid).name, room=sid)
-        sio.get_session(sid).game.notify_room()
+            ses.name = username
+        sio.emit('chat_message', room=ses.game.name, data=f'_change_username|{prev}|{ses.name}')
+        sio.emit('me', data=ses.name, room=sid)
+        ses.game.notify_room()
 
 @sio.event
 def get_me(sid, room):
@@ -96,6 +99,7 @@ def get_me(sid, room):
             if room['username'] == None or any([p.name == room['username'] for p in sio.get_session(sid).game.players]):
                 sio.emit('change_username', room=sid)
             else:
+                sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
                 sio.get_session(sid).name = room['username']
                 sio.emit('me', data=sio.get_session(sid).name, room=sid)
                 if not sio.get_session(sid).game.started:

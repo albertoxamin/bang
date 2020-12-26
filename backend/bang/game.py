@@ -368,7 +368,7 @@ class Game:
         print(f'player {player.name} left the game {self.name}')
         if player in self.spectators:
             self.spectators.remove(player)
-            return
+            return False
         if player.is_bot and not self.started:
             player.game = None
         if self.disconnect_bot and self.started:
@@ -381,7 +381,7 @@ class Game:
         #     player.lives = 0
             # self.players.remove(player)
         if len([p for p in self.players if not p.is_bot]) == 0:
-            print(f'no players left in game {self.name}')
+            print(f'no players left in game {self.name}, shutting down')
             self.shutting_down = True
             self.players = []
             self.spectators = []
@@ -445,7 +445,9 @@ class Game:
                     p.win_status = p in winners
                     self.sio.emit('chat_message', room=self.name, data=f'_won|{p.name}')
                     p.notify_self()
-                eventlet.sleep(5.0)
+                for i in range(5):
+                    self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
+                    eventlet.sleep(1)
                 return self.reset()
 
             vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]

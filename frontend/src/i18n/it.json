@@ -93,7 +93,9 @@
 		"guess_wrong": "{0} ha sbagliato.",
 		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}.",
 		"doctor_heal": "{0} è stato curato dal dottore.",
-		"respond": "{0} ha risposto con {1}."
+		"respond": "{0} ha risposto con {1}.",
+		"change_username": "{0} ha cambiato nome in {1}.",
+		"lobby_reset": "Si ritora all stanza in {0} secondi..."
 	},
 	"foc": {
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"

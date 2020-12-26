@@ -93,7 +93,9 @@
 		"guess_wrong": "{0} was wrong.",
 		"fratelli_sangue": "{0} gave one of his lives to {1}.",
 		"doctor_heal": "{0} was healed by the doctor.",
-		"respond": "{0} responded with {1}."
+		"respond": "{0} responded with {1}.",
+		"change_username": "{0} is now {1}.",
+		"lobby_reset": "Going back to lobby in {0} seconds..."
 	},
 	"foc": {
 		"leggedelwest": "He must play this card on this turn if possible."
