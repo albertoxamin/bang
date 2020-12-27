@@ -358,7 +358,7 @@ export default {
 			let card_data	 = {
 				index: res,
 				against: against,
-				with: this.hand.indexOf(this.card_with) > -1 ? this.hand.indexOf(this.card_with):null,
+				with: this.handComputed.indexOf(this.card_with) > -1 ? this.handComputed.indexOf(this.card_with):null,
 			}
 			this.card_with = null
 			console.log(card_data)
