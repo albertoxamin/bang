@@ -61,6 +61,7 @@
 	"to_defend_from": "PER DIFENDERTI DA",
 	"submit": "Invia",
 	"copy": "Copia invito",
+	"no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
 	"chat": {
 		"chat": "Chat",
 		"joined": "{0} è entrato nella stanza",

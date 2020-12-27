@@ -61,6 +61,7 @@
 	"to_defend_from": "TO DEFEND YOURSELF FROM",
 	"submit": "Submit",
 	"copy": "Copy invite",
+	"no_players_in_range": "You can't see the other players, equip a weapon or a scope!",
 	"chat": {
 		"chat": "Chat",
 		"joined": "{0} joined the lobby",
