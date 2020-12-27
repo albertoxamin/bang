@@ -128,7 +128,7 @@ class Prigione(Card):
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
         self.desc_eng = "Equip this card to another player, except the Sheriff. The player chosen at the beginning of his turn, must flip a card before drawing: if it's Hearts, discard this card and play the turn normally, otherwise discard this card and skip the turn"
         self.need_target = True
-        self.alt_text = "♥️=🆓"
+        self.alt_text = "♥️= 🆓"
 
     def play_card(self, player, against, _with=None):
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):

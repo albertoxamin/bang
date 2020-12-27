@@ -43,12 +43,12 @@ class Game:
             self.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
-                'players': [{'name':p.name, 'ready': p.character != None} for p in self.players],
+                'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot} for p in self.players],
                 'password': self.password,
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
-                'available_expansions': self.available_expansions
+                'available_expansions': self.available_expansions,
             })
 
     def toggle_expansion(self, expansion_name):
@@ -527,6 +527,7 @@ class Game:
             'is_sheriff': isinstance(pls[j].role, roles.Sheriff),
             'cards': len(pls[j].hand)+len(pls[j].equipment),
             'is_ghost': pls[j].is_ghost,
+            'is_bot': pls[j].is_bot,
         } for j in range(len(pls)) if i != j]
 
     def get_alive_players(self):
@@ -550,5 +551,6 @@ class Game:
                 'real_character': p.real_character.__dict__ if p.real_character else None,
                 'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠',
                 'is_ghost': p.is_ghost,
+                'is_bot': p.is_bot,
             } for p in self.get_alive_players()]
             self.sio.emit('players_update', room=self.name, data=data)

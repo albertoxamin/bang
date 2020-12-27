@@ -103,7 +103,8 @@ export default {
 	text-align: center;
 	width: 100%;
 	top: -10pt;
-} 
+	font-size: 11pt;
+}
 .card .emoji {
 	position: absolute;
 	text-align: center;
