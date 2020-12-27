@@ -24,7 +24,7 @@ class GregDigger(Character):
 
 class HerbHunter(Character):
     def __init__(self):
-        super().__init__("HerbHunter", max_lives=4)
+        super().__init__("Herb Hunter", max_lives=4)
         self.desc = "Quando un giocatore muore, pesca 2 carte"
         self.desc_eng = "Whenever a player dies, he draws 2 cards"
         self.icon = '⚰️'
