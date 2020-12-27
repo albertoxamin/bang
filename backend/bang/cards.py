@@ -89,6 +89,7 @@ class Barile(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Barile', number, is_equipment=True)
         self.icon = '🛢'
+        self.alt_text = "♥️=😅"
         self.desc = "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
         self.desc_eng = "When someone plays a Bang against you. You can flip the first card from the deck, if the suit is Hearts then it counts as a Missed card"
 
@@ -97,6 +98,7 @@ class Dinamite(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Dinamite', number, is_equipment=True)
         self.icon = '🧨'
+        self.alt_text = "2-9♠️ = 🤯"
         self.desc = "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
         self.desc_eng = "When playing Dynamite, place it in front of you, it will remain harmless for a whole round. At the beginning of the next turn before drawing and before any card flip (eg Prison), flip a card from the top of the deck. If a card is between 2 and 9 of spades (inclusive) then the dynamite explodes: you lose 3 lives and discard the card, otherwise pass the dynamite to the next player, who will draw in turn after you have ended your turn"
 
@@ -105,6 +107,7 @@ class Mirino(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mirino', number, is_equipment=True, sight_mod=1)
         self.icon = '🔎'
+        self.alt_text = "-1"
         self.desc = "Tu vedi gli altri giocatori a distanza -1"
         self.desc_eng = "You see the other players at distance -1"
 
@@ -113,6 +116,7 @@ class Mustang(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mustang', number, is_equipment=True, vis_mod=1)
         self.icon = '🐎'
+        self.alt_text = "+1"
         self.desc = "Gli altri giocatori ti vedono a distanza +1"
         self.desc_eng = "The other players see you at distance +1"
 
@@ -256,6 +260,7 @@ class Diligenza(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Diligenza', number)
         self.icon = '🚡'
+        self.alt_text = "🎴🎴"
         self.desc = "Pesca 2 carte dalla cima del mazzo"
         self.desc_eng = "Draw 2 cards from the deck."
 
@@ -302,6 +307,7 @@ class Gatling(Card):
         self.icon = '🛰'
         self.desc = "Spara a tutti gli altri giocatori"
         self.desc_eng = "Shoot all the other players"
+        self.alt_text = "👥💥"
 
     def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
@@ -351,6 +357,7 @@ class Panico(Card):
         super().__init__(suit, 'Panico!', number, range=1)
         self.icon = '😱'
         self.need_target = True
+        self.alt_icon = "1🔎"
         self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
         self.desc_eng = "Steal a card from a player at distance 1"
 
@@ -372,6 +379,7 @@ class Saloon(Card):
         self.desc = "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
         self.desc_eng = "Everyone heals 1 Health point"
         self.icon = '🍻'
+        self.alt_text = "👥🍺"
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
@@ -388,6 +396,7 @@ class WellsFargo(Card):
         self.desc = "Pesca 3 carte dalla cima del mazzo"
         self.desc_eng = "Draw 3 cards from the deck"
         self.icon = '💸'
+        self.alt_text = "🎴🎴🎴"
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
