@@ -301,6 +301,7 @@ export default {
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
+				this.can_target_sheriff = (card.name !== 'Prigione')
 				if (card.need_with && !this.card_with) {
 					this.card_with = card
 				} else if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
@@ -308,7 +309,6 @@ export default {
 							this.range = this.sight
 						else
 							this.range = card.range
-						this.can_target_sheriff = (card.name !== 'Prigione')
 					if (this.visiblePlayers.length == 0 && this.hand.length > this.lives) {
 						this.really_play_card(card, null)
 					}
