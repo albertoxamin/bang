@@ -27,7 +27,7 @@
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
-				<Card v-for="(card, i) in handComputed" v-bind:key="i+card.name+card.number" :card="card" 
+				<Card v-for="card in handComputed" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
 					@pointerenter.native="hint=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="hint=''"
 					:class="{'cant-play':card.cantBePlayed}"/>
