@@ -827,7 +827,7 @@ class Player:
             return True
 
     def heal_if_needed(self):
-        while self.lives <= 0 and len(self.game.get_alive_players()) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0:
+        while self.lives <= 0 and len(self.game.get_alive_players()) > 2 and len([c for c in self.hand if isinstance(c, cs.Birra)]) > 0 and not self.game.check_event(ceh.IlReverendo):
             for i in range(len(self.hand)):
                 if isinstance(self.hand[i], cs.Birra):
                     if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
