@@ -14,7 +14,7 @@
 			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
 					@pointerenter.native="desc=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="desc=''"
-					@click.native="play_card(card, true)" :class="{'cant-play':(eventCard && eventCard.name == 'Lazo')}"/>
+					@click.native="play_card(card, true)" :class="{'cant-play':((eventCard && eventCard.name == 'Lazo') || !card.can_be_used_now)}"/>
 			</transition-group>
 		</div>
 		<transition name="list">

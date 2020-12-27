@@ -415,9 +415,6 @@ class Game:
         if not self.started:
             self.players.remove(player)
         elif disconnected:
-            index = self.players.index(player)
-            if self.started and index <= self.turn:
-                self.turn -= 1
             self.players.remove(player)
             self.players_map = {c.name: i for i, c in enumerate(self.players)}
         player.lives = 0
