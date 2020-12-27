@@ -103,7 +103,8 @@ export default {
 	text-align: center;
 	width: 100%;
 	top: -10pt;
-} 
+	font-size: 11pt;
+}
 .card .emoji {
 	position: absolute;
 	text-align: center;
@@ -132,6 +133,9 @@ export default {
 	font-size: small;
 	bottom: 20pt;
 	left: 3pt;
+}
+.cant-play {
+	filter: brightness(0.5);
 }
 @media (prefers-color-scheme: dark) {
 	:root, #app {

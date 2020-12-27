@@ -24,7 +24,7 @@ class GregDigger(Character):
 
 class HerbHunter(Character):
     def __init__(self):
-        super().__init__("HerbHunter", max_lives=4)
+        super().__init__("Herb Hunter", max_lives=4)
         self.desc = "Quando un giocatore muore, pesca 2 carte"
         self.desc_eng = "Whenever a player dies, he draws 2 cards"
         self.icon = '⚰️'
@@ -66,7 +66,7 @@ class SeanMallory(Character):
 
 class BelleStar(Character):
     def __init__(self):
-        super().__init__("Belle Star", max_lives=3)
+        super().__init__("Belle Star", max_lives=4)
         self.desc = "Nel suo turno le carte verdi degli altri giocatori non hanno effetto."
         self.desc_eng = "During her turn the green cards of the other players do not work."
         self.icon = '❎'

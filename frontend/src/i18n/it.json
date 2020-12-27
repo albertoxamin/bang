@@ -40,6 +40,7 @@
 	"choose_card_to_get": "Scegli che carta pescare",
 	"choose_guess": "Indovina il colore del seme",
 	"choose_ranch": "Scegli le carte da sostituire",
+	"choose_dalton": "Scegli che equipaggiamento scartare",
 	"choose_fratelli_di_sangue": "Scegli a chi donare una delle tue vite",
 	"choose_cecchino": "Scegli contro chi sparare",
 	"choose_rimbalzo_player": "Scegli contro chi scartare il bang",
@@ -60,6 +61,7 @@
 	"to_defend_from": "PER DIFENDERTI DA",
 	"submit": "Invia",
 	"copy": "Copia invito",
+	"no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
 	"chat": {
 		"chat": "Chat",
 		"joined": "{0} è entrato nella stanza",
@@ -90,7 +92,11 @@
 		"guess": "{0} pensa sia {1}.",
 		"guess_right": "{0} ha indovinato.",
 		"guess_wrong": "{0} ha sbagliato.",
-		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}."
+		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}.",
+		"doctor_heal": "{0} è stato curato dal dottore.",
+		"respond": "{0} ha risposto con {1}.",
+		"change_username": "{0} ha cambiato nome in {1}.",
+		"lobby_reset": "Si ritorna alla stanza in {0} secondi..."
 	},
 	"foc": {
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"

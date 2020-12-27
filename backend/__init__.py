@@ -15,7 +15,7 @@ sio = socketio.Server(cors_allowed_origins="*")
 static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
     '/game': {'content_type': 'text/html', 'filename': 'index.html'},
-    '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
+    # '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
     '/favicon.ico': {'filename': 'favicon.ico'},
     '/img/icons': './img/icons',
     '/manifest.json': {'filename': 'manifest.json'},
@@ -42,18 +42,21 @@ def connect(sid, environ):
 
 @sio.event
 def set_username(sid, username):
-    if not isinstance(sio.get_session(sid), Player):
+    ses = sio.get_session(sid)
+    if not isinstance(ses, Player):
         sio.save_session(sid, Player(username, sid, sio))
         print(f'{sid} is now {username}')
         advertise_lobbies()
-    elif sio.get_session(sid).game == None or not sio.get_session(sid).game.started:
+    elif ses.game == None or not ses.game.started:
         print(f'{sid} changed username to {username}')
-        if len([p for p in sio.get_session(sid).game.players if p.name == username]) > 0:
-            sio.get_session(sid).name = f'{username}_{random.randint(0,100)}'
+        prev = ses.name
+        if len([p for p in ses.game.players if p.name == username]) > 0:
+            ses.name = f"{username}_{random.randint(0,100)}"
         else:
-            sio.get_session(sid).name = username
-        sio.emit('me', data=sio.get_session(sid).name, room=sid)
-        sio.get_session(sid).game.notify_room()
+            ses.name = username
+        sio.emit('chat_message', room=ses.game.name, data=f'_change_username|{prev}|{ses.name}')
+        sio.emit('me', data=ses.name, room=sid)
+        ses.game.notify_room()
 
 @sio.event
 def get_me(sid, room):
@@ -80,8 +83,10 @@ def get_me(sid, room):
                 de_games[0].notify_all()
                 sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
                 bot.notify_self()
+                if len(bot.available_characters) > 0:
+                    bot.set_available_character(bot.available_characters)
             else: #spectate
-                de_games[0].dead_players.append(sio.get_session(sid))
+                de_games[0].spectators.append(sio.get_session(sid))
                 sio.get_session(sid).game = de_games[0]
                 sio.enter_room(sid, de_games[0].name)
                 de_games[0].notify_room(sid)
@@ -96,6 +101,7 @@ def get_me(sid, room):
             if room['username'] == None or any([p.name == room['username'] for p in sio.get_session(sid).game.players]):
                 sio.emit('change_username', room=sid)
             else:
+                sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
                 sio.get_session(sid).name = room['username']
                 sio.emit('me', data=sio.get_session(sid).name, room=sid)
                 if not sio.get_session(sid).game.started:
@@ -166,10 +172,13 @@ def chat_message(sid, msg):
         if msg[0] == '/':
             if '/addbot' in msg and not ses.game.started:
                 if len(msg.split()) > 1:
-                    for _ in range(int(msg.split()[1])):
-                        ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+                    # for _ in range(int(msg.split()[1])):
+                    #     ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                 else:
-                    ses.game.add_player(Player(f'AI_{random.randint(0,100)}', 'bot', sio, bot=True))
+                    bot = Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True)
+                    ses.game.add_player(bot)
+                    bot.bot_spin()
             elif '/removebot' in msg and not ses.game.started:
                 if any([p.is_bot for p in ses.game.players]):
                     [p for p in ses.game.players if p.is_bot][-1].disconnect()
@@ -228,14 +237,21 @@ def chat_message(sid, msg):
                     ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
                     ses.real_character = ses.character
                     ses.notify_self()
+            elif '/setevent' in msg and ses.game and ses.game.deck:
+                cmd = msg.split()
+                if len(cmd) >= 3:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed event'})
+                    chs = ses.game.deck.event_cards
+                    ses.game.deck.event_cards.insert(int(cmd[1]), [c for c in chs if c!=None and c.name == ' '.join(cmd[2:])][0])
+                    ses.game.notify_event_card()
             elif '/removecard' in msg:
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
                 cmd = msg.split()
                 if len(cmd) == 2:
-                    if len(ses.hand) > int(cmd[1]):
+                    if int(cmd[1]) < len(ses.hand):
                         ses.hand.pop(int(cmd[1]))
                     else:
-                        ses.hand.pop(int(cmd[1])-len(ses.hand))
+                        ses.equipment.pop(int(cmd[1])-len(ses.hand))
                     ses.notify_self()
             elif '/getcard' in msg:
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
@@ -243,15 +259,17 @@ def chat_message(sid, msg):
                 cmd = msg.split()
                 if len(cmd) >= 2:
                     cards  = cs.get_starting_deck(ses.game.expansions)
-                    ses.hand.append([c for c in cards if c.name == ' '.join(cmd[1:])][0])
-                    ses.notify_self()
+                    card_names = ' '.join(cmd[1:]).split(',')
+                    for cn in card_names:
+                        ses.hand.append([c for c in cards if c.name == cn][0])
+                        ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
             elif '/mebot' in msg:
                 ses.is_bot = not ses.is_bot
-                ses.notify_self()
+                ses.bot_spin()
             else:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:

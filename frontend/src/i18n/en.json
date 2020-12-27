@@ -40,6 +40,7 @@
 	"choose_card_to_get": "Choose a card",
 	"choose_guess": "Guess the color of the suit",
 	"choose_ranch": "Choose the cards to replace",
+	"choose_dalton": "Choose which equipment to discard",
 	"choose_fratelli_di_sangue": "Choose who you want to donate one of your lives",
 	"choose_cecchino": "Choose who to shoot",
 	"choose_rimbalzo_player": "Choose the target of the bang",
@@ -60,6 +61,7 @@
 	"to_defend_from": "TO DEFEND YOURSELF FROM",
 	"submit": "Submit",
 	"copy": "Copy invite",
+	"no_players_in_range": "You can't see the other players, equip a weapon or a scope!",
 	"chat": {
 		"chat": "Chat",
 		"joined": "{0} joined the lobby",
@@ -90,7 +92,11 @@
 		"guess": "{0} guesses {1}.",
 		"guess_right": "{0} was right.",
 		"guess_wrong": "{0} was wrong.",
-		"fratelli_sangue": "{0} gave one of his lives to {1}."
+		"fratelli_sangue": "{0} gave one of his lives to {1}.",
+		"doctor_heal": "{0} was healed by the doctor.",
+		"respond": "{0} responded with {1}.",
+		"change_username": "{0} is now {1}.",
+		"lobby_reset": "Going back to lobby in {0} seconds..."
 	},
 	"foc": {
 		"leggedelwest": "He must play this card on this turn if possible."

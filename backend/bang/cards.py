@@ -75,11 +75,21 @@ class Card(ABC):
     def is_duplicate_card(self, player):
         return self.name in [c.name for c in player.equipment]
 
+    def check_suit(self, game, accepted):
+        import bang.expansions.high_noon.card_events as ceh
+        if game.check_event(ceh.Benedizione):
+            return Suit.HEARTS in accepted
+        elif game.check_event(ceh.Maledizione):
+            return Suit.SPADES in accepted
+        return self.suit in accepted
+
+
 
 class Barile(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Barile', number, is_equipment=True)
         self.icon = '🛢'
+        self.alt_text = "♥️=😅"
         self.desc = "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
         self.desc_eng = "When someone plays a Bang against you. You can flip the first card from the deck, if the suit is Hearts then it counts as a Missed card"
 
@@ -88,6 +98,7 @@ class Dinamite(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Dinamite', number, is_equipment=True)
         self.icon = '🧨'
+        self.alt_text = "2-9♠️ = 🤯"
         self.desc = "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
         self.desc_eng = "When playing Dynamite, place it in front of you, it will remain harmless for a whole round. At the beginning of the next turn before drawing and before any card flip (eg Prison), flip a card from the top of the deck. If a card is between 2 and 9 of spades (inclusive) then the dynamite explodes: you lose 3 lives and discard the card, otherwise pass the dynamite to the next player, who will draw in turn after you have ended your turn"
 
@@ -96,6 +107,7 @@ class Mirino(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mirino', number, is_equipment=True, sight_mod=1)
         self.icon = '🔎'
+        self.alt_text = "-1"
         self.desc = "Tu vedi gli altri giocatori a distanza -1"
         self.desc_eng = "You see the other players at distance -1"
 
@@ -104,6 +116,7 @@ class Mustang(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mustang', number, is_equipment=True, vis_mod=1)
         self.icon = '🐎'
+        self.alt_text = "+1"
         self.desc = "Gli altri giocatori ti vedono a distanza +1"
         self.desc_eng = "The other players see you at distance +1"
 
@@ -115,6 +128,7 @@ class Prigione(Card):
         self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
         self.desc_eng = "Equip this card to another player, except the Sheriff. The player chosen at the beginning of his turn, must flip a card before drawing: if it's Hearts, discard this card and play the turn normally, otherwise discard this card and skip the turn"
         self.need_target = True
+        self.alt_text = "♥️= 🆓"
 
     def play_card(self, player, against, _with=None):
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
@@ -180,14 +194,19 @@ class Bang(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.expansions.fistful_of_cards.card_events as ce
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.Sermone):
+            return False
         if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None:
             return False
         elif against != None:
             import bang.characters as chars
             super().play_card(player, against=against)
-            player.has_played_bang = not isinstance(
-                player.character, chars.WillyTheKid)
-            player.game.attack(player, against, double=isinstance(player.character, chars.SlabTheKiller))
+            player.bang_used += 1
+            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
+            if player.character.check(player.game, chars.WillyTheKid):
+                player.has_played_bang = False
+            player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
             return True
         return False
 
@@ -200,14 +219,17 @@ class Birra(Card):
         self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
     def play_card(self, player, against, _with=None):
-        if len(player.game.players) != 2:
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.IlReverendo):
+            return False
+        if len(player.game.get_alive_players()) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd
-            if isinstance(player.character, chd.TequilaJoe):
+            if player.character.check(player.game, chd.TequilaJoe):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
-        elif len(player.game.players) == 2:
+        elif len(player.game.get_alive_players()) == 2:
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_spilled_beer|{player.name}|{self.name}')
             return True
@@ -239,6 +261,7 @@ class Diligenza(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Diligenza', number)
         self.icon = '🚡'
+        self.alt_text = "🎴🎴"
         self.desc = "Pesca 2 carte dalla cima del mazzo"
         self.desc_eng = "Draw 2 cards from the deck."
 
@@ -285,6 +308,7 @@ class Gatling(Card):
         self.icon = '🛰'
         self.desc = "Spara a tutti gli altri giocatori"
         self.desc_eng = "Shoot all the other players"
+        self.alt_text = "👥💥"
 
     def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
@@ -314,10 +338,17 @@ class Mancato(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
-        if (not player.has_played_bang and against != None and isinstance(player.character, chars.CalamityJanet)):
+        if against != None and player.character.check(player.game, chars.CalamityJanet):
+            import bang.expansions.fistful_of_cards.card_events as ce
+            if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)):
+                return False
+            import bang.expansions.high_noon.card_events as ceh
+            if player.game.check_event(ceh.Sermone):
+                return False
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
-            player.has_played_bang = True
+            player.bang_used += 1
+            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             player.game.attack(player, against)
             return True
         return False
@@ -349,11 +380,12 @@ class Saloon(Card):
         self.desc = "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
         self.desc_eng = "Everyone heals 1 Health point"
         self.icon = '🍻'
+        self.alt_text = "👥🍺"
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'_saloon|{player.name}|{self.name}')
-        for p in player.game.players:
+        for p in player.game.get_alive_players():
             p.lives = min(p.lives+1, p.max_lives)
             p.notify_self()
         return True
@@ -365,6 +397,7 @@ class WellsFargo(Card):
         self.desc = "Pesca 3 carte dalla cima del mazzo"
         self.desc_eng = "Draw 3 cards from the deck"
         self.icon = '💸'
+        self.alt_text = "🎴🎴🎴"
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,

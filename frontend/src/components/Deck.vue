@@ -5,7 +5,7 @@
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="eventCard" :key="eventCard" :class="eventClasses" @click.native="event"/>
+				<card :card="eventCard" :key="eventCard.name" :class="eventClasses" @click.native="event"/>
 			</div>
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
@@ -15,12 +15,14 @@
 			<div style="position:relative;">
 				<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
 				<card v-else :card="card" class="back" style="opacity:0"/>
-				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap" class="last-scrap" @click.native="action('scrap')"
+				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap.name+lastScrap.number" class="last-scrap" @click.native="action('scrap')"
 							@pointerenter.native="desc=($i18n.locale=='it'?lastScrap.desc:lastScrap.desc_eng)" @pointerleave.native="desc=''" />
 			</div>
 		</div>
 		<transition name="list">
 			<p v-if="eventCard" class="center-stuff"><i>{{($i18n.locale=='it'?eventCard.desc:eventCard.desc_eng)}}</i></p>
+		</transition>
+		<transition name="list">
 			<p v-if="desc" class="center-stuff"><i>{{desc}}</i></p>
 		</transition>
 	</div>
@@ -52,7 +54,7 @@ export default {
 	sockets: {
 		self(self){
 			self = JSON.parse(self)
-			this.isPlaying = self.lives > 0
+			this.isPlaying = self.lives > 0 || self.is_ghost
 			this.pending_action = self.pending_action
 		},
 		scrap(card) {

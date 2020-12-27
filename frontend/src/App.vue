@@ -36,6 +36,7 @@ export default {
 	data: () => ({
 		isConnected: false,
 		c: false,
+		showUpdateUI: false,
 	}),
 	computed: {
 	},
