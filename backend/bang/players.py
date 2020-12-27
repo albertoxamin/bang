@@ -979,6 +979,7 @@ class Player:
                     self.play_turn(can_play_vendetta=False)
                     return
             self.is_my_turn = False
+            self.has_played_bang = False
             for i in range(len(self.equipment)):
                 if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
                     self.equipment[i].can_be_used_now = True

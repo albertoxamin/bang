@@ -8,13 +8,13 @@
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
 					@pointerenter.native="desc=($i18n.locale=='it'?character.desc:character.desc_eng)" @pointerleave.native="desc=''"/>
 			<transition-group name="list" tag="div" style="display: flex;flex-direction:column; justify-content: space-evenly; margin-left: 12pt;margin-right:-10pt;">
-				<span v-for="(n, i) in lives" v-bind:key="n" :alt="i">❤️</span>
-				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="n" :alt="i">💀</span>
+				<span v-for="(n, i) in lives" v-bind:key="i" :alt="i">❤️</span>
+				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
 			</transition-group>
 			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
 					@pointerenter.native="desc=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="desc=''"
-					@click.native="play_card(card, true)" />
+					@click.native="play_card(card, true)" :class="{'cant-play':(eventCard && eventCard.name == 'Lazo')}"/>
 			</transition-group>
 		</div>
 		<transition name="list">
@@ -27,9 +27,10 @@
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" class="hand">
-				<Card v-for="card in hand" v-bind:key="card.name+card.number" :card="card" 
+				<Card v-for="(card, i) in handComputed" v-bind:key="i+card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
-					@pointerenter.native="hint=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="hint=''"/>
+					@pointerenter.native="hint=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="hint=''"
+					:class="{'cant-play':card.cantBePlayed}"/>
 			</transition-group>
 		</div>
 		<transition name="list">
@@ -109,6 +110,7 @@ export default {
 		mancato_needed: 0,
 		is_ghost: false,
 		name: '',
+		eventCard: false,
 	}),
 	sockets: {
 		role(role) {
@@ -163,7 +165,10 @@ export default {
 			setTimeout(function(){
 					this.notifycard = null
 				}.bind(this), 4000)
-		}
+		},
+		event_card(card) {
+			this.eventCard = card
+		},
 	},
 	computed:{
 		respondText() {
@@ -237,6 +242,20 @@ export default {
 				cc.push(x)
 			})
 			return cc
+		},
+		handComputed() {
+			return this.hand.map(x=> {
+				let cantBePlayed = false
+				let calamity_special = (x.name === 'Mancato!' && this.character.name === 'Calamity Janet')
+				let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
+				if ((x.name == 'Bang!' || (calamity_special && x.name=='Mancato!')) && (cant_play_bang || (this.eventCard && this.eventCard.name == "Sermone"))) cantBePlayed = true;
+				else if (this.eventCard && this.eventCard.name == "Il Giudice" && (x.is_equipment || !x.can_be_used_now)) cantBePlayed = true;
+				else if (this.eventCard && this.eventCard.name == "Il Reverendo" && (x.name == "Birra")) cantBePlayed = true;
+				return {
+					...x,
+					cantBePlayed: cantBePlayed
+				}
+			})
 		}
 	},
 	methods: {
@@ -331,7 +350,7 @@ export default {
 			this.card_with = null
 		},
 		really_play_card(card, against) {
-			let res = this.hand.indexOf(card)
+			let res = this.handComputed.indexOf(card)
 			if (res === -1) {
 				res = this.equipment.indexOf(card)
 				if (res !== -1) res += this.hand.length

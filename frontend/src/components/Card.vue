@@ -134,6 +134,9 @@ export default {
 	bottom: 20pt;
 	left: 3pt;
 }
+.cant-play {
+	filter: brightness(0.5);
+}
 @media (prefers-color-scheme: dark) {
 	:root, #app {
 		background-color: #181a1b;

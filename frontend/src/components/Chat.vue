@@ -2,7 +2,7 @@
 	<div class="chat">
 		<h3>{{$t("chat.chat")}}</h3>
 		<div id="chatbox">
-			<p style="margin:1pt;" class="chat-message" v-for="msg in messages" v-bind:key="msg" :style="`color:${msg.color}`">{{msg.text}}</p>
+			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
 			<p class="end">.</p>
 		</div>
 		<form @submit="sendChatMessage" id="msg-form">
