@@ -47,7 +47,7 @@
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
 		<Chooser v-if="hasToPickResponse" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
-		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="hand.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
+		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="handComputed.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length} ${$t('to_regain_1_hp')}`"
 							:cards="notScrappedHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;scrapHand=[]}"/>
@@ -337,9 +337,9 @@ export default {
 				this.card_with = card
 			} else {
 				let card_data	 = {
-					index: this.hand.indexOf(this.card_with),
+					index: this.handComputed.indexOf(this.card_with),
 					against: null,
-					with: this.hand.indexOf(card),
+					with: this.handComputed.indexOf(card),
 				}
 				this.card_with = null
 				this.$socket.emit('play_card', card_data)
