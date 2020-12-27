@@ -35,7 +35,7 @@ class Schivata(Mancato):
         self.icon = '🙅‍♂️'
         self.desc += " e poi pesca una carta"
         self.desc_eng += " and then draw a card."
-        self.alt_text = '😅 | ☝️🆓'
+        self.alt_text = "😅 | 🎴"
 
     def play_card(self, player, against, _with=None):
         return False
@@ -166,6 +166,7 @@ class Cappello(Mancato):
         self.icon = '🧢'
         self.usable_next_turn = True
         self.can_be_used_now = False
+        self.alt_text = "😅"
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
@@ -213,7 +214,7 @@ class Derringer(Pugnale):
         super().__init__(suit, number)
         self.name = 'Derringer'
         self.icon = '🚬'
-        self.alt_text += ' ☝️🆓'
+        self.alt_text += ' 🎴'
         self.desc += ' e poi pesca una carta'
         self.desc_eng += ' and then draw a card.'
 
