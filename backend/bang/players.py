@@ -406,8 +406,6 @@ class Player:
                 self.hand.append(self.game.deck.draw_from_scrap_pile())
                 if not self.game.check_event(ceh.Sete):
                     self.hand.append(self.game.deck.draw())
-                if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.ceck_event(ceh.CittaFantasma)):
-                    self.hand.append(self.game.deck.draw())
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_draw_from_scrap|{self.name}')
             elif type(pile) == str and pile != self.name and pile in self.game.players_map and self.character.check(self.game, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
@@ -418,15 +416,11 @@ class Player:
                               data=f'_draw_from_player|{self.name}|{pile}')
                 if not self.game.check_event(ceh.Sete):
                     self.hand.append(self.game.deck.draw())
-                if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.ceck_event(ceh.CittaFantasma)):
-                    self.hand.append(self.game.deck.draw())
             elif self.character.check(self.game, chd.BillNoface):
                 self.hand.append(self.game.deck.draw())
                 if not self.game.check_event(ceh.Sete):
                     for i in range(self.max_lives-self.lives):
                         self.hand.append(self.game.deck.draw())
-                if self.game.check_event(ceh.IlTreno):
-                    self.hand.append(self.game.deck.draw())
             else:
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
@@ -486,10 +480,12 @@ class Player:
                                       data=f'_flipped|{self.name}|{picked}')
                         if not picked.check_suit(self.game, [cs.Suit.HEARTS]) and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.sio.emit('chat_message', room=self.game.name, data=f'_prison_turn|{self.name}')
                             self.end_turn(forced=True)
                             return
                         elif pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.sio.emit('chat_message', room=self.game.name, data=f'_prison_free|{self.name}')
                             break
                     break
             if any([isinstance(c, cs.Prigione) for c in self.equipment]):

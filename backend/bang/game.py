@@ -408,7 +408,7 @@ class Game:
                 player.attacker.hand.append(self.deck.draw(True))
             player.attacker.notify_self()
         print(f'player {player.name} died')
-        if (self.waiting_for > 0):
+        if self.waiting_for > 0 and player.pending_action == pl.PendingAction.RESPOND:
             self.responders_did_respond_resume_turn()
 
         if player.is_dead: return
@@ -486,6 +486,8 @@ class Game:
                 herb[0].notify_self()
         self.is_handling_death = False
         if corpse.is_my_turn:
+            corpse.is_my_turn = False
+            corpse.notify_self()
             self.next_turn()
 
     def reset(self):
