@@ -96,7 +96,9 @@
 		"doctor_heal": "{0} was healed by the doctor.",
 		"respond": "{0} responded with {1}.",
 		"change_username": "{0} is now {1}.",
-		"lobby_reset": "Going back to lobby in {0} seconds..."
+		"lobby_reset": "Going back to lobby in {0} seconds...",
+		"prison_free": "{0} got out of prison",
+		"prison_turn": "{0} stayed in prison this turn"
 	},
 	"foc": {
 		"leggedelwest": "He must play this card on this turn if possible."

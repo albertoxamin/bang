@@ -480,10 +480,12 @@ class Player:
                                       data=f'_flipped|{self.name}|{picked}')
                         if not picked.check_suit(self.game, [cs.Suit.HEARTS]) and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.sio.emit('chat_message', room=self.game.name, data=f'_prison_turn|{self.name}')
                             self.end_turn(forced=True)
                             return
                         elif pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.sio.emit('chat_message', room=self.game.name, data=f'_prison_free|{self.name}')
                             break
                     break
             if any([isinstance(c, cs.Prigione) for c in self.equipment]):
