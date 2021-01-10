@@ -6,7 +6,7 @@ import eventlet
 import socketio
 
 from bang.game import Game
-from bang.players import Player
+from bang.players import Player, PendingAction
 
 import sys 
 sys.setrecursionlimit(10**6) # this should prevents bots from stopping
@@ -121,15 +121,16 @@ def disconnect(sid):
 
 @sio.event
 def create_room(sid, room_name):
-    while len([g for g in games if g.name == room_name]):
-        room_name += f'_{random.randint(0,100)}'
-    sio.leave_room(sid, 'lobby')
-    sio.enter_room(sid, room_name)
-    g = Game(room_name, sio)
-    g.add_player(sio.get_session(sid))
-    games.append(g)
-    print(f'{sid} created a room named {room_name}')
-    advertise_lobbies()
+    if sio.get_session(sid).game == None:
+        while len([g for g in games if g.name == room_name]):
+            room_name += f'_{random.randint(0,100)}'
+        sio.leave_room(sid, 'lobby')
+        sio.enter_room(sid, room_name)
+        g = Game(room_name, sio)
+        g.add_player(sio.get_session(sid))
+        games.append(g)
+        print(f'{sid} created a room named {room_name}')
+        advertise_lobbies()
 
 @sio.event
 def private(sid):
@@ -270,6 +271,10 @@ def chat_message(sid, msg):
             elif '/mebot' in msg:
                 ses.is_bot = not ses.is_bot
                 ses.bot_spin()
+            elif '/arcadekick' in msg and ses.game.started:
+                if len([p for p in ses.game.players if p.pending_action != PendingAction.WAIT]) == 0:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'','text':f'KICKING THE ARCADE CABINET'})
+                    ses.game.play_turn()
             else:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
