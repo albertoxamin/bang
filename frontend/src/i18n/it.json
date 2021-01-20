@@ -63,6 +63,7 @@
 	"copy": "Copia invito",
 	"no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
 	"chat": {
+		"spectators": " | Uno spettatore sta guardando la partita | {n} spettatori stanno guardando la partita",
 		"chat": "Chat",
 		"joined": "{0} è entrato nella stanza",
 		"died": "{0} è morto",

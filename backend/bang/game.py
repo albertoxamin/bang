@@ -50,6 +50,7 @@ class Game:
                 'expansions': self.expansions,
                 'available_expansions': self.available_expansions,
             })
+        self.sio.emit('spectators', room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):
         if not self.started:
@@ -368,6 +369,7 @@ class Game:
         print(f'player {player.name} left the game {self.name}')
         if player in self.spectators:
             self.spectators.remove(player)
+            self.sio.emit('spectators', room=self.name, data=len(self.spectators))
             return False
         if player.is_bot and not self.started:
             player.game = None

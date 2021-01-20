@@ -140,7 +140,7 @@ export default {
 		},
 		change_username() {
 			this.hasToSetUsername = true
-		}
+		},
 	},
 	computed: {
 		inviteLink() {

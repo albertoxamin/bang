@@ -63,6 +63,7 @@
 	"copy": "Copy invite",
 	"no_players_in_range": "You can't see the other players, equip a weapon or a scope!",
 	"chat": {
+		"spectators": " | A spectator is watching the game | {n} spectators are watching the game",
 		"chat": "Chat",
 		"joined": "{0} joined the lobby",
 		"died": "{0} died",

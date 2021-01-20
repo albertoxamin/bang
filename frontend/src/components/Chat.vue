@@ -1,5 +1,6 @@
 <template>
 	<div class="chat">
+		<h4 v-if="spectators > 0">{{$tc("chat.spectators", spectators)}}</h4>
 		<h3>{{$t("chat.chat")}}</h3>
 		<div id="chatbox">
 			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
@@ -17,7 +18,8 @@ export default {
 	name: 'Chat',
 	data: () => ({
 		messages: [],
-		text: ''
+		text: '',
+		spectators: 0,
 	}),
 	sockets: {
 		chat_message(msg) {
@@ -32,6 +34,9 @@ export default {
 			let container = this.$el.querySelector("#chatbox");
 			container.scrollTop = container.scrollHeight;
 		},
+		spectators(val) {
+			this.spectators = val
+		}
 	},
 	methods: {
 		sendChatMessage(e) {
