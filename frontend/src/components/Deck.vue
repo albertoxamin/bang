@@ -149,6 +149,44 @@ export default {
 		transform: translate(0, 0) scale(1);
 	}
 }
+@keyframes pick {
+	0% {
+		transform: translate(0,0);
+		z-index: 1;
+	}
+	50% {
+		transform: translate(-10px,0);
+		z-index: 1;
+	}
+	100% {
+		transform: translate(0,0);
+		z-index: 1;
+	}
+}
+@keyframes draw {
+	0% {
+		transform: translate(0,0);
+		z-index: 1;
+	}
+	50% {
+		transform: translate(0,10px);
+		z-index: 1;
+	}
+	100% {
+		transform: translate(0,0);
+		z-index: 1;
+	}
+}
+.pick {
+	animation-duration: 2s;
+	animation-name: pick;
+	animation-iteration-count: infinite;
+}
+.draw {
+	animation-duration: 2s;
+	animation-name: draw;
+	animation-iteration-count: infinite;
+}
 .pick:hover {
 	transform: translate(-10px,0);
 	z-index: 1;

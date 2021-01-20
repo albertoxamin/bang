@@ -26,7 +26,7 @@
 		<button v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
-			<transition-group name="list" tag="div" class="hand">
+			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
 				<Card v-for="card in handComputed" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
 					@pointerenter.native="hint=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="hint=''"
@@ -442,4 +442,14 @@ export default {
 		visibility: hidden;
 	}
 }
+/* @keyframes play-cards {
+	50% {
+		background: rgba(204, 204, 204, 0.3);
+	}
+}
+.play-cards {
+	animation: play-cards;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+} */
 </style>
