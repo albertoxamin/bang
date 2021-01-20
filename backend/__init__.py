@@ -41,6 +41,11 @@ def connect(sid, environ):
     sio.emit('players', room='lobby', data=online_players)
 
 @sio.event
+def get_online_players(sid):
+    global online_players
+    sio.emit('players', room='lobby', data=online_players)
+
+@sio.event
 def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):

@@ -11,23 +11,23 @@
 					<input id="username" v-model="username" />
 					<input type="submit" :value="$t('submit')"/>
 				</form>
-				<p>{{$t("online_players")}}{{onlinePlayers}}</p>
+				<p v-if="onlinePlayers > 0">{{$t("online_players")}}{{onlinePlayers}}</p>
 			</div>
 			<div v-else>
 				<div v-if="!isInLobby" >
 					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
 					<Card :card="getSelfCard" style="position:absolute; top:10pt; left: 10pt;"/>
-					<h2>{{$t("available_lobbies")}}</h2>
-					<div style="display: flex">
-						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
-						<p v-if="noLobbyAvailable">{{$t("no_lobby_available")}}</p>
-					</div>
 					<form @submit="createLobby">
 						<h2>{{$t("create_lobby")}}</h2>
 						<p>{{$t("lobby_name")}}</p>
 						<input id="lobbyname" v-model="lobbyName"/>
 						<input type="submit" :value="$t('submit')"/>
 					</form>
+					<h2>{{$t("available_lobbies")}}</h2>
+					<div style="display: flex">
+						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
+						<p v-if="noLobbyAvailable">{{$t("no_lobby_available")}}</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -79,6 +79,7 @@ export default {
 		},
 		players(num) {
 			this.onlinePlayers = num;
+			console.log('PLAYERS:' + num)
 		}
 	},
 	methods: {
@@ -115,6 +116,7 @@ export default {
 	mounted() {
 		if (localStorage.getItem('username'))
 			this.username = localStorage.getItem('username')
+		this.$socket.emit('get_online_players')
 	},
 }
 </script>
