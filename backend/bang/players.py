@@ -435,7 +435,7 @@ class Player:
                         return self.notify_self()
                 if self.character.check(self.game, chd.PixiePete):
                     self.hand.append(self.game.deck.draw())
-            if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.ceck_event(ceh.CittaFantasma)):
+            if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
                 self.hand.append(self.game.deck.draw())
             self.notify_self()
 
