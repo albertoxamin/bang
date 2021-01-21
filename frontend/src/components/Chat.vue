@@ -3,7 +3,7 @@
 		<h4 v-if="spectators > 0">{{$tc("chat.spectators", spectators)}}</h4>
 		<h3>{{$t("chat.chat")}}</h3>
 		<div id="chatbox">
-			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
+			<p style="margin:1pt;" class="chat-message selectable" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
 			<p class="end">.</p>
 		</div>
 		<form @submit="sendChatMessage" id="msg-form">

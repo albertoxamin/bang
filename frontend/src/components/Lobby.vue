@@ -31,7 +31,7 @@
 					<div class="tiny-equipment">
 						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" @click.native="selectedInfo = p.equipment"/>
 					</div>
-					<div v-if="p.is_bot" style="position:absolute;top:32%;left:50%;right:50%" class="tiny-health">
+					<div v-if="p.is_bot" style="position:absolute;bottom:57%;" class="center-stuff">
 						<span>🤖</span>
 					</div>
 				</div>
