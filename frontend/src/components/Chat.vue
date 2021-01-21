@@ -16,8 +16,13 @@
 <script>
 import message_sfx from '@/assets/sounds/tap-kissy.mp3'
 import notification_sfx from '@/assets/sounds/tap-sizzle.mp3'
+import turn_sfx from '@/assets/sounds/beep-holdtone.mp3'
+import death_sfx from '@/assets/sounds/beep-organ.mp3'
 export default {
 	name: 'Chat',
+	props: {
+		username: String
+	},
 	data: () => ({
 		messages: [],
 		text: '',
@@ -30,7 +35,13 @@ export default {
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
 				this.messages.push({text:this.$t(`chat.${type}`, params)});
-				(new Audio(notification_sfx)).play();
+				if (type == 'turn' && params[0] == this.username) {
+					(new Audio(turn_sfx)).play();
+				}else if (type == 'died_role') {
+					(new Audio(death_sfx)).play();
+				}else{
+					(new Audio(notification_sfx)).play();
+				}
 			}else {
 				(new Audio(message_sfx)).play();
 				this.messages.push(msg);

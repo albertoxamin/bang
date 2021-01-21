@@ -58,7 +58,7 @@
 				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose" :cancelChooseCardFromPlayer="()=>{hasToChoose=false}"/>
 			</div>
 		</div>
-		<chat/>
+		<chat :username="username"/>
 		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-if="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
