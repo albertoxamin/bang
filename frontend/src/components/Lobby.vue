@@ -39,6 +39,7 @@
 				<!-- </div> -->
 			</div>
 			<div v-if="!started">
+				<p v-if="players.length < 3" class="center-stuff">{{$t('minimum_players')}}</p>
 				<h3>{{$t("expansions")}}</h3>
 				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
 					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}</PrettyCheck>
@@ -46,6 +47,9 @@
 				</div>
 				<h3>{{$t('mods')}}</h3>
 				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
+				<h3>{{$t('bots')}}</h3>
+				<input type="button" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="()=>{this.$socket.emit('chat_message', '/addbot')}"/>
+				<input type="button" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="()=>{this.$socket.emit('chat_message', '/removebot')}"/>
 				<!-- <br> -->
 				<!-- <PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck> -->
 			</div>
@@ -145,6 +149,9 @@ export default {
 	computed: {
 		inviteLink() {
 			return `${window.location.origin}/game?code=${this.lobbyName}${this.password?`&pwd=${this.password}`:''}`
+		},
+		isThereAnyBot() {
+			return this.players.filter(x => x.is_bot).length > 0;
 		},
 		expansionsStatus() { 
 			return this.togglable_expansions.map(x=>{
@@ -297,15 +304,15 @@ export default {
 	}
 }
 @keyframes turn-animation {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
-  }
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.02);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 .tiny-equipment {
 	position: absolute;

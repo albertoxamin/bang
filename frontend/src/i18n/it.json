@@ -105,6 +105,10 @@
 		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
 	},
 	"mods": "Modificatori",
+	"bots": "Bot",
+	"add_bot": "Aggiungi un bot",
+	"remove_bot": "Rimuovi un bot",
+	"minimum_players": "Per iniziare la partita servono minimo 3 giocatori",
 	"mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",
 	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot",
 	"your_turn": "È il tuo turno!",

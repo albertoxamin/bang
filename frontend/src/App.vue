@@ -119,62 +119,65 @@ h1,h2,h3,h4,p,span,b,label{
 	text-align: center;
 }
 .list-enter-active, .list-leave-active {
-  transition: all 0.5s;
+	transition: all 0.5s;
 }
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateY(30px);
+	opacity: 0;
+	transform: translateY(30px);
 }
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.25s ease-out;
+	transition: opacity 0.25s ease-out;
 }
 
 .fade-enter, .fade-leave-to {
-  opacity: 0;
+	opacity: 0;
 }
 
 .bounce-enter-active, .bounce-leave-active {
-  animation: bounce-in .5s;
+	animation: bounce-in .5s;
 }
 
 .fade-enter, .bounce-leave-to {
-  animation: bounce-out .5s;
+	animation: bounce-out .5s;
 }
 @keyframes bounce-in {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
+	0% {
+		transform: scale(0);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 @keyframes bounce-out {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(0);
-  }
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+	100% {
+		transform: scale(0);
+	}
 }
 input, select {
-  border: 2px solid;
-  border-radius: 4px;
-  font-size: 1rem;
-  margin: 0.25rem;
-  min-width: 125px;
-  padding: 0.5rem;
-  transition: border-color 0.5s ease-out;
+	border: 2px solid;
+	border-radius: 4px;
+	font-size: 1rem;
+	margin: 0.25rem;
+	min-width: 125px;
+	padding: 0.5rem;
+	transition: border-color 0.5s ease-out;
+}
+input:disabled {
+	opacity: 0.5;
 }
 @media (prefers-color-scheme: dark) {
 	:root, #app, input, select {
-    background-color: #181a1b;
-    color: rgb(174, 194, 211);
-  }
+		background-color: #181a1b;
+		color: rgb(174, 194, 211);
+	}
 }
 </style>

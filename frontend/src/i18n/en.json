@@ -105,6 +105,10 @@
 		"leggedelwest": "He must play this card on this turn if possible."
 	},
 	"mods": "Modifiers",
+	"bots": "Bots",
+	"add_bot": "Add a bot",
+	"remove_bot": "Remove a bot",
+	"minimum_players": "The game needs at least 3 players to start",
 	"mod_comp": "Competitive mode (disables automatic take damage)",
 	"disconnect_bot": "Replace players that disconnect with bots",
 	"your_turn": "Play your turn!",
