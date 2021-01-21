@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import message_sfx from '@/assets/sounds/tap-kissy.mp3'
+import notification_sfx from '@/assets/sounds/tap-sizzle.mp3'
 export default {
 	name: 'Chat',
 	data: () => ({
@@ -27,9 +29,11 @@ export default {
 			if ((typeof msg === "string") && msg.indexOf('_') === 0) {
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
-				this.messages.push({text:this.$t(`chat.${type}`, params)})
+				this.messages.push({text:this.$t(`chat.${type}`, params)});
+				(new Audio(notification_sfx)).play();
 			}else {
-				this.messages.push(msg)
+				(new Audio(message_sfx)).play();
+				this.messages.push(msg);
 			}
 			let container = this.$el.querySelector("#chatbox");
 			container.scrollTop = container.scrollHeight;
