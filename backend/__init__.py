@@ -20,6 +20,7 @@ static_files={
     '/img/icons': './img/icons',
     '/manifest.json': {'filename': 'manifest.json'},
     '/css': './css',
+    '/media': './media',
     '/js': './js',
 }
 for file in [f for f in os.listdir('.') if '.js' in f or '.map' in f or '.html' in f]:
