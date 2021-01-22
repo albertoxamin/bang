@@ -3,7 +3,7 @@
 		<h1>{{text}}</h1>
 		<div>
 		<transition-group name="list" tag="div">
-				<Card v-for="(c, i) in cards" v-bind:key="c.name+c.number" :alt="i" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
+				<Card v-for="(c, i) in cards" v-bind:key="c.name ? (c.name+c.number) : i" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
 		</transition-group>
 		</div>
 		<p v-if="hintText">{{hintText}}</p>
