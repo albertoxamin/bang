@@ -1,4 +1,5 @@
 
+import json
 from typing import List, Set, Dict, Tuple, Optional
 import random
 import socketio
@@ -208,6 +209,8 @@ class Game:
         self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
         self.players[self.turn].choose_text = 'choose_card_to_get'
         self.players[self.turn].available_cards = self.available_cards
+        self.sio.emit('emporio', room=self.name, data=json.dumps(
+            {'name':self.players[self.turn].name,'cards': self.available_cards}, default=lambda o: o.__dict__))
         self.players[self.turn].notify_self()
 
     def respond_emporio(self, player, i):
@@ -218,12 +221,15 @@ class Game:
         pls = self.get_alive_players()
         nextPlayer = pls[(pls.index(self.players[self.turn])+(len(pls)-len(self.available_cards))) % len(pls)]
         if nextPlayer == self.players[self.turn]:
+            self.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
         else:
             nextPlayer.pending_action = pl.PendingAction.CHOOSE
             nextPlayer.choose_text = 'choose_card_to_get'
             nextPlayer.available_cards = self.available_cards
+            self.sio.emit('emporio', room=self.name, data=json.dumps(
+            {'name':nextPlayer.name,'cards': self.available_cards}, default=lambda o: o.__dict__))
             nextPlayer.notify_self()
 
     def get_player_named(self, name:str):

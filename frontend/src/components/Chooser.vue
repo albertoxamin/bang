@@ -2,7 +2,9 @@
 	<div id="overlay" class="center-stuff">
 		<h1>{{text}}</h1>
 		<div>
-			<Card v-for="(c, i) in cards" v-bind:key="i" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
+		<transition-group name="list" tag="div">
+				<Card v-for="(c, i) in cards" v-bind:key="c.name+c.number" :alt="i" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
+		</transition-group>
 		</div>
 		<p v-if="hintText">{{hintText}}</p>
 		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{realCancelText}}</span></div>

@@ -36,7 +36,7 @@
 		<transition name="list">
 			<p v-if="hint"><i>{{hint}}</i></p>
 		</transition>
-		<Chooser v-if="is_my_turn && pending_action == 4 && (lives > 0 || is_ghost)" :text="$t('wait')" :cards="[]"/>
+		<Chooser v-if="is_my_turn && pending_action == 4 && (lives > 0 || is_ghost) && !(emporioCards && emporioCards.cards && emporioCards.cards.length > 0)" :text="$t('wait')" :cards="[]"/>
 		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond"/>
 		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose"/>
@@ -56,6 +56,7 @@
 		<Chooser v-if="holydayScrap && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length}`"
 							:cards="notScrappedHand" :select="holydayScrapAdd" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="visiblePlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
+		<Chooser style="filter: grayscale(1);" v-if="emporioCards && emporioCards.cards && emporioCards.cards.length > 0 && pending_action === 4" :text="$t('emporio_others', [emporioCards.name])" :cards="emporioCards.cards"/>
 	</div>
 </template>
 
@@ -111,6 +112,7 @@ export default {
 		is_ghost: false,
 		name: '',
 		eventCard: false,
+		emporioCards: {},
 	}),
 	sockets: {
 		role(role) {
@@ -120,6 +122,9 @@ export default {
 		},
 		characters(data) {
 			this.availableCharacters = JSON.parse(data)
+		},
+		emporio(cards) {
+			this.emporioCards = JSON.parse(cards)
 		},
 		self(self) {
 			self = JSON.parse(self)
