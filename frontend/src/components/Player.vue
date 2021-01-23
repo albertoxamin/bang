@@ -256,6 +256,7 @@ export default {
 				if ((x.name == 'Bang!' || (calamity_special && x.name=='Mancato!')) && (cant_play_bang || (this.eventCard && this.eventCard.name == "Sermone"))) cantBePlayed = true;
 				else if (this.eventCard && this.eventCard.name == "Il Giudice" && (x.is_equipment || !x.can_be_used_now)) cantBePlayed = true;
 				else if (this.eventCard && this.eventCard.name == "Il Reverendo" && (x.name == "Birra")) cantBePlayed = true;
+				else if (this.need_with && this.hand.length === 1) cantBePlayed = true;
 				return {
 					...x,
 					cantBePlayed: cantBePlayed

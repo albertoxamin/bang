@@ -305,6 +305,7 @@ class CanCan(CatBalou):
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
+            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|{self.name}|{against}')
             return super().play_card(player, against)
         else:
             if not self.is_duplicate_card(player):

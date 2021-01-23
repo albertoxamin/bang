@@ -16,6 +16,8 @@
 <script>
 import message_sfx from '@/assets/sounds/tap-kissy.mp3'
 import notification_sfx from '@/assets/sounds/tap-sizzle.mp3'
+import dynamite_sfx from '@/assets/sounds/dynamite.mp3'
+import prison_sfx from '@/assets/sounds/prison.mp3'
 import turn_sfx from '@/assets/sounds/beep-holdtone.mp3'
 import death_sfx from '@/assets/sounds/beep-organ.mp3'
 export default {
@@ -37,9 +39,13 @@ export default {
 				this.messages.push({text:this.$t(`chat.${type}`, params)});
 				if (type == 'turn' && params[0] == this.username) {
 					(new Audio(turn_sfx)).play();
-				}else if (type == 'died_role') {
+				} else if (type == 'died_role') {
 					(new Audio(death_sfx)).play();
-				}else{
+				} else if (type == 'explode') {
+					(new Audio(dynamite_sfx)).play();
+				} else if (type == 'prison_turn') {
+					(new Audio(prison_sfx)).play();
+				} else {
 					(new Audio(notification_sfx)).play();
 				}
 			}else {
