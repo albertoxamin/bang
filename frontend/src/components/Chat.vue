@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import message_sfx from '@/assets/sounds/tap-kissy.mp3'
-import notification_sfx from '@/assets/sounds/tap-sizzle.mp3'
+import message_sfx from '@/assets/sounds/message.mp3'
+import notification_sfx from '@/assets/sounds/actionlog.mp3'
 import dynamite_sfx from '@/assets/sounds/dynamite.mp3'
 import prison_sfx from '@/assets/sounds/prison.mp3'
-import turn_sfx from '@/assets/sounds/beep-holdtone.mp3'
-import death_sfx from '@/assets/sounds/beep-organ.mp3'
+import turn_sfx from '@/assets/sounds/turn.mp3'
+import death_sfx from '@/assets/sounds/death.mp3'
 export default {
 	name: 'Chat',
 	props: {
