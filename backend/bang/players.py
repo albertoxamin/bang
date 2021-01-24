@@ -967,7 +967,7 @@ class Player:
 
     def end_turn(self, forced=False):
         print(f"{self.name} wants to end his turn")
-        if not self.is_my_turn:
+        if not self.is_my_turn and not forced:
             return
         maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
         if len(self.hand) > maxcards and not forced:
