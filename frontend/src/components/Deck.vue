@@ -16,7 +16,7 @@
 				<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
 				<card v-else :card="card" class="back" style="opacity:0"/>
 				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap.name+lastScrap.number" class="last-scrap" @click.native="action('scrap')"
-							@pointerenter.native="desc=($i18n.locale=='it'?lastScrap.desc:lastScrap.desc_eng)" @pointerleave.native="desc=''" />
+							@pointerenter.native="setdesc" @pointerleave.native="desc=''" />
 			</div>
 		</div>
 		<transition name="list">
@@ -99,6 +99,12 @@ export default {
 			if (this.pending_action !== false) {
 				this.$socket.emit('draw', 'event')
 			}
+		},
+		setdesc() {
+			if (this.lastScrap.desc)
+				this.desc = (this.$i18n.locale=='it'?this.lastScrap.desc:this.lastScrap.desc_eng)
+			else
+				this.desc = this.$t(`cards.${this.lastScrap.name}.desc`)
 		}
 	},
 	watch: {

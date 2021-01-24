@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import PrettyCheck from 'pretty-checkbox-vue/check'
 import Card from '@/components/Card.vue'
 import Chooser from './Chooser.vue'
@@ -132,7 +133,8 @@ export default {
 			this.started = true;
 		},
 		players_update(data) {
-			console.log(data)
+			if (Vue.config.devtools)
+				console.log(data)
 			this.players = data
 		},
 		me(username) {
@@ -141,7 +143,25 @@ export default {
 				this.$router.push('/')
 			}
 			this.username = username
+			// this.$socket.emit('get_cards', 'dodge_city')
 		},
+		// cards_info(data) {
+		// 	data = JSON.parse(data)
+		// 	let bigthing = {}
+		// 	let bigthing_eng = {}
+		// 	data.forEach(x => {
+		// 		bigthing[x.name] = {
+		// 			name:x.name,
+		// 			desc:x.desc,
+		// 		}
+		// 		bigthing_eng[x.name] = {
+		// 			name:x.name,
+		// 			desc:x.desc_eng,
+		// 		}
+		// 	})
+		// 	console.log(JSON.stringify(bigthing))
+		// 	console.log(JSON.stringify(bigthing_eng))
+		// },
 		change_username() {
 			this.hasToSetUsername = true
 		},
@@ -182,7 +202,8 @@ export default {
 			return null;
 		},
 		playersTable() {
-			console.log('update players')
+			if (Vue.config.devtools)
+				console.log('update players')
 			return this.players.map((x,i) => {
 				let offsetAngle = 360.0 / this.players.length
 				let rotateAngle = (i) * offsetAngle
@@ -197,7 +218,8 @@ export default {
 	},
 	methods: {
 		is_toggled_expansion(ex) {
-			console.log(ex+' '+ this.expansions+ (this.expansions.indexOf(ex) !== -1))
+			if (Vue.config.devtools)
+				console.log(ex+' '+ this.expansions+ (this.expansions.indexOf(ex) !== -1))
 			return this.expansions.indexOf(ex) !== -1
 		},
 		leaveRoom() {
@@ -241,10 +263,12 @@ export default {
 			this.$socket.emit('start_game')
 		},
 		choose(player_name) {
-			console.log('choose from' + player_name)
+			if (Vue.config.devtools)
+				console.log('choose from' + player_name)
 			this.target_p = player_name
 			let pl = this.players.filter(x=>x.name === player_name)[0]
-			console.log(pl)
+			if (Vue.config.devtools)
+				console.log(pl)
 			let arr = []
 			for (let i=0; i<pl.ncards; i++)
 				arr.push({
@@ -258,13 +282,15 @@ export default {
 		},
 		chooseCard(card) {
 			this.$socket.emit('choose', this.chooseCards.indexOf(card))
-			console.log(card + ' ' + this.chooseCards.indexOf(card))
+			if (Vue.config.devtools)
+				console.log(card + ' ' + this.chooseCards.indexOf(card))
 			this.chooseCards = []
 			this.hasToChoose = false
 			this.target_p = ''
 		},
 		drawFromPlayer(name) {
-			console.log(name)
+			if (Vue.config.devtools)
+				console.log(name)
 			this.$socket.emit('draw', name)
 		},
 		setUsername(name){
@@ -282,7 +308,8 @@ export default {
 		}
 	},
 	mounted() {
-		console.log('mounted lobby')
+		if (Vue.config.devtools)
+			console.log('mounted lobby')
 		if (!this.$route.query.code)
 			return this.$router.push('/')
 		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username')})

@@ -13,7 +13,7 @@
 			</transition-group>
 			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
-					@pointerenter.native="desc=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="desc=''"
+					@pointerenter.native="setDesc(card)" @pointerleave.native="desc=''"
 					@click.native="play_card(card, true)" :class="{'cant-play':((eventCard && eventCard.name == 'Lazo') || !card.can_be_used_now)}"/>
 			</transition-group>
 		</div>
@@ -29,7 +29,7 @@
 			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
 				<Card v-for="card in handComputed" v-bind:key="card.name+card.number" :card="card" 
 					@click.native="play_card(card, false)"
-					@pointerenter.native="hint=($i18n.locale=='it'?card.desc:card.desc_eng)" @pointerleave.native="hint=''"
+					@pointerenter.native="setHint(card)" @pointerleave.native="hint=''"
 					:class="{'cant-play':card.cantBePlayed}"/>
 			</transition-group>
 		</div>
@@ -278,6 +278,18 @@ export default {
 				this.scrapHand = []
 				this.sidWantsScrapForHealth = false
 			}
+		},
+		setDesc(card) {
+			if (card.desc)
+				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
+			else
+				this.desc = this.$t(`cards.${card.name}.desc`)
+		},
+		setHint(card) {
+			if (card.desc)
+				this.hint = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
+			else
+				this.hint = this.$t(`cards.${card.name}.desc`)
 		},
 		holydayScrapAdd(c) {
 			this.scrapHand.push(this.hand.indexOf(c))
