@@ -45,6 +45,9 @@ class Card(ABC):
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
+    def num_suit(self):
+        return f"{['♦️', '♣️', '♥️', '♠️'][int(self.suit)]}{self.number}"
+
     def play_card(self, player, against=None, _with=None):#self --> carta
         if self.is_equipment:
             if self.is_weapon:
@@ -150,7 +153,7 @@ class Remington(Card):
 
 class RevCarabine(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, 'Rev. Carabine', number,
+        super().__init__(suit, 'Rev Carabine', number,
                          is_equipment=True, is_weapon=True, range=4)
         self.icon = '🔫'
         # self.desc = "Puoi sparare a un giocatore che sia distante 4 o meno"

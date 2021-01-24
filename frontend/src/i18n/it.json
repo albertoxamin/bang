@@ -77,7 +77,7 @@
 		"turn": "È il turno di {0}.",
 		"draw_from_scrap": "{0} ha pescato la prima carta dalla pila delle carte scartate.",
 		"draw_from_player": "{0} ha pescato la prima carta dalla mano di {1}.",
-		"flipped": "{0} ha estratto {1}.",
+		"flipped": "{0} ha estratto {1} {2}.",
 		"explode": "{0} ha fatto esplodere la dinamite.",
 		"beer_save": "{0} ha usato una birra per recuperare una vita.",
 		"play_card": "{0} ha giocato {1}.",
@@ -89,7 +89,7 @@
 		"saloon": "{0} ha giocato {1} e ha curato 1 punto vita a tutti.",
 		"special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
 		"special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
-		"special_calamity": "{0} ha giovato {1} come un Bang! contro {2}.",
+		"special_calamity": "{0} ha giocato {1} come un Bang! contro {2}.",
 		"allroles": "Nella partita ci sono: {0}.",
 		"guess": "{0} pensa sia {1}.",
 		"guess_right": "{0} ha indovinato.",
@@ -140,7 +140,7 @@
 			"name": "Remington",
 			"desc": "Puoi sparare a un giocatore che sia distante 3 o meno"
 		},
-		"Rev. Carabine": {
+		"Rev Carabine": {
 			"name": "Rev. Carabine",
 			"desc": "Puoi sparare a un giocatore che sia distante 4 o meno"
 		},

@@ -77,7 +77,7 @@
 		"turn": "It is the turn of {0}.",
 		"draw_from_scrap": "{0} did draw the first card from the scrap pile.",
 		"draw_from_player": "{0} did draw the first card from the hand of {1}.",
-		"flipped": "{0} flipped a {1}.",
+		"flipped": "{0} flipped a {1} {2}.",
 		"explode": "{0} blew up the dynamite.",
 		"beer_save": "{0} used a beer to save his life.",
 		"play_card": "{0} played {1}.",
@@ -140,7 +140,7 @@
 			"name": "Remington",
 			"desc": "You can shoot another player at distance 3 or less"
 		},
-		"Rev. Carabine": {
+		"Rev Carabine": {
 			"name": "Rev. Carabine",
 			"desc": "You can shoot another player at distance 4 or less"
 		},

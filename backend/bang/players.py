@@ -451,7 +451,7 @@ class Player:
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
-                                      data=f'_flipped|{self.name}|{picked}')
+                                      data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if picked.check_suit(self.game, [cs.Suit.SPADES]) and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             self.game.deck.scrap(self.equipment.pop(i), True)
@@ -477,7 +477,7 @@ class Player:
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
-                                      data=f'_flipped|{self.name}|{picked}')
+                                      data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if not picked.check_suit(self.game, [cs.Suit.HEARTS]) and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
                             self.sio.emit('chat_message', room=self.game.name, data=f'_prison_turn|{self.name}')
@@ -691,7 +691,7 @@ class Player:
             picked: cs.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
             self.sio.emit('chat_message', room=self.game.name,
-                            data=f'_flipped|{self.name}|{picked}')
+                            data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
             if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                 self.mancato_needed -= 1
                 self.notify_self()
@@ -721,7 +721,7 @@ class Player:
             picked: cs.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
             self.sio.emit('chat_message', room=self.game.name,
-                            data=f'_flipped|{self.name}|{picked}')
+                            data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
             if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                 self.mancato_needed -= 1
                 self.notify_self()
@@ -880,7 +880,7 @@ class Player:
             if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
                 self.hand.append(self.game.deck.draw(True))
             card.use_card(self)
-            self.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card}')
+            self.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
             self.game.deck.scrap(card, True)
             self.notify_self()
             self.mancato_needed -= 1
@@ -976,7 +976,7 @@ class Player:
         elif self.pending_action == PendingAction.PLAY or forced:
             if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
-                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked}')
+                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                 if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                     self.play_turn(can_play_vendetta=False)
                     return
