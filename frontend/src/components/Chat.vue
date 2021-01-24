@@ -51,7 +51,7 @@ export default {
 				} else {
 					(new Audio(notification_sfx)).play();
 				}
-			}else {
+			} else { // a chat message
 				(new Audio(message_sfx)).play();
 				this.messages.push(msg);
 			}
