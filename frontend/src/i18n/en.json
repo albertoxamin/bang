@@ -28,7 +28,7 @@
 	"flip_card": "▶️ Flip a card",
 	"draw_cards": "▶️ Draw you cards from the deck",
 	"play_cards": "▶️ Play your cards",
-	"respond_card":"▶️ Respond to the card",
+	"respond_card": "▶️ Respond to the card",
 	"wait": "⏸ Wait",
 	"choose_cards": "▶️ Choose a card",
 	"take_dmg": "Take damage",
@@ -46,17 +46,17 @@
 	"choose_rimbalzo_player": "Choose the target of the bang",
 	"choose_rimbalzo_card": "Choose the card to discard the bang to",
 	"emporio_others": "{0} is choosing which card to get from the General Store",
-	"you_died":"YOU DIED",
-	"spectate":"SPECTATE",
-	"you_win":"YOU WON",
-	"you_lose":"YOU LOST",
+	"you_died": "YOU DIED",
+	"spectate": "SPECTATE",
+	"you_win": "YOU WON",
+	"you_lose": "YOU LOST",
 	"special_ability": "SPECIAL ABILITY",
 	"discard": "DISCARD",
 	"to_regain_1_hp": "TO REGAIN 1 HP",
 	"play_your_turn": "PLAY YOUR TURN",
 	"you_are": "You are",
 	"did_pick_as": "picked this as second card",
-	"blackjack_special":"If the card is diamonds or hearts, he picks another card.",
+	"blackjack_special": "If the card is diamonds or hearts, he picks another card.",
 	"choose_scarp_card_to": "CHOOSE WHICH CARD TO DISCARD TO USE",
 	"pick_a_card": "FLIP A CARD",
 	"to_defend_from": "TO DEFEND YOURSELF FROM",
@@ -77,7 +77,7 @@
 		"turn": "It is the turn of {0}.",
 		"draw_from_scrap": "{0} did draw the first card from the scrap pile.",
 		"draw_from_player": "{0} did draw the first card from the hand of {1}.",
-		"flipped": "{0} flipped a {1}.",
+		"flipped": "{0} flipped a {1} {2}.",
 		"explode": "{0} blew up the dynamite.",
 		"beer_save": "{0} used a beer to save his life.",
 		"play_card": "{0} played {1}.",
@@ -114,5 +114,183 @@
 	"disconnect_bot": "Replace players that disconnect with bots",
 	"your_turn": "Play your turn!",
 	"your_response": "Respond!",
-	"your_choose": "Choose a card!"
+	"your_choose": "Choose a card!",
+	"cards": {
+		"Barile": {
+			"name": "Barrel",
+			"desc": "When someone plays a Bang against you. You can flip the first card from the deck, if the suit is Hearts then it counts as a Missed card"
+		},
+		"Dinamite": {
+			"name": "Dynamite",
+			"desc": "When playing Dynamite, place it in front of you, it will remain harmless for a whole round. At the beginning of the next turn before drawing and before any card flip (eg Prison), flip a card from the top of the deck. If a card is between 2 and 9 of spades (inclusive) then the dynamite explodes: you lose 3 lives and discard the card, otherwise pass the dynamite to the next player, who will draw in turn after you have ended your turn"
+		},
+		"Mirino": {
+			"name": "Scope",
+			"desc": "You see the other players at distance -1"
+		},
+		"Mustang": {
+			"name": "Mustang",
+			"desc": "The other players see you at distance +1"
+		},
+		"Prigione": {
+			"name": "Prison",
+			"desc": "Equip this card to another player, except the Sheriff. The player chosen at the beginning of his turn, must flip a card before drawing: if it's Hearts, discard this card and play the turn normally, otherwise discard this card and skip the turn"
+		},
+		"Remington": {
+			"name": "Remington",
+			"desc": "You can shoot another player at distance 3 or less"
+		},
+		"Rev Carabine": {
+			"name": "Rev. Carabine",
+			"desc": "You can shoot another player at distance 4 or less"
+		},
+		"Schofield": {
+			"name": "Schofield",
+			"desc": "You can shoot another player at distance 2 or less"
+		},
+		"Volcanic": {
+			"name": "Volcanic",
+			"desc": "You can shoot another player at distance 1 or less, however you no longer have the limit of 1 Bang"
+		},
+		"Winchester": {
+			"name": "Winchester",
+			"desc": "You can shoot another player at distance 5 or less"
+		},
+		"Bang!": {
+			"name": "Bang!",
+			"desc": "Shoot a player in sight. If you do not have weapons, your is sight is 1"
+		},
+		"Birra": {
+			"name": "Beer",
+			"desc": "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
+		},
+		"Cat Balou": {
+			"name": "Cat Balou",
+			"desc": "Choose and discard a card from any other player."
+		},
+		"Diligenza": {
+			"name": "Stagecoach",
+			"desc": "Draw 2 cards from the deck."
+		},
+		"Duello": {
+			"name": "Duel",
+			"desc": "Play this card against any player. In turn, starting with your opponent, you can discard a Bang! Card, the first player who does not do so loses 1 life."
+		},
+		"Emporio": {
+			"name": "General Store",
+			"desc": "Put on the table N cards from the deck, where N is the number of alive players, in turn, starting with you, choose a card and add it to your hand"
+		},
+		"Gatling": {
+			"name": "Gatling",
+			"desc": "Shoot all the other players"
+		},
+		"Indiani!": {
+			"name": "Indians!",
+			"desc": "All the other players must discard a Bang! or lose 1 Health Point"
+		},
+		"Mancato!": {
+			"name": "Missed!",
+			"desc": "Use this card to cancel the effect of a bang"
+		},
+		"Panico!": {
+			"name": "Panic!",
+			"desc": "Steal a card from a player at distance 1"
+		},
+		"Saloon": {
+			"name": "Saloon",
+			"desc": "Everyone heals 1 Health point"
+		},
+		"WellsFargo": {
+			"name": "WellsFargo",
+			"desc": "Draw 3 cards from the deck"
+		},
+		"Binocolo": {
+			"name": "Binocular",
+			"desc": "You see the other players at distance -1"
+		},
+		"Riparo": {
+			"name": "Hidoeut",
+			"desc": "The other players see you at distance +1"
+		},
+		"Pugno!": {
+			"name": "Fist!",
+			"desc": "Shoot a player at distance 1"
+		},
+		"Rag Time": {
+			"name": "Rag Time",
+			"desc": "Steal a card from another player at any distance"
+		},
+		"Rissa": {
+			"name": "Brawl",
+			"desc": "Choose a card to discard from the hand/equipment of all the other players"
+		},
+		"Schivata": {
+			"name": "Dodge",
+			"desc": "Use this card to cancel the effect of a bang and then draw a card."
+		},
+		"Springfield": {
+			"name": "Springfield",
+			"desc": "Shoot a player at any distance"
+		},
+		"Tequila": {
+			"name": "Tequila",
+			"desc": "Heal 1 HP to a player of your choice (can be you)"
+		},
+		"Whisky": {
+			"name": "Whisky",
+			"desc": "Heal 2 HP"
+		},
+		"Bibbia": {
+			"name": "Bible",
+			"desc": "Use this card to cancel the effect of a bang and then draw a card."
+		},
+		"Cappello": {
+			"name": "Ten Gallon Hat",
+			"desc": "Use this card to cancel the effect of a bang"
+		},
+		"Placca Di Ferro": {
+			"name": "Iron Plate",
+			"desc": "Use this card to cancel the effect of a bang"
+		},
+		"Sombrero": {
+			"name": "Sombrero",
+			"desc": "Use this card to cancel the effect of a bang"
+		},
+		"Pugnale": {
+			"name": "Knife",
+			"desc": "Shoot a player at distance 1"
+		},
+		"Derringer": {
+			"name": "Derringer",
+			"desc": "Shoot a player at distance 1 and then draw a card."
+		},
+		"Borraccia": {
+			"name": "Canteen",
+			"desc": "Regain 1 HP"
+		},
+		"Can Can": {
+			"name": "Can Can",
+			"desc": "Choose and discard a card from any other player."
+		},
+		"Conestoga": {
+			"name": "Conestoga",
+			"desc": "Steal a card from another player at any distance"
+		},
+		"Fucile Da Caccia": {
+			"name": "Buffalo Rifle",
+			"desc": "Shoot a player at any distance"
+		},
+		"Pony Express": {
+			"name": "Pony Express",
+			"desc": "Draw 3 cards from the deck"
+		},
+		"Pepperbox": {
+			"name": "Pepperbox",
+			"desc": "Shoot a player in sight. If you do not have weapons, your is sight is 1"
+		},
+		"Howitzer": {
+			"name": "Howitzer",
+			"desc": "Shoot all the other players"
+		}
+	}
 }

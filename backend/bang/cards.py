@@ -45,6 +45,9 @@ class Card(ABC):
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
+    def num_suit(self):
+        return f"{['♦️', '♣️', '♥️', '♠️'][int(self.suit)]}{self.number}"
+
     def play_card(self, player, against=None, _with=None):#self --> carta
         if self.is_equipment:
             if self.is_weapon:
@@ -90,8 +93,8 @@ class Barile(Card):
         super().__init__(suit, 'Barile', number, is_equipment=True)
         self.icon = '🛢'
         self.alt_text = "♥️=😅"
-        self.desc = "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
-        self.desc_eng = "When someone plays a Bang against you. You can flip the first card from the deck, if the suit is Hearts then it counts as a Missed card"
+        # self.desc = "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
+        # self.desc_eng = "When someone plays a Bang against you. You can flip the first card from the deck, if the suit is Hearts then it counts as a Missed card"
 
 
 class Dinamite(Card):
@@ -99,8 +102,8 @@ class Dinamite(Card):
         super().__init__(suit, 'Dinamite', number, is_equipment=True)
         self.icon = '🧨'
         self.alt_text = "2-9♠️ = 🤯"
-        self.desc = "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
-        self.desc_eng = "When playing Dynamite, place it in front of you, it will remain harmless for a whole round. At the beginning of the next turn before drawing and before any card flip (eg Prison), flip a card from the top of the deck. If a card is between 2 and 9 of spades (inclusive) then the dynamite explodes: you lose 3 lives and discard the card, otherwise pass the dynamite to the next player, who will draw in turn after you have ended your turn"
+        # self.desc = "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
+        # self.desc_eng = "When playing Dynamite, place it in front of you, it will remain harmless for a whole round. At the beginning of the next turn before drawing and before any card flip (eg Prison), flip a card from the top of the deck. If a card is between 2 and 9 of spades (inclusive) then the dynamite explodes: you lose 3 lives and discard the card, otherwise pass the dynamite to the next player, who will draw in turn after you have ended your turn"
 
 
 class Mirino(Card):
@@ -108,8 +111,8 @@ class Mirino(Card):
         super().__init__(suit, 'Mirino', number, is_equipment=True, sight_mod=1)
         self.icon = '🔎'
         self.alt_text = "-1"
-        self.desc = "Tu vedi gli altri giocatori a distanza -1"
-        self.desc_eng = "You see the other players at distance -1"
+        # self.desc = "Tu vedi gli altri giocatori a distanza -1"
+        # self.desc_eng = "You see the other players at distance -1"
 
 
 class Mustang(Card):
@@ -117,16 +120,16 @@ class Mustang(Card):
         super().__init__(suit, 'Mustang', number, is_equipment=True, vis_mod=1)
         self.icon = '🐎'
         self.alt_text = "+1"
-        self.desc = "Gli altri giocatori ti vedono a distanza +1"
-        self.desc_eng = "The other players see you at distance +1"
+        # self.desc = "Gli altri giocatori ti vedono a distanza +1"
+        # self.desc_eng = "The other players see you at distance +1"
 
 
 class Prigione(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Prigione', number, is_equipment=True)
         self.icon = '⛓'
-        self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
-        self.desc_eng = "Equip this card to another player, except the Sheriff. The player chosen at the beginning of his turn, must flip a card before drawing: if it's Hearts, discard this card and play the turn normally, otherwise discard this card and skip the turn"
+        # self.desc = "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
+        # self.desc_eng = "Equip this card to another player, except the Sheriff. The player chosen at the beginning of his turn, must flip a card before drawing: if it's Hearts, discard this card and play the turn normally, otherwise discard this card and skip the turn"
         self.need_target = True
         self.alt_text = "♥️= 🆓"
 
@@ -144,17 +147,17 @@ class Remington(Card):
         super().__init__(suit, 'Remington', number,
                          is_equipment=True, is_weapon=True, range=3)
         self.icon = '🔫'
-        self.desc = "Puoi sparare a un giocatore che sia distante 3 o meno"
-        self.desc_eng = "You can shoot another player at distance 3 or less"
+        # self.desc = "Puoi sparare a un giocatore che sia distante 3 o meno"
+        # self.desc_eng = "You can shoot another player at distance 3 or less"
 
 
 class RevCarabine(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, 'Rev. Carabine', number,
+        super().__init__(suit, 'Rev Carabine', number,
                          is_equipment=True, is_weapon=True, range=4)
         self.icon = '🔫'
-        self.desc = "Puoi sparare a un giocatore che sia distante 4 o meno"
-        self.desc_eng = "You can shoot another player at distance 4 or less"
+        # self.desc = "Puoi sparare a un giocatore che sia distante 4 o meno"
+        # self.desc_eng = "You can shoot another player at distance 4 or less"
 
 
 class Schofield(Card):
@@ -162,8 +165,8 @@ class Schofield(Card):
         super().__init__(suit, 'Schofield', number,
                          is_equipment=True, is_weapon=True, range=2)
         self.icon = '🔫'
-        self.desc = "Puoi sparare a un giocatore che sia distante 2 o meno"
-        self.desc_eng = "You can shoot another player at distance 2 or less"
+        # self.desc = "Puoi sparare a un giocatore che sia distante 2 o meno"
+        # self.desc_eng = "You can shoot another player at distance 2 or less"
 
 
 class Volcanic(Card):
@@ -171,8 +174,8 @@ class Volcanic(Card):
         super().__init__(suit, 'Volcanic', number,
                          is_equipment=True, is_weapon=True, range=1)
         self.icon = '🔫'
-        self.desc = "Puoi sparare a un giocatore che sia distante 1 o meno, tuttavia puoi giocare quanti bang vuoi"
-        self.desc_eng = "You can shoot another player at distance 1 or less, however you no longer have the limit of 1 Bang"
+        # self.desc = "Puoi sparare a un giocatore che sia distante 1 o meno, tuttavia puoi giocare quanti bang vuoi"
+        # self.desc_eng = "You can shoot another player at distance 1 or less, however you no longer have the limit of 1 Bang"
 
 
 class Winchester(Card):
@@ -180,16 +183,16 @@ class Winchester(Card):
         super().__init__(suit, 'Winchester', number,
                          is_equipment=True, is_weapon=True, range=5)
         self.icon = '🔫'
-        self.desc = "Puoi sparare a un giocatore che sia distante 5 o meno"
-        self.desc_eng = "You can shoot another player at distance 5 or less"
+        # self.desc = "Puoi sparare a un giocatore che sia distante 5 o meno"
+        # self.desc_eng = "You can shoot another player at distance 5 or less"
 
 
 class Bang(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Bang!', number)
         self.icon = '💥'
-        self.desc = "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
-        self.desc_eng = "Shoot a player in sight. If you do not have weapons, your is sight is 1"
+        # self.desc = "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
+        # self.desc_eng = "Shoot a player in sight. If you do not have weapons, your is sight is 1"
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
@@ -215,8 +218,8 @@ class Birra(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Birra', number)
         self.icon = '🍺'
-        self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
-        self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
+        # self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
+        # self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
     def play_card(self, player, against, _with=None):
         import bang.expansions.high_noon.card_events as ceh
@@ -240,8 +243,8 @@ class CatBalou(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Cat Balou', number)
         self.icon = '💃'
-        self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
-        self.desc_eng = "Choose and discard a card from any other player."
+        # self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
+        # self.desc_eng = "Choose and discard a card from any other player."
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
@@ -262,8 +265,8 @@ class Diligenza(Card):
         super().__init__(suit, 'Diligenza', number)
         self.icon = '🚡'
         self.alt_text = "🎴🎴"
-        self.desc = "Pesca 2 carte dalla cima del mazzo"
-        self.desc_eng = "Draw 2 cards from the deck."
+        # self.desc = "Pesca 2 carte dalla cima del mazzo"
+        # self.desc_eng = "Draw 2 cards from the deck."
 
     def play_card(self, player, against, _with=None):
         player.sio.emit('chat_message', room=player.game.name,
@@ -278,8 +281,8 @@ class Duello(Card):
         super().__init__(suit, 'Duello', number)
         self.need_target = True
         self.icon = '⚔️'
-        self.desc = "Gioca questa carta contro un qualsiasi giocatore. A turno, cominciando dal tuo avversario, potete scartare una carta Bang!, il primo giocatore che non lo fa perde 1 vita"
-        self.desc_eng = "Play this card against any player. In turn, starting with your opponent, you can discard a Bang! Card, the first player who does not do so loses 1 life."
+        # self.desc = "Gioca questa carta contro un qualsiasi giocatore. A turno, cominciando dal tuo avversario, potete scartare una carta Bang!, il primo giocatore che non lo fa perde 1 vita"
+        # self.desc_eng = "Play this card against any player. In turn, starting with your opponent, you can discard a Bang! Card, the first player who does not do so loses 1 life."
 
     def play_card(self, player, against, _with=None):
         if against != None:
@@ -293,8 +296,8 @@ class Emporio(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Emporio', number)
         self.icon = '🏪'
-        self.desc = "Scopri dal mazzo tante carte quanto il numero di giocatori vivi, a turno, partendo da te, scegliete una carta e aggiungetela alla vostra mano"
-        self.desc_eng = "Put on the table N cards from the deck, where N is the number of alive players, in turn, starting with you, choose a card and add it to your hand"
+        # self.desc = "Scopri dal mazzo tante carte quanto il numero di giocatori vivi, a turno, partendo da te, scegliete una carta e aggiungetela alla vostra mano"
+        # self.desc_eng = "Put on the table N cards from the deck, where N is the number of alive players, in turn, starting with you, choose a card and add it to your hand"
 
     def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
@@ -306,8 +309,8 @@ class Gatling(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Gatling', number)
         self.icon = '🛰'
-        self.desc = "Spara a tutti gli altri giocatori"
-        self.desc_eng = "Shoot all the other players"
+        # self.desc = "Spara a tutti gli altri giocatori"
+        # self.desc_eng = "Shoot all the other players"
         self.alt_text = "👥💥"
 
     def play_card(self, player, against, _with=None):
@@ -320,8 +323,8 @@ class Indiani(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Indiani!', number)
         self.icon = '🏹'
-        self.desc = "Tutti gli altri giocatori devono scartare un Bang! o perdere una vita"
-        self.desc_eng = "All the other players must discard a Bang! or lose 1 Health Point"
+        # self.desc = "Tutti gli altri giocatori devono scartare un Bang! o perdere una vita"
+        # self.desc_eng = "All the other players must discard a Bang! or lose 1 Health Point"
 
     def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
@@ -333,8 +336,8 @@ class Mancato(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mancato!', number)
         self.icon = '😅'
-        self.desc = "Usa questa carta per annullare un bang"
-        self.desc_eng = "Use this card to cancel the effect of a bang"
+        # self.desc = "Usa questa carta per annullare un bang"
+        # self.desc_eng = "Use this card to cancel the effect of a bang"
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
@@ -359,8 +362,8 @@ class Panico(Card):
         super().__init__(suit, 'Panico!', number, range=1)
         self.icon = '😱'
         self.need_target = True
-        self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
-        self.desc_eng = "Steal a card from a player at distance 1"
+        # self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
+        # self.desc_eng = "Steal a card from a player at distance 1"
 
     def play_card(self, player, against, _with=None):
         if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
@@ -377,8 +380,8 @@ class Panico(Card):
 class Saloon(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Saloon', number)
-        self.desc = "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
-        self.desc_eng = "Everyone heals 1 Health point"
+        # self.desc = "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
+        # self.desc_eng = "Everyone heals 1 Health point"
         self.icon = '🍻'
         self.alt_text = "👥🍺"
 
@@ -394,8 +397,8 @@ class Saloon(Card):
 class WellsFargo(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'WellsFargo', number)
-        self.desc = "Pesca 3 carte dalla cima del mazzo"
-        self.desc_eng = "Draw 3 cards from the deck"
+        # self.desc = "Pesca 3 carte dalla cima del mazzo"
+        # self.desc_eng = "Draw 3 cards from the deck"
         self.icon = '💸'
         self.alt_text = "🎴🎴🎴"
 

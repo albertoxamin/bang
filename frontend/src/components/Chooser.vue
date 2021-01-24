@@ -44,7 +44,10 @@ export default {
 	},
 	methods: {
 		showDesc(card) {
-			this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
+			if (card.desc)
+				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
+			else
+				this.desc = this.$t(`cards.${card.name}.desc`)
 		}
 	},
 	mounted() {

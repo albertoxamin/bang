@@ -1,6 +1,6 @@
 <template>
 	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn}">
-		<h4>{{card.name}}</h4>
+		<h4>{{cardName}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
 		<div class="suit">{{number}}{{suit}}</div>
@@ -14,6 +14,13 @@ export default {
 		card: Object
 	},
 	computed: {
+		cardName(){
+			console.log(this.$t(`cards.${this.card.name}.name`))
+			if (this.$t(`cards.${this.card.name}.name`) !== `cards.${this.card.name}.name`) {
+				return this.$t(`cards.${this.card.name}.name`)
+			}
+			return this.card.name
+		},
 		suit() {
 			if (this.card && !isNaN(this.card.suit)) {
 				let x = ['♦️','♣️','♥️','♠️']

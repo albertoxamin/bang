@@ -36,6 +36,9 @@ export default {
 			if ((typeof msg === "string") && msg.indexOf('_') === 0) {
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
+				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity"].indexOf(type) !== -1){
+					params[1] = this.$t(`cards.${params[1]}.name`)
+				}
 				this.messages.push({text:this.$t(`chat.${type}`, params)});
 				if (type == 'turn' && params[0] == this.username) {
 					(new Audio(turn_sfx)).play();
@@ -48,7 +51,7 @@ export default {
 				} else {
 					(new Audio(notification_sfx)).play();
 				}
-			}else {
+			} else { // a chat message
 				(new Audio(message_sfx)).play();
 				this.messages.push(msg);
 			}

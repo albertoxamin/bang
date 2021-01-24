@@ -17,8 +17,8 @@ class Pugno(Card):
         super().__init__(suit, 'Pugno!', number, range=1)
         self.icon = '👊'
         self.alt_text = "1🔎 💥"
-        self.desc = "Spara a un giocatore a distanza 1"
-        self.desc_eng = "Shoot a player at distance 1"
+        # self.desc = "Spara a un giocatore a distanza 1"
+        # self.desc_eng = "Shoot a player at distance 1"
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
@@ -33,8 +33,8 @@ class Schivata(Mancato):
         super().__init__(suit, number)
         self.name = 'Schivata'
         self.icon = '🙅‍♂️'
-        self.desc += " e poi pesca una carta"
-        self.desc_eng += " and then draw a card."
+        # self.desc += " e poi pesca una carta"
+        # self.desc_eng += " and then draw a card."
         self.alt_text = "😅 | 🎴"
 
     def play_card(self, player, against, _with=None):
@@ -48,8 +48,8 @@ class RagTime(Panico):
     def __init__(self, suit, number):
         Card.__init__(self, suit, 'Rag Time', number)
         self.icon = '🎹'
-        self.desc = "Ruba 1 carta da un giocatore a prescindere dalla distanza"
-        self.desc_eng = "Steal a card from another player at any distance"
+        # self.desc = "Ruba 1 carta da un giocatore a prescindere dalla distanza"
+        # self.desc_eng = "Steal a card from another player at any distance"
         self.need_target = True
         self.need_with = True
         self.alt_text = '2🃏 | 👤😱'
@@ -66,8 +66,8 @@ class Rissa(CatBalou):
         super().__init__(suit, number)
         self.name = 'Rissa'
         self.icon = '🥊'
-        self.desc = "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
-        self.desc_eng = "Choose a card to discard from the hand/equipment of all the other players"
+        # self.desc = "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
+        # self.desc_eng = "Choose a card to discard from the hand/equipment of all the other players"
         self.need_with = True
         self.need_target = False
         self.alt_text = '2🃏 | 👤💃'
@@ -88,8 +88,8 @@ class SpringField(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Springfield', number)
         self.icon = '🌵'
-        self.desc = "Spara a un giocatore a prescindere dalla distanza"
-        self.desc_eng = "Shoot a player at any distance"
+        # self.desc = "Spara a un giocatore a prescindere dalla distanza"
+        # self.desc_eng = "Shoot a player at any distance"
         self.need_target = True
         self.need_with = True
         self.alt_text = '2🃏 | 👤💥'
@@ -106,8 +106,8 @@ class Tequila(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Tequila', number)
         self.icon = '🍹'
-        self.desc = "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
-        self.desc_eng = "Heal 1 HP to a player of your choice (can be you)"
+        # self.desc = "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
+        # self.desc_eng = "Heal 1 HP to a player of your choice (can be you)"
         self.need_target = True
         self.can_target_self = True
         self.need_with = True
@@ -126,8 +126,8 @@ class Whisky(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Whisky', number)
         self.icon = '🥃'
-        self.desc = "Gioca questa carta per recuperare fino a 2 punti vita"
-        self.desc_eng = "Heal 2 HP"
+        # self.desc = "Gioca questa carta per recuperare fino a 2 punti vita"
+        # self.desc_eng = "Heal 2 HP"
         self.need_with = True
         self.alt_text = '2🃏 | 🍺🍺'
 
@@ -215,8 +215,8 @@ class Derringer(Pugnale):
         self.name = 'Derringer'
         self.icon = '🚬'
         self.alt_text += ' 🎴'
-        self.desc += ' e poi pesca una carta'
-        self.desc_eng += ' and then draw a card.'
+        # self.desc += ' e poi pesca una carta'
+        # self.desc_eng += ' and then draw a card.'
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
@@ -237,8 +237,8 @@ class Borraccia(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Borraccia', number)
         self.icon = '🍼'
-        self.desc = 'Recupera 1 vita'
-        self.desc_eng = 'Regain 1 HP'
+        # self.desc = 'Recupera 1 vita'
+        # self.desc_eng = 'Regain 1 HP'
         self.alt_text = "🍺"
         self.usable_next_turn = True
         self.can_be_used_now = False
@@ -318,8 +318,8 @@ class Conestoga(Panico):
     def __init__(self, suit, number):
         Card.__init__(self, suit, 'Conestoga', number)
         self.icon = "🏕"
-        self.desc = "Ruba 1 carta da un giocatore a prescindere dalla distanza"
-        self.desc_eng = "Steal a card from another player at any distance"
+        # self.desc = "Ruba 1 carta da un giocatore a prescindere dalla distanza"
+        # self.desc_eng = "Steal a card from another player at any distance"
         self.alt_text = "👤😱"
         self.need_target = True
         self.usable_next_turn = True
@@ -362,7 +362,7 @@ class FucileDaCaccia(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Fucile Da Caccia', number)
         self.icon = '🌂'
-        self.desc = "Spara a un giocatore a prescindere dalla distanza"
+        # self.desc = "Spara a un giocatore a prescindere dalla distanza"
         self.alt_text = "👤💥"
         self.need_target = True
         self.usable_next_turn = True

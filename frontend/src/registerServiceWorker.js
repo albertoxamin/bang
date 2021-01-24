@@ -1,17 +1,15 @@
-import { Workbox } from "workbox-window";
+import { Workbox } from 'workbox-window';
 
-let wb;
+if ('serviceWorker' in navigator) {
+	const wb = new Workbox('service-worker.js');
 
-if ("serviceWorker" in navigator) {
-	wb = new Workbox(`${process.env.BASE_URL}service-worker.js`);
-
-	wb.addEventListener("controlling", () => {
-		window.location.reload();
+	wb.addEventListener('installed', event => {
+		if (event.isUpdate) {
+			if (confirm(`Update available. Click OK to update`)) {
+				window.location.reload();
+			}
+		}
 	});
 
 	wb.register();
-} else {
-	wb = null;
 }
-
-export default wb;

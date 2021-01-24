@@ -348,5 +348,14 @@ def holyday_special(sid, data):
     ses: Player = sio.get_session(sid)
     ses.holyday_special(data)
 
+# @sio.event
+# def get_cards(sid, data):
+#     # if data == None or data == '':
+#         import bang.cards as c
+#         sio.emit('cards_info', data=json.dumps(c.get_starting_deck(['dodge_city']), default=lambda o: o.__dict__))
+#     # else:
+#         # import bang.expansions.dodge_city.cards as c
+#         # sio.emit('cards_info', data=json.dumps(c.get_starting_deck(), default=lambda o: o.__dict__))
+
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)
