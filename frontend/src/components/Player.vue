@@ -423,6 +423,13 @@ export default {
 	border-radius: 4pt;
 	min-height: 40pt;
 }
+@media not all and (min-resolution:.001dpcm)
+{ @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+	.hand {
+		border-radius: 0;
+	}
+}}
+
 .hand>.card{
 	margin-left: -30pt;
 }

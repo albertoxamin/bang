@@ -29,7 +29,9 @@
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
 					<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 					<div class="tiny-equipment">
-						<Card v-for="card in p.equipment" v-bind:key="card.name+card.number" :card="card" @click.native="selectedInfo = p.equipment"/>
+						<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
+									:card="card" @click.native="selectedInfo = p.equipment"
+									:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+1)*12,80))}pt`"/>
 					</div>
 					<div v-if="p.is_bot" style="position:absolute;bottom:57%;" class="center-stuff">
 						<span>🤖</span>
@@ -355,9 +357,6 @@ export default {
 	justify-content: space-evenly;
 	transform: scale(0.8);
 	margin-bottom: -4pt;
-}
-.tiny-equipment .card:nth-child(n+2) {
-	margin-top: -60pt;
 }
 .tiny-equipment .card:hover {
 	transform: translateY(10px) scale(1.1);
