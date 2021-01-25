@@ -14,6 +14,7 @@
 
 <script>
 import Card from '@/components/Card.vue'
+import show_sfx from '@/assets/sounds/chooser.mp3'
 
 export default {
 	name: 'Chooser',
@@ -30,6 +31,7 @@ export default {
 		},
 		text: String,
 		hintText: String,
+		playAudio: Boolean,
 	},
 	data: () => ({
 		desc: '',
@@ -54,6 +56,9 @@ export default {
 		this.realCancelText = this.cancelText
 		if (this.realCancelText == '') {
 			this.realCancelText = this.$t('cancel')
+		}
+		if (this.playAudio) {
+			(new Audio(show_sfx)).play();
 		}
 	},
 }
