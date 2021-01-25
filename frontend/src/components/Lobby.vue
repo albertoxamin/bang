@@ -240,7 +240,7 @@ export default {
 		getActionEmoji(p) {
 			if (p.is_my_turn === undefined || p.pending_action === undefined) return '';
 			if (p.pending_action != 4) {
-				return '▶️'
+				return ['↙️', '⏬', '▶️', '↩️', '4', '🔽'][p.pending_action]
 			} else if (p.is_my_turn) {
 				return '⏸'
 			} else {

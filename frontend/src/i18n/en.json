@@ -25,12 +25,12 @@
 	"choose_character": "Choose your character",
 	"choose_card": "Choose a card",
 	"choose_card_from": " from ",
-	"flip_card": "▶️ Flip a card",
-	"draw_cards": "▶️ Draw you cards from the deck",
+	"flip_card": "↙️ Flip a card",
+	"draw_cards": "⏬ Draw you cards from the deck",
 	"play_cards": "▶️ Play your cards",
-	"respond_card": "▶️ Respond to the card",
+	"respond_card": "↩️ Respond to the card",
 	"wait": "⏸ Wait",
-	"choose_cards": "▶️ Choose a card",
+	"choose_cards": "🔽 Choose a card",
 	"take_dmg": "Take damage",
 	"choose_response": "Choose your response ",
 	"choose_response_to": "to ",
@@ -209,7 +209,7 @@
 			"desc": "You see the other players at distance -1"
 		},
 		"Riparo": {
-			"name": "Hidoeut",
+			"name": "Hideout",
 			"desc": "The other players see you at distance +1"
 		},
 		"Pugno!": {
