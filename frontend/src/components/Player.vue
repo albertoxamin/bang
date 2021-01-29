@@ -85,7 +85,7 @@ export default {
 		lives: 0,
 		max_lives: 0,
 		hint: '',
-		pending_action: null,
+		pending_action: 4,
 		card_against: null,
 		card_with: null,
 		has_played_bang: false,

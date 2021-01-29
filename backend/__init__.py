@@ -32,6 +32,7 @@ online_players = 0
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
 
 @sio.event
 def connect(sid, environ):
@@ -160,17 +161,27 @@ def toggle_replace_with_bot(sid):
 @sio.event
 def join_room(sid, room):
     room_name = room['name']
-    print(f'{sid} joined a room named {room_name}')
     i = [g.name for g in games].index(room_name)
-    if games[i].password != '' and games[i].password != room['password'].upper():
-        return
-    sio.leave_room(sid, 'lobby')
-    sio.enter_room(sid, room_name)
-    while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
-        sio.get_session(sid).name += f'_{random.randint(0,100)}'
-    sio.emit('me', data=sio.get_session(sid).name, room=sid)
-    games[i].add_player(sio.get_session(sid))
-    advertise_lobbies()
+    if not games[i].started:
+        if games[i].password != '' and games[i].password != room['password'].upper():
+            return
+        print(f'{sid} joined a room named {room_name}')
+        sio.leave_room(sid, 'lobby')
+        sio.enter_room(sid, room_name)
+        while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
+            sio.get_session(sid).name += f'_{random.randint(0,100)}'
+        sio.emit('me', data=sio.get_session(sid).name, room=sid)
+        games[i].add_player(sio.get_session(sid))
+        advertise_lobbies()
+    else:
+        games[i].spectators.append(sio.get_session(sid))
+        sio.get_session(sid).game = games[i]
+        sio.get_session(sid).pending_action = PendingAction.WAIT
+        sio.enter_room(sid, games[0].name)
+        games[i].notify_room(sid)
+        eventlet.sleep(0.5)
+        games[i].notify_room(sid)
+        games[i].notify_all()
 
 @sio.event
 def chat_message(sid, msg):

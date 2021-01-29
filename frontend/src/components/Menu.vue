@@ -28,6 +28,11 @@
 						<Card v-for="lobby in openLobbies" v-bind:key="lobby.name" :card="getLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
 						<p v-if="noLobbyAvailable">{{$t("no_lobby_available")}}</p>
 					</div>
+					<h2>{{$t("spectate_lobbies")}}</h2>
+					<div style="display: flex">
+						<Card v-for="lobby in spectateLobbies" v-bind:key="lobby.name" :card="getSpectateLobbyCard(lobby)" @click.native="joinLobby(lobby)"/>
+						<p v-if="noSpectateLobbyAvailable">{{$t("no_lobby_available")}}</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -52,6 +57,7 @@ export default {
 		didSetUsername: false,
 		username: '',
 		openLobbies: [],
+		spectateLobbies: [],
 		lobbyName: '',
 		isInLobby: false,
 		onlinePlayers: 0,
@@ -59,6 +65,9 @@ export default {
 	computed: {
 		noLobbyAvailable() {
 			return this.openLobbies && this.openLobbies.length == 0
+		},
+		noSpectateLobbyAvailable() {
+			return this.spectateLobbies && this.spectateLobbies.length == 0
 		},
 		getSelfCard() {
 			return {
@@ -72,6 +81,9 @@ export default {
 	sockets: {
 		lobbies(data) {
 			this.openLobbies = data;
+		},
+		spectate_lobbies(data) {
+			this.spectateLobbies = data;
 		},
 		room(data) {
 			this.isInLobby = true;
@@ -97,6 +109,14 @@ export default {
 				icon: "💥",
 				number: `${lobby.players}🤠 ${lobby.locked?'🔐':''}`,
 				is_equipment: true,
+			}
+		},
+		getSpectateLobbyCard(lobby) {
+			return {
+				name: lobby.name,
+				icon: "👁️",
+				number: `${lobby.players}🤠 ${lobby.locked?'🔐':''}`,
+				usable_next_turn: true,
 			}
 		},
 		createLobby(e) {

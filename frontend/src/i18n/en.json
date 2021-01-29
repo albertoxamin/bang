@@ -3,6 +3,7 @@
 	"online_players": "Online players: ",
 	"choose_username": "Pick an username:",
 	"available_lobbies": "Available Lobbies:",
+	"spectate_lobbies": "Spectate ongoing games:",
 	"no_lobby_available": "No lobbies available",
 	"create_lobby": "Open a lobby:",
 	"lobby_name": "Name:",

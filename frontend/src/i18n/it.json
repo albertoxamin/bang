@@ -3,6 +3,7 @@
 	"online_players": "Giocatori online: ",
 	"choose_username": "Scegli un username:",
 	"available_lobbies": "Stanze disponibili:",
+	"spectate_lobbies": "Osserva le partite in corso:",
 	"no_lobby_available": "Nessuna stanza disponibile",
 	"create_lobby": "Crea una stanza:",
 	"lobby_name": "Nome:",
