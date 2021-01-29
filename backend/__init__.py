@@ -162,9 +162,9 @@ def toggle_replace_with_bot(sid):
 def join_room(sid, room):
     room_name = room['name']
     i = [g.name for g in games].index(room_name)
+    if games[i].password != '' and games[i].password != room['password'].upper():
+        return
     if not games[i].started:
-        if games[i].password != '' and games[i].password != room['password'].upper():
-            return
         print(f'{sid} joined a room named {room_name}')
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
