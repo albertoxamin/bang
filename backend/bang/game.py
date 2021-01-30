@@ -425,6 +425,7 @@ class Game:
         print(f'player {player.name} died')
         if self.waiting_for > 0 and player.pending_action == pl.PendingAction.RESPOND:
             self.responders_did_respond_resume_turn()
+            player.pending_action = pl.PendingAction.WAIT
 
         if player.is_dead: return
         if not self.started:

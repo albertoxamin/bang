@@ -291,7 +291,7 @@ def chat_message(sid, msg):
             elif '/arcadekick' in msg and ses.game.started:
                 if len([p for p in ses.game.players if p.pending_action != PendingAction.WAIT]) == 0:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'','text':f'KICKING THE ARCADE CABINET'})
-                    ses.game.play_turn()
+                    ses.game.next_turn()
             else:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
