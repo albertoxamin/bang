@@ -7,16 +7,16 @@
 			<input type="button" value="Visualizza tutti i personaggi"/>
 		<h2>Ruoli</h2>
 		<ul>
-			<li>Sceriffo</li>
-			<li>Fuorilegge</li>
-			<li>Rinnegato</li>
-			<li>Vice</li>
+			<li><p>Sceriffo ⭐️</p></li>
+			<li><p>Fuorilegge 🐺️</p></li>
+			<li><p>Rinnegato 🦅️</p></li>
+			<li><p>Vice 🎖️</p></li>
 		</ul>
 		<h2>Turni</h2>
-		<p>Si inizia sempre dallo Sceriffo, e il gioco prosegue in senso orario, i turni sono divisi in 3 fasi.</p>
+		<p>Si inizia sempre dallo Sceriffo ⭐️, e il gioco prosegue in senso orario, i turni sono divisi in 3 fasi.</p>
 		<ol>
-			<li><p>Pesca 2 carte</p></li>
-			<li><p>Gioca un numero qualsiasi di carte</p></li>
+			<li><p>Pesca 2 carte ⏬️</p></li>
+			<li><p>Gioca un numero qualsiasi di carte ▶️</p></li>
 			<li><p>Scarta le carte in eccesso</p></li>
 		</ol>
 		<h3>Pescare le carte</h3>
@@ -29,36 +29,36 @@
 			</div>
 		</div>
 		<h3>Giocare le carte</h3>
-Now you may play cards to help yourself or hurt the other players, trying
-to eliminate them. You can only play cards during your turn (exception:
-Missed! and Beer, see below). You are not forced to play cards during this
-phase. You can play any number of cards; there are only three limitations:
-•	 you can play only 1 BANG! card per turn;
-(this applies only to BANG! cards, not to cards with the symbol )
-•	 you can have only 1 copy of any one card in play;
-(one card is a copy of another if they have the same name)
-•	 you can have only 1 weapon in play.
-(when you play a new weapon, discard the one you have in play)
-Example. If you put a Barrel in play, you cannot play another one, since you
-would end up having two copies of the same card in front of you.
-There are two types of cards: brown-bordered cards (= play and discard) and
-blue-bordered cards (= weapons and other objects).
-Brown-bordered cards are played by putting
-them directly into the discard pile and applying
-the effect described with text or with symbols on
-the cards (illustrated in the next paragraphs).
-Blue-bordered cards are played face up in front
-of you (exception: Jail). Blue cards in front of
-you are hence defined to be “in play”. The effect
-of these cards lasts until they are discarded or
-removed somehow (e.g. through the play of a Cat
-Balou), or a special event occurs (e.g. in the case of Dynamite). There
-is no limit on the cards you can have in front of you provided that they do
-not share the same name.
-<h3>Scartare</h3>
-<p>Quando hai terminato di giocare le tue carte, ovvero quando non vuoi o non puoi giocare altre carte, devi scartare le carte che eccedono il tuo numero di vite attuali.
-Dopodichè passi il turno al giocatore successivo cliccando su termina turno.</p>
+		<p>Puoi giocare le tue carte per te oppure per recare danno agli altri giocatori cercando di eliminarli.</p>
+		<p>Puoi giocare le carte solo nel tuo turno. Ad eccezzione delle carte usate come risposta tipo i mancato 😅️.</p>
+		<p><b>Non sei obblicato a giocare carte.</b></p>
+		<p>Ci sono solo 3 limitazioni:</p>
+		<ul>
+			<li><p>Puoi giocare 1 solo Bang! per turno (si riferisce solo alle carte con nome Bang!)</p></li>
+			<li><p>Non puoi avere 2 carte con lo stesso nome equipaggiate.</p></li>
+			<li><p>Puoi avere solo 1 arma equipaggiata.</p></li>
+		</ul>
+		<h3>Scartare</h3>
+		<p>Quando hai terminato di giocare le tue carte, ovvero quando non vuoi o non puoi giocare altre carte, devi scartare le carte che eccedono il tuo numero di vite attuali.
+		Dopodichè passi il turno al giocatore successivo cliccando su termina turno.</p>
 		<card :card="endTurnCard" class="end-turn" @click.native="alert('')"/>
+		<h3>Distanza</h3>
+		<p>La distanza viene calcolata automaticamente dal gioco e corrisponde al percorso minimo tra la sinistra e la destra del giocatore.</p>
+		<h3>La morte di un giocatore</h3>
+		<p>Quando perdi l'ultimo punto vita e non hai una birra 🍺️ in mano, muori. Le tue carte vengono scartate e il tuo ruolo rivelato a tutti.</p>
+		<h3>Penalità e ricompense</h3>
+		<ul>
+			<li><p>Se lo sceriffo ⭐️ uccide un vice perde tutte le carte in mano e in gioco davanti a se.</p></li>
+			<li><p>Chiunque uccida un fuorilegge 🐺️ pesca 3 carte dal mazzo (anche altri fuorilegge 🐺️).</p></li>
+		</ul>
+		<h2>Fine del gioco</h2>
+		<p>Il gioco termina quando una delle seguenti condizioni si verifica:</p>
+		<ul>
+			<li><p>Lo sceriffo ⭐️ muore. Se il rinnegato 🦅️ è l'ultimo giocatore in vita vince, altrimenti vincono i fuorilegge.</p></li>
+			<li><p>Tutti i fuorilegge 🐺️ e i rinnegati 🦅️ sono morti. In tal caso vincono lo sceriffo ⭐️ e i vice 🎖️.</p></li>
+		</ul>
+		<h2>Le carte</h2>
+		<input type="button" value="Visualizza tutte le carte"/>
 	</div>
 </template>
 <script>
