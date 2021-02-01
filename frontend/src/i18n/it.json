@@ -1,297 +1,338 @@
 {
-	"trademark": "Bang! è un marchio registrato DVGiochi",
-	"online_players": "Giocatori online: ",
-	"choose_username": "Scegli un username:",
-	"available_lobbies": "Stanze disponibili:",
-	"spectate_lobbies": "Osserva le partite in corso:",
-	"no_lobby_available": "Nessuna stanza disponibile",
-	"create_lobby": "Crea una stanza:",
-	"lobby_name": "Nome:",
-	"leave_room": "Esci dalla stanza",
-	"warning": "Attenzione!",
-	"connection_error": "Connessione al server assente.",
-	"end_turn": "Termina turno!",
-	"start_game": "Avvia!",
-	"expansions": "Espansioni",
-	"details": "Dettagli",
-	"ok": "OK",
-	"you": "TU",
-	"owner": "GESTORE",
-	"cancel": "ANNULLA",
-	"password": "Password: ",
-	"room_password_prompt": "Password Stanza: ",
-	"private_room": "Stanza Privata",
-	"room": "Stanza: ",
-	"room_players": "Giocatori (tu sei {username})",
-	"choose_character": "Scegli il tuo personaggio",
-	"choose_card": "Scegli una carta",
-	"choose_card_from": " da ",
-	"flip_card": "↙️ Estrai una carta",
-	"draw_cards": "⏬ Pesca le tue carte",
-	"play_cards": "▶️ Gioca le tue carte",
-	"respond_card": "↩️ Rispondi alla carta",
-	"wait": "⏸ Attendi",
-	"choose_cards": "🔽 Scegli una carta",
-	"take_dmg": "Prendi Danno",
-	"choose_response": "Scegli come rispondere ",
-	"choose_response_to": "a ",
-	"choose_response_needed": "NE OCCORRONO ",
-	"hand": "MANO",
-	"card_against": "Contro chi vuoi giocare la carta",
-	"choose_card_to_get": "Scegli che carta pescare",
-	"choose_guess": "Indovina il colore del seme",
-	"choose_ranch": "Scegli le carte da sostituire",
-	"choose_dalton": "Scegli che equipaggiamento scartare",
-	"choose_fratelli_di_sangue": "Scegli a chi donare una delle tue vite",
-	"choose_cecchino": "Scegli contro chi sparare",
-	"choose_rimbalzo_player": "Scegli contro chi scartare il bang",
-	"choose_rimbalzo_card": "Scegli contro che carta scartare il bang",
-	"emporio_others": "{0} sta scegliendo che carta prendere dall'emporio",
-	"you_died": "SEI MORTO",
-	"spectate": "SPETTATORE",
-	"you_win": "HAI VINTO",
-	"you_lose": "HAI PERSO",
-	"special_ability": "ABILITÀ SPECIALE",
-	"discard": "SCARTA",
-	"to_regain_1_hp": "PER RECUPERARE 1 VITA",
-	"play_your_turn": "GIOCA IL TUO TURNO",
-	"you_are": "Tu sei",
-	"did_pick_as": "ha pescato come seconda carta",
-	"blackjack_special": "Se la carta è cuori o quadri ne pesca un'altra",
-	"choose_scarp_card_to": "SCEGLI CHE CARTA SCARTARE PER USARE",
-	"pick_a_card": "ESTRAI UNA CARTA",
-	"to_defend_from": "PER DIFENDERTI DA",
-	"submit": "Invia",
-	"copy": "Copia invito",
-	"no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
-	"chat": {
-		"spectators": " | Uno spettatore sta guardando la partita | {n} spettatori stanno guardando la partita",
-		"chat": "Chat",
-		"joined": "{0} è entrato nella stanza",
-		"died": "{0} è morto",
-		"died_role": "{0} era {1}!",
-		"won": "{0} ha vinto!",
-		"choose_character": "{0} ha come personaggio {1}, la sua abilità speciale è: {2}!",
-		"starting": "La partita sta iniziando!",
-		"sheriff": "{0} è lo sceriffo!",
-		"did_choose_character": "{0} ha scelto il personaggio.",
-		"turn": "È il turno di {0}.",
-		"draw_from_scrap": "{0} ha pescato la prima carta dalla pila delle carte scartate.",
-		"draw_from_player": "{0} ha pescato la prima carta dalla mano di {1}.",
-		"flipped": "{0} ha estratto {1} {2}.",
-		"explode": "{0} ha fatto esplodere la dinamite.",
-		"beer_save": "{0} ha usato una birra per recuperare una vita.",
-		"play_card": "{0} ha giocato {1}.",
-		"play_card_against": "{0} ha giocato {1} contro {2}.",
-		"play_card_for": "{0} ha giocato {1} per {2}.",
-		"spilled_beer": "{0} ha rovesciato una {1}.",
-		"diligenza": "{0} ha giocato {1} e ha pescato 2 carte.",
-		"wellsfargo": "{0} ha giocato {1} e ha pescato 3 carte.",
-		"saloon": "{0} ha giocato {1} e ha curato 1 punto vita a tutti.",
-		"special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
-		"special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
-		"special_calamity": "{0} ha giocato {1} come un Bang! contro {2}.",
-		"allroles": "Nella partita ci sono: {0}.",
-		"guess": "{0} pensa sia {1}.",
-		"guess_right": "{0} ha indovinato.",
-		"guess_wrong": "{0} ha sbagliato.",
-		"fratelli_sangue": "{0} ha donato una delle sue vite a {1}.",
-		"doctor_heal": "{0} è stato curato dal dottore.",
-		"respond": "{0} ha risposto con {1}.",
-		"change_username": "{0} ha cambiato nome in {1}.",
-		"lobby_reset": "Si ritorna alla stanza in {0} secondi...",
-		"prison_free": "{0} è uscito di prigione",
-		"prison_turn": "{0} rimane in prigione questo turno"
-	},
-	"foc": {
-		"leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
-	},
-	"mods": "Modificatori",
-	"bots": "Bot",
-	"add_bot": "Aggiungi un bot",
-	"remove_bot": "Rimuovi un bot",
-	"minimum_players": "Per iniziare la partita servono minimo 3 giocatori",
-	"mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",
-	"disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot",
-	"your_turn": "È il tuo turno!",
-	"your_response": "Rispondi!",
-	"your_choose": "Scegli una carta!",
-	"cards": {
-		"Barile": {
-			"name": "Barile",
-			"desc": "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
-		},
-		"Dinamite": {
-			"name": "Dinamite",
-			"desc": "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
-		},
-		"Mirino": {
-			"name": "Mirino",
-			"desc": "Tu vedi gli altri giocatori a distanza -1"
-		},
-		"Mustang": {
-			"name": "Mustang",
-			"desc": "Gli altri giocatori ti vedono a distanza +1"
-		},
-		"Prigione": {
-			"name": "Prigione",
-			"desc": "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
-		},
-		"Remington": {
-			"name": "Remington",
-			"desc": "Puoi sparare a un giocatore che sia distante 3 o meno"
-		},
-		"Rev Carabine": {
-			"name": "Rev. Carabine",
-			"desc": "Puoi sparare a un giocatore che sia distante 4 o meno"
-		},
-		"Schofield": {
-			"name": "Schofield",
-			"desc": "Puoi sparare a un giocatore che sia distante 2 o meno"
-		},
-		"Volcanic": {
-			"name": "Volcanic",
-			"desc": "Puoi sparare a un giocatore che sia distante 1 o meno, tuttavia puoi giocare quanti bang vuoi"
-		},
-		"Winchester": {
-			"name": "Winchester",
-			"desc": "Puoi sparare a un giocatore che sia distante 5 o meno"
-		},
-		"Bang!": {
-			"name": "Bang!",
-			"desc": "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
-		},
-		"Birra": {
-			"name": "Birra",
-			"desc": "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
-		},
-		"Cat Balou": {
-			"name": "Cat Balou",
-			"desc": "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
-		},
-		"Diligenza": {
-			"name": "Diligenza",
-			"desc": "Pesca 2 carte dalla cima del mazzo"
-		},
-		"Duello": {
-			"name": "Duello",
-			"desc": "Gioca questa carta contro un qualsiasi giocatore. A turno, cominciando dal tuo avversario, potete scartare una carta Bang!, il primo giocatore che non lo fa perde 1 vita"
-		},
-		"Emporio": {
-			"name": "Emporio",
-			"desc": "Scopri dal mazzo tante carte quanto il numero di giocatori vivi, a turno, partendo da te, scegliete una carta e aggiungetela alla vostra mano"
-		},
-		"Gatling": {
-			"name": "Gatling",
-			"desc": "Spara a tutti gli altri giocatori"
-		},
-		"Indiani!": {
-			"name": "Indiani!",
-			"desc": "Tutti gli altri giocatori devono scartare un Bang! o perdere una vita"
-		},
-		"Mancato!": {
-			"name": "Mancato!",
-			"desc": "Usa questa carta per annullare un bang"
-		},
-		"Panico!": {
-			"name": "Panico!",
-			"desc": "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
-		},
-		"Saloon": {
-			"name": "Saloon",
-			"desc": "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
-		},
-		"WellsFargo": {
-			"name": "WellsFargo",
-			"desc": "Pesca 3 carte dalla cima del mazzo"
-		},
-		"Binocolo": {
-			"name": "Binocolo",
-			"desc": "Tu vedi gli altri giocatori a distanza -1"
-		},
-		"Riparo": {
-			"name": "Riparo",
-			"desc": "Gli altri giocatori ti vedono a distanza +1"
-		},
-		"Pugno!": {
-			"name": "Pugno!",
-			"desc": "Spara a un giocatore a distanza 1"
-		},
-		"Rag Time": {
-			"name": "Rag Time",
-			"desc": "Ruba 1 carta da un giocatore a prescindere dalla distanza"
-		},
-		"Rissa": {
-			"name": "Rissa",
-			"desc": "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
-		},
-		"Schivata": {
-			"name": "Schivata",
-			"desc": "Usa questa carta per annullare un bang e poi pesca una carta"
-		},
-		"Springfield": {
-			"name": "Springfield",
-			"desc": "Spara a un giocatore a prescindere dalla distanza"
-		},
-		"Tequila": {
-			"name": "Tequila",
-			"desc": "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
-		},
-		"Whisky": {
-			"name": "Whisky",
-			"desc": "Gioca questa carta per recuperare fino a 2 punti vita"
-		},
-		"Bibbia": {
-			"name": "Bibbia",
-			"desc": "Usa questa carta per annullare un bang e poi pesca una carta"
-		},
-		"Cappello": {
-			"name": "Cappello",
-			"desc": "Usa questa carta per annullare un bang"
-		},
-		"Placca Di Ferro": {
-			"name": "Placca Di Ferro",
-			"desc": "Usa questa carta per annullare un bang"
-		},
-		"Sombrero": {
-			"name": "Sombrero",
-			"desc": "Usa questa carta per annullare un bang"
-		},
-		"Pugnale": {
-			"name": "Pugnale",
-			"desc": "Spara a un giocatore a distanza 1"
-		},
-		"Derringer": {
-			"name": "Derringer",
-			"desc": "Spara a un giocatore a distanza 1 e poi pesca una carta"
-		},
-		"Borraccia": {
-			"name": "Borraccia",
-			"desc": "Recupera 1 vita"
-		},
-		"Can Can": {
-			"name": "Can Can",
-			"desc": "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
-		},
-		"Conestoga": {
-			"name": "Conestoga",
-			"desc": "Ruba 1 carta da un giocatore a prescindere dalla distanza"
-		},
-		"Fucile Da Caccia": {
-			"name": "Fucile Da Caccia",
-			"desc": "Spara a un giocatore a prescindere dalla distanza"
-		},
-		"Pony Express": {
-			"name": "Pony Express",
-			"desc": "Pesca 3 carte dalla cima del mazzo"
-		},
-		"Pepperbox": {
-			"name": "Pepperbox",
-			"desc": "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
-		},
-		"Howitzer": {
-			"name": "Howitzer",
-			"desc": "Spara a tutti gli altri giocatori"
-		}
-	}
+  "trademark": "Bang! è un marchio registrato DVGiochi",
+  "online_players": "Giocatori online: ",
+  "choose_username": "Scegli un username:",
+  "available_lobbies": "Stanze disponibili:",
+  "spectate_lobbies": "Osserva le partite in corso:",
+  "no_lobby_available": "Nessuna stanza disponibile",
+  "create_lobby": "Crea una stanza:",
+  "lobby_name": "Nome:",
+  "leave_room": "Esci dalla stanza",
+  "warning": "Attenzione!",
+  "connection_error": "Connessione al server assente.",
+  "end_turn": "Termina turno!",
+  "start_game": "Avvia!",
+  "expansions": "Espansioni",
+  "details": "Dettagli",
+  "ok": "OK",
+  "you": "TU",
+  "owner": "GESTORE",
+  "cancel": "ANNULLA",
+  "password": "Password: ",
+  "room_password_prompt": "Password Stanza: ",
+  "private_room": "Stanza Privata",
+  "room": "Stanza: ",
+  "room_players": "Giocatori (tu sei {username})",
+  "choose_character": "Scegli il tuo personaggio",
+  "choose_card": "Scegli una carta",
+  "choose_card_from": " da ",
+  "flip_card": "↙️ Estrai una carta",
+  "draw_cards": "⏬ Pesca le tue carte",
+  "play_cards": "▶️ Gioca le tue carte",
+  "respond_card": "↩️ Rispondi alla carta",
+  "wait": "⏸ Attendi",
+  "choose_cards": "🔽 Scegli una carta",
+  "take_dmg": "Prendi Danno",
+  "choose_response": "Scegli come rispondere ",
+  "choose_response_to": "a ",
+  "choose_response_needed": "NE OCCORRONO ",
+  "hand": "MANO",
+  "card_against": "Contro chi vuoi giocare la carta",
+  "choose_card_to_get": "Scegli che carta pescare",
+  "choose_guess": "Indovina il colore del seme",
+  "choose_ranch": "Scegli le carte da sostituire",
+  "choose_dalton": "Scegli che equipaggiamento scartare",
+  "choose_fratelli_di_sangue": "Scegli a chi donare una delle tue vite",
+  "choose_cecchino": "Scegli contro chi sparare",
+  "choose_rimbalzo_player": "Scegli contro chi scartare il bang",
+  "choose_rimbalzo_card": "Scegli contro che carta scartare il bang",
+  "emporio_others": "{0} sta scegliendo che carta prendere dall'emporio",
+  "you_died": "SEI MORTO",
+  "spectate": "SPETTATORE",
+  "you_win": "HAI VINTO",
+  "you_lose": "HAI PERSO",
+  "special_ability": "ABILITÀ SPECIALE",
+  "discard": "SCARTA",
+  "to_regain_1_hp": "PER RECUPERARE 1 VITA",
+  "play_your_turn": "GIOCA IL TUO TURNO",
+  "you_are": "Tu sei",
+  "did_pick_as": "ha pescato come seconda carta",
+  "blackjack_special": "Se la carta è cuori o quadri ne pesca un'altra",
+  "choose_scarp_card_to": "SCEGLI CHE CARTA SCARTARE PER USARE",
+  "pick_a_card": "ESTRAI UNA CARTA",
+  "to_defend_from": "PER DIFENDERTI DA",
+  "submit": "Invia",
+  "copy": "Copia invito",
+  "no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
+  "chat": {
+    "spectators": " | Uno spettatore sta guardando la partita | {n} spettatori stanno guardando la partita",
+    "chat": "Chat",
+    "joined": "{0} è entrato nella stanza",
+    "died": "{0} è morto",
+    "died_role": "{0} era {1}!",
+    "won": "{0} ha vinto!",
+    "choose_character": "{0} ha come personaggio {1}, la sua abilità speciale è: {2}!",
+    "starting": "La partita sta iniziando!",
+    "sheriff": "{0} è lo sceriffo!",
+    "did_choose_character": "{0} ha scelto il personaggio.",
+    "turn": "È il turno di {0}.",
+    "draw_from_scrap": "{0} ha pescato la prima carta dalla pila delle carte scartate.",
+    "draw_from_player": "{0} ha pescato la prima carta dalla mano di {1}.",
+    "flipped": "{0} ha estratto {1} {2}.",
+    "explode": "{0} ha fatto esplodere la dinamite.",
+    "beer_save": "{0} ha usato una birra per recuperare una vita.",
+    "play_card": "{0} ha giocato {1}.",
+    "play_card_against": "{0} ha giocato {1} contro {2}.",
+    "play_card_for": "{0} ha giocato {1} per {2}.",
+    "spilled_beer": "{0} ha rovesciato una {1}.",
+    "diligenza": "{0} ha giocato {1} e ha pescato 2 carte.",
+    "wellsfargo": "{0} ha giocato {1} e ha pescato 3 carte.",
+    "saloon": "{0} ha giocato {1} e ha curato 1 punto vita a tutti.",
+    "special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
+    "special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
+    "special_calamity": "{0} ha giocato {1} come un Bang! contro {2}.",
+    "allroles": "Nella partita ci sono: {0}.",
+    "guess": "{0} pensa sia {1}.",
+    "guess_right": "{0} ha indovinato.",
+    "guess_wrong": "{0} ha sbagliato.",
+    "fratelli_sangue": "{0} ha donato una delle sue vite a {1}.",
+    "doctor_heal": "{0} è stato curato dal dottore.",
+    "respond": "{0} ha risposto con {1}.",
+    "change_username": "{0} ha cambiato nome in {1}.",
+    "lobby_reset": "Si ritorna alla stanza in {0} secondi...",
+    "prison_free": "{0} è uscito di prigione",
+    "prison_turn": "{0} rimane in prigione questo turno"
+  },
+  "foc": {
+    "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
+  },
+  "mods": "Modificatori",
+  "bots": "Bot",
+  "add_bot": "Aggiungi un bot",
+  "remove_bot": "Rimuovi un bot",
+  "minimum_players": "Per iniziare la partita servono minimo 3 giocatori",
+  "mod_comp": "Modalità competitiva (disattiva il prendi danno automatico)",
+  "disconnect_bot": "Sostituisci i giocatori che si disconnettono con bot",
+  "your_turn": "È il tuo turno!",
+  "your_response": "Rispondi!",
+  "your_choose": "Scegli una carta!",
+  "cards": {
+    "Barile": {
+      "name": "Barile",
+      "desc": "Quando sei bersagliato da un Bang puoi estrarre la prima carta dalla cima del mazzo, se la carta estratta è del seme Cuori allora vale come un Mancato"
+    },
+    "Dinamite": {
+      "name": "Dinamite",
+      "desc": "Giocando la Dinamite, posizionala davanti a te, resterà innocua per un intero giro. All'inizio del prossimo turno prima di pescare e prima di una eventuale estrazione (es. Prigione), estrai una carta dalla cima del mazzo. Se esce una carta tra il 2  il 9 di picche (compresi) allora la dinamite esplode: perdi 3 vite e scarta la carta, altrimenti passa la dinamite al giocatore successivo, il quale estrarà a sua volta dopo che tu avrai passato il tuo turno"
+    },
+    "Mirino": {
+      "name": "Mirino",
+      "desc": "Tu vedi gli altri giocatori a distanza -1"
+    },
+    "Mustang": {
+      "name": "Mustang",
+      "desc": "Gli altri giocatori ti vedono a distanza +1"
+    },
+    "Prigione": {
+      "name": "Prigione",
+      "desc": "Equipaggia questa carta a un altro giocatore, tranne lo Sceriffo. Il giocatore scelto all'inizio del suo turno, prima di pescare dovrà estrarre: se esce Cuori scarta questa carta e gioca normalmente il turno, altrimenti scarta questa carta e salta il turno"
+    },
+    "Remington": {
+      "name": "Remington",
+      "desc": "Puoi sparare a un giocatore che sia distante 3 o meno"
+    },
+    "Rev Carabine": {
+      "name": "Rev. Carabine",
+      "desc": "Puoi sparare a un giocatore che sia distante 4 o meno"
+    },
+    "Schofield": {
+      "name": "Schofield",
+      "desc": "Puoi sparare a un giocatore che sia distante 2 o meno"
+    },
+    "Volcanic": {
+      "name": "Volcanic",
+      "desc": "Puoi sparare a un giocatore che sia distante 1 o meno, tuttavia puoi giocare quanti bang vuoi"
+    },
+    "Winchester": {
+      "name": "Winchester",
+      "desc": "Puoi sparare a un giocatore che sia distante 5 o meno"
+    },
+    "Bang!": {
+      "name": "Bang!",
+      "desc": "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
+    },
+    "Birra": {
+      "name": "Birra",
+      "desc": "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
+    },
+    "Cat Balou": {
+      "name": "Cat Balou",
+      "desc": "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
+    },
+    "Diligenza": {
+      "name": "Diligenza",
+      "desc": "Pesca 2 carte dalla cima del mazzo"
+    },
+    "Duello": {
+      "name": "Duello",
+      "desc": "Gioca questa carta contro un qualsiasi giocatore. A turno, cominciando dal tuo avversario, potete scartare una carta Bang!, il primo giocatore che non lo fa perde 1 vita"
+    },
+    "Emporio": {
+      "name": "Emporio",
+      "desc": "Scopri dal mazzo tante carte quanto il numero di giocatori vivi, a turno, partendo da te, scegliete una carta e aggiungetela alla vostra mano"
+    },
+    "Gatling": {
+      "name": "Gatling",
+      "desc": "Spara a tutti gli altri giocatori"
+    },
+    "Indiani!": {
+      "name": "Indiani!",
+      "desc": "Tutti gli altri giocatori devono scartare un Bang! o perdere una vita"
+    },
+    "Mancato!": {
+      "name": "Mancato!",
+      "desc": "Usa questa carta per annullare un bang"
+    },
+    "Panico!": {
+      "name": "Panico!",
+      "desc": "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
+    },
+    "Saloon": {
+      "name": "Saloon",
+      "desc": "Tutti i giocatori recuperano un punto vita compreso chi gioca la carta"
+    },
+    "WellsFargo": {
+      "name": "WellsFargo",
+      "desc": "Pesca 3 carte dalla cima del mazzo"
+    },
+    "Binocolo": {
+      "name": "Binocolo",
+      "desc": "Tu vedi gli altri giocatori a distanza -1"
+    },
+    "Riparo": {
+      "name": "Riparo",
+      "desc": "Gli altri giocatori ti vedono a distanza +1"
+    },
+    "Pugno!": {
+      "name": "Pugno!",
+      "desc": "Spara a un giocatore a distanza 1"
+    },
+    "Rag Time": {
+      "name": "Rag Time",
+      "desc": "Ruba 1 carta da un giocatore a prescindere dalla distanza"
+    },
+    "Rissa": {
+      "name": "Rissa",
+      "desc": "Fai scartare una carta a tutti gli altri giocatori, scegli a caso dalla mano, oppure fra quelle che hanno in gioco"
+    },
+    "Schivata": {
+      "name": "Schivata",
+      "desc": "Usa questa carta per annullare un bang e poi pesca una carta"
+    },
+    "Springfield": {
+      "name": "Springfield",
+      "desc": "Spara a un giocatore a prescindere dalla distanza"
+    },
+    "Tequila": {
+      "name": "Tequila",
+      "desc": "Fai recuperare 1 vita a un giocatore a tua scelta, anche te stesso"
+    },
+    "Whisky": {
+      "name": "Whisky",
+      "desc": "Gioca questa carta per recuperare fino a 2 punti vita"
+    },
+    "Bibbia": {
+      "name": "Bibbia",
+      "desc": "Usa questa carta per annullare un bang e poi pesca una carta"
+    },
+    "Cappello": {
+      "name": "Cappello",
+      "desc": "Usa questa carta per annullare un bang"
+    },
+    "Placca Di Ferro": {
+      "name": "Placca Di Ferro",
+      "desc": "Usa questa carta per annullare un bang"
+    },
+    "Sombrero": {
+      "name": "Sombrero",
+      "desc": "Usa questa carta per annullare un bang"
+    },
+    "Pugnale": {
+      "name": "Pugnale",
+      "desc": "Spara a un giocatore a distanza 1"
+    },
+    "Derringer": {
+      "name": "Derringer",
+      "desc": "Spara a un giocatore a distanza 1 e poi pesca una carta"
+    },
+    "Borraccia": {
+      "name": "Borraccia",
+      "desc": "Recupera 1 vita"
+    },
+    "Can Can": {
+      "name": "Can Can",
+      "desc": "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
+    },
+    "Conestoga": {
+      "name": "Conestoga",
+      "desc": "Ruba 1 carta da un giocatore a prescindere dalla distanza"
+    },
+    "Fucile Da Caccia": {
+      "name": "Fucile Da Caccia",
+      "desc": "Spara a un giocatore a prescindere dalla distanza"
+    },
+    "Pony Express": {
+      "name": "Pony Express",
+      "desc": "Pesca 3 carte dalla cima del mazzo"
+    },
+    "Pepperbox": {
+      "name": "Pepperbox",
+      "desc": "Spara a un giocatore a distanza raggiungibile. Se non hai armi la distanza di default è 1"
+    },
+    "Howitzer": {
+      "name": "Howitzer",
+      "desc": "Spara a tutti gli altri giocatori"
+    }
+  },
+  "help": {
+    "title": "Come giocare",
+    "character": "Personaggi",
+    "characters_special": "Ogni personaggio ha delle abilità speciali e un numero di vite che lo rendono unico. Le vite sono il numero di punti vita che puoi perdere prima di morire e indicano anche il numero massimo di carte che puoi tenere in mano.",
+    "roles": "Ruoli",
+    "turns": "Turni",
+    "turnstart": "Si inizia sempre dallo Sceriffo ⭐️, e il gioco prosegue in senso orario, i turni sono divisi in 3 fasi.",
+    "turndraw": "Pesca 2 carte",
+    "turnplay": "Gioca un numero qualsiasi di carte",
+    "turndiscard": "Scarta le carte in eccesso",
+    "drawthecards": "Pescare le carte",
+    "drawinstructions": "Per pescare le carte dovrai cliccare sul mazzo quando vedi questa animazione.",
+    "playingcards": "Giocare le carte",
+    "playingdmg": "Puoi giocare le tue carte per te oppure per recare danno agli altri giocatori cercando di eliminarli.",
+    "playingduringturn": "Puoi giocare le carte solo nel tuo turno. Ad eccezzione delle carte usate come risposta tipo i mancato 😅️.",
+    "playingifyouwant": "Non sei obblicato a giocare carte.",
+    "playlimit": "Ci sono solo 3 limitazioni:",
+    "playonlyonebang": "Puoi giocare 1 solo Bang! per turno (si riferisce solo alle carte con nome Bang!)",
+    "maxtwocardsequip": "Non puoi avere 2 carte con lo stesso nome equipaggiate.",
+    "justoneweapon": "Puoi avere solo 1 arma equipaggiata.",
+    "discard": "Scartare",
+    "endingturn": "Quando hai terminato di giocare le tue carte, ovvero quando non vuoi o non puoi giocare altre carte, devi scartare le carte che eccedono il tuo numero di vite attuali.\n\t\tDopodichè passi il turno al giocatore successivo cliccando su termina turno.",
+    "distance": "Distanza",
+    "distancecalc": "La distanza viene calcolata automaticamente dal gioco e corrisponde al percorso minimo tra la sinistra e la destra del giocatore.",
+    "playerdeath": "La morte di un giocatore",
+    "deathnobeer": "Quando perdi l'ultimo punto vita e non hai una birra 🍺️ in mano, muori. Le tue carte vengono scartate e il tuo ruolo rivelato a tutti.",
+    "rewardspen": "Penalità e ricompense",
+    "sheriffkillsvice": "Se lo sceriffo ⭐️ uccide un vice perde tutte le carte in mano e in gioco davanti a se.",
+    "outlawreward": "Chiunque uccida un fuorilegge 🐺️ pesca 3 carte dal mazzo (anche altri fuorilegge 🐺️).",
+    "endgame": "Fine del gioco",
+    "endgameconditions": "Il gioco termina quando una delle seguenti condizioni si verifica:",
+    "endgameshriffdeath": "Lo sceriffo ⭐️ muore. Se il rinnegato 🦅️ è l'ultimo giocatore in vita vince, altrimenti vincono i fuorilegge.",
+    "endgamesheriffwin": "Tutti i fuorilegge 🐺️ e i rinnegati 🦅️ sono morti. In tal caso vincono lo sceriffo ⭐️ e i vice 🎖️.",
+    "thecards": "Le carte",
+    "equipment": "EQUIPAGGIAMENTO",
+    "weapon": "ARMA",
+    "sheriff": "Sceriffo",
+    "outlaw": "Fuorilegge",
+    "renegade": "Rinnegato",
+    "vice": "Vice"
+  }
 }

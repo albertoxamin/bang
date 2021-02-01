@@ -1,26 +1,25 @@
 <template>
 	<div>
-		<h1>Come giocare</h1>
-		<h2>Personaggi</h2>
-			<p>Ogni personaggio ha delle abilità speciali e un numero di vite che lo rendono unico.
-			Le vite sono il numero di punti vita che puoi perdere prima di morire e indicano anche il numero massimo di carte che puoi tenere in mano.</p>
-			<input type="button" value="Visualizza tutti i personaggi"/>
-		<h2>Ruoli</h2>
-		<ul>
-			<li><p>Sceriffo ⭐️</p></li>
-			<li><p>Fuorilegge 🐺️</p></li>
-			<li><p>Rinnegato 🦅️</p></li>
-			<li><p>Vice 🎖️</p></li>
-		</ul>
-		<h2>Turni</h2>
-		<p>Si inizia sempre dallo Sceriffo ⭐️, e il gioco prosegue in senso orario, i turni sono divisi in 3 fasi.</p>
+		<h1>{{$t('help.title')}}</h1>
+		<h2>{{$t('help.character')}}</h2>
+		<p>{{$t('help.characters_special')}}</p>
+		<input type="button" value="Visualizza tutti i personaggi"/>
+		<h2>{{$t('help.roles')}}</h2>
+		<div style="display:flex;">
+			<card :card="{name:$t('help.sheriff'), icon:'⭐️'}" :class="{back:true}"/>
+			<card :card="{name:$t('help.outlaw'), icon:'🐺️'}" :class="{back:true}"/>
+			<card :card="{name:$t('help.renegade'), icon:'🦅️'}" :class="{back:true}"/>
+			<card :card="{name:$t('help.vice'), icon:'🎖️'}" :class="{back:true}"/>
+		</div>
+		<h2>{{$t('help.turns')}}</h2>
+		<p>{{$t('help.turnstart')}}</p>
 		<ol>
-			<li><p>Pesca 2 carte ⏬️</p></li>
-			<li><p>Gioca un numero qualsiasi di carte ▶️</p></li>
-			<li><p>Scarta le carte in eccesso</p></li>
+			<li><p>{{$t('help.turndraw')}} ⏬️</p></li>
+			<li><p>{{$t('help.turnplay')}} ▶️</p></li>
+			<li><p>{{$t('help.turndiscard')}}</p></li>
 		</ol>
-		<h3>Pescare le carte</h3>
-		<p>Per pescare le carte dovrai cliccare sul mazzo quando vedi questa animazione.<p>
+		<h3>{{$t('help.drawthecards')}}</h3>
+		<p>{{$t('help.drawinstructions')}}<p>
 		<div style="display:flex" class="center-stuff">
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
@@ -28,37 +27,45 @@
 				<card :card="cardBack" :class="{back:true, draw:true}" @click.native="action"/>
 			</div>
 		</div>
-		<h3>Giocare le carte</h3>
-		<p>Puoi giocare le tue carte per te oppure per recare danno agli altri giocatori cercando di eliminarli.</p>
-		<p>Puoi giocare le carte solo nel tuo turno. Ad eccezzione delle carte usate come risposta tipo i mancato 😅️.</p>
-		<p><b>Non sei obblicato a giocare carte.</b></p>
-		<p>Ci sono solo 3 limitazioni:</p>
+		<h3>{{$t('help.playingcards')}}</h3>
+		<p>{{$t('help.playingdmg')}}</p>
+		<p>{{$t('help.playingduringturn')}}</p>
+		<p><b>{{$t('help.playingifyouwant')}}</b></p>
+		<p>{{$t('help.playlimit')}}</p>
 		<ul>
-			<li><p>Puoi giocare 1 solo Bang! per turno (si riferisce solo alle carte con nome Bang!)</p></li>
-			<li><p>Non puoi avere 2 carte con lo stesso nome equipaggiate.</p></li>
-			<li><p>Puoi avere solo 1 arma equipaggiata.</p></li>
+			<li><p>{{$t('help.playonlyonebang')}}</p></li>
+			<li><p>{{$t('help.maxtwocardsequip')}}</p></li>
+			<li><p>{{$t('help.justoneweapon')}}</p></li>
 		</ul>
-		<h3>Scartare</h3>
-		<p>Quando hai terminato di giocare le tue carte, ovvero quando non vuoi o non puoi giocare altre carte, devi scartare le carte che eccedono il tuo numero di vite attuali.
-		Dopodichè passi il turno al giocatore successivo cliccando su termina turno.</p>
+		<h3>{{$t('help.discard')}}</h3>
+		<p>{{$t('help.endingturn')}}</p>
 		<card :card="endTurnCard" class="end-turn" @click.native="alert('')"/>
-		<h3>Distanza</h3>
-		<p>La distanza viene calcolata automaticamente dal gioco e corrisponde al percorso minimo tra la sinistra e la destra del giocatore.</p>
-		<h3>La morte di un giocatore</h3>
-		<p>Quando perdi l'ultimo punto vita e non hai una birra 🍺️ in mano, muori. Le tue carte vengono scartate e il tuo ruolo rivelato a tutti.</p>
-		<h3>Penalità e ricompense</h3>
+		<h3>{{$t('help.distance')}}</h3>
+		<p>{{$t('help.distancecalc')}}</p>
+		<h3>{{$t('help.playerdeath')}}</h3>
+		<p>{{$t('help.deathnobeer')}}</p>
+		<h3>{{$t('help.rewardspen')}}</h3>
 		<ul>
-			<li><p>Se lo sceriffo ⭐️ uccide un vice perde tutte le carte in mano e in gioco davanti a se.</p></li>
-			<li><p>Chiunque uccida un fuorilegge 🐺️ pesca 3 carte dal mazzo (anche altri fuorilegge 🐺️).</p></li>
+			<li><p>{{$t('help.sheriffkillsvice')}}</p></li>
+			<li><p>{{$t('help.outlawreward')}}</p></li>
 		</ul>
-		<h2>Fine del gioco</h2>
-		<p>Il gioco termina quando una delle seguenti condizioni si verifica:</p>
+		<h2>{{$t('help.endgame')}}</h2>
+		<p>{{$t('help.endgameconditions')}}</p>
 		<ul>
-			<li><p>Lo sceriffo ⭐️ muore. Se il rinnegato 🦅️ è l'ultimo giocatore in vita vince, altrimenti vincono i fuorilegge.</p></li>
-			<li><p>Tutti i fuorilegge 🐺️ e i rinnegati 🦅️ sono morti. In tal caso vincono lo sceriffo ⭐️ e i vice 🎖️.</p></li>
+			<li><p>{{$t('help.endgameshriffdeath')}}</p></li>
+			<li><p>{{$t('help.endgamesheriffwin')}}</p></li>
 		</ul>
-		<h2>Le carte</h2>
-		<input type="button" value="Visualizza tutte le carte"/>
+		<h2>{{$t('help.thecards')}}</h2>
+		<div >
+			<div v-for="(c, i) in cards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+				<Card :card="c" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+					<p v-if="c.is_equipment"><b>{{$t('help.equipment')}}</b></p>
+					<p v-if="c.is_weapon"><b>{{$t('help.weapon')}}</b></p>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
@@ -73,6 +80,7 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
+		cards: []
 	}),
 	computed: {
 		endTurnCard() {
@@ -82,6 +90,14 @@ export default {
 			}
 		},
 	},
+	sockets: {
+		cards_info(cardsJson) {
+			this.cards = JSON.parse(cardsJson)
+		}
+	},
+	mounted() {
+		this.$socket.emit('get_cards')
+	}
 }
 </script>
 <style scoped>
