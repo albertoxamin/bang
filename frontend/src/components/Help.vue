@@ -3,7 +3,7 @@
 		<h1>{{$t('help.title')}}</h1>
 		<h2>{{$t('help.character')}}</h2>
 		<p>{{$t('help.characters_special')}}</p>
-		<input type="button" value="Visualizza tutti i personaggi"/>
+		<a href="#basecharacters"><p>{{$t('help.gotoallcharacters')}}</p></a>
 		<h2>{{$t('help.roles')}}</h2>
 		<div style="display:flex;">
 			<card :card="{name:$t('help.sheriff'), icon:'⭐️'}" :class="{back:true}"/>
@@ -56,13 +56,22 @@
 			<li><p>{{$t('help.endgamesheriffwin')}}</p></li>
 		</ul>
 		<h2>{{$t('help.thecards')}}</h2>
-		<div >
+		<div>
 			<div v-for="(c, i) in cards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
 				<Card :card="c" @pointerenter.native="''" @pointerleave.native="''"/>
 				<div style="margin-left:6pt;">
 					<p>{{$t(`cards.${c.name}.desc`)}}</p>
 					<p v-if="c.is_equipment"><b>{{$t('help.equipment')}}</b></p>
 					<p v-if="c.is_weapon"><b>{{$t('help.weapon')}}</b></p>
+				</div>
+			</div>
+		</div>
+		<h2 id="basecharacters">{{$t('help.allcharacters')}}</h2>
+		<div>
+			<div v-for="(c, i) in characters" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+				<Card :card="c" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
 				</div>
 			</div>
 		</div>
@@ -80,7 +89,8 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
-		cards: []
+		cards: [],
+		characters: [],
 	}),
 	computed: {
 		endTurnCard() {
@@ -93,10 +103,17 @@ export default {
 	sockets: {
 		cards_info(cardsJson) {
 			this.cards = JSON.parse(cardsJson)
-		}
+		},
+		characters_info(cardsJson) {
+			this.characters = JSON.parse(cardsJson).map(x=>({
+				...x,
+				is_character:true,
+			}))
+		},
 	},
 	mounted() {
 		this.$socket.emit('get_cards')
+		this.$socket.emit('get_characters')
 	}
 }
 </script>

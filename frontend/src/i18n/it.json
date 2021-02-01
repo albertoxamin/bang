@@ -292,6 +292,130 @@
     "Howitzer": {
       "name": "Howitzer",
       "desc": "Spara a tutti gli altri giocatori"
+    },
+    "Bart Cassidy": {
+      "name": "Bart Cassidy",
+      "desc": "Ogni volta che viene ferito, pesca una carta"
+    },
+    "Black Jack": {
+      "name": "Black Jack",
+      "desc": "All'inizio del suo turno, quando deve pescare, mostra a tutti la seconda carta, se è Cuori o Quadri pesca una terza carta senza farla vedere"
+    },
+    "Calamity Janet": {
+      "name": "Calamity Janet",
+      "desc": "Può usare i Mancato! come Bang! e viceversa"
+    },
+    "El Gringo": {
+      "name": "El Gringo",
+      "desc": "Ogni volta che perde un punto vita pesca una carta dalla mano del giocatore responsabile ma solo se il giocatore in questione ha carte in mano (una carta per ogni punto vita)"
+    },
+    "Jesse Jones": {
+      "name": "Jesse Jones",
+      "desc": "All'inizio del suo turno, quando deve pescare, può prendere la prima carta a caso dalla mano di un giocatore e la seconda dal mazzo"
+    },
+    "Jourdonnais": {
+      "name": "Jourdonnais",
+      "desc": "Gioca come se avesse un Barile sempre attivo, nel caso in cui metta in gioco un Barile 'Reale' può estrarre due volte"
+    },
+    "Kit Carlson": {
+      "name": "Kit Carlson",
+      "desc": "All'inizio del suo turno, quando deve pescare, pesca tre carte, ne sceglie due da tenere in mano e la rimanente la rimette in cima la mazzo"
+    },
+    "Lucky Duke": {
+      "name": "Lucky Duke",
+      "desc": "Ogni volta che deve estrarre, prende due carte dal mazzo, sceglie una delle due carte per l'estrazione, infine le scarta entrambe"
+    },
+    "Paul Regret": {
+      "name": "Paul Regret",
+      "desc": "Gioca come se avesse una Mustang sempre attiva, nel caso in cui metta in gioco una Mustang 'Reale' l'effetto si somma tranquillamente"
+    },
+    "Pedro Ramirez": {
+      "name": "Pedro Ramirez",
+      "desc": "All'inizio del suo turno, quando deve pescare, può prendere la prima carta dalla cima degli scarti e la seconda dal mazzo"
+    },
+    "Rose Doolan": {
+      "name": "Rose Doolan",
+      "desc": "Gioca come se avesse un Mirino sempre attivo, nel caso in cui metta in gioco una Mirino 'Reale' l'effetto si somma tranquillamente"
+    },
+    "Sid Ketchum": {
+      "name": "Sid Ketchum",
+      "desc": "Può scartare due carte per recuperare un punto vita anche più volte di seguito a patto di avere carte da scartare, può farlo anche nel turno dell'avversario se starebbe per morire"
+    },
+    "Slab The Killer": {
+      "name": "Slab The Killer",
+      "desc": "Per evitare i suoi Bang servono due Mancato, un eventuale barile vale solo come un Mancato"
+    },
+    "Suzy Lafayette": {
+      "name": "Suzy Lafayette",
+      "desc": "Appena rimane senza carte in mano pesca immediatamente una carta dal mazzo"
+    },
+    "Vulture Sam": {
+      "name": "Vulture Sam",
+      "desc": "Quando un personaggio viene eliminato prendi tutte le carte di quel giocatore e aggiungile alla tua mano, sia le carte in mano che quelle in gioco"
+    },
+    "Willy The Kid": {
+      "name": "Willy The Kid",
+      "desc": "Questo personaggio può giocare quanti bang vuole nel suo turno"
+    },
+    "Pixie Pete": {
+      "name": "Pixie Pete",
+      "desc": "All'inizio del turno pesca 3 carte invece che 2"
+    },
+    "Tequila Joe": {
+      "name": "Tequila Joe",
+      "desc": "Se gioca la carta Birra recupera 2 vite invece che una sola"
+    },
+    "Greg Digger": {
+      "name": "Greg Digger",
+      "desc": "Quando un giocatore muore, recupera fino a 2 vite"
+    },
+    "Herb Hunter": {
+      "name": "Herb Hunter",
+      "desc": "Quando un giocatore muore, pesca 2 carte"
+    },
+    "Elena Fuente": {
+      "name": "Elena Fuente",
+      "desc": "Può usare una carta qualsiasi nella sua mano come mancato"
+    },
+    "Bill Noface": {
+      "name": "Bill Noface",
+      "desc": "All'inizio del turno pesca 1 carta + 1 carta per ogni ferita che ha"
+    },
+    "Molly Stark": {
+      "name": "Molly Stark",
+      "desc": "Quando usa volontariamente una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
+    },
+    "Apache Kid": {
+      "name": "Apache Kid",
+      "desc": "Le carte di quadri ♦️ giocate contro di lui non hanno effetto (non vale durante i duelli)"
+    },
+    "Sean Mallory": {
+      "name": "Sean Mallory",
+      "desc": "Quando finisce il suo turno può tenere fino a 10 carte in mano"
+    },
+    "Belle Star": {
+      "name": "Belle Star",
+      "desc": "Nel suo turno le carte verdi degli altri giocatori non hanno effetto."
+    },
+    "Vera Custer": {
+      "name": "Vera Custer",
+      "desc": "Prima di pescare le sue carte può scegliere l'abilità speciale di un altro giocatore fino al prossimo turno."
+    },
+    "Chuck Wengam": {
+      "name": "Chuck Wengam",
+      "desc": "Durante il suo turno può perdere una vita per pescare 2 carte dal mazzo."
+    },
+    "Pat Brennan": {
+      "name": "Pat Brennan",
+      "desc": "Invece di pescare può prendere una carta dall'equipaggiamento di un altro giocatore."
+    },
+    "José Delgrado": {
+      "name": "José Delgrado",
+      "desc": "Può scartare una carta blu per pescare 2 carte."
+    },
+    "Doc Holyday": {
+      "name": "Doc Holyday",
+      "desc": "Nel suo turno può scartare 2 carte per fare un bang."
     }
   },
   "help": {
@@ -308,7 +432,7 @@
     "drawinstructions": "Per pescare le carte dovrai cliccare sul mazzo quando vedi questa animazione.",
     "playingcards": "Giocare le carte",
     "playingdmg": "Puoi giocare le tue carte per te oppure per recare danno agli altri giocatori cercando di eliminarli.",
-    "playingduringturn": "Puoi giocare le carte solo nel tuo turno. Ad eccezzione delle carte usate come risposta tipo i mancato 😅️.",
+    "playingduringturn": "Puoi giocare le carte solo nel tuo turno. Per giocarle, clicca sulle carte nella tua mano.\nAd eccezzione delle carte usate come risposta tipo i mancato 😅️. ",
     "playingifyouwant": "Non sei obblicato a giocare carte.",
     "playlimit": "Ci sono solo 3 limitazioni:",
     "playonlyonebang": "Puoi giocare 1 solo Bang! per turno (si riferisce solo alle carte con nome Bang!)",
@@ -333,6 +457,8 @@
     "sheriff": "Sceriffo",
     "outlaw": "Fuorilegge",
     "renegade": "Rinnegato",
-    "vice": "Vice"
+    "vice": "Vice",
+    "gotoallcharacters": "Visualizza tutti i personaggi",
+    "allcharacters": "Tutti i personaggi"
   }
 }

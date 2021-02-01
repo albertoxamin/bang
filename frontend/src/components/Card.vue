@@ -4,6 +4,7 @@
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
 		<div class="suit">{{number}}{{suit}}</div>
+		<div class="expansion" v-if="card.expansion_icon">{{card.expansion_icon}}</div>
 	</div>
 </template>
 
@@ -15,7 +16,7 @@ export default {
 	},
 	computed: {
 		cardName(){
-			console.log(this.$t(`cards.${this.card.name}.name`))
+			// console.log(this.$t(`cards.${this.card.name}.name`))
 			if (this.$t(`cards.${this.card.name}.name`) !== `cards.${this.card.name}.name`) {
 				return this.$t(`cards.${this.card.name}.name`)
 			}
@@ -55,7 +56,7 @@ export default {
 	position: relative;
 	transition: all 0.5s ease-in-out;
 	color: #333;
-	overflow: hidden;
+	/* overflow: hidden; */
 	text-overflow: ellipsis;
 	word-wrap: normal;
 	/* word-wrap: break-word; */
@@ -144,7 +145,18 @@ export default {
 .cant-play {
 	filter: brightness(0.5);
 }
+.expansion {
+	position: absolute;
+	bottom: -5pt;
+	right: -5pt;
+	background: white;
+	border-radius: 100%;
+	transform: scale(0.8);
+}
 @media (prefers-color-scheme: dark) {
+	.expansion {
+		background: #181a1b;
+	}
 	:root, #app {
 		background-color: #181a1b;
 		color: rgb(174, 194, 211);

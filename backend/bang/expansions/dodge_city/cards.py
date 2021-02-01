@@ -383,7 +383,7 @@ class FucileDaCaccia(Card):
                 return False
 
 def get_starting_deck() -> List[Card]:
-    return [
+    cards = [
         Barile(Suit.CLUBS, 'A'),
         Binocolo(Suit.DIAMONDS, 10),
         Dinamite(Suit.CLUBS, 10),
@@ -425,3 +425,6 @@ def get_starting_deck() -> List[Card]:
         Pepperbox(Suit.HEARTS, 'A'),
         Howitzer(Suit.SPADES, 9),
     ]
+    for c in cards:
+        c.expansion_icon = '🐄️'
+    return cards

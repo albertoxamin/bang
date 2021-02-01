@@ -292,6 +292,130 @@
     "Howitzer": {
       "name": "Howitzer",
       "desc": "Shoot all the other players"
+    },
+    "Bart Cassidy": {
+      "name": "Bart Cassidy",
+      "desc": "Each time he is hurt, he draws a card"
+    },
+    "Black Jack": {
+      "name": "Black Jack",
+      "desc": "At the beginning of his turn, when he has to draw, he shows everyone the second card, if it is Hearts or Diamonds he draws a third card without showing it"
+    },
+    "Calamity Janet": {
+      "name": "Calamity Janet",
+      "desc": "She can use the Missed! as Bang! and the other way around"
+    },
+    "El Gringo": {
+      "name": "El Gringo",
+      "desc": "Each time he is hurt, he draws a card from the hand of the attacking player"
+    },
+    "Jesse Jones": {
+      "name": "Jesse Jones",
+      "desc": "When he has to draw his cards, he may draw the first card from the hand of another player"
+    },
+    "Jourdonnais": {
+      "name": "Jourdonnais",
+      "desc": "He plays as he had a Barrel always active, if he equips another Barrel, he can flip 2 cards"
+    },
+    "Kit Carlson": {
+      "name": "Kit Carlson",
+      "desc": "When he has to draw, he peeks 3 cards and chooses 2, putting the other card on the top of the deck"
+    },
+    "Lucky Duke": {
+      "name": "Lucky Duke",
+      "desc": "Every time he has to flip a card, he can flip 2 times"
+    },
+    "Paul Regret": {
+      "name": "Paul Regret",
+      "desc": "The other players see him at distance +1"
+    },
+    "Pedro Ramirez": {
+      "name": "Pedro Ramirez",
+      "desc": "When he has to draw, he may pick the first card from the discarded cards"
+    },
+    "Rose Doolan": {
+      "name": "Rose Doolan",
+      "desc": "She sees the other players at distance -1"
+    },
+    "Sid Ketchum": {
+      "name": "Sid Ketchum",
+      "desc": "He can discard 2 cards to regain 1HP"
+    },
+    "Slab The Killer": {
+      "name": "Slab The Killer",
+      "desc": "To dodge his Bang! cards other players need 2 Missed!"
+    },
+    "Suzy Lafayette": {
+      "name": "Suzy Lafayette",
+      "desc": "Whenever she has an empty hand, she draws a card"
+    },
+    "Vulture Sam": {
+      "name": "Vulture Sam",
+      "desc": "When a player dies, he gets all the cards in the dead's hand and equipments"
+    },
+    "Willy The Kid": {
+      "name": "Willy The Kid",
+      "desc": "He doesn't have limits to the amounts of bang he can use"
+    },
+    "Pixie Pete": {
+      "name": "Pixie Pete",
+      "desc": "He draws 3 cards instead of 2"
+    },
+    "Tequila Joe": {
+      "name": "Tequila Joe",
+      "desc": "When he plays Beer, he regains 2 Health Points"
+    },
+    "Greg Digger": {
+      "name": "Greg Digger",
+      "desc": "Whenever a player dies, he regains up to 2 lives"
+    },
+    "Herb Hunter": {
+      "name": "Herb Hunter",
+      "desc": "Whenever a player dies, he draws 2 cards"
+    },
+    "Elena Fuente": {
+      "name": "Elena Fuente",
+      "desc": "She can use any card of her hand as missed"
+    },
+    "Bill Noface": {
+      "name": "Bill Noface",
+      "desc": "Draw 1 card + 1 card for each wound he has"
+    },
+    "Molly Stark": {
+      "name": "Molly Stark",
+      "desc": "When she uses a card from her hand outside her turn, she draws a card."
+    },
+    "Apache Kid": {
+      "name": "Apache Kid",
+      "desc": "Cards of diamonds ♦️ played against him, do no have effect (doesn't work in duels)."
+    },
+    "Sean Mallory": {
+      "name": "Sean Mallory",
+      "desc": "He can keep up to 10 cards in his hand when ending the turn."
+    },
+    "Belle Star": {
+      "name": "Belle Star",
+      "desc": "During her turn the green cards of the other players do not work."
+    },
+    "Vera Custer": {
+      "name": "Vera Custer",
+      "desc": "Before drawing, she may choose the special ability on another alive player. This ability is used until next turn."
+    },
+    "Chuck Wengam": {
+      "name": "Chuck Wengam",
+      "desc": "On his turn he may decide to lose 1 HP to draw 2 cards from the deck."
+    },
+    "Pat Brennan": {
+      "name": "Pat Brennan",
+      "desc": "Instead of drawing he can steal a card from the equipment of another player."
+    },
+    "José Delgrado": {
+      "name": "José Delgrado",
+      "desc": "He can discard a blue card to draw 2 cards."
+    },
+    "Doc Holyday": {
+      "name": "Doc Holyday",
+      "desc": "He can discard 2 cards to play a bang."
     }
   },
   "help": {
@@ -315,7 +439,7 @@
     "playerdeath": "The death of a player",
     "playingcards": "Play the cards",
     "playingdmg": "You can play your cards for yourself or to harm other players by trying to eliminate them.",
-    "playingduringturn": "You can only play the cards on your turn. \nWith the exception of cards used as an answer such as Missed 😅️.",
+    "playingduringturn": "You can only play the cards on your turn. To play cards, click on the cards from you hand.\nWith the exception of cards used as an answer such as Missed 😅️.",
     "playingifyouwant": "You are not required to play cards.",
     "playlimit": "There are only 3 limitations:",
     "playonlyonebang": "You can only play 1 Bang! \nper turn (refers only to cards named Bang!)",
@@ -333,6 +457,8 @@
     "renegade": "Renegade",
     "vice": "Deputy",
     "outlaw": "Outlaw",
-    "sheriff": "Sheriff"
+    "sheriff": "Sheriff",
+    "allcharacters": "All characters",
+    "gotoallcharacters": "Jump to all characters"
   }
 }

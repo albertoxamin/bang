@@ -6,7 +6,6 @@
 		</form>
 		<p v-if="hintText">{{hintText}}</p>
 		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn && val" @click="cancel(val)"><span>{{realCancelText}}</span></div>
-		<p v-if="desc" style="bottom:10pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
 	</div>
 </template>
 
@@ -25,7 +24,6 @@ export default {
 	},
 	data: () => ({
 		val: '',
-		desc: '',
 		realCancelText: ''
 	}),
 	computed: {
@@ -36,12 +34,6 @@ export default {
 		}
 	},
 	methods: {
-		showDesc(card) {
-			if (card.desc)
-				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
-			else
-				this.desc = this.$t(`cards.${card.name}.desc`)
-		},
 		submit(e) {
 			e.preventDefault();
 			this.cancel(this.val);

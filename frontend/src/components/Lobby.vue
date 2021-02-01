@@ -382,7 +382,8 @@ export default {
 		flex-direction: row;
 	}
 	.chat {
-		max-width: 350pt;
+		min-width: 25vw;
+		max-width: 25vw;
 	}
 }
 </style>

@@ -6,7 +6,7 @@
 			<Card v-if="my_role" :card="my_role" class="back"
 					@pointerenter.native="desc=($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" @pointerleave.native="desc=''"/>
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
-					@pointerenter.native="desc=($i18n.locale=='it'?character.desc:character.desc_eng)" @pointerleave.native="desc=''"/>
+					@pointerenter.native="setDesc(character)" @pointerleave.native="desc=''"/>
 			<transition-group name="list" tag="div" style="display: flex;flex-direction:column; justify-content: space-evenly; margin-left: 12pt;margin-right:-10pt;">
 				<span v-for="(n, i) in lives" v-bind:key="i" :alt="i">❤️</span>
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
@@ -161,8 +161,8 @@ export default {
 			}
 		},
 		self_vis(vis) {
-			console.log('received visibility update')
-			console.log(vis)
+			// console.log('received visibility update')
+			// console.log(vis)
 			this.playersDistances = JSON.parse(vis)
 		},
 		notify_card(mess) {

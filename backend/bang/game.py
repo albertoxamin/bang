@@ -99,7 +99,7 @@ class Game:
                 print(self.name)
                 print(self.players[i].name)
                 print(self.players[i].character)
-                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}|{self.players[i].character.desc}|{self.players[i].character.desc_eng}')
+                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
