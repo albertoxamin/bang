@@ -2,10 +2,12 @@
 	<div class="chat">
 		<h4 v-if="spectators > 0">{{$tc("chat.spectators", spectators)}}</h4>
 		<h3>{{$t("chat.chat")}}</h3>
-		<div id="chatbox">
+		<transition-group name="message" tag="div" id="chatbox">
+		<!-- <div id="chatbox"> -->
 			<p style="margin:1pt;" class="chat-message selectable" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
 			<p class="end">.</p>
-		</div>
+		<!-- </div> -->
+		</transition-group>
 		<form @submit="sendChatMessage" id="msg-form">
 			<input v-model="text" style="flex-grow:2;"/>
 			<input type="submit" :value="$t('submit')"/>
@@ -108,6 +110,13 @@ input {
 	width:100%;
 	padding:0;
 	display:flex;
+}
+.message-enter-active, .message-leave-active {
+  transition: all 1s;
+}
+.message-enter, .message-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateX(30px);
 }
 @media only screen and (min-width:1000px) {
 	.chat { 

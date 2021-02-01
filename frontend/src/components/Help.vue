@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{$t('help.title')}}</h1>
+		<h1 id="help">{{$t('help.title')}}</h1>
 		<h2>{{$t('help.character')}}</h2>
 		<p>{{$t('help.characters_special')}}</p>
 		<a href="#basecharacters"><p>{{$t('help.gotoallcharacters')}}</p></a>
@@ -114,6 +114,7 @@ export default {
 	mounted() {
 		this.$socket.emit('get_cards')
 		this.$socket.emit('get_characters')
+		document.getElementById('help').scrollIntoView();
 	}
 }
 </script>

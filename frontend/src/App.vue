@@ -7,14 +7,18 @@
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
 		</div>
-		<select id="lang" style="position:fixed;bottom:4pt;right:4pt;" v-model="$i18n.locale" @change="storeLangPref">
-			<option
-				v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
-				:key="`lang-${i}`"
-				:value="lang.split('.')[0]">
-					{{lang.split('.')[1]}} {{lang.split('.')[2]}}
-			</option>
-		</select>
+		<help v-if="showHelp"/>
+		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;">
+			<input type="button" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
+			<select id="lang" v-model="$i18n.locale" @change="storeLangPref">
+				<option
+					v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
+					:key="`lang-${i}`"
+					:value="lang.split('.')[0]">
+						{{lang.split('.')[1]}} {{lang.split('.')[2]}}
+				</option>
+			</select>
+		</div>
 		<label for="lang" style="opacity:0" >Language</label>
 		<div v-if="showUpdateUI" style="position: fixed;bottom: 0;z-index: 1;background: rgba(0,0,0,0.5);padding: 20pt;" class="center-stuff">
 			<p class="update-dialog__content">
@@ -29,14 +33,17 @@
 </template>
 
 <script>
+import Help from './components/Help.vue';
 // import Vue from 'vue'
 
 export default {
+  components: { Help },
 	name: 'App',
 	data: () => ({
 		isConnected: false,
 		c: false,
 		showUpdateUI: false,
+		showHelp:false,
 	}),
 	computed: {
 	},
@@ -57,6 +64,10 @@ export default {
 		},
 	},
 	methods: {
+		getHelp() {
+			this.showHelp = !this.showHelp
+			// window.open(`${window.location.origin}/help`, '_blank')
+		},
 		storeLangPref() {
 			localStorage.setItem('lang', this.$i18n.locale)
 		},
@@ -81,6 +92,9 @@ export default {
 
 <style>
 @import '../node_modules/pretty-checkbox/dist/pretty-checkbox.css';
+html {
+	scroll-behavior: smooth;
+}
 #app {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
