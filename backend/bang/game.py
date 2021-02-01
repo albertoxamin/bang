@@ -104,9 +104,9 @@ class Game:
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
                 self.players[i].notify_self()
-            current_roles = [type(x.role).__name__ for x in self.players]
+            current_roles = [x.role.name for x in self.players]
             random.shuffle(current_roles)
-            current_roles = str({x:current_roles.count(x) for x in current_roles}).replace('{','').replace('}','')
+            current_roles = '|'.join([x + '|' + str(current_roles.count(x)) for x in current_roles])
             self.sio.emit('chat_message', room=self.name, data=f'_allroles|{current_roles}')
             self.play_turn()
 

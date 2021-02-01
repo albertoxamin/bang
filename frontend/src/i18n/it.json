@@ -91,7 +91,7 @@
     "special_bart_cassidy": "{0} ha ricevuto un risarcimento perchè è stato ferito.",
     "special_el_gringo": "{0} rubato una carta a {1} mentre veniva colpito.",
     "special_calamity": "{0} ha giocato {1} come un Bang! contro {2}.",
-    "allroles": "Nella partita ci sono: {0}.",
+    "allroles": "Nella partita ci sono: {1} {0}, {3} {2}, {5} {4}, {7} {6}.",
     "guess": "{0} pensa sia {1}.",
     "guess_right": "{0} ha indovinato.",
     "guess_wrong": "{0} ha sbagliato.",
@@ -416,6 +416,18 @@
     "Doc Holyday": {
       "name": "Doc Holyday",
       "desc": "Nel suo turno può scartare 2 carte per fare un bang."
+    },
+    "Sceriffo": {
+      "name": "Sceriffo"
+    },
+    "Fuorilegge": {
+      "name": "Fuorilegge"
+    },
+    "Rinnegato": {
+      "name": "Rinnegato"
+    },
+    "Vice": {
+      "name": "Vice"
     }
   },
   "help": {

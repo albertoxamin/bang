@@ -71,7 +71,7 @@
     "died": "{0} died",
     "died_role": "{0} was a {1}!",
     "won": "{0} won!",
-    "choose_character": "{0} has {1} as character, his special ability is: {3}!",
+    "choose_character": "{0} has {1} as character, his special ability is: {2}!",
     "starting": "The game is starting!",
     "sheriff": "{0} is the sheriff!",
     "did_choose_character": "{0} did choose the character.",
@@ -91,7 +91,7 @@
     "special_bart_cassidy": "{0} received a compensation because he was injured.",
     "special_el_gringo": "{0} stole a card from {1} when he was was injured.",
     "special_calamity": "{0} played {1} as Bang! against {2}.",
-    "allroles": "In the game there are: {0}.",
+    "allroles": "In the game there are: {1} {0}, {3} {2}, {5} {4}, {7} {6}.",
     "guess": "{0} guesses {1}.",
     "guess_right": "{0} was right.",
     "guess_wrong": "{0} was wrong.",
@@ -416,6 +416,18 @@
     "Doc Holyday": {
       "name": "Doc Holyday",
       "desc": "He can discard 2 cards to play a bang."
+    },
+    "Fuorilegge": {
+      "name": "Outlaw"
+    },
+    "Rinnegato": {
+      "name": "Renegade"
+    },
+    "Sceriffo": {
+      "name": "Sheriff"
+    },
+    "Vice": {
+      "name": "Deputy"
     }
   },
   "help": {

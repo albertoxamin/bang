@@ -13,7 +13,7 @@
 			</div>
 			
 			<div class="players-table">
-				<Card v-if="startGameCard" :card="startGameCard" @click.native="startGame"/>
+				<Card v-if="startGameCard" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
 				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
 				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
 					<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">
@@ -23,7 +23,7 @@
 					<div v-else-if="p.is_ghost" class="tiny-health">
 						<span>👻</span>
 					</div>
-					<Card :card="p.card" :class="{is_my_turn:p.is_my_turn}"/>
+					<Card :card="p.card" :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>

@@ -12,12 +12,13 @@
 export default {
 	name: 'Card',
 	props: {
-		card: Object
+		card: Object,
+		donotlocalize: Boolean
 	},
 	computed: {
 		cardName(){
 			// console.log(this.$t(`cards.${this.card.name}.name`))
-			if (this.$t(`cards.${this.card.name}.name`) !== `cards.${this.card.name}.name`) {
+			if (!this.donotlocalize && this.$t(`cards.${this.card.name}.name`) !== `cards.${this.card.name}.name`) {
 				return this.$t(`cards.${this.card.name}.name`)
 			}
 			return this.card.name

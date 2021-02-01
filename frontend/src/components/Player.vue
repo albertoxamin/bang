@@ -306,7 +306,7 @@ export default {
 			this.$socket.emit('chuck_lose_hp_draw')
 		},
 		end_turn(){
-			console.log('ending turn')
+			// console.log('ending turn')
 			this.cancelEndingTurn()
 			this.$socket.emit('end_turn')
 		},
@@ -379,7 +379,7 @@ export default {
 				with: this.handComputed.indexOf(this.card_with) > -1 ? this.handComputed.indexOf(this.card_with):null,
 			}
 			this.card_with = null
-			console.log(card_data)
+			// console.log(card_data)
 			this.$socket.emit('play_card', card_data)
 		},
 		choose(card) {

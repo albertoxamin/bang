@@ -5,7 +5,7 @@
 		<transition-group name="message" tag="div" id="chatbox">
 		<!-- <div id="chatbox"> -->
 			<p style="margin:1pt;" class="chat-message selectable" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
-			<p class="end">.</p>
+			<p class="end" key="end" style="color:#0000">.</p>
 		<!-- </div> -->
 		</transition-group>
 		<form @submit="sendChatMessage" id="msg-form">
@@ -34,7 +34,7 @@ export default {
 	}),
 	sockets: {
 		chat_message(msg) {
-			console.log(msg)
+			// console.log(msg)
 			if ((typeof msg === "string") && msg.indexOf('_') === 0) {
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
@@ -42,6 +42,12 @@ export default {
 					params[1] = this.$t(`cards.${params[1]}.name`)
 				} else if (type === "choose_character"){
 					params.push(this.$t(`cards.${params[1]}.desc`))
+				} else if (type === "allroles") {
+					params.forEach((p,i)=>{
+						if (i%2 === 0) {
+							params[i] = this.$t(`cards.${params[i]}.name`)
+						}
+					})
 				}
 				this.messages.push({text:this.$t(`chat.${type}`, params)});
 				if (type == 'turn' && params[0] == this.username) {
