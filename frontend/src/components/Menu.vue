@@ -16,7 +16,7 @@
 			<div v-else>
 				<div v-if="!isInLobby" >
 					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
-					<Card :card="getSelfCard" style="position:absolute; top:10pt; left: 10pt;"/>
+					<Card :card="getSelfCard" :donotlocalize="true" style="position:absolute; top:10pt; left: 10pt;"/>
 					<form @submit="createLobby">
 						<h2>{{$t("create_lobby")}}</h2>
 						<p>{{$t("lobby_name")}}</p>
@@ -91,7 +91,7 @@ export default {
 		},
 		players(num) {
 			this.onlinePlayers = num;
-			console.log('PLAYERS:' + num)
+			// console.log('PLAYERS:' + num)
 		}
 	},
 	methods: {

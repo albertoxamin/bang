@@ -10,6 +10,11 @@ const routes = [
 		component: () => import(/* webpackChunkName: "game" */ '../components/Lobby.vue')
 	},
 	{
+		path: '/help',
+		name: 'Help',
+		component: () => import(/* webpackChunkName: "helep" */ '../components/Help.vue')
+	},
+	{
 		path: '/',
 		name: 'Home',
 		component: () => import(/* webpackChunkName: "home" */ '../components/Menu.vue')

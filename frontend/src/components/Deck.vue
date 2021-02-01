@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="deck">
-			<card v-if="endTurnAction && isPlaying" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
+			<card v-if="endTurnAction && isPlaying" :donotlocalize="true" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -10,7 +10,7 @@
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
 				<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="card" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
+				<card :card="card" :donotlocalize="true" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
 			</div>
 			<div style="position:relative;">
 				<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
@@ -88,7 +88,7 @@ export default {
 	methods: {
 		action(pile) {
 			if (this.pending_action !== false && this.pending_action < 2) {
-				console.log('action')
+				// console.log('action')
 				if (this.pending_action == 0)
 					this.$socket.emit('pick')
 				else if (this.pending_action == 1)
