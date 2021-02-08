@@ -445,7 +445,7 @@ class WellsFargo(Card):
 
 
 def get_starting_deck(expansions:List[str]) -> List[Card]:
-    from bang.expansions import DodgeCity
+    from bang.expansions import DodgeCity, TheValleyOfShadows
     base_cards = [
         Barile(Suit.SPADES, 'Q'),
         Barile(Suit.SPADES, 'K'),
@@ -530,5 +530,7 @@ def get_starting_deck(expansions:List[str]) -> List[Card]:
     ]
     if 'dodge_city' in expansions:
         base_cards.extend(DodgeCity.get_cards())
+    if 'the_valley_of_shadows' in expansions:
+        base_cards.extend(TheValleyOfShadows.get_cards())
     return base_cards
 
