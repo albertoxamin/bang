@@ -12,9 +12,10 @@
 				<input type="button" style="margin-left: 10pt;" v-clipboard:copy="inviteLink" :value="$t('copy')"/>
 			</div>
 			
-			<div class="players-table">
-				<Card v-if="startGameCard" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
+			<!-- <div class="players-table"> -->
 				<!-- <div style="position: relative;width:260pt;height:400pt;"> -->
+			<transition-group name="list" tag="div" class="players-table">
+				<Card v-if="startGameCard" key="_start_game_" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
 				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
 					<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">
 						<span v-for="(n, i) in p.lives" v-bind:key="i" :alt="i">❤️</span>
@@ -37,9 +38,10 @@
 						<span>🤖</span>
 					</div>
 				</div>
+			</transition-group>
 					<!-- :style="p.style"/> -->
 				<!-- </div> -->
-			</div>
+			<!-- </div> -->
 			<div v-if="!started">
 				<p v-if="players.length < 3" class="center-stuff">{{$t('minimum_players')}}</p>
 				<h3>{{$t("expansions")}}</h3>

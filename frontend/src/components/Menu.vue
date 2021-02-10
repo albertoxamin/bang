@@ -1,7 +1,12 @@
 <template>
 	<div id="app" class="dark-mode">
-		<div v-if="!isInLobby" id="logo" class="center-stuff" style="margin-bottom:10pt;">
+		<div v-if="!isInLobby" id="logo" class="center-stuff" style="margin-bottom:10pt">
 			<h1 style="margin-bottom:0pt;">PewPew!</h1>
+			<div style="display:flex;justify-content: space-evenly;;min-height:140pt;">
+				<span style="font-size:48pt;transform:scaleX(-1) translateY(25%);">🔫️</span>
+				<TinyHand :ncards="5" ismyturn="true" style="position:none;transform:scale(1);bottom:none;width:120pt;"/>
+				<span style="font-size:48pt;transform:translateY(25%);">🔫️</span>
+			</div>
 			<i style="font-size: x-small;">{{$t("trademark")}}</i>
 		</div>
 		<div>
@@ -17,8 +22,8 @@
 				<div v-if="!isInLobby" >
 					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
 					<Card :card="getSelfCard" :donotlocalize="true" style="position:absolute; top:10pt; left: 10pt;"/>
-					<form @submit="createLobby">
-						<h2>{{$t("create_lobby")}}</h2>
+					<h2>{{$t("create_lobby")}}</h2>
+					<form @submit="createLobby" style="display:flex">
 						<p>{{$t("lobby_name")}}</p>
 						<input id="lobbyname" v-model="lobbyName"/>
 						<input type="submit" :value="$t('submit')"/>
@@ -44,12 +49,14 @@
 <script>
 // import Vue from 'vue'
 import Card from '@/components/Card.vue'
+import TinyHand from '@/components/TinyHand.vue'
 // import Lobby from './components/Lobby.vue'
 
 export default {
 	name: 'App',
 	components: {
 		Card,
+		TinyHand,
 		// Lobby,
 	},
 	data: () => ({
