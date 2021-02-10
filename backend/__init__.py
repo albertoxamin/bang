@@ -227,6 +227,34 @@ def chat_message(sid, msg):
                             eventlet.sleep(0.3)
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
+            elif '/ddc' in msg and ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode destroyed {cmd[1]} cards'})
+                    if cmd[1] == "*":
+                        for p in ses.game.players_map:
+                            ses.game.get_player_named(p).hand = []
+                            ses.game.get_player_named(p).equipment = []
+                            ses.game.get_player_named(p).notify_self()
+                    elif cmd[1] in ses.game.players_map:
+                        ses.game.get_player_named(cmd[1]).hand = []
+                        ses.game.get_player_named(cmd[1]).equipment = []
+                        ses.game.get_player_named(cmd[1]).notify_self()
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
+            elif '/dsh' in msg and ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 3:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and is changing {cmd[1]} health'})
+                    if cmd[1] == "*":
+                        for p in ses.game.players_map:
+                            ses.game.get_player_named(p).lives = int(cmd[2])
+                            ses.game.get_player_named(p).notify_self()
+                    elif cmd[1] in ses.game.players_map:
+                        ses.game.get_player_named(cmd[1]).lives = int(cmd[2])
+                        ses.game.get_player_named(cmd[1]).notify_self()
+                else:
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/togglecomp' in msg and ses.game:
                 ses.game.toggle_competitive()
             elif '/togglebot' in msg and ses.game:
