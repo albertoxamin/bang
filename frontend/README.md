@@ -1,4 +1,4 @@
-# frontend
+# Bang Frontend
 
 ## Project setup
 ```

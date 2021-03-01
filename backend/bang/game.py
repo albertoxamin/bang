@@ -38,6 +38,8 @@ class Game:
         self.incremental_turn = 0
         self.did_resuscitate_deadman = False
         self.is_handling_death = False
+        self.pending_winners = []
+
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
@@ -271,6 +273,16 @@ class Game:
             if self.readyCount == self.waiting_for:
                 self.waiting_for = 0
                 self.readyCount = 0
+                if self.pending_winners:
+                    print('WE HAVE A WINNER')
+                    for p in self.get_alive_players():
+                        p.win_status = p in self.pending_winners
+                        if p.win_status:
+                            self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}')
+                        p.notify_self()
+                    for i in range(5):
+                        self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
+                        eventlet.sleep(1)
                 if self.dalton_on:
                     self.dalton_on = False
                     print(f'notifying {self.players[self.turn].name} about his turn')
@@ -460,12 +472,15 @@ class Game:
                 print('WE HAVE A WINNER')
                 for p in self.get_alive_players():
                     p.win_status = p in winners
-                    self.sio.emit('chat_message', room=self.name, data=f'_won|{p.name}')
+                    if p.win_status:
+                        self.sio.emit('chat_message', room=self.name, data=f'_won|{p.name}')
                     p.notify_self()
                 for i in range(5):
                     self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
                     eventlet.sleep(1)
                 return self.reset()
+            elif len(winners) > 0: # non tutti hanno risposto, ma ci sono vincitori.
+                self.pending_winners = winners
 
             vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
@@ -519,6 +534,7 @@ class Game:
         self.is_handling_death = False
         self.waiting_for = 0
         self.incremental_turn = 0
+        self.pending_winners = []
         for p in self.players:
             p.reset()
             p.notify_self()
