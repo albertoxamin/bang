@@ -103,7 +103,7 @@ class RoseDoolan(Character):
 class SidKetchum(Character):
     def __init__(self):
         super().__init__("Sid Ketchum", max_lives=4)
-        # self.desc = "Può scartare due carte per recuperare un punto vita anche più volte di seguito a patto di avere carte da scartare, può farlo anche nel turno dell'avversario se starebbe per morire"
+        # self.desc = "Può scartare due carte per recuperare un punto vita anche più volte di seguito a patto di avere carte da scartare, può farlo anche nel turno dell'avversario se stesse per morire"
         # self.desc_eng = "He can discard 2 cards to regain 1HP"
         self.icon = '🤤'
 
