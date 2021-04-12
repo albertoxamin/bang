@@ -260,7 +260,9 @@ def chat_message(sid, msg):
             elif '/togglebot' in msg and ses.game:
                 ses.game.toggle_disconnect_bot()
             elif '/cancelgame' in msg and ses.game.started:
-                ses.game.reset()
+                if (ses == ses.game.players[0]):
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})
+                    ses.game.reset()
             elif '/startgame' in msg and not ses.game.started:
                 ses.game.start_game()
             elif '/setbotspeed' in msg:
@@ -275,10 +277,10 @@ def chat_message(sid, msg):
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
             elif '/setcharacter' in msg:
-                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed character'})
                 import bang.characters as characters
                 cmd = msg.split()
                 if len(cmd) >= 2:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed character'})
                     chs = characters.all_characters(ses.game.expansions)
                     ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
                     ses.real_character = ses.character
