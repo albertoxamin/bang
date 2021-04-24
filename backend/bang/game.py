@@ -106,8 +106,11 @@ class Game:
                 self.players[i].notify_self()
             current_roles = [x.role.name for x in self.players]
             random.shuffle(current_roles)
-            current_roles = '|'.join([x + '|' + str(current_roles.count(x)) for x in current_roles])
-            self.sio.emit('chat_message', room=self.name, data=f'_allroles|{current_roles}')
+            cr = ''
+            for x in current_roles:
+                if (x not in cr):
+                    cr += x + '|' + str(current_roles.count(x)) +'|'
+            self.sio.emit('chat_message', room=self.name, data=f'_allroles|{cr}')
             self.play_turn()
 
     def choose_characters(self):
