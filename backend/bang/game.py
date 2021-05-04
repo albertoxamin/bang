@@ -111,8 +111,8 @@ class Game:
             cr = ''
             for x in current_roles:
                 if (x not in cr):
-                    cr += x + '|' + str(current_roles.count(x)) +'|'
-            self.sio.emit('chat_message', room=self.name, data=f'_allroles|{cr}')
+                    cr += '|' +x + '|' + str(current_roles.count(x))
+            self.sio.emit('chat_message', room=self.name, data=f'_allroles{cr}')
             self.play_turn()
 
     def choose_characters(self):

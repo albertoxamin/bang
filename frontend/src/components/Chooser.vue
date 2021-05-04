@@ -47,7 +47,7 @@ export default {
 	methods: {
 		showDesc(card) {
 			//console.log(card)
-			if (card.name == "PewPew!")
+			if (card.name == null || card.name == "PewPew!")
 				this.desc = ""
 			else if (card.desc)
 				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)

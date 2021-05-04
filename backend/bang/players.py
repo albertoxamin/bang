@@ -423,6 +423,8 @@ class Player:
                     for i in range(self.max_lives-self.lives):
                         self.hand.append(self.game.deck.draw())
             else:
+                if self.character.check(self.game, chd.PixiePete):
+                    self.hand.append(self.game.deck.draw())
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
                     self.hand.append(card)
@@ -434,8 +436,6 @@ class Player:
                             self.hand.append(self.game.deck.draw())
                     if self.game.check_event(ceh.Sete):
                         return self.notify_self()
-                if self.character.check(self.game, chd.PixiePete):
-                    self.hand.append(self.game.deck.draw())
             if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
                 self.hand.append(self.game.deck.draw())
             self.notify_self()

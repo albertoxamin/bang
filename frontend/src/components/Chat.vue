@@ -4,7 +4,7 @@
 		<h3>{{$t("chat.chat")}}</h3>
 		<transition-group name="message" tag="div" id="chatbox">
 		<!-- <div id="chatbox"> -->
-			<p style="margin:1pt;" class="chat-message selectable" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
+			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
 			<p class="end" key="end" style="color:#0000">.</p>
 		<!-- </div> -->
 		</transition-group>
