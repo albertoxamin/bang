@@ -9,7 +9,7 @@ class CardEvent(ABC):
 class Agguato(CardEvent):
     def __init__(self):
         super().__init__("Agguato", "🛁")
-        self.desc = "La distanza base di tra 2 qualsiasi giocatori è 1"
+        self.desc = "La distanza base tra 2 qualsiasi giocatori è 1"
         self.desc_eng = "The base distance from any 2 players is 1"
 
 class Cecchino(CardEvent):
