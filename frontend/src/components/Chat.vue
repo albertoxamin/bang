@@ -48,6 +48,11 @@ export default {
 							params[i] = this.$t(`cards.${params[i]}.name`)
 						}
 					})
+					if (params.length <= 6){
+						type += "3"
+					} else {
+						type += "4"
+					}
 				}
 				this.messages.push({text:this.$t(`chat.${type}`, params)});
 				if (type == 'turn' && params[0] == this.username) {
