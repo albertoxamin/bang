@@ -537,6 +537,7 @@ class Game:
         self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False
+        self.noStar = False
         self.is_handling_death = False
         self.waiting_for = 0
         self.incremental_turn = 0
