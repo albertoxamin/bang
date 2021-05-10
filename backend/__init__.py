@@ -194,7 +194,9 @@ def chat_message(sid, msg):
                     #     ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                 else:
-                    bot = Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True)
+                    bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
+                    while any([p for p in ses.game.players if p.name == bot.name]):
+                        bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
                     ses.game.add_player(bot)
                     bot.bot_spin()
             elif '/removebot' in msg and not ses.game.started:

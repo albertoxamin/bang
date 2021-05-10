@@ -172,7 +172,7 @@ export default {
 	},
 	computed: {
 		inviteLink() {
-			return `${window.location.origin}/game?code=${this.lobbyName}${this.password?`&pwd=${this.password}`:''}`
+			return `${window.location.origin}/game?code=${encodeURIComponent(this.lobbyName)}${this.password?`&pwd=${this.password}`:''}`
 		},
 		isThereAnyBot() {
 			return this.players.filter(x => x.is_bot).length > 0;
