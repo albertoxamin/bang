@@ -39,6 +39,7 @@ class Game:
         self.did_resuscitate_deadman = False
         self.is_handling_death = False
         self.pending_winners = []
+        self.noStar = False # no Sheriff, because there are only three players
 
 
     def notify_room(self, sid=None):
@@ -124,6 +125,8 @@ class Game:
         print('GAME IS STARING')
         if self.started:
             return
+        if len(self.players) == 3:
+            self.noStar = True
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         self.sio.emit('chat_message', room=self.name, data=f'_starting')
         self.sio.emit('start', room=self.name)
@@ -318,7 +321,7 @@ class Game:
                 print(f'{self.players[self.turn]} is dead, next turn')
                 return self.next_turn()
         self.player_bangs = 0
-        if isinstance(self.players[self.turn].role, roles.Sheriff):
+        if isinstance(self.players[self.turn].role, roles.Sheriff) or (self.noStar and isinstance(self.players[self.turn].role, roles.Vice)):
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'flip new event {self.deck.event_cards[0].name}')
