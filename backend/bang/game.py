@@ -473,8 +473,7 @@ class Game:
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
             winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
-            # print('ready:', self.readyCount, ' waiting:', self.waiting_for)
-            if self.readyCount == self.waiting_for and len(winners) > 0:
+            if len(winners) > 0:
                 print('WE HAVE A WINNER')
                 for p in self.get_alive_players():
                     p.win_status = p in winners
