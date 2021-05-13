@@ -109,7 +109,7 @@ class Player:
 
     def set_role(self, role: r.Role):
         self.role = role
-        print(f'I {self.name} am a {role.name}, my goal is "{role.goal}"')
+        print(f'{self.name}: I am a {role.name}, my goal is "{role.goal}"')
         self.sio.emit('role', room=self.sid, data=json.dumps(
             role, default=lambda o: o.__dict__))
 
@@ -120,7 +120,7 @@ class Player:
                 x for x in self.available_characters if x.name == character)
             self.real_character = self.character
             self.available_characters = []
-            print(f'I {self.name} chose character {self.character.name}')
+            print(f'{self.name}: I chose character {self.character.name}')
             self.sio.emit('chat_message', room=self.game.name,
                         data=f'_did_choose_character|{self.name}')
             self.game.notify_character_selection()
@@ -143,7 +143,7 @@ class Player:
 
     def set_available_character(self, available):
         self.available_characters = available
-        print(f'I {self.name} have to choose between {available}')
+        print(f'{self.name}: I have to choose between {available}')
         if not self.is_bot:
             self.sio.emit('characters', room=self.sid, data=json.dumps(
                 available, default=lambda o: o.__dict__))
@@ -322,7 +322,7 @@ class Player:
         self.can_play_vendetta = can_play_vendetta
         self.sio.emit('chat_message', room=self.game.name,
                       data=f'_turn|{self.name}')
-        print(f'I {self.name} was notified that it is my turn')
+        print(f'{self.name}: I was notified that it is my turn')
         self.was_shot = False
         self.is_my_turn = True
         self.is_waiting_for_action = True
@@ -973,7 +973,7 @@ class Player:
         maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
         if len(self.hand) > maxcards and not forced:
             print(
-                f"I {self.name} have to many cards in my hand and I can't end the turn")
+                f"{self.name}: I have to many cards in my hand and I can't end the turn")
         elif self.pending_action == PendingAction.PLAY or forced:
             if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
