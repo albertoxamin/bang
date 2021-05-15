@@ -9,12 +9,12 @@ class Deck:
         super().__init__()
         self.cards: List[cs.Card] = cs.get_starting_deck(game.expansions)
         self.mancato_cards: List[str] = []
-        self.mancato_cards_not_green: List[str] = []
+        self.mancato_cards_not_green_or_blue: List[str] = []
         for c in self.cards:
             if isinstance(c, cs.Mancato) and c.name not in self.mancato_cards:
                 self.mancato_cards.append(c.name)
-                if not c.usable_next_turn:
-                    self.mancato_cards_not_green.append(c.name)
+                if not (c.usable_next_turn or c.is_equipment):
+                    self.mancato_cards_not_green_or_blue.append(c.name)
         self.all_cards_str: List[str] = []
         for c in self.cards:
             if c.name not in self.all_cards_str:
