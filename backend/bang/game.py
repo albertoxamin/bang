@@ -22,7 +22,7 @@ class Game:
         self.deck: Deck = None
         self.started = False
         self.turn = 0
-        self.readyCount = 0
+        self.ready_count = 0
         self.waiting_for = 0
         self.initial_players = 0
         self.password = ''
@@ -163,7 +163,7 @@ class Game:
         attacker.pending_action = pl.PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
-        self.readyCount = 0
+        self.ready_count = 0
         for p in self.get_alive_players():
             if p != attacker:
                 if p.get_banged(attacker=attacker):
@@ -177,7 +177,7 @@ class Game:
         attacker.pending_action = pl.PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
-        self.readyCount = 0
+        self.ready_count = 0
         for p in self.get_alive_players():
             if p != attacker:
                 if p.get_indians(attacker=attacker):
@@ -189,7 +189,7 @@ class Game:
 
     def attack(self, attacker: pl.Player, target_username:str, double:bool=False):
         if self.get_player_named(target_username).get_banged(attacker=attacker, double=double):
-            self.readyCount = 0
+            self.ready_count = 0
             self.waiting_for = 1
             attacker.pending_action = pl.PendingAction.WAIT
             attacker.notify_self()
@@ -197,7 +197,7 @@ class Game:
 
     def rimbalzo(self, attacker: pl.Player, target_username:str, card_index:int):
         if self.get_player_named(target_username).get_banged(attacker=attacker, no_dmg=True, card_index=card_index):
-            self.readyCount = 0
+            self.ready_count = 0
             self.waiting_for = 1
             attacker.pending_action = pl.PendingAction.WAIT
             attacker.notify_self()
@@ -205,7 +205,7 @@ class Game:
 
     def duel(self, attacker: pl.Player, target_username:str):
         if self.get_player_named(target_username).get_dueled(attacker=attacker):
-            self.readyCount = 0
+            self.ready_count = 0
             self.waiting_for = 1
             attacker.pending_action = pl.PendingAction.WAIT
             attacker.notify_self()
@@ -275,10 +275,10 @@ class Game:
                 else:
                     self.responders_did_respond_resume_turn(did_lose=True)
         else:
-            self.readyCount += 1
-            if self.readyCount == self.waiting_for:
+            self.ready_count += 1
+            if self.ready_count == self.waiting_for:
                 self.waiting_for = 0
-                self.readyCount = 0
+                self.ready_count = 0
                 if self.pending_winners:
                     print('WE HAVE A WINNER')
                     for p in self.get_alive_players():
@@ -344,7 +344,7 @@ class Game:
                         p.notify_self()
             elif self.check_event(ceh.IDalton):
                 self.waiting_for = 0
-                self.readyCount = 0
+                self.ready_count = 0
                 self.dalton_on = True
                 for p in self.players:
                     if p.get_dalton():
@@ -454,7 +454,8 @@ class Game:
         player.lives = 0
         player.is_dead = True
         player.death_turn = self.incremental_turn
-
+        if self.waiting_for > self.ready_count:
+            self.ready_count += 1
         # corpse = self.players.pop(index)
         corpse = player
         # if not disconnected:
@@ -473,7 +474,8 @@ class Game:
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
             winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
-            if len(winners) > 0:
+            print(f'win check: ready-{self.ready_count} waiting-{self.waiting_for} winners:{len(winners)}')
+            if self.ready_count == self.waiting_for and len(winners) > 0:
                 print('WE HAVE A WINNER')
                 for p in self.get_alive_players():
                     p.win_status = p in winners
