@@ -39,7 +39,6 @@ class Game:
         self.did_resuscitate_deadman = False
         self.is_handling_death = False
         self.pending_winners = []
-        self.noStar = False # no Sheriff, because there are only three players
 
 
     def notify_room(self, sid=None):
@@ -125,8 +124,6 @@ class Game:
         print('GAME IS STARING')
         if self.started:
             return
-        if len(self.players) == 3:
-            self.noStar = True
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         self.sio.emit('chat_message', room=self.name, data=f'_starting')
         self.sio.emit('start', room=self.name)
@@ -321,7 +318,7 @@ class Game:
                 print(f'{self.players[self.turn]} is dead, next turn')
                 return self.next_turn()
         self.player_bangs = 0
-        if isinstance(self.players[self.turn].role, roles.Sheriff) or (self.noStar and isinstance(self.players[self.turn].role, roles.Vice) or (self.noStar and any([p for p in self.players if p.is_dead and p.role.name == 'Vice']) and isinstance(self.players[self.turn].role, roles.Renegade))):
+        if isinstance(self.players[self.turn].role, roles.Sheriff) or (self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) or (self.initial_players == 3 and any([p for p in self.players if p.is_dead and p.role.name == 'Vice']) and isinstance(self.players[self.turn].role, roles.Renegade))):
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'flip new event {self.deck.event_cards[0].name}')
@@ -538,7 +535,6 @@ class Game:
         self.players = [p for p in self.players if not p.is_bot]
         print(self.players)
         self.started = False
-        self.noStar = False
         self.is_handling_death = False
         self.waiting_for = 0
         self.incremental_turn = 0
