@@ -313,16 +313,17 @@ class Player:
                 else:
                     self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
-    def play_turn(self, can_play_vendetta = True):
+    def play_turn(self, can_play_vendetta = True, again = False):
         if (self.lives == 0 or self.is_dead) and not self.is_ghost:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
-        self.sio.emit('chat_message', room=self.game.name,
-                      data=f'_turn|{self.name}')
-        print(f'{self.name}: I was notified that it is my turn')
+        if not again:
+            self.sio.emit('chat_message', room=self.game.name,
+                          data=f'_turn|{self.name}')
+            print(f'{self.name}: I was notified that it is my turn')
         self.was_shot = False
         self.is_my_turn = True
         self.is_waiting_for_action = True
@@ -592,7 +593,7 @@ class Player:
                 player.notify_self()
                 self.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
             except: pass
-            self.play_turn()
+            self.play_turn(again = True)
         elif self.is_using_checchino and self.game.check_event(ce.Cecchino):
             try:
                 if self.available_cards[card_index]['name'] != '':
@@ -774,8 +775,8 @@ class Player:
                 print('has mancato')
                 self.pending_action = PendingAction.RESPOND
                 self.expected_response = self.game.deck.mancato_cards.copy()
-                if self.attacker and self.attacker in self.game.get_alive_players() and isinstance(self.attacker.character, chd.BelleStar) or self.game.check_event(ce.Lazo):
-                    self.expected_response = self.game.deck.mancato_cards_not_green.copy()
+                if self.attacker and self.attacker in self.game.get_alive_players() and self.character.check(self.game, chd.BelleStar) or self.game.check_event(ce.Lazo):
+                    self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
                 elif self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
                 elif self.character.check(self.game, chd.ElenaFuente):

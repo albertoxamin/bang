@@ -261,6 +261,9 @@ def chat_message(sid, msg):
                 ses.game.toggle_competitive()
             elif '/togglebot' in msg and ses.game:
                 ses.game.toggle_disconnect_bot()
+            elif '/cancelgamesudo' in msg and ses.game.started:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})
+                ses.game.reset()
             elif '/cancelgame' in msg and ses.game.started:
                 if (ses == ses.game.players[0]):
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})

@@ -296,107 +296,107 @@
     },
     "Bart Cassidy": {
       "name": "Bart Cassidy",
-      "desc": "Ogni volta che viene ferito, pesca una carta"
+      "desc": "Ogni volta che viene ferito, pesca una carta."
     },
     "Black Jack": {
       "name": "Black Jack",
-      "desc": "All'inizio del suo turno, quando deve pescare, mostra a tutti la seconda carta, se è Cuori o Quadri pesca una terza carta senza farla vedere"
+      "desc": "All'inizio del suo turno, quando deve pescare, mostra a tutti la seconda carta, se è Cuori o Quadri pesca una terza carta senza farla vedere."
     },
     "Calamity Janet": {
       "name": "Calamity Janet",
-      "desc": "Può usare i Mancato! come Bang! e viceversa"
+      "desc": "Può usare i Mancato! come Bang! e viceversa."
     },
     "El Gringo": {
       "name": "El Gringo",
-      "desc": "Ogni volta che perde un punto vita pesca una carta dalla mano del giocatore responsabile ma solo se il giocatore in questione ha carte in mano (una carta per ogni punto vita)"
+      "desc": "Ogni volta che perde un punto vita pesca una carta dalla mano del giocatore responsabile ma solo se il giocatore in questione ha carte in mano. (una carta per ogni punto vita)"
     },
     "Jesse Jones": {
       "name": "Jesse Jones",
-      "desc": "All'inizio del suo turno, quando deve pescare, può prendere la prima carta a caso dalla mano di un giocatore e la seconda dal mazzo"
+      "desc": "All'inizio del suo turno, quando deve pescare, può prendere la prima carta a caso dalla mano di un giocatore e la seconda dal mazzo. (clicca sul gicatore avversario se vuoi usare l'abilità)"
     },
     "Jourdonnais": {
       "name": "Jourdonnais",
-      "desc": "Gioca come se avesse un Barile sempre attivo, nel caso in cui metta in gioco un Barile 'Reale' può estrarre due volte"
+      "desc": "Gioca come se avesse un Barile sempre attivo, nel caso in cui metta in gioco un Barile 'Reale' può estrarre due volte."
     },
     "Kit Carlson": {
       "name": "Kit Carlson",
-      "desc": "All'inizio del suo turno, quando deve pescare, pesca tre carte, ne sceglie due da tenere in mano e la rimanente la rimette in cima la mazzo"
+      "desc": "All'inizio del suo turno, quando deve pescare, pesca tre carte, ne sceglie due da tenere in mano e la rimanente la rimette in cima la mazzo."
     },
     "Lucky Duke": {
       "name": "Lucky Duke",
-      "desc": "Ogni volta che deve estrarre, prende due carte dal mazzo, sceglie una delle due carte per l'estrazione, infine le scarta entrambe"
+      "desc": "Ogni volta che deve estrarre, prende due carte dal mazzo, sceglie una delle due carte per l'estrazione, infine le scarta entrambe."
     },
     "Paul Regret": {
       "name": "Paul Regret",
-      "desc": "Gioca come se avesse una Mustang sempre attiva, nel caso in cui metta in gioco una Mustang 'Reale' l'effetto si somma tranquillamente"
+      "desc": "Gioca come se avesse una Mustang sempre attiva, nel caso in cui metta in gioco una Mustang 'Reale' l'effetto si somma tranquillamente."
     },
     "Pedro Ramirez": {
       "name": "Pedro Ramirez",
-      "desc": "All'inizio del suo turno, quando deve pescare, può prendere la prima carta dalla cima degli scarti e la seconda dal mazzo"
+      "desc": "All'inizio del suo turno, quando deve pescare, può prendere la prima carta dalla cima degli scarti e la seconda dal mazzo. (clicca negli scarti per usare l'abilità)"
     },
     "Rose Doolan": {
       "name": "Rose Doolan",
-      "desc": "Gioca come se avesse un Mirino sempre attivo, nel caso in cui metta in gioco una Mirino 'Reale' l'effetto si somma tranquillamente"
+      "desc": "Gioca come se avesse un Mirino sempre attivo, nel caso in cui metta in gioco una Mirino 'Reale' l'effetto si somma tranquillamente."
     },
     "Sid Ketchum": {
       "name": "Sid Ketchum",
-      "desc": "Può scartare due carte per recuperare un punto vita anche più volte di seguito a patto di avere carte da scartare, può farlo anche nel turno dell'avversario se stesse per morire"
+      "desc": "Può scartare due carte per recuperare un punto vita anche più volte di seguito a patto di avere carte da scartare, può farlo anche nel turno dell'avversario se stesse per morire."
     },
     "Slab The Killer": {
       "name": "Slab The Killer",
-      "desc": "Per evitare i suoi Bang servono due Mancato, un eventuale barile vale solo come un Mancato"
+      "desc": "Per evitare i suoi Bang servono due Mancato, un eventuale barile vale solo come un Mancato."
     },
     "Suzy Lafayette": {
       "name": "Suzy Lafayette",
-      "desc": "Appena rimane senza carte in mano pesca immediatamente una carta dal mazzo"
+      "desc": "Appena rimane senza carte in mano pesca immediatamente una carta dal mazzo."
     },
     "Vulture Sam": {
       "name": "Vulture Sam",
-      "desc": "Quando un personaggio viene eliminato prendi tutte le carte di quel giocatore e aggiungile alla tua mano, sia le carte in mano che quelle in gioco"
+      "desc": "Quando un personaggio viene eliminato prendi tutte le carte di quel giocatore e aggiungile alla tua mano, sia le carte in mano che quelle in gioco."
     },
     "Willy The Kid": {
       "name": "Willy The Kid",
-      "desc": "Questo personaggio può giocare quanti bang vuole nel suo turno"
+      "desc": "Questo personaggio può giocare quanti bang vuole nel suo turno."
     },
     "Pixie Pete": {
       "name": "Pixie Pete",
-      "desc": "All'inizio del turno pesca 3 carte invece che 2"
+      "desc": "All'inizio del turno pesca 3 carte invece che 2."
     },
     "Tequila Joe": {
       "name": "Tequila Joe",
-      "desc": "Se gioca la carta Birra recupera 2 vite invece che una sola"
+      "desc": "Se gioca la carta Birra recupera 2 vite invece che una sola."
     },
     "Greg Digger": {
       "name": "Greg Digger",
-      "desc": "Quando un giocatore muore, recupera fino a 2 vite"
+      "desc": "Quando un giocatore muore, recupera fino a 2 vite."
     },
     "Herb Hunter": {
       "name": "Herb Hunter",
-      "desc": "Quando un giocatore muore, pesca 2 carte"
+      "desc": "Quando un giocatore muore, pesca 2 carte."
     },
     "Elena Fuente": {
       "name": "Elena Fuente",
-      "desc": "Può usare una carta qualsiasi nella sua mano come mancato"
+      "desc": "Può usare una carta qualsiasi nella sua mano come mancato."
     },
     "Bill Noface": {
       "name": "Bill Noface",
-      "desc": "All'inizio del turno pesca 1 carta + 1 carta per ogni ferita che ha"
+      "desc": "All'inizio del turno pesca 1 carta + 1 carta per ogni ferita che ha."
     },
     "Molly Stark": {
       "name": "Molly Stark",
-      "desc": "Quando usa volontariamente una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo"
+      "desc": "Quando usa volontariamente una carta che ha in mano, fuori dal suo turno, ne ottiene un'altra dal mazzo."
     },
     "Apache Kid": {
       "name": "Apache Kid",
-      "desc": "Le carte di quadri ♦️ giocate contro di lui non hanno effetto (non vale durante i duelli)"
+      "desc": "Le carte di quadri ♦️ giocate contro di lui non hanno effetto. (non vale durante i duelli)"
     },
     "Sean Mallory": {
       "name": "Sean Mallory",
-      "desc": "Quando finisce il suo turno può tenere fino a 10 carte in mano"
+      "desc": "Quando finisce il suo turno può tenere fino a 10 carte in mano."
     },
     "Belle Star": {
       "name": "Belle Star",
-      "desc": "Nel suo turno le carte verdi degli altri giocatori non hanno effetto."
+      "desc": "Nel suo turno le carte verdi e blu degli altri giocatori non hanno effetto."
     },
     "Vera Custer": {
       "name": "Vera Custer",
@@ -408,7 +408,7 @@
     },
     "Pat Brennan": {
       "name": "Pat Brennan",
-      "desc": "Invece di pescare può prendere una carta dall'equipaggiamento di un altro giocatore."
+      "desc": "Invece di pescare può prendere una carta dall'equipaggiamento di un altro giocatore. (clicca sul gicatore avversario se vuoi usare l'abilità)"
     },
     "José Delgrado": {
       "name": "José Delgrado",
