@@ -265,6 +265,9 @@ def chat_message(sid, msg):
                 if (ses == ses.game.players[0]):
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})
                     ses.game.reset()
+            elif '/cancelgamesudo' in msg and ses.game.started:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})
+                ses.game.reset()
             elif '/startgame' in msg and not ses.game.started:
                 ses.game.start_game()
             elif '/setbotspeed' in msg:
