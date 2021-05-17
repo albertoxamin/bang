@@ -161,8 +161,8 @@ class Game:
         self.notify_event_card()
 
     def attack_others(self, attacker: pl.Player):
-        attacker.pending_action = pl.PendingAction.WAIT
         self.attack_in_progress = True
+        attacker.pending_action = pl.PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
         self.ready_count = 0
@@ -172,13 +172,13 @@ class Game:
                     self.waiting_for += 1
                     p.notify_self()
         if self.waiting_for == 0:
-            self.attack_in_progress = False
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
+        self.attack_in_progress = False
 
     def indian_others(self, attacker: pl.Player):
-        attacker.pending_action = pl.PendingAction.WAIT
         self.attack_in_progress = True
+        attacker.pending_action = pl.PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
         self.ready_count = 0
@@ -188,9 +188,9 @@ class Game:
                     self.waiting_for += 1
                     p.notify_self()
         if self.waiting_for == 0:
-            self.attack_in_progress = False
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
+        self.attack_in_progress = False
 
     def attack(self, attacker: pl.Player, target_username:str, double:bool=False):
         if self.get_player_named(target_username).get_banged(attacker=attacker, double=double):
