@@ -274,10 +274,11 @@ class Game:
         else:
             self.ready_count += 1
             if self.ready_count == self.waiting_for:
+                #TODO: si potrebbe fare un metodo a parte e chiamarlo quando finiscono gli eventi di gatling e indiani
                 self.waiting_for = 0
                 self.ready_count = 0
                 if self.pending_winners:
-                    print('WE HAVE A WINNER')
+                    print('WE HAVE A WINNER - responders_did_respond_resume_turn')
                     for p in self.get_alive_players():
                         p.win_status = p in self.pending_winners
                         if p.win_status:

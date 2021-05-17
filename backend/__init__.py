@@ -229,7 +229,7 @@ def chat_message(sid, msg):
                             eventlet.sleep(0.3)
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/ddc' in msg and ses.game.started:
+            elif '/ddc' in msg and ses.game.started: #/ddc *
                 cmd = msg.split()
                 if len(cmd) == 2:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode destroyed {cmd[1]} cards'})
@@ -244,7 +244,7 @@ def chat_message(sid, msg):
                         ses.game.get_player_named(cmd[1]).notify_self()
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/dsh' in msg and ses.game.started:
+            elif '/dsh' in msg and ses.game.started: #/dsh * 1
                 cmd = msg.split()
                 if len(cmd) == 3:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and is changing {cmd[1]} health'})
