@@ -295,6 +295,7 @@ class Game:
                     for i in range(5):
                         self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
                         eventlet.sleep(1)
+                    return self.reset()
                 if self.dalton_on:
                     self.dalton_on = False
                     print(f'notifying {self.players[self.turn].name} about his turn')
