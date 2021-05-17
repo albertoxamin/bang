@@ -117,6 +117,11 @@ export default {
 	sockets: {
 		room(data) {
 			this.lobbyName = data.name
+			if (!data.started) {
+				document.title = this.lobbyName +' | PewPew!'
+			}	else if (data.started && !this.started) {
+				document.title = 'PewPew!'
+			}
 			this.started = data.started
 			this.password = data.password
 			this.privateRoom = data.password !== ''
@@ -228,6 +233,7 @@ export default {
 		},
 		leaveRoom() {
 			window.location.replace(window.location.origin)
+			document.title = 'PewPew!'
 		},
 		toggleExpansions(name) {
 			if (!this.isRoomOwner) return;
