@@ -40,7 +40,7 @@
 		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond" :playAudio="true"/>
 		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose" :playAudio="true"/>
-		<Chooser v-if="lives <= 0 && max_lives > 0 && !is_ghost" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0}"/>
+		<Chooser v-if="lives <= 0 && max_lives > 0 && !is_ghost && !spectator" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0; spectator = true}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
 		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t(notifycard.message)" class="turn-notify-4s"/>
@@ -113,6 +113,7 @@ export default {
 		name: '',
 		eventCard: false,
 		emporioCards: {},
+		spectator: false,
 	}),
 	sockets: {
 		role(role) {
