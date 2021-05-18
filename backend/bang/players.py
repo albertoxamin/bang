@@ -291,7 +291,7 @@ class Player:
         elif self.pending_action == PendingAction.RESPOND:
             did_respond = False
             for i in range(len(self.hand)):
-                if self.hand[i].can_be_used_now and self.hand[i].name in self.expected_response:
+                if self.hand[i].can_be_used_now and (self.hand[i].name in self.expected_response or self.character.check(self.game, chd.ElenaFuente)):
                     self.respond(i)
                     did_respond = True
                     break
@@ -709,8 +709,6 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
-            elif self.character.check(self.game, chd.ElenaFuente):
-                self.expected_response = self.game.deck.all_cards_str.copy()
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -739,8 +737,6 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
-            elif self.character.check(self.game, chd.ElenaFuente):
-                self.expected_response = self.game.deck.all_cards_str.copy()
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
@@ -779,8 +775,6 @@ class Player:
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
                 elif self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
-                elif self.character.check(self.game, chd.ElenaFuente):
-                    self.expected_response = self.game.deck.all_cards_str.copy()
                 if not no_dmg:
                     self.on_failed_response_cb = self.take_damage_response
                 else:
@@ -876,7 +870,7 @@ class Player:
         if self.pending_action != PendingAction.RESPOND: return
         self.pending_action = PendingAction.WAIT
         if hand_index != -1 and hand_index < (len(self.hand)+len(self.equipment)) and (
-            ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response)) or
+            ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response) or self.character.check(self.game, chd.ElenaFuente)) or
             (hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
             if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
