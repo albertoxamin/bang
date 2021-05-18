@@ -252,7 +252,7 @@ class Game:
         print('did_lose', did_lose)
         if self.player_bangs > 0 and self.check_event(ce.PerUnPugnoDiCarte):
             self.player_bangs -= 1
-            if self.player_bangs > 1:
+            if self.player_bangs >= 1:
                 print('bang again')
                 if self.players[self.turn].get_banged(self.deck.event_cards[0]):
                     self.players[self.turn].notify_self()
