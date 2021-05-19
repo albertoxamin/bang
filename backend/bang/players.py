@@ -773,6 +773,8 @@ class Player:
                 self.expected_response = self.game.deck.mancato_cards.copy()
                 if self.attacker and self.attacker in self.game.get_alive_players() and self.character.check(self.game, chd.BelleStar) or self.game.check_event(ce.Lazo):
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
+                    if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+                        self.expected_response.append(cs.Bang(0, 0).name)
                 elif self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
                 if not no_dmg:
