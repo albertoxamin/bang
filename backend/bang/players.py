@@ -456,6 +456,7 @@ class Player:
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if picked.check_suit(self.game, [cs.Suit.SPADES]) and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
+                            self.attacker = None
                             self.game.deck.scrap(self.equipment.pop(i), True)
                             self.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
                             self.heal_if_needed()
@@ -773,7 +774,7 @@ class Player:
                 self.expected_response = self.game.deck.mancato_cards.copy()
                 if self.attacker and self.attacker in self.game.get_alive_players() and self.character.check(self.game, chd.BelleStar) or self.game.check_event(ce.Lazo):
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
-                elif self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
+                if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
                 if not no_dmg:
                     self.on_failed_response_cb = self.take_damage_response
