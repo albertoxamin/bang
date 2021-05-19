@@ -24,7 +24,7 @@
 					<div v-else-if="p.is_ghost" class="tiny-health">
 						<span>👻</span>
 					</div>
-					<Card :card="p.card" :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
+					<Card :card="p.card" @click.native="drawFromPlayer(p.name)"  :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
 					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
@@ -43,7 +43,8 @@
 				<!-- </div> -->
 			<!-- </div> -->
 			<div v-if="!started">
-				<p v-if="players.length < 3" class="center-stuff">{{$t('minimum_players')}}</p>
+				<p v-if="players.length < 3" class="center-stuff" style="min-height: 19px;">{{$t('minimum_players')}}</p>
+				<p v-else style="min-height: 19px;"> </p>
 				<h3>{{$t("expansions")}}</h3>
 				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
 					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}</PrettyCheck>
