@@ -145,6 +145,7 @@ export default {
 			else if (this.pending_action == 3) document.title = this.$t('your_response')+' | PewPew!'
 			else if (this.pending_action == 5) document.title = this.$t('your_choose')+' | PewPew!'
 			else document.title = 'PewPew!'
+			if ((this.live > 0 || this.is_ghost) && this.spectator) this.spectator = false
 			this.expected_response = self.expected_response
 			this.available_cards = self.available_cards
 			this.win_status = self.win_status
