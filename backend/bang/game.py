@@ -346,6 +346,7 @@ class Game:
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'flip new event {self.deck.event_cards[0].name}')
+                self.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):

@@ -102,7 +102,8 @@
     "change_username": "{0} ha cambiato nome in {1}.",
     "lobby_reset": "Si ritorna alla stanza in {0} secondi...",
     "prison_free": "{0} è uscito di prigione",
-    "prison_turn": "{0} rimane in prigione questo turno"
+    "prison_turn": "{0} rimane in prigione questo turno",
+    "flip_event": "🎴 EVENTO: {0} 🎴"
   },
   "foc": {
     "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
