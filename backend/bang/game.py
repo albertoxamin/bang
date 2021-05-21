@@ -175,6 +175,8 @@ class Game:
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
         self.attack_in_progress = False
+        if self.pending_winners and not self.someone_won:
+            return self.announces_winners()
 
     def indian_others(self, attacker: pl.Player):
         self.attack_in_progress = True
@@ -191,6 +193,8 @@ class Game:
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
         self.attack_in_progress = False
+        if self.pending_winners and not self.someone_won:
+            return self.announces_winners()
 
     def attack(self, attacker: pl.Player, target_username:str, double:bool=False):
         if self.get_player_named(target_username).get_banged(attacker=attacker, double=double):
@@ -282,20 +286,10 @@ class Game:
         else:
             self.ready_count += 1
             if self.ready_count == self.waiting_for:
-                #TODO: si potrebbe fare un metodo a parte e chiamarlo quando finiscono gli eventi di gatling e indiani
                 self.waiting_for = 0
                 self.ready_count = 0
-                if self.pending_winners:
-                    print('WE HAVE A WINNER - responders_did_respond_resume_turn')
-                    for p in self.get_alive_players():
-                        p.win_status = p in self.pending_winners
-                        if p.win_status:
-                            self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}')
-                        p.notify_self()
-                    for i in range(5):
-                        self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
-                        eventlet.sleep(1)
-                    return self.reset()
+                if self.pending_winners and not self.someone_won:
+                    return self.announces_winners()
                 if self.dalton_on:
                     self.dalton_on = False
                     print(f'notifying {self.players[self.turn].name} about his turn')
@@ -303,6 +297,26 @@ class Game:
                 else:
                     self.players[self.turn].pending_action = pl.PendingAction.PLAY
                 self.players[self.turn].notify_self()
+
+    def announces_winners(self, winners=None):
+        if (winners is None):
+            print('WE HAVE A WINNER - pending winners')
+        else:
+            print('WE HAVE A WINNER')
+        for p in self.get_alive_players():
+            if winners is None:
+                p.win_status = p in self.pending_winners
+            else:
+                p.win_status = p in winners
+            if p.win_status:
+                if not self.someone_won:
+                    self.someone_won = True
+                self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}')
+            p.notify_self()
+        for i in range(5):
+            self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
+            eventlet.sleep(1)
+        return self.reset()
 
     def next_player(self):
         pls = self.get_alive_players()
@@ -332,6 +346,7 @@ class Game:
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'flip new event {self.deck.event_cards[0].name}')
+                self.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):
@@ -374,6 +389,8 @@ class Game:
     def next_turn(self):
         if self.shutting_down: return
         print(f'{self.players[self.turn].name} invoked next turn')
+        if self.pending_winners and not self.someone_won:
+                    return self.announces_winners()
         pls = self.get_alive_players()
         if len(pls) > 0:
             if self.check_event(ceh.CorsaAllOro):
@@ -481,17 +498,7 @@ class Game:
             winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             #print(f'win check: ready-{self.ready_count} waiting-{self.waiting_for} winners:{len(winners)}')
             if not self.attack_in_progress and len(winners) > 0 and not self.someone_won:
-                print('WE HAVE A WINNER')
-                self.someone_won = True
-                for p in self.get_alive_players():
-                    p.win_status = p in winners
-                    if p.win_status:
-                        self.sio.emit('chat_message', room=self.name, data=f'_won|{p.name}')
-                    p.notify_self()
-                for i in range(5):
-                    self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
-                    eventlet.sleep(1)
-                return self.reset()
+                return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
                 self.pending_winners = winners
 

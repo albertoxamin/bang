@@ -35,7 +35,12 @@ export default {
 	sockets: {
 		chat_message(msg) {
 			// console.log(msg)
-			if ((typeof msg === "string") && msg.indexOf('_') === 0) {
+			if ((typeof msg === "string" && msg.indexOf('_') === 0) || (msg.color != null && msg.text.indexOf('_') === 0)) {
+				let t_color = null
+				if (msg.color != null) {
+					t_color = msg.color
+					msg = msg.text
+				}
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
 				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity"].indexOf(type) !== -1){
@@ -54,7 +59,11 @@ export default {
 						type += "4"
 					}
 				}
-				this.messages.push({text:this.$t(`chat.${type}`, params)});
+				if (t_color != null) {
+					this.messages.push({color:t_color, text:this.$t(`chat.${type}`, params)});
+				} else {
+					this.messages.push({text:this.$t(`chat.${type}`, params)});
+				}
 				if (type == 'turn' && params[0] == this.username) {
 					(new Audio(turn_sfx)).play();
 				} else if (type == 'died_role') {
