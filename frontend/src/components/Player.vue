@@ -316,7 +316,7 @@ export default {
 			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
 		play_card(card, from_equipment) {
-			if (from_equipment && (!card.usable_next_turn || !card.can_be_used_now)) return;
+			if (from_equipment && (!card.usable_next_turn || !card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
 			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
