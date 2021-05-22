@@ -51,12 +51,12 @@ class Game:
                 'started': self.started,
                 'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot} for p in self.players],
                 'password': self.password,
-                'debug': self.debug,
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
                 'available_expansions': self.available_expansions,
             })
+        self.sio.emit('debug', room=self.name, data=self.debug)
         self.sio.emit('spectators', room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):

@@ -10,7 +10,7 @@
 		</transition-group>
 		<form @submit="sendChatMessage" id="msg-form">
 			<input v-model="text" style="flex-grow:2;"/>
-			<input type="submit" :value="$t('submit')"/>
+			<input id="submit-message" type="submit" class="btn" :value="$t('submit')"/>
 		</form>
 	</div>
 </template>
@@ -112,7 +112,7 @@ export default {
 	overflow-x: hidden;
 	overflow-wrap: break-word;
 	overflow-wrap: normal;
-	border: 2pt solid #ccc;
+	border: 2pt solid var(--muted-color);
 	border-radius: 4pt;
 }
 input {
@@ -129,6 +129,7 @@ input {
 #msg-form {
 	width:100%;
 	padding:0;
+	margin-top: 6pt;
 	display:flex;
 }
 .message-enter-active, .message-leave-active {
@@ -143,10 +144,17 @@ input {
 		height: 90vh;
 		margin-left: 10pt;
 	}
+	#submit-message {
+		margin-left: 6pt;
+		margin-right: -5pt;
+	}
 }
 @media only screen and (max-width:1000px) {
 	#msg-form {
 		flex-direction: column;
+	}
+	#submit-message {
+		margin-top: 6pt;
 	}
 	#chatbox {
 		max-height:150px;

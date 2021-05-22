@@ -14,7 +14,7 @@
 				<p>{{$t("choose_username")}}</p>
 				<form @submit="setUsername">
 					<input id="username" v-model="username" />
-					<input type="submit" :value="$t('submit')"/>
+					<input type="submit" class="btn" :value="$t('submit')"/>
 				</form>
 				<p v-if="onlinePlayers > 0">{{$t("online_players")}}{{onlinePlayers}}</p>
 			</div>
@@ -26,7 +26,7 @@
 					<form @submit="createLobby" style="display:flex">
 						<p>{{$t("lobby_name")}}</p>
 						<input id="lobbyname" v-model="lobbyName"/>
-						<input type="submit" :value="$t('submit')"/>
+						<input type="submit" class="btn" :value="$t('submit')"/>
 					</form>
 					<h2>{{$t("available_lobbies")}}</h2>
 					<div style="display: flex">

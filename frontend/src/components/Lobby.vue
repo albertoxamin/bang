@@ -3,16 +3,16 @@
 		<div style="flex-grow: 4;">
 			<div style="position:relative;">
 				<h2 v-if="!started">{{$t('room')}}{{ lobbyName }}</h2>
-				<input style="position:absolute;top:0;right:0;max-height:100pt" v-if="!started" type="button" @click="leaveRoom" :value="$t('leave_room')"/>
+				<input style="position:absolute;top:0;right:0;max-height:100pt" v-if="!started" type="button" class="btn" @click="leaveRoom" :value="$t('leave_room')"/>
 			</div>
 			<h3>{{$t('room_players', {username:username})}}</h3>
-			<div v-if="debug" style="position: absolute;top: 6pt;right: 6pt;">
+			<div v-if="debug_mode" style="position: absolute;top: 6pt;right: 6pt;">
 				<p style="padding:0 10px;background:red;color:white;border-radius:12pt;">DEBUG ON</p>
 			</div>
 			<div v-if="!started">
 				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">{{$t("private_room")}}</PrettyCheck>
 				<label v-if="password !== ''">{{$t('password')}}<b class="selectable" style="font-size:larger;">{{ password }}</b></label>
-				<input type="button" style="margin-left: 10pt;" v-clipboard:copy="inviteLink" :value="$t('copy')"/>
+				<input type="button" class="btn" style="margin-left: 10pt;" v-clipboard:copy="inviteLink" :value="$t('copy')"/>
 			</div>
 			
 			<!-- <div class="players-table"> -->
@@ -56,8 +56,8 @@
 				<h3>{{$t('mods')}}</h3>
 				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
 				<h3>{{$t('bots')}}</h3>
-				<input type="button" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="()=>{this.$socket.emit('chat_message', '/addbot')}"/>
-				<input type="button" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="()=>{this.$socket.emit('chat_message', '/removebot')}"/>
+				<input type="button" class="btn" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="()=>{this.$socket.emit('chat_message', '/addbot')}"/>
+				<input type="button" class="btn" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="()=>{this.$socket.emit('chat_message', '/removebot')}"/>
 				<!-- <br> -->
 				<!-- <PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck> -->
 			</div>
@@ -117,7 +117,7 @@ export default {
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,
-		debug: false,
+		debug_mode: false,
 	}),
 	sockets: {
 		room(data) {
@@ -134,7 +134,6 @@ export default {
 			this.disconnect_bot = data.disconnect_bot
 			this.togglable_expansions = data.available_expansions
 			this.expansions = data.expansions
-			this.debug = data.debug
 			this.players = data.players.map(x => {
 				return {
 					name: x.name,
@@ -143,6 +142,9 @@ export default {
 					ncards: 0,
 				}
 			})
+		},
+		debug(data) {
+			this.debug_mode = data;
 		},
 		start() {
 			this.started = true;

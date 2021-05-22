@@ -9,8 +9,8 @@
 		</div>
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;">
-			<input type="button" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
-			<select id="lang" v-model="theme">
+			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
+			<select id="theme" class="btn" v-model="theme">
 				<option
 					v-for="(theme, i) in ['light.☀️.Light', 'dark.🌙️.Dark', 'sepia..Sepia', 'grayscale..Grayscale']"
 					:key="`theme-${i}`"
@@ -18,7 +18,7 @@
 						{{theme.split('.')[1]}} {{theme.split('.')[2]}}
 				</option>
 			</select>
-			<select id="lang" v-model="$i18n.locale" @change="storeLangPref">
+			<select id="lang" class="btn" v-model="$i18n.locale" @change="storeLangPref">
 				<option
 					v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
 					:key="`lang-${i}`"
@@ -218,6 +218,7 @@ input:disabled {
 :root {
 	--font-color: #2c3e50;
 	--bg-color: white;
+	--muted-color: #ccc;
 }
 [data-theme="dark"] {
 	--font-color: rgb(174, 194, 211);
@@ -226,14 +227,31 @@ input:disabled {
 [data-theme="sepia"] {
 	--font-color: rgb(54, 43, 33);
 	--bg-color: #e7d6bb;
+	--muted-color: rgba(54, 43, 33, 0.5);
 }
 [data-theme="grayscale"] {
 	--font-color: rgb(66, 66, 66);
 	--bg-color: #e2e0e0;
+	--muted-color: rgba(66, 66, 66, 0.5);
 }
 html, #app, input, select {
 	background-color: var(--bg-color);
 	color: var(--font-color);
 }
 
+.btn {
+	background-color: var(--bg-color);
+	color: var(--font-color);
+	border: 2px solid var(--font-color);
+	border-radius: 12pt;
+	cursor: pointer;
+	transition: all 0.13s ease-in-out;
+}
+.btn:hover:not([disabled]) {
+	background-color: var(--font-color); /* Green */
+	color: var(--bg-color);
+}
+.btn:disabled {
+	cursor: not-allowed;
+}
 </style>

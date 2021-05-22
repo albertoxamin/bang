@@ -20,10 +20,12 @@
 		<transition name="list">
 			<p v-if="desc"><i>{{desc}}</i></p>
 		</transition>
-		<button v-if="is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
-		<button v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
-		<button v-if="is_my_turn && character.name === 'José Delgrado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
-		<button v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
+		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
+			<button class="btn" v-if="is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'José Delgrado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
+		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
@@ -421,7 +423,7 @@ export default {
 .hand {
 	position: relative;
 	display:flex;
-	border: 2px dashed #ccc;
+	border: 2px dashed var(--muted-color);
 	padding: 10pt 40pt 0pt 40pt;
 	overflow:auto;
 	border-radius: 4pt;
@@ -442,7 +444,7 @@ export default {
 	transform: translateY(-15px);
 }
 #hand_text{
-	color: #ccc;
+	color: var(--muted-color);
 	position: absolute;
 	font-size: xxx-large;
 	font-weight: 300;
