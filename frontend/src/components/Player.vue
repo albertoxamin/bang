@@ -56,7 +56,7 @@
 		<Chooser v-if="holydayScrap && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length}`"
 							:cards="notScrappedHand" :select="holydayScrapAdd" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="visiblePlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
-		<Chooser style="filter: grayscale(1);" v-if="emporioCards && emporioCards.cards && emporioCards.cards.length > 0 && pending_action === 4" :text="$t('emporio_others', [emporioCards.name])" :cards="emporioCards.cards"/>
+		<Chooser style="filter: grayscale(1);" v-if="emporioCards && emporioCards.cards && emporioCards.cards.length > 0 && (pending_action === 4 || pending_action === null)" :text="$t('emporio_others', [emporioCards.name])" :cards="emporioCards.cards"/>
 	</div>
 </template>
 

@@ -85,6 +85,7 @@ export default {
 			return classes
 		},
 		eventDesc() {
+			this.eventCard;
 			if (this.eventCard.name !== 'PewPew!'){
 				return this.$t(`cards.${this.eventCard.name}.desc`)
 			}

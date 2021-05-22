@@ -399,19 +399,21 @@ class Game:
                 self.turn = (self.turn + 1) % len(self.players)
             self.play_turn()
 
-    def notify_event_card(self):
+    def notify_event_card(self, sid=None):
         if len(self.deck.event_cards) > 0:
+            room = self.name if sid == None else sid
             if self.deck.event_cards[0] != None:
-                self.sio.emit('event_card', room=self.name, data=self.deck.event_cards[0].__dict__)
+                self.sio.emit('event_card', room=room, data=self.deck.event_cards[0].__dict__)
             else:
-                self.sio.emit('event_card', room=self.name, data=None)
+                self.sio.emit('event_card', room=room, data=None)
 
-    def notify_scrap_pile(self):
+    def notify_scrap_pile(self, sid=None):
         print('scrap')
+        room = self.name if sid == None else sid
         if self.deck.peek_scrap_pile():
-            self.sio.emit('scrap', room=self.name, data=self.deck.peek_scrap_pile().__dict__)
+            self.sio.emit('scrap', room=room, data=self.deck.peek_scrap_pile().__dict__)
         else:
-            self.sio.emit('scrap', room=self.name, data=None)
+            self.sio.emit('scrap', room=room, data=None)
 
     def handle_disconnect(self, player: pl.Player):
         print(f'player {player.name} left the game {self.name}')
