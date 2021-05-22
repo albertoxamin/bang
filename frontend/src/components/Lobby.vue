@@ -336,7 +336,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style >
 .is_my_turn {
-	box-shadow: 0 0 0 3pt rgb(138, 12, 12), 0 0 0 6pt white, 0 0 5pt 6pt #aaa !important;
+	box-shadow: 0 0 0 3pt rgb(138, 12, 12), 0 0 0 6pt var(--bg-color), 0 0 5pt 6pt #aaa !important;
 	animation-name: turn-animation;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;

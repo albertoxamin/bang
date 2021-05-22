@@ -10,6 +10,14 @@
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;">
 			<input type="button" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
+			<select id="lang" v-model="theme">
+				<option
+					v-for="(theme, i) in ['light.☀️.Light', 'dark.🌙️.Dark', 'sepia..Sepia', 'grayscale..Grayscale']"
+					:key="`theme-${i}`"
+					:value="theme.split('.')[0]">
+						{{theme.split('.')[1]}} {{theme.split('.')[2]}}
+				</option>
+			</select>
 			<select id="lang" v-model="$i18n.locale" @change="storeLangPref">
 				<option
 					v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
@@ -44,6 +52,7 @@ export default {
 		c: false,
 		showUpdateUI: false,
 		showHelp:false,
+		theme: 'light',
 	}),
 	computed: {
 	},
@@ -74,11 +83,29 @@ export default {
 		async update() {
 			this.showUpdateUI = false;
 			await this.$workbox.messageSW({ type: "SKIP_WAITING" });
+		},
+		detectColorScheme() {
+			if(localStorage.getItem("theme")){
+				this.theme = localStorage.getItem("theme")
+				console.log("Found theme preference: " + this.theme)
+			} else if(!window.matchMedia) {
+				console.log("Auto theme not supported")
+			} else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
+				console.log("Prefers dark mode")
+				this.theme = "dark";
+			}
+		}
+	},
+	watch: {
+		theme() {
+			document.documentElement.setAttribute("data-theme", this.theme);
+			localStorage.setItem('theme', this.theme)
 		}
 	},
 	mounted() {
 		if (localStorage.getItem('lang'))
 			this.$i18n.locale = localStorage.getItem('lang')
+		this.detectColorScheme()
 	},
 	created() {
 		if (this.$workbox) {
@@ -188,10 +215,25 @@ input, select {
 input:disabled {
 	opacity: 0.5;
 }
-@media (prefers-color-scheme: dark) {
-	:root, #app, input, select {
-		background-color: #181a1b;
-		color: rgb(174, 194, 211);
-	}
+:root {
+	--font-color: #2c3e50;
+	--bg-color: white;
 }
+[data-theme="dark"] {
+	--font-color: rgb(174, 194, 211);
+	--bg-color: #181a1b;
+}
+[data-theme="sepia"] {
+	--font-color: rgb(54, 43, 33);
+	--bg-color: #e7d6bb;
+}
+[data-theme="grayscale"] {
+	--font-color: rgb(66, 66, 66);
+	--bg-color: #e2e0e0;
+}
+html, #app, input, select {
+	background-color: var(--bg-color);
+	color: var(--font-color);
+}
+
 </style>

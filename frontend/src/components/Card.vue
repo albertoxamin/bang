@@ -48,15 +48,15 @@ export default {
 	min-width:60pt;
 	height: 100pt;
 	margin: 12pt;
-	background: white;
+	background: var(--bg-color);
 	box-shadow: 
 		0 0 0 3pt #987e51,
-		0 0 0 6pt white,
+		0 0 0 6pt var(--bg-color),
 		0 0 5pt 6pt #aaa;
 	border-radius: 6pt;
 	position: relative;
 	transition: all 0.5s ease-in-out;
-	color: #333;
+	color: var(--font-color);
 	/* overflow: hidden; */
 	text-overflow: ellipsis;
 	word-wrap: normal;
@@ -75,29 +75,29 @@ export default {
 .card.equipment {
 	box-shadow: 
 		0 0 0 3pt #5c5e83,
-		0 0 0 6pt white,
+		0 0 0 6pt var(--bg-color),
 		0 0 5pt 6pt #aaa;
 }
 .card.character {
 	box-shadow: 
 		0 0 0 3pt #7c795b,
-		0 0 0 6pt white,
+		0 0 0 6pt var(--bg-color),
 		0 0 5pt 6pt #aaa;
 }
 .card.usable-next-turn {
 	box-shadow: 
-		0 0 0 3pt  #6aa16e, 0 0 0 6pt white, 0 0 5pt 6pt #aaa
+		0 0 0 3pt  #6aa16e, 0 0 0 6pt var(--bg-color), 0 0 5pt 6pt #aaa
 }
 .card.high-noon{
-	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
 	border: 2pt dotted rgb(198 78 45);
 }
 .card.fistful-of-cards{
-	box-shadow: 0 0 0pt 4pt white, 0 0 5pt 4pt #aaa;
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
 	border: 2pt dashed rgb(50 122 172);
 }
 .card.back.fistful-of-cards{
-	color:white;
+	color:var(--bg-color);
 	background: repeating-linear-gradient(
 		45deg,
 		rgb(50 122 172),
@@ -150,50 +150,9 @@ export default {
 	position: absolute;
 	bottom: -5pt;
 	right: -5pt;
-	background: white;
+	background: var(--bg-color);
 	border-radius: 100%;
 	transform: scale(0.8);
 }
-@media (prefers-color-scheme: dark) {
-	.expansion {
-		background: #181a1b;
-	}
-	:root, #app {
-		background-color: #181a1b;
-		color: rgb(174, 194, 211);
-	}
-	.card {
-		background-color: #181a1b;
-		color: rgb(174, 194, 211);
-		box-shadow: 
-			0 0 0 3pt #987e51,
-			0 0 0 6pt #181a1b,
-			0 0 5pt 6pt #aaa;
-	}
-	.card.back{
-		color:#181a1b;
-	}
-	.card.equipment {
-		box-shadow: 
-			0 0 0 3pt #5c5e83,
-			0 0 0 6pt #181a1b,
-			0 0 5pt 6pt #aaa;
-	}
-	.card.character {
-		box-shadow: 
-			0 0 0 3pt #7c795b,
-			0 0 0 6pt #181a1b,
-			0 0 5pt 6pt #aaa;
-	}
-	.card.usable-next-turn {
-		box-shadow: 
-			0 0 0 3pt #6aa16e, 0 0 0 6pt #181a1b, 0 0 5pt 6pt #aaa
-	}
-	.card.high-noon{
-		box-shadow: 0 0 0pt 4pt #181a1b, 0 0 5pt 4pt #aaa;
-	}
-	.card.fistful-of-cards{
-		box-shadow: 0 0 0pt 4pt #181a1b, 0 0 5pt 4pt #aaa;
-	}
-}
+
 </style>
