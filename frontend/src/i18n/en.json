@@ -534,6 +534,10 @@
     "Sete": {
       "name": "Thirst",
       "desc": "Players only draw 1 card at the start of their turn"
+    },
+    "Mezzogiorno di Fuoco":{
+      "name": "High Noon",
+      "desc": "Every player loses 1 HP when their turn starts"
     }
   },
   "help": {
