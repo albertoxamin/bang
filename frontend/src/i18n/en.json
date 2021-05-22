@@ -538,6 +538,10 @@
     "Mezzogiorno di Fuoco":{
       "name": "High Noon",
       "desc": "Every player loses 1 HP when their turn starts"
+    },
+    "Per Un Pugno Di Carte":{
+      "name": "A Fistful of Cards",
+      "desc": "On the beginning of his turn, the player is target of as many Bang as how many cards he has in his hand"
     }
   },
   "help": {

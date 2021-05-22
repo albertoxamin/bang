@@ -538,6 +538,10 @@
     "Mezzogiorno di Fuoco":{
       "name": "Mezzogiorno di Fuoco",
       "desc": "Ogni giocatore perde 1 punto vita all'inizio del turno"
+    },
+    "Per Un Pugno Di Carte":{
+      "name": "Per Un Pugno Di Carte",
+      "desc": "All'inizio del proprio turno, il giocatore subisce tanti bang quante carte ha in mano"
     }
   },
   "help": {
