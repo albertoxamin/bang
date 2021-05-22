@@ -1,5 +1,5 @@
+import { Workbox } from 'workbox-window';
 if ('serviceWorker' in navigator) {
-	const { Workbox } = new Workbox('service-worker.js');
 
 	const wb = new Workbox('/service-worker.js');
 	wb.addEventListener('activated', event => {
