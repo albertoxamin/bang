@@ -6,6 +6,9 @@
 				<input style="position:absolute;top:0;right:0;max-height:100pt" v-if="!started" type="button" @click="leaveRoom" :value="$t('leave_room')"/>
 			</div>
 			<h3>{{$t('room_players', {username:username})}}</h3>
+			<div v-if="debug" style="position: absolute;top: 6pt;right: 6pt;">
+				<p style="padding:0 10px;background:red;color:white;border-radius:12pt;">DEBUG ON</p>
+			</div>
 			<div v-if="!started">
 				<PrettyCheck v-if="isRoomOwner" class="p-switch p-fill" v-model="privateRoom" style="margin-top:5px; margin-bottom:3px;">{{$t("private_room")}}</PrettyCheck>
 				<label v-if="password !== ''">{{$t('password')}}<b class="selectable" style="font-size:larger;">{{ password }}</b></label>
@@ -114,6 +117,7 @@ export default {
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,
+		debug: false,
 	}),
 	sockets: {
 		room(data) {
@@ -130,6 +134,7 @@ export default {
 			this.disconnect_bot = data.disconnect_bot
 			this.togglable_expansions = data.available_expansions
 			this.expansions = data.expansions
+			this.debug = data.debug
 			this.players = data.players.map(x => {
 				return {
 					name: x.name,

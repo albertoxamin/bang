@@ -201,9 +201,31 @@ def chat_message(sid, msg):
                         bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
                     ses.game.add_player(bot)
                     bot.bot_spin()
+                return
             elif '/removebot' in msg and not ses.game.started:
                 if any([p.is_bot for p in ses.game.players]):
                     [p for p in ses.game.players if p.is_bot][-1].disconnect()
+                return
+            elif '/togglecomp' in msg and ses.game:
+                ses.game.toggle_competitive()
+                return
+            if '/debug' in msg:
+                cmd = msg.split()
+                if len(cmd) == 2 and 'DEPLOY_KEY' in os.environ and cmd[1] == os.environ['DEPLOY_KEY']:  # solo chi ha la deploy key può attivare la modalità debug
+                    ses.game.debug = not ses.game.debug
+                    ses.game.notify_room()
+                elif ses == ses.game.players[0]: # solo l'owner può attivare la modalità debug
+                    ses.game.debug = not ses.game.debug
+                    ses.game.notify_room()
+                if ses.game.debug:
+                    sio.emit('chat_message', room=sid, data={'color': f'red','text':f'debug mode is now active, only the owner of the room can disable it with /debug'})
+                return
+            if not ses.game.debug:
+                sio.emit('chat_message', room=sid, data={'color': f'','text':f'debug mode is not active, only the owner of the room can enable it with /debug'})
+            elif '/set_chars' in msg and not ses.game.started:
+                cmd = msg.split()
+                if len(cmd) == 2 and int(cmd[1]) > 0:
+                    ses.game.characters_to_distribute = int(cmd[1])
             elif '/suicide' in msg and ses.game.started and ses.lives > 0:
                 ses.lives = 0
                 ses.notify_self()
@@ -221,7 +243,7 @@ def chat_message(sid, msg):
                         })
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/debug_show_cards' in msg and ses.game.started:
+            elif '/show_cards' in msg and ses.game.started:
                 cmd = msg.split()
                 if len(cmd) == 2:
                     if cmd[1] in ses.game.players_map:
@@ -231,8 +253,8 @@ def chat_message(sid, msg):
                             eventlet.sleep(0.3)
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/ddc' in msg and ses.game.started: #/ddc *
-                cmd = msg.split()
+            elif '/ddc' in msg and ses.game.started: # debug destroy cards usage: [/ddc *] [/ddc username]
+                cmd = msg.split() 
                 if len(cmd) == 2:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode destroyed {cmd[1]} cards'})
                     if cmd[1] == "*":
@@ -246,7 +268,7 @@ def chat_message(sid, msg):
                         ses.game.get_player_named(cmd[1]).notify_self()
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/dsh' in msg and ses.game.started: #/dsh * 1
+            elif '/dsh' in msg and ses.game.started: #debug set health usage [/dsh * hp] [/dsh username hp]
                 cmd = msg.split()
                 if len(cmd) == 3:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and is changing {cmd[1]} health'})
@@ -259,17 +281,11 @@ def chat_message(sid, msg):
                         ses.game.get_player_named(cmd[1]).notify_self()
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/togglecomp' in msg and ses.game:
-                ses.game.toggle_competitive()
             elif '/togglebot' in msg and ses.game:
                 ses.game.toggle_disconnect_bot()
-            elif '/cancelgamesudo' in msg and ses.game.started:
+            elif '/cancelgame' in msg and ses.game.started:
                 sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})
                 ses.game.reset()
-            elif '/cancelgame' in msg and ses.game.started:
-                if (ses == ses.game.players[0]):
-                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} stopped the current game'})
-                    ses.game.reset()
             elif '/startgame' in msg and not ses.game.started:
                 ses.game.start_game()
             elif '/setbotspeed' in msg:

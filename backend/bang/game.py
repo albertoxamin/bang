@@ -41,7 +41,8 @@ class Game:
         self.pending_winners = []
         self.someone_won = False
         self.attack_in_progress = False
-
+        self.characters_to_distribute = 2 # personaggi da dare a inizio partita
+        self.debug = False
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
@@ -50,6 +51,7 @@ class Game:
                 'started': self.started,
                 'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot} for p in self.players],
                 'password': self.password,
+                'debug': self.debug,
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
@@ -118,9 +120,10 @@ class Game:
             self.play_turn()
 
     def choose_characters(self):
-        char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*2)
+        n = self.characters_to_distribute
+        char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*n)
         for i in range(len(self.players)):
-            self.players[i].set_available_character(char_cards[i * 2 : i * 2 + 2])
+            self.players[i].set_available_character(char_cards[i * n : i * n + n])
 
     def start_game(self):
         print('GAME IS STARING')

@@ -90,6 +90,7 @@ class Player:
         self.target_p: str = None
         self.is_drawing = False
         self.special_use_count = 0
+        self.not_chosen_character = None
         try:
             del self.win_status
         except:
@@ -116,8 +117,12 @@ class Player:
     def set_character(self, character: str):
         print(self.available_characters, character)
         if self.character == None:
-            self.character = next(
-                x for x in self.available_characters if x.name == character)
+            self.character = next(x for x in self.available_characters if x.name == character)
+            if 'high_noon' in self.game.expansions:
+                # questo viene utilizzato per la carta nuova identità
+                self.not_chosen_character = next(x for x in self.available_characters if x.name != character)
+            else:
+                self.not_chosen_character = None
             self.real_character = self.character
             self.available_characters = []
             print(f'{self.name}: I chose character {self.character.name}')
