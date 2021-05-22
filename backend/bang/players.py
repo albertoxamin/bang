@@ -167,9 +167,12 @@ class Player:
         if self.is_ghost: self.lives = 0
         if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
             self.available_cards = [{
-                'icon': '🔴'
+                'icon': '🔴',
+                'noDesc': True
             },{
-                'icon': '⚫'
+                'icon': '⚫',
+                'noDesc': True
+
             }]
             self.is_drawing = True
             self.choose_text = 'choose_guess'
@@ -178,7 +181,7 @@ class Player:
             self.can_play_ranch = False
             self.available_cards = [c for c in self.hand]
             self.discarded_cards = []
-            self.available_cards.append({'icon': '✅'})
+            self.available_cards.append({'icon': '✅','noDesc': True})
             self.is_playing_ranch = True
             self.choose_text = 'choose_ranch'
             self.pending_action = PendingAction.CHOOSE
@@ -346,7 +349,7 @@ class Player:
                 'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives))
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
-            self.available_cards.append({'icon': '❌'})
+            self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_fratelli_di_sangue'
             self.pending_action = PendingAction.CHOOSE
             self.is_giving_life = True
@@ -369,7 +372,7 @@ class Player:
                 'icon': '⭐️' if p['is_sheriff'] else '🤠',
                 'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives']))
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
-            self.available_cards.append({'icon': '❌'})
+            self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_cecchino'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
@@ -378,7 +381,7 @@ class Player:
                 'name': p.name,
                 'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠'
             } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
-            self.available_cards.append({'icon': '❌'})
+            self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_rimbalzo_player'
             self.pending_action = PendingAction.CHOOSE
             self.using_rimbalzo = 1

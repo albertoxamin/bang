@@ -219,6 +219,7 @@ export default {
 					name: this.name,
 					number: 0,
 					icon: this.$t('you'),
+					desc: this.$t('you'),
 					is_character: true,
 				})
 			}
@@ -241,6 +242,7 @@ export default {
 					name: this.$t('take_dmg'),
 					icon: '❌',
 					is_equipment: true,
+					noDesc: true,
 				}]
 			this.hand.filter(x => x.can_be_used_now && (this.expected_response.indexOf(x.name) !== -1 || this.character.name === "Elena Fuente")).forEach(x=>{
 				cc.push(x)
