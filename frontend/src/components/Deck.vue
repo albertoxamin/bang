@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<transition name="list">
-			<p v-if="eventCard" class="center-stuff"><i>{{($i18n.locale=='it'?eventCard.desc:eventCard.desc_eng)}}</i></p>
+			<p v-if="eventCard" class="center-stuff"><i>{{eventDesc}}</i></p>
 		</transition>
 		<transition name="list">
 			<p v-if="desc" class="center-stuff"><i>{{desc}}</i></p>
@@ -83,6 +83,12 @@ export default {
 			}
 			classes[this.eventCard.expansion] = true
 			return classes
+		},
+		eventDesc() {
+			if (this.eventCard.name !== 'PewPew!'){
+				return this.$t(`cards.${this.eventCard.name}.desc`)
+			}
+			return ""
 		}
 	},
 	methods: {

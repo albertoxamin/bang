@@ -430,6 +430,110 @@
     },
     "Vice": {
       "name": "Vice"
+    },
+    "Peyote": {
+      "name": "Peyote",
+      "desc": "Invece che pescare il giocatore prova a indovinare il colore del seme, se lo indovina aggiunge la carta alla mano e continua provando ad indovinare la carta successiva"
+    },
+    "Legge Del West": {
+      "name": "Legge Del West",
+      "desc": "I giocatori mostrano la seconda carta che pescano e sono obbligati a usarla in quel turno (se possibile)"
+    },
+    "Cecchino": {
+      "name": "Cecchino",
+      "desc": "Nel proprio turno i giocatori possono scartare 2 Bang assieme per sparare un bang che necessita 2 mancato (clicca la carta)"
+    },
+    "Ranch": {
+      "name": "Ranch",
+      "desc": "Dopo aver pescato il giocatore pu\u00f2 scartare quante carte vuole dalla mano e pescarne altrettante dal mazzo"
+    },
+    "Miniera Abbandonata": {
+      "name": "Miniera Abbandonata",
+      "desc": "I giocatori pescano dagli scarti nella loro fase 1 e scartano in cima al mazzo nella loro fase 3 (se gli scarti finiscono, \u00e8 necessario pescare e scartare in cima al mazzo)"
+    },
+    "Lazo": {
+      "name": "Lazo",
+      "desc": "Le carte equipaggiate non hanno effetto"
+    },
+    "Vendetta": {
+      "name": "Vendetta",
+      "desc": "Alla fine del proprio turno il giocatore estrae dal mazzo, se esce \u2665\ufe0f gioca un altro turno (ma non estrae di nuovo)"
+    },
+    "Rimbalzo": {
+      "name": "Rimbalzo",
+      "desc": "Il giocatore di turno pu\u00f2 giocare bang contro le carte equipaggiate dagli altri giocatori, se non giocano mancato vengono scartate (clicca la carta evento)"
+    },
+    "Agguato": {
+      "name": "Agguato",
+      "desc": "La distanza base tra 2 qualsiasi giocatori \u00e8 1"
+    },
+    "Fratelli Di Sangue": {
+      "name": "Fratelli Di Sangue",
+      "desc": "All'inizio del proprio turno, i giocatori possono perdere 1 vita (tranne l'ultimo) per darla a un altro giocatore"
+    },
+    "Dead Man": {
+      "name": "Dead Man",
+      "desc": "Al proprio turno il giocatore che \u00e8 morto per primo torna in vita con 2 vite e 2 carte"
+    },
+    "Roulette Russa": {
+      "name": "Roulette Russa",
+      "desc": "A partire dallo sceriffo, ogni giocatore scarta 1 mancato, il primo che non lo fa perde 2 vite"
+    },
+    "Liquore Forte": {
+      "name": "Liquore Forte",
+      "desc": "I giocatori possono evitare di pescare per recuperare 1 vita (clicca sulla carta evento per farlo)"
+    },
+    "Il Giudice": {
+      "name": "Il Giudice",
+      "desc": "Non si possono equipaggiare carte a se stessi o agli altri"
+    },
+    "Maledizione": {
+      "name": "Maledizione",
+      "desc": "Tutte le carte sono considerate di picche \u2660"
+    },
+    "Corsa All'Oro": {
+      "name": "Corsa All'Oro",
+      "desc": "Si gioca per un intero giro in senso antiorario, tuttavia gli effetti delle carte rimangono invariati"
+    },
+    "Il Reverendo": {
+      "name": "Il Reverendo",
+      "desc": "Non si possono giocare le carte Birra"
+    },
+    "Sete": {
+      "name": "Sete",
+      "desc": "I giocatori pescano 1 carta in meno nella loro fase 1"
+    },
+    "I Dalton": {
+      "name": "I Dalton",
+      "desc": "Chi ha carte blu in gioco ne scarta 1 a sua scelta"
+    },
+    "Citt\u00e0 Fantasma": {
+      "name": "Citt\u00e0 Fantasma",
+      "desc": "Tutti i giocatori morti tornano in vita al proprio turno, non possono morire e pescano 3 carte invece che 2. Quando terminano il turno tornano morti."
+    },
+    "Sermone": {
+      "name": "Sermone",
+      "desc": "I giocatori non possono giocare Bang! durante il loro turno"
+    },
+    "Il Treno": {
+      "name": "Il Treno",
+      "desc": "I giocatori pescano 1 carta extra nella loro fase 1"
+    },
+    "Benedizione": {
+      "name": "Benedizione",
+      "desc": "Tutte le carte sono considerate di cuori \u2665\ufe0f"
+    },
+    "Il Dottore": {
+      "name": "Il Dottore",
+      "desc": "Il/i giocatore/i con meno vite ne recupera/no una"
+    },
+    "Sparatoria": {
+      "name": "Sparatoria",
+      "desc": "Il limite di Bang! per turno \u00e8 2 invece che 1"
+    },
+    "Sbornia": {
+      "name": "Sbornia",
+      "desc": "I personaggi perdono le loro abilit\u00e0 speciali"
     }
   },
   "help": {

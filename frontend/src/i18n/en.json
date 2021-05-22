@@ -430,6 +430,110 @@
     },
     "Vice": {
       "name": "Deputy"
+    },
+    "Miniera Abbandonata": {
+      "name": "Abandoned Mine",
+      "desc": "Players draw from the discarded pile and discard to the top of the deck (if the discards run out, they must draw and discard on top of the deck)"
+    },
+    "Il Giudice": {
+      "name": "The Judge",
+      "desc": "You can't equip cards on your or other players"
+    },
+    "Agguato": {
+      "name": "Ambush",
+      "desc": "The base distance from any 2 players is 1"
+    },
+    "Rimbalzo": {
+      "name": "Ricochet",
+      "desc": "The player can play bang against the cards equipped by the other players, if they do not play miss they are discarded (click the event card)"
+    },
+    "Cecchino": {
+      "name": "Sniper",
+      "desc": "During their turn, players can discard 2 Bang! to shoot a bang that requires 2 missed (click the card)"
+    },
+    "Lazo": {
+      "name": "Lasso",
+      "desc": "Cards in the equipment slot do not work"
+    },
+    "Ranch": {
+      "name": "Ranch",
+      "desc": "After drawing, the player can discard as many cards as he wants from his hand and draw as many from the deck"
+    },
+    "Dead Man": {
+      "name": "Dead Man",
+      "desc": "The first player that died returns back to life with 2 hp and 2 cards"
+    },
+    "Liquore Forte": {
+      "name": "Hard Liquor",
+      "desc": "Players can skip drawing to regain 1 HP (click on the event card to use)"
+    },
+    "Vendetta": {
+      "name": "Vendetta",
+      "desc": "When ending the turn, the player flips a card from the deck, if it's \u2665\ufe0f he plays another turn (but he does not flip another card)"
+    },
+    "Roulette Russa": {
+      "name": "Russian Roulette",
+      "desc": "Starting from the sheriff, every player discards 1 missed, the first one that doesn't loses 2 HP"
+    },
+    "Legge Del West": {
+      "name": "Law Of The West",
+      "desc": "Every player shows the second card that they draw and must use it in that round (if it is possible)"
+    },
+    "Peyote": {
+      "name": "Peyote",
+      "desc": "Instead of drawing, the player tries to guess the color of the suit, if he's right he adds the card to the hand and continues trying to guess the next card"
+    },
+    "Fratelli Di Sangue": {
+      "name": "Blood Brothers",
+      "desc": "At the begin of their turn, payers can lose 1 hp (except the last one) to give it to another player"
+    },
+    "I Dalton": {
+      "name": "The Daltons",
+      "desc": "Players that have blue cards equipped, discard 1 of those card of their choice"
+    },
+    "Sermone": {
+      "name": "The Sermon",
+      "desc": "Players can't play Bang! during their turn"
+    },
+    "Citt\u00e0 Fantasma": {
+      "name": "Ghost Town",
+      "desc": "All dead players come back to life in their turn, they can't die and draw 3 cards instead of 2. When they end their turn the die."
+    },
+    "Il Reverendo": {
+      "name": "The Reverend",
+      "desc": "Beers can't be played"
+    },
+    "Sbornia": {
+      "name": "Hangover",
+      "desc": "The characters lose their special abilities"
+    },
+    "Il Dottore": {
+      "name": "The Doctor",
+      "desc": "The player with the least amount of HP gets healed 1"
+    },
+    "Corsa All'Oro": {
+      "name": "Gold Rush",
+      "desc": "Turns are played counter clockwise"
+    },
+    "Maledizione": {
+      "name": "Curse",
+      "desc": "All cards are of spades \u2660"
+    },
+    "Sparatoria": {
+      "name": "Shootout",
+      "desc": "The turn Bang! limit is 2"
+    },
+    "Benedizione": {
+      "name": "Blessing",
+      "desc": "All cards are of hearts \u2665\ufe0f"
+    },
+    "Il Treno": {
+      "name": "Train Arrival",
+      "desc": "Players draw 1 extra card"
+    },
+    "Sete": {
+      "name": "Thirst",
+      "desc": "Players only draw 1 card at the start of their turn"
     }
   },
   "help": {
