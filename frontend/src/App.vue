@@ -1,5 +1,5 @@
 <template>
-	<div id="app" class="dark-mode">
+	<div id="app">
 		<div v-if="isConnected">
 			<router-view></router-view>
 		</div>
