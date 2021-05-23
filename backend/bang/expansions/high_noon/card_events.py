@@ -57,7 +57,7 @@ class Sparatoria(CardEvent):
 
 class CorsaAllOro(CardEvent):
     def __init__(self):
-        super().__init__("Corsa All'Oro", "🌟")
+        super().__init__("Corsa All Oro", "🌟")
         #self.desc = "Si gioca per un intero giro in senso antiorario, tuttavia gli effetti delle carte rimangono invariati"
         #self.desc_eng = "Turns are played counter clockwise"
 
