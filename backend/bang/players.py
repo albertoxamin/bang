@@ -769,7 +769,8 @@ class Player:
                 self.take_no_damage_response()
             return False
         else:
-            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) or self.character.check(self.game, chars.Jourdonnais):
+            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) and not self.game.players[self.game.turn].character.check(self.game, chd.BelleStar)\
+                 or self.character.check(self.game, chars.Jourdonnais):
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
                 if not no_dmg:
@@ -942,10 +943,10 @@ class Player:
         if not self.character:
             return 0
         covers = 0
+        if self.game.check_event(ce.Lazo) or self.game.players[self.game.turn].character.check(self.game, chd.BelleStar):
+            return self.character.visibility_mod
         for card in self.equipment:
             covers += card.vis_mod
-        if self.game.check_event(ce.Lazo):
-            return self.character.visibility_mod
         return self.character.visibility_mod + covers
 
     def scrap(self, card_index):
