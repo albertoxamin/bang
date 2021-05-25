@@ -220,7 +220,7 @@ class Player:
             self.sio.emit('self', room=self.sid, data=json.dumps(
                 ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
-        if self.game: # falso quando un bot viene eliminato dalla partita
+        if self.game and self.game.started: # falso quando un bot viene eliminato dalla partita
             self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
             self.game.notify_all()
         self.sio.emit('self', room=self.sid, data=json.dumps(
@@ -769,7 +769,8 @@ class Player:
                 self.take_no_damage_response()
             return False
         else:
-            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) or self.character.check(self.game, chars.Jourdonnais):
+            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) and not self.game.players[self.game.turn].character.check(self.game, chd.BelleStar)\
+                 or self.character.check(self.game, chars.Jourdonnais):
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
                 if not no_dmg:
@@ -882,8 +883,11 @@ class Player:
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response) or self.character.check(self.game, chd.ElenaFuente)) or
             (hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
-            if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn and self.event_type != 'duel':
-                self.hand.append(self.game.deck.draw(True))
+            if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn and self.event_type != 'duel':
+                if self.attacker.character.check(self.game, chars.SlabTheKiller) and isinstance(self.hand[hand_index], cs.Mancato):
+                    self.molly_discarded_cards += 1
+                else:
+                    self.hand.append(self.game.deck.draw(True))
             card.use_card(self)
             self.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
             self.game.deck.scrap(card, True)
@@ -892,9 +896,14 @@ class Player:
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
                     self.game.duel(self, self.attacker.name)
-                    if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand)+1 and not self.is_my_turn:
+                    if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn:
                         self.molly_discarded_cards += 1
                 else:
+                    if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
+                        for i in range(self.molly_discarded_cards):
+                            self.hand.append(self.game.deck.draw(True))
+                        self.molly_discarded_cards = 0
+                        self.notify_self()
                     self.game.responders_did_respond_resume_turn(did_lose=False)
                 self.event_type = ''
             else:
@@ -906,7 +915,7 @@ class Player:
                     self.hand.append(self.game.deck.draw(True))
                 self.molly_discarded_cards = 0
                 self.notify_self()
-            elif self.attacker and self.attacker in self.game.get_alive_players() and isinstance(self.attacker.character, chd.MollyStark) and self.is_my_turn:
+            elif self.attacker and self.attacker in self.game.get_alive_players() and self.attacker.character.check(self.game, chd.MollyStark) and self.is_my_turn:
                 for i in range(self.attacker.molly_discarded_cards):
                     self.attacker.hand.append(self.attacker.game.deck.draw(True))
                 self.attacker.molly_discarded_cards = 0
@@ -934,10 +943,10 @@ class Player:
         if not self.character:
             return 0
         covers = 0
+        if self.game.check_event(ce.Lazo) or self.game.players[self.game.turn].character.check(self.game, chd.BelleStar):
+            return self.character.visibility_mod
         for card in self.equipment:
             covers += card.vis_mod
-        if self.game.check_event(ce.Lazo):
-            return self.character.visibility_mod
         return self.character.visibility_mod + covers
 
     def scrap(self, card_index):

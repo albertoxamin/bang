@@ -308,7 +308,7 @@ def chat_message(sid, msg):
                     ses.character = [c for c in chs if c.name == ' '.join(cmd[1:])][0]
                     ses.real_character = ses.character
                     ses.notify_self()
-            elif '/setevent' in msg and ses.game and ses.game.deck: # /setevent (position) 0 (name) Peyote
+            elif '/setevent' in msg and ses.game and ses.game.deck: #add event before the position /setevent (position) 0 (name) Peyote
                 cmd = msg.split()
                 if len(cmd) >= 3:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed event'})
