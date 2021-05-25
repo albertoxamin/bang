@@ -220,7 +220,7 @@ class Player:
             self.sio.emit('self', room=self.sid, data=json.dumps(
                 ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
-        if self.game: # falso quando un bot viene eliminato dalla partita
+        if self.game and self.game.started: # falso quando un bot viene eliminato dalla partita
             self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
             self.game.notify_all()
         self.sio.emit('self', room=self.sid, data=json.dumps(
