@@ -85,8 +85,7 @@ class Deck:
             return self.draw()
 
     def scrap(self, card: cs.Card, ignore_event = False):
-        if card.usable_next_turn:
-            card.can_be_used_now = False
+        card.reset_card()
         if self.game.check_event(ce.MinieraAbbandonata) and not ignore_event:
             self.put_on_top(card)
         else:

@@ -579,8 +579,7 @@ class Player:
                 card = target.hand.pop(card_index)
             target.notify_self()
             if self.choose_action == 'steal':
-                if card.usable_next_turn:
-                    card.can_be_used_now = False
+                card.reset_card()
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card, True)
@@ -683,8 +682,7 @@ class Player:
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
             self.is_drawing = False
             card = self.available_cards.pop(card_index)
-            if card.usable_next_turn:
-                card.can_be_used_now = False
+            card.reset_card()
             self.hand.append(card)
             self.available_cards = []
             self.game.get_player_named(self.pat_target).notify_self()

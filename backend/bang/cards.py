@@ -39,6 +39,7 @@ class Card(ABC):
         self.can_be_used_now = True
         self.usable_next_turn = False
         self.need_with = False
+        self.must_be_used = False
 
     def __str__(self):
         char = ['♦️', '♣️', '♥️', '♠️'][int(self.suit)]
@@ -47,6 +48,12 @@ class Card(ABC):
 
     def num_suit(self):
         return f"{['♦️', '♣️', '♥️', '♠️'][int(self.suit)]}{self.number}"
+
+    def reset_card(self):
+        if self.usable_next_turn:
+            self.can_be_used_now = False
+        if self.must_be_used:
+            self.must_be_used = False
 
     def play_card(self, player, against=None, _with=None):#self --> carta
         if self.is_equipment:
@@ -70,6 +77,7 @@ class Card(ABC):
         else:
             player.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card|{player.name}|{self.name}')
+        self.reset_card()
         return True
 
     def use_card(self, player):

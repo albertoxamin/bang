@@ -516,8 +516,10 @@ class Game:
             elif len(vulture) == 2:
                 for i in range(len(player.hand)):
                     vulture[i%2].hand.append(player.hand.pop())
+                    vulture[i%2].hand[-1].reset_card()
                 for i in range(len(player.equipment)):
                     vulture[i%2].hand.append(player.equipment.pop())
+                    vulture[i%2].hand[-1].reset_card()
                 vulture[0].notify_self()
                 vulture[1].notify_self()
             else:
