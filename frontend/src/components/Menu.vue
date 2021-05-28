@@ -2,6 +2,7 @@
 	<div id="app" class="dark-mode">
 		<div v-if="!isInLobby" id="logo" class="center-stuff" style="margin-bottom:10pt">
 			<h1 style="margin-bottom:0pt;">PewPew!</h1>
+			<p style="transform: scale(0.7);margin-top: auto;">v-{{version}}</p>
 			<div style="display:flex;justify-content: space-evenly;;min-height:140pt;">
 				<span style="font-size:48pt;transform:scaleX(-1) translateY(25%);">🔫️</span>
 				<TinyHand :ncards="5" ismyturn="true" style="position:none;transform:scale(1);bottom:none;width:120pt;"/>
@@ -84,6 +85,9 @@ export default {
 				is_character: true,
 			}
 		},
+		version() {
+			return document.getElementsByTagName("html")[0].getAttribute("data-build-timestamp-utc").replace(/[-|:|T]/g,'.').substring(0,16)
+		}
 	},
 	sockets: {
 		lobbies(data) {
