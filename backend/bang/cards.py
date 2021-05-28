@@ -143,6 +143,7 @@ class Prigione(Card):
 
     def play_card(self, player, against, _with=None):
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
+            self.reset_card()
             player.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)

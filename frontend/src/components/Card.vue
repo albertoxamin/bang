@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn}">
+	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used}">
 		<h4>{{cardName}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
@@ -121,6 +121,9 @@ export default {
 	font-size:26pt;
 	top: 35%;
 } 
+.card.must-be-used {
+	filter: drop-shadow(0 0 5px red);
+}
 .fistful-of-cards .emoji, .high-noon .emoji{
 	top:auto !important;
 	bottom:15% !important;

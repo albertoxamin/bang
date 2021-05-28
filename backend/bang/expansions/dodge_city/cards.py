@@ -154,6 +154,7 @@ class Bibbia(Schivata):
             return False
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -173,7 +174,9 @@ class Cappello(Mancato):
             pass
             return False
         else:
+            self.reset_card()
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -203,7 +206,9 @@ class Pugnale(Pugno):
         if self.can_be_used_now:
             return super().play_card(player, against=against)
         else:
+            self.reset_card()
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -224,6 +229,7 @@ class Derringer(Pugnale):
             return super().play_card(player, against=against)
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -251,6 +257,7 @@ class Borraccia(Card):
             return True
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -270,6 +277,7 @@ class PonyExpress(WellsFargo):
             return super().play_card(player, against)
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -289,6 +297,7 @@ class Howitzer(Gatling):
             return super().play_card(player, against)
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -309,6 +318,7 @@ class CanCan(CatBalou):
             return super().play_card(player, against)
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -330,6 +340,7 @@ class Conestoga(Panico):
             return super().play_card(player, against)
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -353,6 +364,7 @@ class Pepperbox(Bang):
             return False
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:
@@ -377,6 +389,7 @@ class FucileDaCaccia(Card):
             return False
         else:
             if not self.is_duplicate_card(player):
+                self.reset_card()
                 player.equipment.append(self)
                 return True
             else:

@@ -437,10 +437,12 @@ class Player:
                 for i in range(2):
                     card: cs.Card = self.game.deck.draw()
                     self.hand.append(card)
-                    if i == 1 and self.character.check(self.game, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest):
+                    if i == 1 and (self.character.check(self.game, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest)):
                         for p in self.game.get_alive_players():
                             if p != self:
                                 p.notify_card(self, card, 'blackjack_special' if self.character.check(self.game, chars.BlackJack) else 'foc.leggedelwest')
+                        if self.game.check_event(ce.LeggeDelWest):
+                            card.must_be_used = True
                         if card.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]) and self.character.check(self.game, chars.BlackJack):
                             self.hand.append(self.game.deck.draw())
                     if self.game.check_event(ceh.Sete):
@@ -997,6 +999,9 @@ class Player:
             for i in range(len(self.equipment)):
                 if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
                     self.equipment[i].can_be_used_now = True
+            for i in range(len(self.hand)):
+                if self.hand[i].must_be_used:
+                    self.hand[i].must_be_used = False
             if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
                 self.is_ghost = False
                 for i in range(len(self.hand)):
