@@ -92,9 +92,9 @@ class PatBrennan(Character):
         # self.desc_eng = "Instead of drawing he can steal a card from the equipment of another player."
         self.icon = '🤗'
 
-class JoseDelgrado(Character):
+class JoseDelgado(Character):
     def __init__(self):
-        super().__init__("José Delgrado", max_lives=4)
+        super().__init__("José Delgado", max_lives=4)
         # self.desc = "Può scartare una carta blu per pescare 2 carte."
         # self.desc_eng = "He can discard a blue card to draw 2 cards."
         self.icon = '🎒'
@@ -121,7 +121,7 @@ def all_characters() -> List[Character]:
         VeraCuster(),
         ChuckWengam(),
         PatBrennan(),
-        JoseDelgrado(),
+        JoseDelgado(),
         DocHolyday(),
     ]
     for c in cards:

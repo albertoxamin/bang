@@ -956,7 +956,7 @@ class Player:
             if self.character.check(self.game, chars.SidKetchum) and self.scrapped_cards == 2:
                 self.scrapped_cards = 0
                 self.lives = min(self.lives+1, self.max_lives)
-            elif self.character.check(self.game, chd.JoseDelgrado) and card.is_equipment and self.special_use_count < 2:
+            elif self.character.check(self.game, chd.JoseDelgado) and card.is_equipment and self.special_use_count < 2:
                 self.hand.append(self.game.deck.draw(True))
                 self.hand.append(self.game.deck.draw(True))
                 self.special_use_count += 1

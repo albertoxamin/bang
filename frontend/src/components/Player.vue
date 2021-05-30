@@ -23,7 +23,7 @@
 		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
 			<button class="btn" v-if="is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
 			<button class="btn" v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
-			<button class="btn" v-if="is_my_turn && character.name === 'José Delgrado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'José Delgado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
 			<button class="btn" v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
