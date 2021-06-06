@@ -879,7 +879,7 @@ class Player:
     def respond(self, hand_index):
         if self.pending_action != PendingAction.RESPOND: return
         self.pending_action = PendingAction.WAIT
-        if hand_index != -1 and hand_index < (len(self.hand)+len(self.equipment)-1) and (
+        if hand_index != -1 and hand_index < (len(self.hand)+len(self.equipment)) and (
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response) or self.character.check(self.game, chd.ElenaFuente)) or
             (hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
