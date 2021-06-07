@@ -1,84 +1,32 @@
-import { Workbox } from 'workbox-window';
-if ('serviceWorker' in navigator) {
+/* eslint-disable no-console */
 
-	const wb = new Workbox('/service-worker.js');
-	wb.addEventListener('activated', event => {
-		// `event.isUpdate` will be true if another version of the service
-		// worker was controlling the page when this version was registered.
-		if (!event.isUpdate) {
-			console.log('Service worker activated for the first time!');
+import { register } from 'register-service-worker'
 
-			// If your service worker is configured to precache assets, those
-			// assets should all be available now.
-		}
-	});
-
-	wb.addEventListener('waiting', () => {
-		console.log(
-			`A new service worker has installed, but it can't activate` +
-				`until all tabs running the current version have fully unloaded.`,
-		);
-	});
-
-	wb.addEventListener('message', event => {
-		if (event.data.type === 'CACHE_UPDATE') {
-			const { updatedURL } = event.data.payload;
-
-			console.log(`A newer version of ${updatedURL} is available!`);
-		}
-	});
-
-	wb.addEventListener('installed', event => {
-		if (!event.isUpdate) {
-			console.log('First install');
-		} else {
-			console.log('updated install');
-		}
-	});
-
-	wb.addEventListener('controlling', event => {
-		if (!event.isUpdate) {
-			console.log('First control');
-		} else {
-			console.log('updated control');
-		}
-	});
-
-	wb.addEventListener('externalinstalled', event => {
-		if (!event.isUpdate) {
-			console.log('external first install');
-		} else {
-			console.log('external update install');
-		}
-	});
-
-	wb.addEventListener('externalwaiting', event => {
-		if (!event.isUpdate) {
-			console.log('external first waiting');
-		} else {
-			console.log('external update waiting');
-		}
-	});
-
-	wb.addEventListener('externalactivated', event => {
-		if (!event.isUpdate) {
-			console.log('external first acvtive');
-		} else {
-			console.log('external update acvtive');
-		}
-	});
-
-	wb.addEventListener('redundant', event => {
-		// `event.isUpdate` will be true if another version of the service
-		// worker was controlling the page when this version was registered.
-		if (!event.isUpdate) {
-			console.log('Service worker redundant for the first time!');
-
-			// If your service worker is configured to precache assets, those
-			// assets should all be available now.
-		}
-		console.log(event);
-	});
-
-	wb.register();
+if (process.env.NODE_ENV === 'production') {
+  register(`${process.env.BASE_URL}service-worker.js`, {
+    ready () {
+      console.log(
+        'App is being served from cache by a service worker.\n' +
+        'For more details, visit https://goo.gl/AFskqB'
+      )
+    },
+    registered () {
+      console.log('Service worker has been registered.')
+    },
+    cached () {
+      console.log('Content has been cached for offline use.')
+    },
+    updatefound () {
+      console.log('New content is downloading.')
+    },
+    updated () {
+      console.log('New content is available; please refresh.')
+    },
+    offline () {
+      console.log('No internet connection found. App is running in offline mode.')
+    },
+    error (error) {
+      console.error('Error during service worker registration:', error)
+    }
+  })
 }

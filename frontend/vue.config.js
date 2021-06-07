@@ -6,6 +6,7 @@ module.exports = {
 		name: 'PewPew!',
 		appleMobileWebAppCache: "yes",
 		manifestOptions: {
+			display: 'standalone',
 		}
 	},
 	configureWebpack: {

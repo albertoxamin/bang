@@ -25,9 +25,7 @@ const i18n = new VueI18n({
   messages
 })
 
-import wb from "./registerServiceWorker";
-
-Vue.prototype.$workbox = wb;
+import './registerServiceWorker'
 
 new Vue({
   i18n,
