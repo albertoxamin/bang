@@ -353,7 +353,8 @@ class Player:
             self.available_cards = [{
                 'name': p.name,
                 'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
-                'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives))
+                'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+                'noDesc': True
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_fratelli_di_sangue'

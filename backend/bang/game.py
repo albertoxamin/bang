@@ -561,6 +561,7 @@ class Game:
         self.is_handling_death = False
         self.waiting_for = 0
         self.incremental_turn = 0
+        self.turn = 0
         self.pending_winners = []
         for p in self.players:
             p.reset()
