@@ -9,6 +9,7 @@
 		</div>
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;">
+			<input type="button" class="btn" value="Discord" style="min-width:28pt;cursor:pointer;" @click="joinDiscord"/>
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
 			<select id="theme" class="btn" v-model="theme">
 				<option
@@ -94,6 +95,9 @@ export default {
 				console.log("Prefers dark mode")
 				this.theme = "dark";
 			}
+		},
+		joinDiscord() {
+			window.open('https://discord.gg/Dr58dZ2na8', '_blank');
 		}
 	},
 	watch: {
