@@ -46,6 +46,7 @@
   "choose_cecchino": "Choose who to shoot",
   "choose_rimbalzo_player": "Choose the target of the bang",
   "choose_rimbalzo_card": "Choose the card to discard the bang to",
+  "choose_nuova_identita": "Choose if you want to keep your current character, or if you want to change it and start from 2 HP",
   "emporio_others": "{0} is choosing which card to get from the General Store",
   "you_died": "YOU DIED",
   "spectate": "SPECTATE",
@@ -534,6 +535,14 @@
     "Sete": {
       "name": "Thirst",
       "desc": "Players only draw 1 card at the start of their turn"
+    },
+    "Nuova Identita": {
+      "name": "New Identity",
+      "desc": ""
+    },
+    "Manette": {
+      "name": "Handcuffs",
+      "desc": ""
     },
     "Mezzogiorno di Fuoco":{
       "name": "High Noon",

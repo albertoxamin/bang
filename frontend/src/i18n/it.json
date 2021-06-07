@@ -46,6 +46,7 @@
   "choose_cecchino": "Scegli contro chi sparare",
   "choose_rimbalzo_player": "Scegli contro chi scartare il bang",
   "choose_rimbalzo_card": "Scegli contro che carta scartare il bang",
+  "choose_nuova_identita": "Scegli se rimanere con il tuo personaggio corrente o se cambiarlo e ripartire con 2 vite.",
   "emporio_others": "{0} sta scegliendo che carta prendere dall'emporio",
   "you_died": "SEI MORTO",
   "spectate": "SPETTATORE",
@@ -534,6 +535,14 @@
     "Sbornia": {
       "name": "Sbornia",
       "desc": "I personaggi perdono le loro abilit\u00e0 speciali"
+    },
+    "Nuova Identita": {
+      "name": "Nuova Identit\u00e0",
+      "desc": "All'inizio del proprio turno, ogni giocatore potrà decidere se sostituire il suo personaggio attuale con quello era stato proposto ad inizio partita, se lo fa riparte con 2 punti vita"
+    },
+    "Manette": {
+      "name": "Manette",
+      "desc": "Dopo aver pescato in fase 1, il giocatore di turno dichiara un seme: potrà usare solamente carte di quel seme nel suo turno"
     },
     "Mezzogiorno di Fuoco":{
       "name": "Mezzogiorno di Fuoco",

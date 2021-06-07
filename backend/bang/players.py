@@ -64,6 +64,7 @@ class Player:
         self.is_dead = False
         self.death_turn = 0
         self.is_ghost = False
+        self.not_chosen_character = None
 
     def reset(self):
         self.hand: cs.Card = []
@@ -358,6 +359,10 @@ class Player:
             self.choose_text = 'choose_fratelli_di_sangue'
             self.pending_action = PendingAction.CHOOSE
             self.is_giving_life = True
+        elif self.game.check_event(ceh.NuovaIdentita) and self.not_chosen_character != None and not again:
+            self.available_cards = [self.character, self.not_chosen_character]
+            self.choose_text = 'choose_nuova_identita'
+            self.pending_action = PendingAction.CHOOSE
         elif not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
             self.is_giving_life = False
             self.pending_action = PendingAction.PICK
@@ -595,6 +600,14 @@ class Player:
                 while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
                     self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
             self.notify_self()
+        elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
+            if card_index == 1: # the other character
+                self.character = self.not_chosen_character
+                self.real_character = self.character
+                self.max_lives = self.character.max_lives + self.role.health_mod
+                self.lives = 2
+                self.sio.emit('chat_message', room=self.game.name, data=f'_choose_character|{self.name}|{self.character.name}')
+            self.play_turn(again = True)
         elif self.is_giving_life and self.game.check_event(ce.FratelliDiSangue):
             try:
                 player = self.game.get_player_named(self.available_cards[card_index]['name'])

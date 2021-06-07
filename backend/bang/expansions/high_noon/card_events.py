@@ -75,7 +75,7 @@ class Manette(CardEvent):
 
 class NuovaIdentita(CardEvent):
     def __init__(self):
-        super().__init__("Nuova Identità", "🕶")
+        super().__init__("Nuova Identita", "🕶")
         #self.desc = "All'inizio del proprio turno, ogni giocatore potrà decidere se sostituire il suo personaggio attuale con quello era stato proposto ad inizio partita, se lo fa riparte con 2 punti vita"
         #self.desc_eng = ""
 
@@ -111,7 +111,7 @@ def get_all_events():
        Sete(),
        Sparatoria(),
     #    Manette(),
-    #    NuovaIdentita(),
+       NuovaIdentita(),
     ]
     random.shuffle(cards)
     for c in cards:
