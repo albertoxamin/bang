@@ -1,5 +1,6 @@
 FROM node:lts-alpine as builder
 COPY ./frontend .
+ENV NODE_ENV=production
 RUN npm install
 RUN npm run build
 FROM python:3.7-slim-stretch
