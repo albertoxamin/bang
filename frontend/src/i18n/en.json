@@ -434,7 +434,7 @@
     },
     "Miniera Abbandonata": {
       "name": "Abandoned Mine",
-      "desc": "Players draw from the discarded pile and discard to the top of the deck (if the discards run out, they must draw and discard on top of the deck)"
+      "desc": "Players draw from the discarded pile in their phase 1 and discard to the top of the deck during phase 3 (if the discaded pile runs out, they must draw and discard on top of the deck)"
     },
     "Il Giudice": {
       "name": "The Judge",
