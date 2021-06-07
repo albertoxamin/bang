@@ -229,7 +229,7 @@ class Player:
 
     def bot_spin(self):
         while self.is_bot and self.game != None and not self.game.shutting_down:
-            eventlet.sleep(min(0.2, uniform(self.game.bot_speed/2-0.1, self.game.bot_speed)))
+            eventlet.sleep(max(0.2, uniform(self.game.bot_speed/2-0.1, self.game.bot_speed)))
             if self.lives > 0 or self.is_ghost:
                 self.bot_logic()
 
