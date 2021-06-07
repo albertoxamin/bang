@@ -7,12 +7,17 @@ module.exports = {
 		appleMobileWebAppCache: "yes",
 		manifestOptions: {
 			display: 'standalone',
+		},
+		workboxPluginMode: 'InjectManifest',
+		workboxOptions: {
+			swSrc: 'src/registerServiceWorker.js'
 		}
 	},
 	configureWebpack: {
 		plugins: [new GenerateSW({
 			clientsClaim: true,
 			skipWaiting: true,
+			cleanupOutdatedCaches: true,
 			navigateFallback: 'index.html',
 		})],
 		output: {
