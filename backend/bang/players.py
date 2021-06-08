@@ -343,6 +343,7 @@ class Player:
         self.special_use_count = 0
         self.bang_used = 0
         if self.game.check_event(ceh.MezzogiornoDiFuoco):
+            self.attacker = None
             self.lives -= 1
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                 self.hand.append(self.game.deck.draw(True))
