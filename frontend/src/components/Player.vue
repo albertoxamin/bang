@@ -116,6 +116,7 @@ export default {
 		eventCard: false,
 		emporioCards: {},
 		spectator: false,
+		noStar: false,
 	}),
 	sockets: {
 		role(role) {
@@ -163,6 +164,7 @@ export default {
 				this.cancelChooseCardFromPlayer()
 				this.shouldChooseCard = false
 			}
+			this.noStar = self.noStar
 		},
 		self_vis(vis) {
 			// console.log('received visibility update')
@@ -196,7 +198,7 @@ export default {
 				return {
 					name: player.name,
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
-					icon: player.is_sheriff ? '⭐' : '🤠',
+					icon: this.noStar ? player.icon : player.is_sheriff ? '⭐' : '🤠',
 					is_character: true,
 				}})
 			return vis
@@ -212,7 +214,7 @@ export default {
 				return {
 					name: player.name,
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
-					icon: player.is_sheriff ? '⭐' : '🤠',
+					icon: this.noStar ? player.icon : player.is_sheriff ? '⭐' : '🤠',
 					alt_text: Array(player.lives+1).join('❤️')+Array(player.max_lives-player.lives+1).join('💀'),
 					is_character: true,
 				}})

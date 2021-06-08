@@ -65,6 +65,7 @@ class Player:
         self.death_turn = 0
         self.is_ghost = False
         self.not_chosen_character = None
+        self.noStar = False
 
     def reset(self):
         self.hand: cs.Card = []
@@ -101,6 +102,7 @@ class Player:
         self.is_dead = False
         self.is_ghost = False
         self.death_turn = 0
+        self.noStar = False
 
     def join_game(self, game):
         self.game = game
@@ -146,6 +148,7 @@ class Player:
         self.hand = []
         self.equipment = []
         self.pending_action = PendingAction.WAIT
+        self.noStar = (self.game.initial_players == 3)
 
     def set_available_character(self, available):
         self.available_characters = available
@@ -352,7 +355,7 @@ class Player:
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,
-                'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
+                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
                 'noDesc': True
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
@@ -380,7 +383,7 @@ class Player:
             self.is_using_checchino = True
             self.available_cards = [{
                 'name': p['name'],
-                'icon': '⭐️' if p['is_sheriff'] else '🤠',
+                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
                 'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives']))
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
@@ -390,7 +393,8 @@ class Player:
         elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and len([c for c in self.hand if c.name == cs.Bang(0,0).name]) > 0:
             self.available_cards = [{
                 'name': p.name,
-                'icon': '⭐️' if isinstance(p.role, r.Sheriff) else '🤠'
+                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                'noDesc': True
             } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_rimbalzo_player'
