@@ -561,6 +561,7 @@ class Game:
         self.is_handling_death = False
         self.waiting_for = 0
         self.incremental_turn = 0
+        self.turn = 0
         self.pending_winners = []
         for p in self.players:
             p.reset()
@@ -587,6 +588,7 @@ class Game:
             'cards': len(pls[j].hand)+len(pls[j].equipment),
             'is_ghost': pls[j].is_ghost,
             'is_bot': pls[j].is_bot,
+            'icon': pls[j].role.icon if (pls[j].role is not None) else '🤠',
         } for j in range(len(pls)) if i != j]
 
     def get_alive_players(self):
