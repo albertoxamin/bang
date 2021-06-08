@@ -531,11 +531,6 @@ class Player:
                 playable_cards.append(i)
         return playable_cards
 
-    def get_public_description(self):
-        s = f"{self.name} {'Sheriff ⭐️' if isinstance(self.role, r.Sheriff) else ''} ({self.lives}/{self.max_lives} ⁍) {len(self.hand)} Cards in hand, "
-        s += f"equipment {[str(c) for c in self.equipment]}"
-        return s
-
     def play_card(self, hand_index: int, against=None, _with=None):
         if not self.is_my_turn or self.pending_action != PendingAction.PLAY or self.game.is_handling_death:
             return
