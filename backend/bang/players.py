@@ -28,44 +28,9 @@ class Player:
         self.name = name
         self.sid = sid
         self.sio = sio
-        self.hand: cs.Card = []
-        self.equipment: cs.Card = []
-        self.role: r.Role = None
-        self.character: chars.Character = None
-        self.real_character: chars.Character = None
-        self.lives = 0
-        self.max_lives = 0
-        self.game: g = None
-        self.is_my_turn = False
-        self.is_waiting_for_action = True
-        self.has_played_bang = False
-        self.pending_action: PendingAction = None
-        self.available_characters = []
-        self.was_shot = False
-        self.on_pick_cb = None
-        self.on_failed_response_cb = None
-        self.event_type: str = None
-        self.expected_response = []
-        self.attacker: Player = None
-        self.target_p: str = None
-        self.is_drawing = False
-        self.can_play_vendetta = True
-        self.is_giving_life = False
-        self.is_using_checchino = False
-        self.choose_text = 'choose_card_to_get'
-        self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
-        self.can_play_ranch = True
-        self.is_playing_ranch = False
-        self.mancato_needed = 0
-        self.molly_discarded_cards = 0
         self.is_bot = bot
-        self.bang_used = 0
-        self.special_use_count = 0
-        self.is_dead = False
-        self.death_turn = 0
-        self.is_ghost = False
-        self.not_chosen_character = None
-        self.noStar = False
+        self.game: g = None
+        self.reset()
 
     def reset(self):
         self.hand: cs.Card = []
@@ -103,6 +68,11 @@ class Player:
         self.is_ghost = False
         self.death_turn = 0
         self.noStar = False
+        self.can_play_vendetta = True
+        self.is_giving_life = False
+        self.choose_text = 'choose_card_to_get'
+        self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
+        self.bang_used = 0
 
     def join_game(self, game):
         self.game = game
