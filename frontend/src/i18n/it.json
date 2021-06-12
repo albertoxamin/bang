@@ -36,6 +36,7 @@
   "choose_response": "Scegli come rispondere ",
   "choose_response_to": "a ",
   "choose_response_needed": "NE OCCORRONO ",
+  "choose_manette": "Scegli un seme, potrai giocare solo carte di quel seme questo turno.",
   "hand": "MANO",
   "card_against": "Contro chi vuoi giocare la carta",
   "choose_card_to_get": "Scegli che carta pescare",
@@ -104,7 +105,8 @@
     "lobby_reset": "Si ritorna alla stanza in {0} secondi...",
     "prison_free": "{0} è uscito di prigione",
     "prison_turn": "{0} rimane in prigione questo turno",
-    "flip_event": "🎴 EVENTO: {0} 🎴"
+    "flip_event": "🎴 EVENTO: {0} 🎴",
+    "choose_manette": "{0} si è impegnato ad usare solo carte di seme {1} in questo turno."
   },
   "foc": {
     "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
@@ -594,6 +596,8 @@
     "renegade": "Rinnegato",
     "vice": "Vice",
     "gotoallcharacters": "Visualizza tutti i personaggi",
-    "allcharacters": "Tutti i personaggi"
+    "allcharacters": "Tutti i personaggi",
+    "highnooncards": "Carte Evento High Noon",
+    "foccards": "Carte Evento Fistful of Cards"
   }
 }

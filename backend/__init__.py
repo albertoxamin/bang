@@ -312,7 +312,13 @@ def chat_message(sid, msg):
                 cmd = msg.split()
                 if len(cmd) >= 3:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed event'})
-                    chs = ses.game.deck.event_cards
+                    import bang.expansions.fistful_of_cards.card_events as ce
+                    import bang.expansions.high_noon.card_events as ceh
+                    chs = []
+                    chs.extend(ce.get_all_events())
+                    chs.append(ce.get_endgame_card())
+                    chs.extend(ceh.get_all_events())
+                    chs.append(ceh.get_endgame_card())
                     ses.game.deck.event_cards.insert(int(cmd[1]), [c for c in chs if c!=None and c.name == ' '.join(cmd[2:])][0])
                     ses.game.notify_event_card()
             elif '/removecard' in msg:
@@ -428,6 +434,22 @@ def get_characters(sid):
     import bang.characters as ch
     cards = ch.all_characters(['dodge_city'])
     sio.emit('characters_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
+
+@sio.event
+def get_highnooncards(sid):
+    import bang.expansions.high_noon.card_events as ceh
+    chs = []
+    chs.extend(ceh.get_all_events())
+    chs.append(ceh.get_endgame_card())
+    sio.emit('highnooncards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
+
+@sio.event
+def get_foccards(sid):
+    import bang.expansions.fistful_of_cards.card_events as ce
+    chs = []
+    chs.extend(ce.get_all_events())
+    chs.append(ce.get_endgame_card())
+    sio.emit('foccards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)

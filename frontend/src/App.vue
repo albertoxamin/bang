@@ -108,9 +108,10 @@ export default {
 		}
 	},
 	mounted() {
-		if (localStorage.getItem('lang'))
+		if (localStorage.getItem('lang')) {
 			this.$i18n.locale = localStorage.getItem('lang');
 			document.documentElement.lang = this.$i18n.locale;
+		}
 		this.detectColorScheme()
 	},
 	created() {

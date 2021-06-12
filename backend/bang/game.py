@@ -44,6 +44,26 @@ class Game:
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
         self.debug = False
 
+    def reset(self):
+        print('resetting lobby')
+        self.players.extend(self.spectators)
+        self.spectators = []
+        for bot in [p for p in self.players if p.is_bot]:
+            bot.game = None
+        self.players = [p for p in self.players if not p.is_bot]
+        print(self.players)
+        self.started = False
+        self.is_handling_death = False
+        self.waiting_for = 0
+        self.incremental_turn = 0
+        self.turn = 0
+        self.pending_winners = []
+        for p in self.players:
+            p.reset()
+            p.notify_self()
+        eventlet.sleep(0.5)
+        self.notify_room()
+
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
             self.sio.emit('room', room=self.name if not sid else sid, data={
@@ -549,25 +569,6 @@ class Game:
             corpse.notify_self()
             self.next_turn()
 
-    def reset(self):
-        print('resetting lobby')
-        self.players.extend(self.spectators)
-        self.spectators = []
-        for bot in [p for p in self.players if p.is_bot]:
-            bot.game = None
-        self.players = [p for p in self.players if not p.is_bot]
-        print(self.players)
-        self.started = False
-        self.is_handling_death = False
-        self.waiting_for = 0
-        self.incremental_turn = 0
-        self.turn = 0
-        self.pending_winners = []
-        for p in self.players:
-            p.reset()
-            p.notify_self()
-        eventlet.sleep(0.5)
-        self.notify_room()
 
     def check_event(self, ev):
         if self.deck == None or len(self.deck.event_cards) == 0: return False

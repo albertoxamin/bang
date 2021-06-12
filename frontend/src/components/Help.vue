@@ -75,6 +75,24 @@
 				</div>
 			</div>
 		</div>
+		<h2 id="highnooncards">{{$t('help.highnooncards')}}</h2>
+		<div>
+			<div v-for="(c, i) in highnooncards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+				<Card :card="c" :class="'high-noon last-event'" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+				</div>
+			</div>
+		</div>
+		<h2 id="foccards">{{$t('help.foccards')}}</h2>
+		<div>
+			<div v-for="(c, i) in foccards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+				<Card :card="c" :class="'fistful-of-cards last-event'" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
@@ -91,6 +109,8 @@ export default {
 		},
 		cards: [],
 		characters: [],
+		highnooncards: [],
+		foccards: [],
 	}),
 	computed: {
 		endTurnCard() {
@@ -110,10 +130,22 @@ export default {
 				is_character:true,
 			}))
 		},
+		highnooncards_info(cardsJson) {
+			this.highnooncards = JSON.parse(cardsJson).map(x=>({
+				...x,
+			}))
+		},
+		foccards_info(cardsJson) {
+			this.foccards = JSON.parse(cardsJson).map(x=>({
+				...x,
+			}))
+		},
 	},
 	mounted() {
 		this.$socket.emit('get_cards')
 		this.$socket.emit('get_characters')
+		this.$socket.emit('get_highnooncards')
+		this.$socket.emit('get_foccards')
 		document.getElementById('help').scrollIntoView();
 	}
 }
