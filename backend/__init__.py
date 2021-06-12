@@ -312,7 +312,13 @@ def chat_message(sid, msg):
                 cmd = msg.split()
                 if len(cmd) >= 3:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and changed event'})
-                    chs = ses.game.deck.event_cards
+                    import bang.expansions.fistful_of_cards.card_events as ce
+                    import bang.expansions.high_noon.card_events as ceh
+                    chs = []
+                    chs.extend(ce.get_all_events())
+                    chs.append(ce.get_endgame_card())
+                    chs.extend(ceh.get_all_events())
+                    chs.append(ceh.get_endgame_card())
                     ses.game.deck.event_cards.insert(int(cmd[1]), [c for c in chs if c!=None and c.name == ' '.join(cmd[2:])][0])
                     ses.game.notify_event_card()
             elif '/removecard' in msg:
