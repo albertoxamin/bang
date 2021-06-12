@@ -56,8 +56,8 @@
 				<h3>{{$t('mods')}}</h3>
 				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
 				<h3>{{$t('bots')}}</h3>
-				<input type="button" class="btn" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="()=>{this.$socket.emit('chat_message', '/addbot')}"/>
-				<input type="button" class="btn" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="()=>{this.$socket.emit('chat_message', '/removebot')}"/>
+				<input type="button" class="btn" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="(e)=>{this.$socket.emit('chat_message', '/addbot'); e.preventDefault()}"/>
+				<input type="button" class="btn" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="(e)=>{this.$socket.emit('chat_message', '/removebot'); e.preventDefault()}"/>
 				<!-- <br> -->
 				<!-- <PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck> -->
 			</div>

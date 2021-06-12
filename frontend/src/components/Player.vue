@@ -248,7 +248,7 @@ export default {
 					is_equipment: true,
 					noDesc: true,
 				}]
-			this.hand.filter(x => x.can_be_used_now && (this.expected_response.indexOf(x.name) !== -1 || this.character.name === "Elena Fuente")).forEach(x=>{
+			this.hand.filter(x => (x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1) || this.character.name === "Elena Fuente").forEach(x=>{
 				cc.push(x)
 			})
 			this.equipment.filter(x => x.usable_next_turn && x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
