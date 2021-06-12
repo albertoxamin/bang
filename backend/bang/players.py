@@ -57,6 +57,7 @@ class Player:
         self.target_p: str = None
         self.is_drawing = False
         self.special_use_count = 0
+        self.committed_suit_manette = None
         self.not_chosen_character = None
         try:
             del self.win_status
@@ -218,10 +219,11 @@ class Player:
         elif self.pending_action == PendingAction.DRAW:
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
-            equippables = [c for c in self.hand if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any([type(c) == type(x) for x in self.equipment])]
-            misc = [c for c in self.hand if (isinstance(c, cs.WellsFargo) or isinstance(c, cs.Indiani) or isinstance(c, cs.Gatling) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives and not self.game.check_event(ceh.IlReverendo)) or (c.need_with and len(self.hand) > 1 and not c.need_target and not (isinstance(c, csd.Whisky) and self.lives == self.max_lives)))
+            non_blocked_cards = [card for card in self.hand if (self.game.check_event(ceh.Manette) and card.suit == self.committed_suit_manette)]
+            equippables = [c for c in non_blocked_cards if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any([type(c) == type(x) for x in self.equipment])]
+            misc = [c for c in non_blocked_cards if (isinstance(c, cs.WellsFargo) or isinstance(c, cs.Indiani) or isinstance(c, cs.Gatling) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives and not self.game.check_event(ceh.IlReverendo)) or (c.need_with and len(self.hand) > 1 and not c.need_target and not (isinstance(c, csd.Whisky) and self.lives == self.max_lives)))
                     and not (not c.can_be_used_now and self.game.check_event(ce.IlGiudice))]
-            need_target = [c for c in self.hand if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (
+            need_target = [c for c in non_blocked_cards if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (
                 (self.game.check_event(ceh.Sermone) or self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(c) == type(cs.Bang)
             ) and not self.game.check_event(ce.Lazo))) and not ( isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice))]
             green_cards = [c for c in self.equipment if not self.game.check_event(ce.Lazo) and not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now]
@@ -430,9 +432,21 @@ class Player:
                             self.hand.append(self.game.deck.draw())
                     if self.game.check_event(ceh.Sete):
                         return self.notify_self()
-            if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
-                self.hand.append(self.game.deck.draw())
-            self.notify_self()
+                if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
+                    self.hand.append(self.game.deck.draw())
+                self.manette()
+                self.notify_self()
+
+    def manette(self):
+        if self.game.check_event(ceh.Manette):
+            self.choose_text = 'choose_manette'
+            self.available_cards = [{
+                'name': '',
+                'icon': '♦♣♥♠'[s],
+                'alt_text': '',
+                'noDesc': True
+            } for s in [0,1,2,3]]
+            self.pending_action = PendingAction.CHOOSE
 
     def pick(self):
         if self.pending_action != PendingAction.PICK:
@@ -519,7 +533,7 @@ class Player:
             withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
-        event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now)
+        event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or (self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette and not (card.usable_next_turn and card.can_be_used_now))
         if not(against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
             if against == self.name and not isinstance(card, csd.Tequila):
                 did_play_card = False
@@ -581,6 +595,11 @@ class Player:
                 self.lives = 2
                 self.sio.emit('chat_message', room=self.game.name, data=f'_choose_character|{self.name}|{self.character.name}')
             self.play_turn(again = True)
+        elif self.game.check_event(ceh.Manette) and self.choose_text == 'choose_manette':
+            self.committed_suit_manette = cs.Suit(card_index)
+            self.sio.emit('chat_message', room=self.game.name, data=f'_choose_manette|{self.name}|{"♦♣♥♠"[card_index]}')
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
         elif self.is_giving_life and self.game.check_event(ce.FratelliDiSangue):
             try:
                 player = self.game.get_player_named(self.available_cards[card_index]['name'])
@@ -666,6 +685,7 @@ class Player:
                     self.game.deck.put_on_top(self.available_cards.pop())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
+                self.manette()
             self.notify_self()
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
             self.is_drawing = False
@@ -675,6 +695,7 @@ class Player:
             self.available_cards = []
             self.game.get_player_named(self.pat_target).notify_self()
             self.pending_action = PendingAction.PLAY
+            self.manette()
             self.notify_self()
         else:  # emporio
             self.game.respond_emporio(self, card_index)
@@ -995,6 +1016,7 @@ class Player:
                     self.game.deck.scrap(self.hand.pop(), True)
                 for i in range(len(self.equipment)):
                     self.game.deck.scrap(self.equipment.pop(), True)
+            self.committed_suit_manette = None
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.next_turn()

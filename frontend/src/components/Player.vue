@@ -117,6 +117,7 @@ export default {
 		emporioCards: {},
 		spectator: false,
 		noStar: false,
+		committed_suit_manette: null,
 	}),
 	sockets: {
 		role(role) {
@@ -144,6 +145,7 @@ export default {
 			this.special_use_count = self.special_use_count
 			this.choose_text = self.choose_text
 			this.is_my_turn = self.is_my_turn
+			this.committed_suit_manette = self.committed_suit_manette
 			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'
 			else if (this.pending_action == 3) document.title = this.$t('your_response')+' | PewPew!'
 			else if (this.pending_action == 5) document.title = this.$t('your_choose')+' | PewPew!'
@@ -257,7 +259,7 @@ export default {
 			return cc
 		},
 		handComputed() {
-			return this.hand.map(x=> {
+			return this.hand.map(x => {
 				let cantBePlayed = false
 				let calamity_special = (x.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 				let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
@@ -265,6 +267,7 @@ export default {
 				else if (this.eventCard && this.eventCard.name == "Il Giudice" && (x.is_equipment || !x.can_be_used_now)) cantBePlayed = true;
 				else if (this.eventCard && this.eventCard.name == "Il Reverendo" && (x.name == "Birra")) cantBePlayed = true;
 				else if (this.need_with && this.hand.length === 1) cantBePlayed = true;
+				else if (this.committed_suit_manette !== null && this.committed_suit_manette !== x.suit) cantBePlayed = true;
 				return {
 					...x,
 					cantBePlayed: cantBePlayed

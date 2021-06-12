@@ -71,13 +71,13 @@ class Manette(CardEvent):
     def __init__(self):
         super().__init__("Manette", "🔗")
         #self.desc = "Dopo aver pescato in fase 1, il giocatore di turno dichiara un seme: potrà usare solamente carte di quel seme nel suo turno"
-        #self.desc_eng = ""
+        #self.desc_eng = "After drawing in phase 1, the player declares a suit. He will be able to use only cards of that suit for that turn"
 
 class NuovaIdentita(CardEvent):
     def __init__(self):
         super().__init__("Nuova Identita", "🕶")
         #self.desc = "All'inizio del proprio turno, ogni giocatore potrà decidere se sostituire il suo personaggio attuale con quello era stato proposto ad inizio partita, se lo fa riparte con 2 punti vita"
-        #self.desc_eng = ""
+        #self.desc_eng = "At the beginning of their turn, each player can choose to change its character with the other shown at the game start. If he does so he restarts from 2 HP."
 
 class CittaFantasma(CardEvent):
     def __init__(self):
@@ -110,7 +110,7 @@ def get_all_events():
        Sermone(),
        Sete(),
        Sparatoria(),
-    #    Manette(),
+       Manette(),
        NuovaIdentita(),
     ]
     random.shuffle(cards)

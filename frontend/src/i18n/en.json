@@ -36,6 +36,7 @@
   "choose_response": "Choose your response ",
   "choose_response_to": "to ",
   "choose_response_needed": "NEEDED ",
+  "choose_manette": "Choose a suit, you will be able to play only cards with that suit on this turn.",
   "hand": "HAND",
   "card_against": "Who will you play your card against?",
   "choose_card_to_get": "Choose a card",
@@ -104,7 +105,8 @@
     "lobby_reset": "Going back to lobby in {0} seconds...",
     "prison_free": "{0} got out of prison",
     "prison_turn": "{0} stayed in prison this turn",
-    "flip_event": "🎴 EVENT: {0} 🎴"
+    "flip_event": "🎴 EVENT: {0} 🎴",
+    "choose_manette": "{0} committed to play only cards of suit {1} in this turn."
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."
@@ -538,11 +540,11 @@
     },
     "Nuova Identita": {
       "name": "New Identity",
-      "desc": ""
+      "desc": "At the beginning of their turn, each player can choose to change its character with the other shown at the game start. If he does so he restarts from 2 HP"
     },
     "Manette": {
       "name": "Handcuffs",
-      "desc": ""
+      "desc": "After drawing in phase 1, the player declares a suit. He will be able to use only cards of that suit for that turn"
     },
     "Mezzogiorno di Fuoco":{
       "name": "High Noon",
