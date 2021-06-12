@@ -79,7 +79,8 @@ export default {
 			// window.open(`${window.location.origin}/help`, '_blank')
 		},
 		storeLangPref() {
-			localStorage.setItem('lang', this.$i18n.locale)
+			localStorage.setItem('lang', this.$i18n.locale);
+			document.documentElement.lang = this.$i18n.locale;
 		},
 		async update() {
 			this.showUpdateUI = false;
@@ -108,7 +109,8 @@ export default {
 	},
 	mounted() {
 		if (localStorage.getItem('lang'))
-			this.$i18n.locale = localStorage.getItem('lang')
+			this.$i18n.locale = localStorage.getItem('lang');
+			document.documentElement.lang = this.$i18n.locale;
 		this.detectColorScheme()
 	},
 	created() {
