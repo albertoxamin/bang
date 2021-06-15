@@ -35,6 +35,11 @@ class Deck:
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
             self.event_cards.append(random.choice(endgame_cards))
         random.shuffle(self.cards)
+        self.shop_deck = []
+        self.shop_cards = []
+        if 'gold_rush' in game.expansions:
+            import bang.expansions.gold_rush.shop_cards as gr
+            self.shop_deck = gr.get_cards()
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
 
