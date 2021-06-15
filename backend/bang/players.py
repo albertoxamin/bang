@@ -456,6 +456,8 @@ class Player:
         if self.pending_action != PendingAction.PICK:
             return
         pickable_cards = 1 + self.character.pick_mod
+        if len([c for c in self.equipment if isinstance(c, grc.FerroDiCavallo)]) > 0:
+            pickable_cards += 1
         if self.is_my_turn:
             for i in range(len(self.equipment)):
                 if i < len(self.equipment) and isinstance(self.equipment[i], cs.Dinamite):
@@ -706,6 +708,8 @@ class Player:
 
     def barrel_pick(self):
         pickable_cards = 1 + self.character.pick_mod
+        if len([c for c in self.equipment if isinstance(c, grc.FerroDiCavallo)]) > 0:
+            pickable_cards += 1
         if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and self.character.check(self.game, chars.Jourdonnais):
             pickable_cards = 2
         while pickable_cards > 0:
@@ -736,6 +740,8 @@ class Player:
         pickable_cards = 1 + self.character.pick_mod
         if len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0 and self.character.check(self.game, chars.Jourdonnais):
             pickable_cards = 2
+        if len([c for c in self.equipment if isinstance(c, grc.FerroDiCavallo)]) > 0:
+            pickable_cards += 1
         while pickable_cards > 0:
             pickable_cards -= 1
             picked: cs.Card = self.game.deck.pick_and_scrap()
