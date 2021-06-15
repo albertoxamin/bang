@@ -438,6 +438,8 @@ class Player:
                         return self.notify_self()
                 if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
                     self.hand.append(self.game.deck.draw())
+                if len([c for c in self.equipment if isinstance(c, grc.Piccone)]) > 0:
+                    self.hand.append(self.game.deck.draw())
                 self.manette()
                 self.notify_self()
 
@@ -685,7 +687,8 @@ class Player:
             self.hand.append(self.available_cards.pop(card_index))
             pickable_stop = 1
             if self.game.check_event(ceh.Sete): pickable_stop = 2
-            if self.game.check_event(ceh.IlTreno): pickable_stop = 0
+            if self.game.check_event(ceh.IlTreno) or len([c for c in self.equipment if isinstance(c, grc.Piccone)]) > 0:
+                pickable_stop = 0
             if len(self.available_cards) == pickable_stop:
                 if len(self.available_cards) > 0:
                     self.game.deck.put_on_top(self.available_cards.pop())
