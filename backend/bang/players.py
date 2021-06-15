@@ -323,6 +323,10 @@ class Player:
         if self.game.check_event(ceh.MezzogiornoDiFuoco):
             self.attacker = None
             self.lives -= 1
+            if len([c for c in self.equipment if isinstance(c, grc.Talismano)]) > 0:
+                self.gold_nuggets += 1
+            if len([c for c in self.equipment if isinstance(c, grc.Stivali)]) > 0:
+                self.hand.append(self.game.deck.draw())
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                 self.hand.append(self.game.deck.draw(True))
                 self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
@@ -471,6 +475,12 @@ class Player:
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if picked.check_suit(self.game, [cs.Suit.SPADES]) and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
+                            if len([c for c in self.equipment if isinstance(c, grc.Talismano)]) > 0:
+                                self.gold_nuggets += 3
+                            if len([c for c in self.equipment if isinstance(c, grc.Stivali)]) > 0:
+                                self.hand.append(self.game.deck.draw())
+                                self.hand.append(self.game.deck.draw())
+                                self.hand.append(self.game.deck.draw())
                             self.attacker = None
                             self.game.deck.scrap(self.equipment.pop(i), True)
                             self.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
@@ -613,6 +623,10 @@ class Player:
                 player = self.game.get_player_named(self.available_cards[card_index]['name'])
                 player.lives += 1
                 self.lives -= 1
+                if len([c for c in self.equipment if isinstance(c, grc.Talismano)]) > 0:
+                    self.gold_nuggets += 1
+                if len([c for c in self.equipment if isinstance(c, grc.Stivali)]) > 0:
+                    self.hand.append(self.game.deck.draw())
                 player.notify_self()
                 self.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
             except: pass
@@ -882,6 +896,10 @@ class Player:
         if self.attacker and 'gold_rush' in self.game.expansions:
             self.attacker.gold_nuggets += 1
             self.attacker.notify_self()
+            if len([c for c in self.equipment if isinstance(c, grc.Talismano)]) > 0:
+                self.gold_nuggets += 1
+            if len([c for c in self.equipment if isinstance(c, grc.Stivali)]) > 0:
+                self.hand.append(self.game.deck.draw())
         self.heal_if_needed()
         self.mancato_needed = 0
         self.expected_response = []
@@ -999,6 +1017,10 @@ class Player:
     def chuck_lose_hp_draw(self):
         if self.character.check(self.game, chd.ChuckWengam) and self.lives > 1 and self.is_my_turn:
             self.lives -= 1
+            if len([c for c in self.equipment if isinstance(c, grc.Talismano)]) > 0:
+                self.gold_nuggets += 1
+            if len([c for c in self.equipment if isinstance(c, grc.Stivali)]) > 0:
+                self.hand.append(self.game.deck.draw())
             self.hand.append(self.game.deck.draw(True))
             self.hand.append(self.game.deck.draw(True))
             self.notify_self()

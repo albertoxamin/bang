@@ -11,6 +11,7 @@ from bang.deck import Deck
 import bang.roles as roles
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.gold_rush.shop_cards as grc
 
 class Game:
     def __init__(self, name, sio:socketio):
@@ -297,6 +298,10 @@ class Game:
                 target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
                 print('stop roulette')
                 target_pl.lives -= 1
+                if len([c for c in target_pl.equipment if isinstance(c, grc.Talismano)]) > 0:
+                    target_pl.gold_nuggets += 1
+                if len([c for c in target_pl.equipment if isinstance(c, grc.Stivali)]) > 0:
+                    target_pl.hand.append(self.deck.draw())
                 target_pl.notify_self()
                 self.is_russian_roulette_on = False
                 self.players[self.turn].play_turn()
