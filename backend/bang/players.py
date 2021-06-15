@@ -272,6 +272,8 @@ class Player:
                                 return
                         break
             maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
+            if maxcards == self.lives and len([c for c in self.equipment if isinstance(c, grc.Cinturone)]) > 0:
+                maxcards = 8
             if len(self.hand) > maxcards:
                 self.scrap(0)
             else:
@@ -536,7 +538,7 @@ class Player:
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or (self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette and not (card.usable_next_turn and card.can_be_used_now))
-        if not(against != None and (isinstance(self.game.get_player_named(against).character, chd.ApacheKid) or len([c for c in self.player.equipment if isinstance(c, grc.Calumet)]) > 0) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
+        if not(against != None and (isinstance(self.game.get_player_named(against).character, chd.ApacheKid) or len([c for c in self.game.get_player_named(against).equipment if isinstance(c, grc.Calumet)]) > 0) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
             if against == self.name and not isinstance(card, csd.Tequila):
                 did_play_card = False
             else:
@@ -812,7 +814,7 @@ class Player:
 
     def get_indians(self, attacker):
         self.attacker = attacker
-        if self.character.check(self.game, chd.ApacheKid) or len([c for c in self.player.equipment if isinstance(c, grc.Calumet)]) > 0: return False
+        if self.character.check(self.game, chd.ApacheKid) or len([c for c in self.equipment if isinstance(c, grc.Calumet)]) > 0: return False
         if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
@@ -1008,6 +1010,8 @@ class Player:
         if not self.is_my_turn and not forced:
             return
         maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
+        if maxcards == self.lives and len([c for c in self.equipment if isinstance(c, grc.Cinturone)]) > 0:
+            maxcards = 8
         if len(self.hand) > maxcards and not forced:
             print(
                 f"{self.name}: I have to many cards in my hand and I can't end the turn")

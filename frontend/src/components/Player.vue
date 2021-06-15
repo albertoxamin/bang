@@ -50,7 +50,7 @@
 		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
 		<Chooser v-if="hasToPickResponse" :playAudio="true" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="handComputed.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
-		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
+		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${maxHandLength()}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length} ${$t('to_regain_1_hp')}`"
 							:cards="notScrappedHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;scrapHand=[]}"/>
 		<Chooser v-if="joseScrap" :text="`${$t('discard')}`"
@@ -241,7 +241,7 @@ export default {
 			return x[this.pending_action]
 		},
 		canEndTurn() {
-			return (this.pending_action == 2 && this.hand.length <= (this.character.name === "Sean Mallory" && !(this.eventCard && this.eventCard.name == "Sbornia")?10:this.lives))
+			return (this.pending_action == 2 && this.hand.length <= this.maxHandLength())
 		},
 		respondCards() {
 			let cc = [{
@@ -276,6 +276,9 @@ export default {
 		}
 	},
 	methods: {
+		maxHandLength() {
+			return (this.character.name === "Sean Mallory" && !(this.eventCard && this.eventCard.name == "Sbornia")?10:(this.equipment.filter(x => x.name == 'Cinturone').length>0?8:this.lives))
+		},
 		setCharacter(char) {
 			this.availableCharacters = []
 			this.$socket.emit('set_character', char.name)

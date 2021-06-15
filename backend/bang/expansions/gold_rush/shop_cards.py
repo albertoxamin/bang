@@ -61,7 +61,7 @@ class CorsaAllOro(ShopCard):
         super().__init__("Corsa All'Oro", 5, ShopCardKind.BROWN)
         self.icon = '🤑️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         player.lives = player.max_lives
         return True
 
@@ -170,9 +170,9 @@ class Zaino(ShopCard):
 
 def get_cards() -> List[Card]:
     cards = [
-        Bicchierino(),
-        Bottiglia(),
-        Complice(),
+        # Bicchierino(),
+        # Bottiglia(),
+        # Complice(),
         CorsaAllOro(),
         Rum(),
         UnionPacific(),
