@@ -100,6 +100,7 @@ def get_me(sid, room):
                 de_games[0].notify_event_card(sid)
                 de_games[0].notify_scrap_pile(sid)
                 de_games[0].notify_all()
+            de_games[0].notify_gold_rush_shop()
             de_games[0].notify_event_card()
         else:
             create_room(sid, room['name'])

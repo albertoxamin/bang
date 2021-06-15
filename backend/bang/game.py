@@ -27,7 +27,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions = []
-        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon']
+        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon', 'gold_rush']
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True
@@ -159,6 +159,8 @@ class Game:
         self.initial_players = len(self.players)
         self.distribute_roles()
         self.choose_characters()
+        if 'gold_rush' in self.expansions:
+            self.notify_gold_rush_shop()
 
     def distribute_roles(self):
         available_roles: List[roles.Role] = []
@@ -429,6 +431,12 @@ class Game:
                 self.sio.emit('event_card', room=room, data=self.deck.event_cards[0].__dict__)
             else:
                 self.sio.emit('event_card', room=room, data=None)
+
+    def notify_gold_rush_shop(self, sid=None):
+        if 'gold_rush' in self.expansions and self.deck and self.deck.shop_cards and len(self.deck.shop_cards) > 0:
+            room = self.name if sid == None else sid
+            print(f'gold_rush_shop room={room}, data={self.deck.shop_cards}')
+            self.sio.emit('gold_rush_shop', room=room, data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__))
 
     def notify_scrap_pile(self, sid=None):
         print('scrap')

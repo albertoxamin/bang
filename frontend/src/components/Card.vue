@@ -27,6 +27,8 @@ export default {
 			if (this.card && !isNaN(this.card.suit)) {
 				let x = ['♦️','♣️','♥️','♠️']
 				return x[this.card.suit];
+			} else if (this.card.suit) {
+				return this.card.suit;
 			}
 			return '';
 		},
@@ -106,6 +108,17 @@ export default {
 		rgb(30 102 152) 10px
 	);
 	border: 2pt solid rgb(50 122 172);
+}
+.card.brown.gold-rush {
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
+	border: 2pt dotted #9C7340;
+}
+.card.black.gold-rush {
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
+	border: 2pt dotted #000;
+}
+.card.back.gold-rush {
+	background: repeating-linear-gradient(347deg, #ffb32f, #987e51 );
 }
 .card h4 {
 	position: absolute;

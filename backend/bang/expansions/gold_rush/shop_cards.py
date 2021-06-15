@@ -6,7 +6,7 @@ class ShopCardKind(IntEnum):
 
 class ShopCard(Card):
     def __init__(self, name:str, cost:int, kind:ShopCardKind):
-        super().__init__('💵', cost, name=name)
+        super().__init__(suit='💵', number=cost, name=name)
         self.kind = kind
 
     def play_card(self, player, against, _with=None):

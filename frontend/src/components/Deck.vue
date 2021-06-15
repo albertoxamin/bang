@@ -2,6 +2,14 @@
 	<div>
 		<div class="deck">
 			<card v-if="endTurnAction && isPlaying" :donotlocalize="true" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
+			<card v-if="goldRushShopOpen && goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'gold-rush':true, 'brown':goldRushCards[0].kind === 0, 'black':goldRushCards[0].kind === 1}"/>
+			<card v-if="goldRushShopOpen && goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'gold-rush':true, 'brown':goldRushCards[1].kind === 0, 'black':goldRushCards[1].kind === 1}"/>
+			<card v-if="goldRushShopOpen && goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'gold-rush':true, 'brown':goldRushCards[2].kind === 0, 'black':goldRushCards[2].kind === 1}"/>
+			<div style="position:relative">
+				<div class="card gold-rush back" style="position:relative; bottom:-3pt;right:-3pt;"/>
+				<div class="card gold-rush back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
+				<card :card="goldRushCardBack" :donotlocalize="true" class="gold-rush back last-event" @click.native="goldRushShopOpen = !goldRushShopOpen"/>
+			</div>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -44,12 +52,18 @@ export default {
 			name: 'PewPew!',
 			icon: '💥',
 		},
+		goldRushCardBack: {
+			name: 'GoldRush!',
+			icon: '🤑️',
+		},
 		lastScrap: null,
 		eventCard: null,
 		previousScrap: null,
 		pending_action: false,
 		isPlaying: true,
 		desc: '',
+		goldRushShopOpen: true,
+		goldRushCards: [],
 	}),
 	sockets: {
 		self(self){
@@ -67,6 +81,10 @@ export default {
 				back: true,
 				expansion: 'fistful-of-cards',
 			} : card
+		},
+		gold_rush_shop(cards) {
+			console.log('GOLD RUSH:'+ cards)
+			this.goldRushCards = JSON.parse(cards)
 		},
 	},
 	computed: {
@@ -139,6 +157,10 @@ export default {
 .last-scrap:hover {
 	opacity: 0.8;
 	transform: translateY(-10px);
+}
+.gold-rush:not(.back) {
+	animation-duration: 0.8s;
+	animation-name: slidein;
 }
 @keyframes slidein {
 	from {

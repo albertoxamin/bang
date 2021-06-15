@@ -36,10 +36,12 @@ class Deck:
             self.event_cards.append(random.choice(endgame_cards))
         random.shuffle(self.cards)
         self.shop_deck = []
-        self.shop_cards = []
         if 'gold_rush' in game.expansions:
             import bang.expansions.gold_rush.shop_cards as gr
+            self.shop_cards = [None, None, None]
             self.shop_deck = gr.get_cards()
+            random.shuffle(self.shop_deck)
+            self.fill_gold_rush_shop()
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
 
@@ -47,6 +49,14 @@ class Deck:
         if len(self.event_cards) > 0 and not (isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte) or isinstance(self.event_cards[0], ceh.MezzogiornoDiFuoco)):
             self.event_cards.append(self.event_cards.pop(0))
         self.game.notify_event_card()
+
+    def fill_gold_rush_shop(self):
+        if not any([c == None for c in self.shop_cards]):
+            return
+        for i in range(3):
+            if self.shop_cards[i] == None:
+                self.shop_cards[i] = self.shop_deck.pop(0)
+        self.game.notify_gold_rush_shop()
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
