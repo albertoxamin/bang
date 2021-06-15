@@ -358,8 +358,9 @@ class Player:
             self.is_using_checchino = True
             self.available_cards = [{
                 'name': p['name'],
-                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
-                'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives']))
+                'icon': p['role'].icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives'])),
+                'desc': p['name']
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_cecchino'
