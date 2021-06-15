@@ -341,6 +341,13 @@ def chat_message(sid, msg):
                     for cn in card_names:
                         ses.hand.append([c for c in cards if c.name == cn][0])
                         ses.notify_self()
+            elif '/getnuggets' in msg:
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got nuggets'})
+                import bang.cards as cs
+                cmd = msg.split()
+                if len(cmd) == 2:
+                    ses.gold_nuggets += int(cmd[1])
+                    ses.notify_self()
             elif '/gameinfo' in msg:
                 sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
             elif '/meinfo' in msg:

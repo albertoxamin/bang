@@ -62,36 +62,37 @@ class CorsaAllOro(ShopCard):
         self.icon = '🤑️'
 
     def play_card(self, player, against, _with=None):
-        if against != None:
-            pass # termini turno, vita max, poi inizi un nuovo turno
-        return False
+        player.lives = player.max_lives
+        return True
 
 class Rum(ShopCard):
     def __init__(self):
         super().__init__("Rum", 3, ShopCardKind.BROWN)
         self.icon = '🍷️'
 
-    def play_card(self, player, against, _with=None):
-        if against != None:
-            pass # Estrai 4 carte e ottieni 1 hp per ogni seme diverso
-        return False
+    def play_card(self, player, against=None, _with=None):
+        # Estrai 4 carte e ottieni 1 hp per ogni seme diverso
+        player.lives = min(player.lives+len({player.game.deck.pick_and_scrap().suit for i in range(4)}), player.max_lives)
+        return True
 
 class UnionPacific(ShopCard):
     def __init__(self):
         super().__init__("Union Pacific", 4, ShopCardKind.BROWN)
         self.icon = '🚆️'
 
-    def play_card(self, player, against, _with=None):
-        if against != None:
-            pass # Pesca 4 carte
-        return False
+    def play_card(self, player, against=None, _with=None):
+        player.sio.emit('chat_message', room=player.game.name,
+                        data=f'_UnionPacific|{player.name}|{self.name}')
+        for i in range(4):
+            player.hand.append(player.game.deck.draw())
+        return True
 
 class Calumet(ShopCard):
     def __init__(self):
         super().__init__("Calumet", 3, ShopCardKind.BLACK)
         self.icon = '🚭️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # ti rende immuni ai quadri
 
@@ -100,7 +101,7 @@ class Cinturone(ShopCard):
         super().__init__("Cinturone", 2, ShopCardKind.BLACK)
         self.icon = '🥡'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # max carte a fine turno 8
 
@@ -109,7 +110,7 @@ class FerroDiCavallo(ShopCard):
         super().__init__("Ferro di Cavallo", 2, ShopCardKind.BLACK)
         self.icon = '🎠'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # estrai come luky duke
 
@@ -118,7 +119,7 @@ class Piccone(ShopCard):
         super().__init__("Piccone", 4, ShopCardKind.BLACK)
         self.icon = '⛏️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # peschi una carta in piu a inizio turno
 
@@ -127,7 +128,7 @@ class Ricercato(ShopCard):
         super().__init__("Ricercato", 2, ShopCardKind.BLACK)
         self.icon = '🤠️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         pass
         # la giochi su un altro giocatore, ricompensa di 2 carte e 1 pepita a chi lo uccide
 
@@ -136,7 +137,7 @@ class Setaccio(ShopCard):
         super().__init__("Setaccio", 3, ShopCardKind.BLACK)
         self.icon = '🥘️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # paghi 1 pepita per pescare 1 carta durante il tuo turno (max 2 volte per turno)
 
@@ -145,7 +146,7 @@ class Stivali(ShopCard):
         super().__init__("Stivali", 3, ShopCardKind.BLACK)
         self.icon = '🥾️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # peschi una carta ogni volta che vieni ferito
 
@@ -154,7 +155,7 @@ class Talismano(ShopCard):
         super().__init__("Talismano", 3, ShopCardKind.BLACK)
         self.icon = '🧿'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # ottieni una pepita ogni volta che vieni ferito
 
@@ -163,7 +164,7 @@ class Zaino(ShopCard):
         super().__init__("Zaino", 3, ShopCardKind.BLACK)
         self.icon = '🎒️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
         # paga 2 pepite per recuperare 1 vita
 
@@ -187,4 +188,5 @@ def get_cards() -> List[Card]:
     ]
     for c in cards:
         c.expansion_icon = '🤑️'
+        c.expansion = 'gold_rush'
     return cards

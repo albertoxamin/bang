@@ -20,7 +20,7 @@
 			<transition-group name="list" tag="div" class="players-table">
 				<Card v-if="startGameCard" key="_start_game_" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
 				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
-					<transition-group v-if="p.gold_nuggets && p.gold_nuggets > 0" name="list" tag="div" style="position: absolute;top: -10pt;">
+					<transition-group v-if="p.gold_nuggets && p.gold_nuggets > 0" name="list" tag="div" style="position: absolute;top: -10pt; font-size:9pt;">
 						<span v-for="(n, i) in p.gold_nuggets" v-bind:key="i" :alt="i">💵️</span>
 					</transition-group>
 					<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">

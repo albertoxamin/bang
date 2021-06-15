@@ -2,9 +2,9 @@
 	<div>
 		<div class="deck">
 			<card v-if="endTurnAction && isPlaying" :donotlocalize="true" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
-			<card v-if="goldRushShopOpen && goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'gold-rush':true, 'brown':goldRushCards[0].kind === 0, 'black':goldRushCards[0].kind === 1, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number}" @click.native="() => {buy_gold_rush_card(0)}"/>
-			<card v-if="goldRushShopOpen && goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'gold-rush':true, 'brown':goldRushCards[1].kind === 0, 'black':goldRushCards[1].kind === 1, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number}" @click.native="() => {buy_gold_rush_card(1)}"/>
-			<card v-if="goldRushShopOpen && goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'gold-rush':true, 'brown':goldRushCards[2].kind === 0, 'black':goldRushCards[2].kind === 1, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number}" @click.native="() => {buy_gold_rush_card(2)}"/>
+			<card v-if="goldRushShopOpen && goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number}" @click.native="() => {buy_gold_rush_card(0)}"/>
+			<card v-if="goldRushShopOpen && goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number}" @click.native="() => {buy_gold_rush_card(1)}"/>
+			<card v-if="goldRushShopOpen && goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number}" @click.native="() => {buy_gold_rush_card(2)}"/>
 			<div style="position:relative">
 				<div class="card gold-rush back" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card gold-rush back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>

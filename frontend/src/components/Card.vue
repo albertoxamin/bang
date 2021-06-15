@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used}">
+	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used, 'gold-rush': card.expansion === 'gold_rush', 'brown':card.kind === 0, 'black':card.kind === 1,}">
 		<h4>{{cardName}}</h4>
 		<div class="emoji">{{card.icon}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
