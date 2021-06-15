@@ -125,7 +125,7 @@ class Piccone(ShopCard):
 class Ricercato(ShopCard):
     def __init__(self):
         super().__init__("Ricercato", 2, ShopCardKind.BLACK)
-        self.icon = '⛏️'
+        self.icon = '🤠️'
 
     def play_card(self, player, against, _with=None):
         pass

@@ -74,6 +74,7 @@ class Player:
         self.choose_text = 'choose_card_to_get'
         self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
         self.bang_used = 0
+        self.gold_nuggets = 0
 
     def join_game(self, game):
         self.game = game
@@ -866,6 +867,9 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
+        if self.attacker and 'gold_rush' in self.game.expansions:
+            self.attacker.gold_nuggets += 1
+            self.attacker.notify_self()
         self.heal_if_needed()
         self.mancato_needed = 0
         self.expected_response = []
@@ -985,6 +989,16 @@ class Player:
             self.lives -= 1
             self.hand.append(self.game.deck.draw(True))
             self.hand.append(self.game.deck.draw(True))
+            self.notify_self()
+
+    def buy_gold_rush_card(self, index):
+        print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')
+        card = self.game.deck.shop_cards[index]
+        if self.pending_action == PendingAction.PLAY and self.gold_nuggets >= card.number:
+            self.gold_nuggets -= card.number
+            self.game.deck.shop_deck.append(card)
+            self.game.deck.shop_cards[index] = None
+            self.game.deck.fill_gold_rush_shop()
             self.notify_self()
 
     def end_turn(self, forced=False):

@@ -55,6 +55,7 @@ class Deck:
             return
         for i in range(3):
             if self.shop_cards[i] == None:
+                print(f'replacing gr-card {i}')
                 self.shop_cards[i] = self.shop_deck.pop(0)
         self.game.notify_gold_rush_shop()
 

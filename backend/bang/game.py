@@ -614,6 +614,7 @@ class Game:
                 'equipment': [e.__dict__ for e in p.equipment],
                 'lives': p.lives,
                 'max_lives': p.max_lives,
+                'gold_nuggets': p.gold_nuggets,
                 'is_sheriff': isinstance(p.role, roles.Sheriff),
                 'is_my_turn': p.is_my_turn,
                 'pending_action': p.pending_action,

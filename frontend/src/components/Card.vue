@@ -33,6 +33,8 @@ export default {
 			return '';
 		},
 		number() {
+			if (isNaN(this.card.suit))
+				return this.card.number
 			if (this.card.number === 1) return 'A'
 			else if (this.card.number === 11) return 'J'
 			else if (this.card.number === 12) return 'Q'

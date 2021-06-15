@@ -420,6 +420,11 @@ def holyday_special(sid, data):
     ses.holyday_special(data)
 
 @sio.event
+def buy_gold_rush_card(sid, data:int):
+    ses: Player = sio.get_session(sid)
+    ses.buy_gold_rush_card(data)
+
+@sio.event
 def get_cards(sid):
     import bang.cards as c
     cards = c.get_starting_deck(['dodge_city'])
