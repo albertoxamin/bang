@@ -10,6 +10,7 @@ import bang.characters as chars
 import bang.expansions.dodge_city.characters as chd
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.gold_rush.shop_cards as grc
 import eventlet
 
 class PendingAction(IntEnum):
@@ -535,7 +536,7 @@ class Player:
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or (self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette and not (card.usable_next_turn and card.can_be_used_now))
-        if not(against != None and isinstance(self.game.get_player_named(against).character, chd.ApacheKid) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
+        if not(against != None and (isinstance(self.game.get_player_named(against).character, chd.ApacheKid) or len([c for c in self.player.equipment if isinstance(c, grc.Calumet)]) > 0) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
             if against == self.name and not isinstance(card, csd.Tequila):
                 did_play_card = False
             else:
@@ -811,7 +812,7 @@ class Player:
 
     def get_indians(self, attacker):
         self.attacker = attacker
-        if self.character.check(self.game, chd.ApacheKid): return False
+        if self.character.check(self.game, chd.ApacheKid) or len([c for c in self.player.equipment if isinstance(c, grc.Calumet)]) > 0: return False
         if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
             self.take_damage_response()
