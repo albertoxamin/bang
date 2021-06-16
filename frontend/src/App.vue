@@ -153,7 +153,7 @@ html {
 	#app {
 		margin: 4pt;
 		margin-top: -16pt;
-		zoom: 0.8;
+		zoom: 0.75;
 	}
 }
 h1,h2,h3,h4,p,span,b,label{

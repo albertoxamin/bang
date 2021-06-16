@@ -462,12 +462,14 @@ class Game:
         if self.disconnect_bot and self.started:
             player.is_bot = True
             if len([p for p in self.players if not p.is_bot]) == 0:
-                print(f'no players left in game {self.name}, shutting down')
-                self.shutting_down = True
-                self.players = []
-                self.spectators = []
-                self.deck = None
-                return True
+                eventlet.sleep(5)
+                if len([p for p in self.players if not p.is_bot]) == 0:
+                    print(f'no players left in game {self.name}, shutting down')
+                    self.shutting_down = True
+                    self.players = []
+                    self.spectators = []
+                    self.deck = None
+                    return True
             eventlet.sleep(15) # he may reconnect
             if player.is_bot:
                 if len(player.available_characters) > 0:
