@@ -42,7 +42,7 @@ class Game:
         self.someone_won = False
         self.attack_in_progress = False
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
-        self.debug = False
+        self.debug = self.name == 'debug'
 
     def reset(self):
         print('resetting lobby')
