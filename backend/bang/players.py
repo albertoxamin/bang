@@ -547,9 +547,13 @@ class Player:
         if not self.is_my_turn or self.pending_action != PendingAction.PLAY or self.game.is_handling_death:
             print('but cannot')
             return
-        if not (0 <= hand_index < len(self.hand) + len(self.equipment)):
+        if not (0 <= hand_index < len(self.hand) + len(self.equipment) + len(self.gold_rush_equipment)):
             print('but the card index is out of range')
             return
+        elif len(self.hand) + len(self.equipment) <= hand_index < len(self.hand) + len(self.equipment) + len(self.gold_rush_equipment) and len(self.gold_rush_equipment):
+            print('which is a gold rush black card')
+            card: grc.ShopCard = self.gold_rush_equipment[hand_index - len(self.hand) + len(self.equipment)]
+            return card.play_card(self)
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
         if _with != None:
@@ -609,6 +613,12 @@ class Player:
                 self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
                 while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
                     self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
+            self.notify_self()
+        elif self.choose_text == 'choose_ricercato':
+            player = self.game.get_player_named(self.available_cards[card_index]['name'])
+            player.gold_rush_equipment.append(grc.Ricercato())
+            player.notify_self()
+            self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character

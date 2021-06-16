@@ -8,6 +8,8 @@ class ShopCard(Card):
     def __init__(self, name:str, cost:int, kind:ShopCardKind):
         super().__init__(suit='💵', number=cost, name=name)
         self.kind = kind
+        self.expansion_icon = '🤑️'
+        self.expansion = 'gold_rush'
 
     def play_card(self, player, against, _with=None):
         if self.kind == ShopCardKind.BROWN:
@@ -19,6 +21,7 @@ class ShopCard(Card):
                 self.reset_card()
                 self.can_be_used_now = True
                 player.gold_rush_equipment.append(self)
+                player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
                 return True
             else:
                 return False
@@ -134,8 +137,16 @@ class Ricercato(ShopCard):
         self.icon = '🤠️'
 
     def play_card(self, player, against=None, _with=None):
-        pass
-        # TODO
+        import bang.players as pl
+        player.available_cards = [{
+            'name': p.name,
+            'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+            'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+            'noDesc': True
+        } for p in player.game.get_alive_players() if p != player]
+        player.choose_text = 'choose_ricercato'
+        player.pending_action = pl.PendingAction.CHOOSE
+        player.notify_self()
         # la giochi su un altro giocatore, ricompensa di 2 carte e 1 pepita a chi lo uccide
 
 class Setaccio(ShopCard):
@@ -147,9 +158,11 @@ class Setaccio(ShopCard):
         if not self.can_be_used_now:
             super().play_card(player, against, _with)
         else:
-            if player.gold_nuggets > 1:
+            if player.gold_nuggets >= 1:
+                player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 1
                 player.hand.append(player.game.deck.draw())
+                player.notify_self()
         # paghi 1 pepita per pescare 1 carta durante il tuo turno (max 2 volte per turno)
 
 class Stivali(ShopCard):
@@ -176,18 +189,19 @@ class Zaino(ShopCard):
         self.icon = '🎒️'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
         if not self.can_be_used_now:
             super().play_card(player, against, _with)
         else:
-            if player.gold_nuggets > 2:
+            if player.gold_nuggets >= 2:
+                player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 2
                 player.lives = min(player.lives + 1, player.max_lives)
+                player.notify_self()
         # paga 2 pepite per recuperare 1 vita
 
 def get_cards() -> List[Card]:
     cards = [
-        # Bicchierino(),
+        Bicchierino(),
         # Bottiglia(),
         # Complice(),
         CorsaAllOro(),
@@ -203,7 +217,4 @@ def get_cards() -> List[Card]:
         Talismano(),
         Zaino(),
     ]
-    for c in cards:
-        c.expansion_icon = '🤑️'
-        c.expansion = 'gold_rush'
     return cards

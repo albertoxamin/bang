@@ -3,6 +3,7 @@ import random
 import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.gold_rush.shop_cards as grc
 
 class Deck:
     def __init__(self, game):
@@ -21,7 +22,7 @@ class Deck:
                 self.all_cards_str.append(c.name)
         self.game = game
         self.event_cards: List[ce.CardEvent] = []
-        endgame_cards = []
+        endgame_cards: List[ce.CardEvent] = []
         if 'fistful_of_cards' in game.expansions:
             self.event_cards.extend(ce.get_all_events())
             endgame_cards.append(ce.get_endgame_card())
@@ -35,12 +36,11 @@ class Deck:
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
             self.event_cards.append(random.choice(endgame_cards))
         random.shuffle(self.cards)
-        self.shop_deck = []
-        self.shop_cards = []
+        self.shop_deck: List[grc.ShopCard] = []
+        self.shop_cards: List[grc.ShopCard] = []
         if 'gold_rush' in game.expansions:
-            import bang.expansions.gold_rush.shop_cards as gr
             self.shop_cards = [None, None, None]
-            self.shop_deck = gr.get_cards()
+            self.shop_deck = grc.get_cards()
             random.shuffle(self.shop_deck)
             self.fill_gold_rush_shop()
         self.scrap_pile: List[cs.Card] = []
@@ -58,6 +58,7 @@ class Deck:
             if self.shop_cards[i] == None:
                 print(f'replacing gr-card {i}')
                 self.shop_cards[i] = self.shop_deck.pop(0)
+                self.shop_cards[i].reset_card()
         self.game.notify_gold_rush_shop()
 
     def peek(self, n_cards: int) -> list:

@@ -393,7 +393,7 @@ export default {
 		really_play_card(card, against) {
 			let res = this.handComputed.indexOf(card)
 			if (res === -1) {
-				res = this.equipment.indexOf(card)
+				res = this.equipmentComputed.indexOf(card)
 				if (res !== -1) res += this.hand.length
 			}
 			let card_data	 = {

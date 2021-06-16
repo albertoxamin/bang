@@ -57,7 +57,10 @@
 					<div class="tiny-equipment">
 						<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
 									:card="card" @click.native="selectedInfo = p.equipment"
-									:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+1)*12,80))}pt`"/>
+									:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment+1)*12,80))}pt`"/>
+						<Card v-for="(card, i) in p.gold_rush_equipment" v-bind:key="card.name+card.number"
+									:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
+									:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
 					</div>
 					<div v-if="p.is_bot" style="position:absolute;bottom:57%;" class="center-stuff">
 						<span>🤖</span>

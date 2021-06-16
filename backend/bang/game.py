@@ -541,7 +541,11 @@ class Game:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
                 self.pending_winners = winners
-
+            if len([c for c in player.equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker:
+                player.attacker.gold_nuggets += 1
+                player.attacker.hand.append(self.deck.draw(True))
+                player.attacker.hand.append(self.deck.draw(True))
+                player.attacker.notify_self()
             vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
@@ -620,6 +624,7 @@ class Game:
                 'name': p.name,
                 'ncards': len(p.hand),
                 'equipment': [e.__dict__ for e in p.equipment],
+                'gold_rush_equipment': [e.__dict__ for e in p.gold_rush_equipment],
                 'lives': p.lives,
                 'max_lives': p.max_lives,
                 'gold_nuggets': p.gold_nuggets,
