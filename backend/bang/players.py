@@ -366,8 +366,9 @@ class Player:
             self.is_using_checchino = True
             self.available_cards = [{
                 'name': p['name'],
-                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
-                'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives']))
+                'icon': p['role'].icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives'])),
+                'desc': p['name']
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_cecchino'
@@ -1009,7 +1010,7 @@ class Player:
             self.notify_self()
 
     def holyday_special(self, data):
-        if self.character.check(self.game, chd.DocHolyday) and self.special_use_count < 1:
+        if self.character.check(self.game, chd.DocHolyday) and self.special_use_count < 1 and self.pending_action == PendingAction.PLAY:
             self.special_use_count += 1
             cards = sorted(data['cards'], reverse=True)
             for c in cards:

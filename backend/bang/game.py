@@ -43,7 +43,7 @@ class Game:
         self.someone_won = False
         self.attack_in_progress = False
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
-        self.debug = False
+        self.debug = self.name == 'debug'
 
     def reset(self):
         print('resetting lobby')
@@ -603,6 +603,7 @@ class Game:
             'is_ghost': pls[j].is_ghost,
             'is_bot': pls[j].is_bot,
             'icon': pls[j].role.icon if (pls[j].role is not None) else '🤠',
+            'role': pls[j].role,
         } for j in range(len(pls)) if i != j]
 
     def get_alive_players(self):
