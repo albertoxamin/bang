@@ -12,7 +12,7 @@
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
 			</transition-group>
 			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
-				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
+				<Card v-for="card in equipmentComputed" v-bind:key="card.name+card.number" :card="card" 
 					@pointerenter.native="setDesc(card)" @pointerleave.native="desc=''"
 					@click.native="play_card(card, true)" :class="{'cant-play':((eventCard && eventCard.name == 'Lazo') || !card.can_be_used_now)}"/>
 			</transition-group>
@@ -83,6 +83,7 @@ export default {
 		character: null,
 		availableCharacters: [],
 		equipment: [],
+		gold_rush_equipment: [],
 		hand: [],
 		lives: 0,
 		max_lives: 0,
@@ -139,6 +140,7 @@ export default {
 			this.character.is_character = true
 			this.hand = self.hand
 			this.equipment = self.equipment
+			this.gold_rush_equipment = self.gold_rush_equipment
 			this.lives = self.lives
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
@@ -257,6 +259,12 @@ export default {
 				cc.push(x)
 			})
 			return cc
+		},
+		equipmentComputed() {
+			let eq = []
+			this.equipment.forEach(x => eq.push(x));
+			this.gold_rush_equipment.forEach(x => eq.push(x));
+			return eq
 		},
 		handComputed() {
 			return this.hand.map(x => {
