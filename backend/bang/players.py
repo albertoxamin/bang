@@ -541,9 +541,12 @@ class Player:
         return playable_cards
 
     def play_card(self, hand_index: int, against=None, _with=None):
+        print(self.name, 'wants to play card ', hand_index, ' against:', against, ' with:', _with)
         if not self.is_my_turn or self.pending_action != PendingAction.PLAY or self.game.is_handling_death:
+            print('but cannot')
             return
         if not (0 <= hand_index < len(self.hand) + len(self.equipment)):
+            print('but the card index is out of range')
             return
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
@@ -552,19 +555,19 @@ class Player:
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or (self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette and not (card.usable_next_turn and card.can_be_used_now))
-        if not(against != None and (isinstance(self.game.get_player_named(against).character, chd.ApacheKid) or len([c for c in self.game.get_player_named(against).equipment if isinstance(c, grc.Calumet)]) > 0) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) and not event_blocks_card:
+        if not(against != None and (isinstance(self.game.get_player_named(against).character, chd.ApacheKid) or len([c for c in self.game.get_player_named(against).equipment if isinstance(c, grc.Calumet)]) > 0) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK) and not event_blocks_card:
             if against == self.name and not isinstance(card, csd.Tequila):
                 did_play_card = False
             else:
                 did_play_card = card.play_card(self, against, withCard)
-        if not card.is_equipment and not card.usable_next_turn or event_blocks_card:
+        if not card.is_equipment and not card.usable_next_turn and not (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK) or event_blocks_card:
             if did_play_card:
                 self.game.deck.scrap(card, True)
             else:
                 self.hand.insert(hand_index, card)
                 if withCard:
                     self.hand.insert(_with, withCard)
-        elif card.usable_next_turn and card.can_be_used_now:
+        elif (card.usable_next_turn and card.can_be_used_now) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK):
             if did_play_card:
                 self.game.deck.scrap(card, True)
             else:

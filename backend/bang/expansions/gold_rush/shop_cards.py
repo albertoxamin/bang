@@ -17,10 +17,15 @@ class ShopCard(Card):
             self.reset_card()
             if not self.is_duplicate_card(player):
                 self.reset_card()
+                self.can_be_used_now = True
                 player.equipment.append(self)
                 return True
             else:
                 return False
+
+    def reset_card(self):
+        if self.kind == ShopCardKind.BLACK:
+            self.can_be_used_now = False
 
 class Bicchierino(ShopCard):
     def __init__(self):
@@ -130,6 +135,7 @@ class Ricercato(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         pass
+        # TODO
         # la giochi su un altro giocatore, ricompensa di 2 carte e 1 pepita a chi lo uccide
 
 class Setaccio(ShopCard):
@@ -138,7 +144,12 @@ class Setaccio(ShopCard):
         self.icon = '🥘️'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        if not self.can_be_used_now:
+            super().play_card(player, against, _with)
+        else:
+            if player.gold_nuggets > 1:
+                player.gold_nuggets -= 1
+                player.hand.append(player.game.deck.draw())
         # paghi 1 pepita per pescare 1 carta durante il tuo turno (max 2 volte per turno)
 
 class Stivali(ShopCard):
@@ -166,6 +177,12 @@ class Zaino(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         super().play_card(player, against, _with)
+        if not self.can_be_used_now:
+            super().play_card(player, against, _with)
+        else:
+            if player.gold_nuggets > 2:
+                player.gold_nuggets -= 2
+                player.lives = min(player.lives + 1, player.max_lives)
         # paga 2 pepite per recuperare 1 vita
 
 def get_cards() -> List[Card]:

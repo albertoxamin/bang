@@ -29,7 +29,7 @@
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
-				<Card v-for="card in handComputed" v-bind:key="card.name+card.number" :card="card" 
+				<Card v-for="card in handComputed" v-bind:key="card.name+card.number+card.suit" :card="card" 
 					@click.native="play_card(card, false)"
 					@pointerenter.native="setHint(card)" @pointerleave.native="hint=''"
 					:class="{'cant-play':card.cantBePlayed}"/>
@@ -328,7 +328,8 @@ export default {
 			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
 		play_card(card, from_equipment) {
-			if (from_equipment && (!card.usable_next_turn || !card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
+			console.log('play' + card.name)
+			if (from_equipment && (!card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
 			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
