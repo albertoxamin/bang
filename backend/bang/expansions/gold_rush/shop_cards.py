@@ -35,21 +35,25 @@ class Bicchierino(ShopCard):
         super().__init__('Bicchierino', 1, ShopCardKind.BROWN)
         self.icon = '🍸️'
 
-    def play_card(self, player, against, _with=None):
-        if against != None:
-            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_for|{player.name}|{self.name}|{against}')
-            player.game.deck.scrap(_with)
-            player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
-            player.game.get_player_named(against).notify_self()
-            return True
-        return False
+    def play_card(self, player, against=None, _with=None):
+        import bang.players as pl
+        player.available_cards = [{
+            'name': p.name,
+            'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+            'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+            'noDesc': True
+        } for p in player.game.get_alive_players()]
+        player.choose_text = 'choose_bicchierino'
+        player.pending_action = pl.PendingAction.CHOOSE
+        player.notify_self()
+        return True
 
 class Bottiglia(ShopCard):
     def __init__(self):
         super().__init__('Bottiglia', 2, ShopCardKind.BROWN)
         self.icon = '🍾️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         if against != None:
             pass # bang, birra, panico
         return False
@@ -59,7 +63,7 @@ class Complice(ShopCard):
         super().__init__('Complice', 2, ShopCardKind.BROWN)
         self.icon = '😉️'
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None):
         if against != None:
             pass # emporio, duello, Cat balou
         return False
@@ -201,6 +205,18 @@ class Zaino(ShopCard):
 
 def get_cards() -> List[Card]:
     cards = [
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
+        Bicchierino(),
         Bicchierino(),
         # Bottiglia(),
         # Complice(),
