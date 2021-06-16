@@ -1,4 +1,5 @@
 from bang.cards import *
+import bang.players as pl
 
 class ShopCardKind(IntEnum):
     BROWN = 0  # Se l’equipaggiamento ha il bordo marrone, applicane subito l’effetto e poi scartalo.
@@ -36,7 +37,6 @@ class Bicchierino(ShopCard):
         self.icon = '🍸️'
 
     def play_card(self, player, against=None, _with=None):
-        import bang.players as pl
         player.available_cards = [{
             'name': p.name,
             'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
@@ -54,9 +54,14 @@ class Bottiglia(ShopCard):
         self.icon = '🍾️'
 
     def play_card(self, player, against=None, _with=None):
-        if against != None:
-            pass # bang, birra, panico
-        return False
+        # bang, birra, panico
+        player.available_cards = [Bang(1,42), Birra(1,42), Panico(1,42)]
+        for i in range(len(player.available_cards)):
+            player.available_cards[i].must_be_used = True
+        player.choose_text = 'choose_bottiglia'
+        player.pending_action = pl.PendingAction.CHOOSE
+        player.notify_self()
+        return True
 
 class Complice(ShopCard):
     def __init__(self):
@@ -64,9 +69,14 @@ class Complice(ShopCard):
         self.icon = '😉️'
 
     def play_card(self, player, against=None, _with=None):
-        if against != None:
-            pass # emporio, duello, Cat balou
-        return False
+        # emporio, duello, Cat balou
+        player.available_cards = [Emporio(1,42), Duello(1,42), CatBalou(1,42)]
+        for i in range(len(player.available_cards)):
+            player.available_cards[i].must_be_used = True
+        player.choose_text = 'choose_complice'
+        player.pending_action = pl.PendingAction.CHOOSE
+        player.notify_self()
+        return True
 
 class CorsaAllOro(ShopCard):
     def __init__(self):
@@ -141,7 +151,6 @@ class Ricercato(ShopCard):
         self.icon = '🤠️'
 
     def play_card(self, player, against=None, _with=None):
-        import bang.players as pl
         player.available_cards = [{
             'name': p.name,
             'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
@@ -206,20 +215,8 @@ class Zaino(ShopCard):
 def get_cards() -> List[Card]:
     cards = [
         Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        Bicchierino(),
-        # Bottiglia(),
-        # Complice(),
+        Bottiglia(),
+        Complice(),
         CorsaAllOro(),
         Rum(),
         UnionPacific(),

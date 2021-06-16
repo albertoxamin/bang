@@ -626,6 +626,19 @@ class Player:
             player.lives = min(player.lives+1, player.max_lives)
             self.pending_action = PendingAction.PLAY
             self.notify_self()
+        elif self.choose_text == 'choose_bottiglia':
+            self.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
+            if isinstance(self.available_cards[card_index], cs.Birra):
+                self.lives = min(self.lives+1, self.max_lives)
+            else:
+                self.hand.append(self.available_cards[card_index])
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif self.choose_text == 'choose_complice':
+            self.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
+            self.hand.append(self.available_cards[card_index])
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character
                 self.character = self.not_chosen_character

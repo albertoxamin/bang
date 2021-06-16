@@ -169,6 +169,10 @@ export default {
 				this.shouldChooseCard = false
 			}
 			this.noStar = self.noStar
+			let mustplay = this.handComputed.filter(x => x.number == 42);
+			if (mustplay.length > 0) {
+				this.play_card(mustplay[0], false)
+			}
 		},
 		self_vis(vis) {
 			// console.log('received visibility update')

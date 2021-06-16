@@ -103,6 +103,7 @@ class Deck:
             return self.draw()
 
     def scrap(self, card: cs.Card, ignore_event = False):
+        if card.number == 42: return
         card.reset_card()
         if self.game.check_event(ce.MinieraAbbandonata) and not ignore_event:
             self.put_on_top(card)
