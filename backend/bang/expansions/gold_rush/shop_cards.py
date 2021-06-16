@@ -18,7 +18,7 @@ class ShopCard(Card):
             if not self.is_duplicate_card(player):
                 self.reset_card()
                 self.can_be_used_now = True
-                player.equipment.append(self)
+                player.gold_rush_equipment.append(self)
                 return True
             else:
                 return False
