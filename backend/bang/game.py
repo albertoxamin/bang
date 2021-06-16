@@ -77,6 +77,11 @@ class Game:
                 'available_expansions': self.available_expansions,
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
+        if self.debug:
+            commands = ['/debug', '/set_chars', '/suicide', '/nextevent', '/notify', '/show_cards', '/ddc', '/dsh', '/togglebot', '/cancelgame', '/startgame', '/setbotspeed', '/addex', '/setcharacter', '/setevent', '/removecard', '/getcard', '/meinfo', '/gameinfo', '/mebot']
+            self.sio.emit('commands', room=self.name, data=commands)
+        else:
+            self.sio.emit('commands', room=self.name, data=['/debug'])
         self.sio.emit('spectators', room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):
