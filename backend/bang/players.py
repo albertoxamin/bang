@@ -973,7 +973,7 @@ class Player:
             self.notify_self()
 
     def holyday_special(self, data):
-        if self.character.check(self.game, chd.DocHolyday) and self.special_use_count < 1:
+        if self.character.check(self.game, chd.DocHolyday) and self.special_use_count < 1 and self.pending_action == PendingAction.PLAY:
             self.special_use_count += 1
             cards = sorted(data['cards'], reverse=True)
             for c in cards:
