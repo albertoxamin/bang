@@ -79,7 +79,7 @@ class Game:
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
         if self.debug:
-            commands = ['/debug', '/set_chars', '/suicide', '/nextevent', '/notify', '/show_cards', '/ddc', '/dsh', '/togglebot', '/cancelgame', '/startgame', '/setbotspeed', '/addex', '/setcharacter', '/setevent', '/removecard', '/getcard', '/meinfo', '/gameinfo', '/mebot']
+            commands = ['/debug', '/set_chars', '/suicide', '/nextevent', '/notify', '/show_cards', '/ddc', '/dsh', '/togglebot', '/cancelgame', '/startgame', '/setbotspeed', '/addex', '/setcharacter', '/setevent', '/removecard', '/getcard', '/meinfo', '/gameinfo', '/mebot', '/getnuggets']
             self.sio.emit('commands', room=self.name, data=commands)
         else:
             self.sio.emit('commands', room=self.name, data=['/debug'])
