@@ -77,6 +77,11 @@ class Game:
                 'available_expansions': self.available_expansions,
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
+        if self.debug:
+            commands = ['/debug', '/set_chars', '/suicide', '/nextevent', '/notify', '/show_cards', '/ddc', '/dsh', '/togglebot', '/cancelgame', '/startgame', '/setbotspeed', '/addex', '/setcharacter', '/setevent', '/removecard', '/getcard', '/meinfo', '/gameinfo', '/mebot']
+            self.sio.emit('commands', room=self.name, data=commands)
+        else:
+            self.sio.emit('commands', room=self.name, data=['/debug'])
         self.sio.emit('spectators', room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):
@@ -449,12 +454,14 @@ class Game:
         if self.disconnect_bot and self.started:
             player.is_bot = True
             if len([p for p in self.players if not p.is_bot]) == 0:
-                print(f'no players left in game {self.name}, shutting down')
-                self.shutting_down = True
-                self.players = []
-                self.spectators = []
-                self.deck = None
-                return True
+                eventlet.sleep(5)
+                if len([p for p in self.players if not p.is_bot]) == 0:
+                    print(f'no players left in game {self.name}, shutting down')
+                    self.shutting_down = True
+                    self.players = []
+                    self.spectators = []
+                    self.deck = None
+                    return True
             eventlet.sleep(15) # he may reconnect
             if player.is_bot:
                 if len(player.available_characters) > 0:

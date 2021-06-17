@@ -5,6 +5,7 @@
 		<transition-group name="message" tag="div" id="chatbox">
 		<!-- <div id="chatbox"> -->
 			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
+			<p style="margin:1pt 15pt;" class="chat-message" v-for="(msg, i) in commandSuggestion" v-bind:key="`${i}-c`" :style="`color:orange`">{{msg}}</p>
 			<p class="end" key="end" style="color:#0000">.</p>
 		<!-- </div> -->
 		</transition-group>
@@ -31,7 +32,17 @@ export default {
 		messages: [],
 		text: '',
 		spectators: 0,
+		commands: ['/debug'],
 	}),
+	computed: {
+		commandSuggestion() {
+			this.text;
+			if (this.text.length < 1) {
+				return [];
+			}
+			return this.commands.filter(x => x.slice(0, this.text.length) == this.text);
+		},
+	},
 	sockets: {
 		chat_message(msg) {
 			// console.log(msg)
@@ -84,6 +95,9 @@ export default {
 		},
 		spectators(val) {
 			this.spectators = val
+		},
+		commands(list) {
+			this.commands = list;
 		}
 	},
 	methods: {
