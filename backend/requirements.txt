@@ -1,4 +1,4 @@
-certifi==2020.11.8
+certifi==2021.5.30
 dnspython==1.16.0
 eventlet==0.31.0
 greenlet==0.4.17
