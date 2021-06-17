@@ -639,6 +639,13 @@ class Player:
             player.lives = min(player.lives+1, player.max_lives)
             self.pending_action = PendingAction.PLAY
             self.notify_self()
+        elif self.choose_text == 'choose_birra_function':
+            if card_index == 0:
+                self.gold_nuggets += 1
+            else:
+                cs.Birra(1,1).play_card(self, skipChecks=True)
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
         elif self.choose_text == 'choose_bottiglia':
             self.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
             if isinstance(self.available_cards[card_index], cs.Birra):

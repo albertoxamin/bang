@@ -234,15 +234,28 @@ class Birra(Card):
         # self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
         # self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None, skipChecks=False):
         import bang.expansions.high_noon.card_events as ceh
-        import bang.expansions.gold_rush.characters as grch
         if player.game.check_event(ceh.IlReverendo):
             return False
-        madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto)]
-        for p in madamYto:
-            p.hand.append(player.game.deck.draw())
-            p.notify_self()
+        if not skipChecks:
+            import bang.expansions.gold_rush.characters as grch
+            madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto)]
+            for p in madamYto:
+                p.hand.append(player.game.deck.draw())
+                p.notify_self()
+            if 'gold_rush' in player.game.expansions:
+                from bang.players import PendingAction
+                player.available_cards = [{
+                    'name': '',
+                    'icon': '💵️',
+                    'alt_text': '1',
+                    'noDesc': True
+                }, self]
+                player.choose_text = 'choose_birra_function'
+                player.pending_action = PendingAction.CHOOSE
+                player.notify_self()
+                return True
         if len(player.game.get_alive_players()) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
