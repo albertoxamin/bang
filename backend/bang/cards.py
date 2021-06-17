@@ -235,8 +235,13 @@ class Birra(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.expansions.high_noon.card_events as ceh
+        import bang.expansions.gold_rush.characters as grch
         if player.game.check_event(ceh.IlReverendo):
             return False
+        madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto)]
+        for p in madamYto:
+            p.hand.append(player.game.deck.draw())
+            p.notify_self()
         if len(player.game.get_alive_players()) != 2:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)

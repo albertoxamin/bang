@@ -18,12 +18,14 @@ class JackyMurieta(Character):
         super().__init__("Jacky Murieta", max_lives=4)
         # puo pagare 2 pepite per sparare 1 bang extra
         self.icon = '💆‍♂️️'
+        #TODO
 
 class JoshMcCloud(Character):
     def __init__(self):
         super().__init__("Josh McCloud", max_lives=4)
         # puo pagare 2 pepite per pescare il primo equipaggiamento dalla pila gold rush
         self.icon = '⛅️'
+        #TODO
 
 class MadamYto(Character):
     def __init__(self):
