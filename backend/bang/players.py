@@ -1101,6 +1101,13 @@ class Player:
                 self.game.deck.shop_deck.append(card)
             self.notify_self()
 
+    def snake_special(self):
+        if self.character.check(self.game, grch.RaddieSnake) and self.gold_nuggets >= 1 and self.is_my_turn and self.special_use_count < 2:
+            self.gold_nuggets -= 1
+            self.special_use_count += 1
+            self.hand.append(self.game.deck.draw(True))
+            self.notify_self()
+
     def buy_gold_rush_card(self, index):
         print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')
         card: cs.Card = self.game.deck.shop_cards[index]

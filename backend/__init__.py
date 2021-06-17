@@ -437,6 +437,11 @@ def cloud_special(sid):
     ses.cloud_special()
 
 @sio.event
+def snake_special(sid):
+    ses: Player = sio.get_session(sid)
+    ses.snake_special()
+
+@sio.event
 def buy_gold_rush_card(sid, data:int):
     ses: Player = sio.get_session(sid)
     ses.buy_gold_rush_card(data)
