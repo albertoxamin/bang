@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from bang.expansions import *
 from typing import List
 
 class Character(ABC):
@@ -158,4 +159,6 @@ def all_characters(expansions: List[str]):
     ]
     if 'dodge_city' in expansions:
         base_chars.extend(DodgeCity.get_characters())
+    if 'gold_rush' in expansions:
+        base_chars.extend(GoldRush.get_characters())
     return base_chars

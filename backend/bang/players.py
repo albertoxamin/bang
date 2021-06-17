@@ -401,6 +401,12 @@ class Player:
             self.choose_text = 'choose_card_to_get'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
+        elif self.character.check(self.game, grch.DutchWill):
+            self.is_drawing = True
+            self.available_cards = [self.game.deck.draw() for i in range(2)]
+            self.choose_text = 'choose_card_to_get'
+            self.pending_action = PendingAction.CHOOSE
+            self.notify_self()
         elif self.character.check(self.game, chd.PatBrennan) and type(pile) == str and pile != self.name and pile in self.game.players_map and len(self.game.get_player_named(pile).equipment) > 0:
             self.is_drawing = True
             self.available_cards = self.game.get_player_named(pile).equipment
@@ -746,6 +752,16 @@ class Player:
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
                 self.manette()
+            self.notify_self()
+        elif self.is_drawing and self.character.check(self.game, grch.DutchWill):
+            self.hand.append(self.available_cards.pop(card_index))
+            if self.game.check_event(ceh.IlTreno) or len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
+                self.hand.append(self.available_cards.pop(0))
+            else:
+                self.game.deck.scrap(self.available_cards.pop(0), True)
+            self.gold_nuggets += 1
+            self.is_drawing = False
+            self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
             self.is_drawing = False
