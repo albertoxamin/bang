@@ -11,6 +11,7 @@ import bang.expansions.dodge_city.characters as chd
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
+import bang.expansions.gold_rush.characters as grch
 import eventlet
 
 class PendingAction(IntEnum):
@@ -71,6 +72,7 @@ class Player:
         self.death_turn = 0
         self.noStar = False
         self.can_play_vendetta = True
+        self.can_play_again_don_bell = True
         self.is_giving_life = False
         self.choose_text = 'choose_card_to_get'
         self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
@@ -304,13 +306,14 @@ class Player:
                 else:
                     self.choose(randrange(0, len(target.hand)+len(target.equipment)))
 
-    def play_turn(self, can_play_vendetta = True, again = False):
+    def play_turn(self, can_play_vendetta = True, again = False, can_play_again_don_bell=True):
         if (self.lives == 0 or self.is_dead) and not self.is_ghost:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
+        self.can_play_again_don_bell = can_play_again_don_bell
         if not again:
             self.sio.emit('chat_message', room=self.game.name,
                           data=f'_turn|{self.name}')
@@ -1086,6 +1089,12 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                 if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                     self.play_turn(can_play_vendetta=False)
+                    return
+            if not forced and self.character.check(self.game, grch.DonBell):
+                picked: cs.Card = self.game.deck.pick_and_scrap()
+                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                if picked.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
+                    self.play_turn(can_play_vendetta=False, can_play_again_don_bell=False)
                     return
             self.is_my_turn = False
             self.has_played_bang = False
