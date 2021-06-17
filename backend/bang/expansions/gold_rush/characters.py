@@ -24,7 +24,6 @@ class JoshMcCloud(Character):
         super().__init__("Josh McCloud", max_lives=4)
         # puo pagare 2 pepite per pescare il primo equipaggiamento dalla pila gold rush
         self.icon = '⛅️'
-        #TODO
 
 class MadamYto(Character):
     def __init__(self):

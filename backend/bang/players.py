@@ -1093,13 +1093,21 @@ class Player:
             self.bang_used -= 1
             self.notify_self()
 
+    def cloud_special(self):
+        if self.character.check(self.game, grch.JoshMcCloud) and self.gold_nuggets >= 2 and self.is_my_turn:
+            self.gold_nuggets -= 2
+            card = self.game.deck.shop_deck.pop(0)
+            if card.play_card(self):
+                self.game.deck.shop_deck.append(card)
+            self.notify_self()
+
     def buy_gold_rush_card(self, index):
         print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')
         card: cs.Card = self.game.deck.shop_cards[index]
         if self.pending_action == PendingAction.PLAY and self.gold_nuggets >= card.number:
             self.gold_nuggets -= card.number
-            card.play_card(self)
-            self.game.deck.shop_deck.append(card)
+            if card.play_card(self):
+                self.game.deck.shop_deck.append(card)
             self.game.deck.shop_cards[index] = None
             self.game.deck.fill_gold_rush_shop()
             self.notify_self()
