@@ -329,6 +329,8 @@ class Player:
             self.lives -= 1
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
                 self.gold_nuggets += 1
+            if self.character.check(self.game, grch.SimeonPicos):
+                self.gold_nuggets += 1
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
                 self.hand.append(self.game.deck.draw())
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
@@ -487,6 +489,8 @@ class Player:
                         if picked.check_suit(self.game, [cs.Suit.SPADES]) and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
                             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
+                                self.gold_nuggets += 3
+                            if self.character.check(self.game, grch.SimeonPicos):
                                 self.gold_nuggets += 3
                             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
                                 self.hand.append(self.game.deck.draw())
@@ -667,6 +671,8 @@ class Player:
                 player.lives += 1
                 self.lives -= 1
                 if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
+                    self.gold_nuggets += 1
+                if self.character.check(self.game, grch.SimeonPicos):
                     self.gold_nuggets += 1
                 if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
                     self.hand.append(self.game.deck.draw())
@@ -950,6 +956,8 @@ class Player:
             self.attacker.gold_nuggets += 1
             self.attacker.notify_self()
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
+                self.gold_nuggets += 1
+            if self.character.check(self.game, grch.SimeonPicos):
                 self.gold_nuggets += 1
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
                 self.hand.append(self.game.deck.draw())

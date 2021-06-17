@@ -12,6 +12,7 @@ import bang.roles as roles
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
+import bang.expansions.gold_rush.characters as grch
 
 class Game:
     def __init__(self, name, sio:socketio):
@@ -304,6 +305,8 @@ class Game:
                 print('stop roulette')
                 target_pl.lives -= 1
                 if len([c for c in target_pl.equipment if isinstance(c, grc.Talismano)]) > 0:
+                    target_pl.gold_nuggets += 1
+                if target_pl.character.check(self, grch.SimeonPicos):
                     target_pl.gold_nuggets += 1
                 if len([c for c in target_pl.equipment if isinstance(c, grc.Stivali)]) > 0:
                     target_pl.hand.append(self.deck.draw())
