@@ -210,15 +210,16 @@ class Bang(Card):
     def play_card(self, player, against, _with=None):
         import bang.expansions.fistful_of_cards.card_events as ce
         import bang.expansions.high_noon.card_events as ceh
-        if player.game.check_event(ceh.Sermone):
+        if player.game.check_event(ceh.Sermone) and not self.number == 42: # 42 gold rush
             return False
-        if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None:
+        if (player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None) and not self.number == 42: # 42 gold rush:
             return False
         elif against != None:
             import bang.characters as chars
             super().play_card(player, against=against)
-            player.bang_used += 1
-            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
+            if not self.number == 42: # 42 gold rush
+                player.bang_used += 1
+                player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             if player.character.check(player.game, chars.WillyTheKid):
                 player.has_played_bang = False
             player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
