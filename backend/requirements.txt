@@ -1,5 +1,5 @@
 certifi==2021.5.30
-dnspython==1.16.0
+dnspython==2.1.0
 eventlet==0.31.0
 greenlet==1.1.0
 python-engineio==4.2.0
