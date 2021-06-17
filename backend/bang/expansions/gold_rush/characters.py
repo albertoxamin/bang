@@ -18,7 +18,6 @@ class JackyMurieta(Character):
         super().__init__("Jacky Murieta", max_lives=4)
         # puo pagare 2 pepite per sparare 1 bang extra
         self.icon = '💆‍♂️️'
-        #TODO
 
 class JoshMcCloud(Character):
     def __init__(self):
@@ -41,7 +40,7 @@ class PrettyLuzena(Character):
 
 class RaddieSnake(Character):
     def __init__(self):
-        super().__init__("Pretty Luzena", max_lives=4)
+        super().__init__("Raddie Snake", max_lives=4)
         # può scartare 1 pepita per pescare 1 carta (2 volte per turno)
         self.icon = '🐍️'
 

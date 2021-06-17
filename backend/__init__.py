@@ -427,6 +427,11 @@ def holyday_special(sid, data):
     ses.holyday_special(data)
 
 @sio.event
+def murieta_special(sid):
+    ses: Player = sio.get_session(sid)
+    ses.murieta_special()
+
+@sio.event
 def buy_gold_rush_card(sid, data:int):
     ses: Player = sio.get_session(sid)
     ses.buy_gold_rush_card(data)

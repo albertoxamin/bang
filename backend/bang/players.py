@@ -1086,6 +1086,13 @@ class Player:
             self.hand.append(self.game.deck.draw(True))
             self.notify_self()
 
+    def murieta_special(self):
+        if self.character.check(self.game, grch.JackyMurieta) and self.gold_nuggets >= 2 and self.is_my_turn:
+            self.gold_nuggets -= 2
+            self.has_played_bang = False
+            self.bang_used -= 1
+            self.notify_self()
+
     def buy_gold_rush_card(self, index):
         print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')
         card: cs.Card = self.game.deck.shop_cards[index]

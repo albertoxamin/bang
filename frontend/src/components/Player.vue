@@ -25,6 +25,7 @@
 			<button class="btn" v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
 			<button class="btn" v-if="is_my_turn && character.name === 'José Delgado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
 			<button class="btn" v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1 && pending_action == 2" @click="holydayScrap=true">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Jacky Murieta' && special_use_count < 1 && gold_nuggets >=2 && pending_action == 2" @click="()=>{$socket.emit('murieta_special')}">{{$t('special_ability')}}</button>
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
@@ -119,6 +120,7 @@ export default {
 		spectator: false,
 		noStar: false,
 		committed_suit_manette: null,
+		gold_nuggets: 0,
 	}),
 	sockets: {
 		role(role) {
@@ -169,6 +171,7 @@ export default {
 				this.shouldChooseCard = false
 			}
 			this.noStar = self.noStar
+			this.gold_nuggets = self.gold_nuggets
 			let mustplay = this.handComputed.filter(x => x.number == 42);
 			if (mustplay.length > 0) {
 				this.play_card(mustplay[0], false)
