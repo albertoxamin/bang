@@ -253,6 +253,9 @@ html, #app, input, select {
 	border-radius: 12pt;
 	cursor: pointer;
 	transition: all 0.13s ease-in-out;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 .btn:hover:not([disabled]) {
 	background-color: var(--font-color); /* Green */

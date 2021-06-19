@@ -166,6 +166,7 @@ input {
 @media only screen and (max-width:1000px) {
 	#msg-form {
 		flex-direction: column;
+		margin-bottom: 50pt;
 	}
 	#submit-message {
 		margin-top: 6pt;
