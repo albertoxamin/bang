@@ -15,6 +15,8 @@ sio = socketio.Server(cors_allowed_origins="*")
 static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'},
     '/game': {'content_type': 'text/html', 'filename': 'index.html'},
+    '/help': {'content_type': 'text/html', 'filename': 'index.html'},
+    '/status': {'content_type': 'text/html', 'filename': 'index.html'},
     # '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
     '/favicon.ico': {'filename': 'favicon.ico'},
     '/img/icons': './img/icons',
@@ -31,7 +33,7 @@ games: List[Game] = []
 online_players = 0
 
 def advertise_lobbies():
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'password': g.password} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
 
 @sio.event
@@ -253,11 +255,6 @@ def chat_message(sid, msg):
                             eventlet.sleep(0.3)
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
-            elif '/hide' in msg:
-                cmd = msg.split()
-                ses.game.is_hidden = not ses.game.is_hidden
-                advertise_lobbies()
-                sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} room hidden: {ses.game.is_hidden}'})
             elif '/ddc' in msg and ses.game.started: # debug destroy cards usage: [/ddc *] [/ddc username]
                 cmd = msg.split() 
                 if len(cmd) == 2:
@@ -361,6 +358,35 @@ def chat_message(sid, msg):
         else:
             color = sid.encode('utf-8').hex()[-3:]
             sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})
+
+@sio.event
+def get_all_rooms(sid, deploy_key):
+    if 'DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']:
+        sio.emit('all_rooms', room=sid, data=[{
+            'name': g.name,
+            'hidden': g.is_hidden,
+            'players': [{'name':p.name, 'bot': p.is_bot, 'health': p.lives, 'sid': p.sid} for p in g.players],
+            'password': g.password,
+            'expansions': g.expansions,
+            'started': g.started,
+            'current_turn': g.turn,
+            'incremental_turn': g.incremental_turn,
+            'debug': g.debug,
+            'spectators': len(g.spectators)
+        } for g in games])
+
+@sio.event
+def kick(sid, data):
+    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+        sio.emit('kicked', room=data['sid'])
+
+@sio.event
+def hide_toogle(sid, data):
+    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+        game = [g for g in games if g.name==data['room']]
+        if len(games) > 0:
+            game[0].is_hidden = not game[0].is_hidden
+            advertise_lobbies()
 
 @sio.event
 def start_game(sid):
