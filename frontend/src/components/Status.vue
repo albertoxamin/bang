@@ -21,7 +21,7 @@
 						<p style="margin:0"><b>name:</b> {{p.name}}</p>
 						<p style="margin:0"><b>is_bot:</b> {{p.is_bot}}</p>
 						<p style="margin:0"><b>health:</b> {{p.health}}</p>
-						<button @click="kick(p.sid)">Kick</button>
+						<button v-if="!p.is_bot" @click="kick(p.sid)">Kick</button>
 					</li>
 				</ul>
 				<br>
@@ -58,13 +58,13 @@ export default {
 			this.$socket.emit('hide_toogle', {'key':this.deploy_key, 'room':room_name})
 			setTimeout((()=>{
 				this.refresh()
-			}).bind(this), 200)
+			}).bind(this), 500)
 		},
 		kick(sid){
 			this.$socket.emit('kick', {'key':this.deploy_key, 'sid':sid})
 			setTimeout((()=>{
 				this.refresh()
-			}).bind(this), 200)
+			}).bind(this), 500)
 		}
 	}
 }
