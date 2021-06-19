@@ -17,7 +17,6 @@ class ShopCard(Card):
             pass # use it now
             return False
         elif self.kind == ShopCardKind.BLACK: # equip it
-            self.reset_card()
             if not self.is_duplicate_card(player):
                 self.reset_card()
                 self.can_be_used_now = True
@@ -80,7 +79,7 @@ class Complice(ShopCard):
 
 class CorsaAllOro(ShopCard):
     def __init__(self):
-        super().__init__("Corsa All'Oro", 5, ShopCardKind.BROWN)
+        super().__init__("Corsa All Oro_gr", 5, ShopCardKind.BROWN)
         self.icon = '🤑️'
 
     def play_card(self, player, against=None, _with=None):

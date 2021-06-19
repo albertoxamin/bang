@@ -87,7 +87,7 @@ class Card(ABC):
         pass
 
     def is_duplicate_card(self, player):
-        return self.name in [c.name for c in player.equipment]
+        return self.name in [c.name for c in player.equipment] or self.name in [c.name for c in player.gold_rush_equipment]
 
     def check_suit(self, game, accepted):
         import bang.expansions.high_noon.card_events as ceh
@@ -240,11 +240,11 @@ class Birra(Card):
             return False
         if not skipChecks:
             import bang.expansions.gold_rush.characters as grch
-            madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto)]
+            madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto) and self.number != 42]
             for p in madamYto:
                 p.hand.append(player.game.deck.draw())
                 p.notify_self()
-            if 'gold_rush' in player.game.expansions:
+            if 'gold_rush' in player.game.expansions and self.number != 42:
                 from bang.players import PendingAction
                 player.available_cards = [{
                     'name': '',
@@ -256,7 +256,7 @@ class Birra(Card):
                 player.pending_action = PendingAction.CHOOSE
                 player.notify_self()
                 return True
-        if len(player.game.get_alive_players()) != 2:
+        if len(player.game.get_alive_players()) != 2 or self.number == 42:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd

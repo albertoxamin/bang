@@ -1143,7 +1143,7 @@ class Player:
                 if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                     self.play_turn(can_play_vendetta=False)
                     return
-            if not forced and self.character.check(self.game, grch.DonBell):
+            if not forced and self.character.check(self.game, grch.DonBell) and self.can_play_again_don_bell:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
                 self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                 if picked.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):

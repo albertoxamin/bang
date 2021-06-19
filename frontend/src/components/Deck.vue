@@ -3,9 +3,9 @@
 		<div class="deck">
 			<card v-if="endTurnAction && isPlaying" :donotlocalize="true" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
 			<div class="deck" style="position:relative" v-if="goldRushCards.length > 0" >
-				<card :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(-15deg) translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number}" @click.native="() => {buy_gold_rush_card(0)}"/>
-				<card :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(+0deg)  translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number}" @click.native="() => {buy_gold_rush_card(1)}"/>
-				<card :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(+15deg) translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number}" @click.native="() => {buy_gold_rush_card(2)}"/>
+				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[0])}" @pointerleave.native="goldRushDesc=''" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(-15deg) translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number}" @click.native="() => {buy_gold_rush_card(0)}"/>
+				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[1])}" @pointerleave.native="goldRushDesc=''" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(+0deg)  translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number}" @click.native="() => {buy_gold_rush_card(1)}"/>
+				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[2])}" @pointerleave.native="goldRushDesc=''" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(+15deg) translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number}" @click.native="() => {buy_gold_rush_card(2)}"/>
 				<div style="position:relative">
 					<div class="card gold-rush back" style="position:relative; bottom:-3pt;right:-3pt;"/>
 					<div class="card gold-rush back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -30,7 +30,10 @@
 			</div>
 		</div>
 		<transition name="list">
-			<p v-if="eventCard" class="center-stuff"><i>{{eventDesc}}</i></p>
+			<p v-if="eventCard" class="center-stuff"><b>{{eventDesc}}</b></p>
+		</transition>
+		<transition name="list">
+			<p v-if="goldRushDesc" class="center-stuff">🤑️ <i>{{goldRushDesc}}</i> 🤑️</p>
 		</transition>
 		<transition name="list">
 			<p v-if="desc" class="center-stuff"><i>{{desc}}</i></p>
@@ -67,6 +70,7 @@ export default {
 		goldRushShopOpen: true,
 		goldRushCards: [],
 		gold_nuggets: 0,
+		goldRushDesc: "",
 	}),
 	sockets: {
 		self(self){
@@ -137,7 +141,10 @@ export default {
 				this.desc = (this.$i18n.locale=='it'?this.lastScrap.desc:this.lastScrap.desc_eng)
 			else
 				this.desc = this.$t(`cards.${this.lastScrap.name}.desc`)
-		}
+		},
+		setGoldRushDesc(card) {
+			this.goldRushDesc = this.$t(`cards.${card.name}.desc`)
+		},
 	},
 	watch: {
 		lastScrap(newVal, old) {

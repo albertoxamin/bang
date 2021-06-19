@@ -48,6 +48,10 @@
   "choose_rimbalzo_player": "Choose the target of the bang",
   "choose_rimbalzo_card": "Choose the card to discard the bang to",
   "choose_nuova_identita": "Choose if you want to keep your current character, or if you want to change it and start from 2 HP",
+  "choose_bicchierino": "A player of your choice regains 1 hp",
+  "choose_bottiglia": "Choose how you will play Bottle!",
+  "choose_complice": "Choose how you will play Pardner!",
+  "choose_ricercato": "Choose who you will play Wanted against.",
   "emporio_others": "{0} is choosing which card to get from the General Store",
   "you_died": "YOU DIED",
   "spectate": "SPECTATE",
@@ -84,6 +88,7 @@
     "explode": "{0} blew up the dynamite.",
     "beer_save": "{0} used a beer to save his life.",
     "play_card": "{0} played {1}.",
+    "purchase_card": "{0} purchased {1}.",
     "play_card_against": "{0} played {1} against {2}.",
     "play_card_for": "{0} played {1} for {2}.",
     "spilled_beer": "{0} spilled a {1}.",
@@ -106,7 +111,8 @@
     "prison_free": "{0} got out of prison",
     "prison_turn": "{0} stayed in prison this turn",
     "flip_event": "🎴 EVENT: {0} 🎴",
-    "choose_manette": "{0} committed to play only cards of suit {1} in this turn."
+    "choose_manette": "{0} committed to play only cards of suit {1} in this turn.",
+    "UnionPacific": "{0} played Union Pacific and draws 4 cards from the deck"
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."
@@ -546,13 +552,105 @@
       "name": "Handcuffs",
       "desc": "After drawing in phase 1, the player declares a suit. He will be able to use only cards of that suit for that turn"
     },
-    "Mezzogiorno di Fuoco":{
+    "Mezzogiorno di Fuoco": {
       "name": "High Noon",
       "desc": "Every player loses 1 HP when their turn starts"
     },
-    "Per Un Pugno Di Carte":{
+    "Per Un Pugno Di Carte": {
       "name": "A Fistful of Cards",
       "desc": "On the beginning of his turn, the player is target of as many Bang as how many cards he has in his hand"
+    },
+    "Bicchierino": {
+      "name": "Shot Glass",
+      "desc": "You can choose a player that regains 1 HP (even you)"
+    },
+    "Bottiglia": {
+      "name": "Bottle",
+      "desc": "Can be played as Panic!, Beer or BANG!"
+    },
+    "Complice": {
+      "name": "Pardner",
+      "desc": "Can be played as General Store, Duel or Cat Balou."
+    },
+    "Corsa All Oro_gr": {
+      "name": "Gold Rush",
+      "desc": "You end your turn, regain all your HP and start a new turn."
+    },
+    "Rum": {
+      "name": "Rhum",
+      "desc": "Flip 4 cards, for each different suit you gain 1 HP."
+    },
+    "Union Pacific": {
+      "name": "Union Pacific",
+      "desc": "Draw 4 cards from the deck."
+    },
+    "Calumet": {
+      "name": "Calumet",
+      "desc": "Cards of diamonds played by other players have no effect on you."
+    },
+    "Cinturone": {
+      "name": "Gun Belt",
+      "desc": "You can keep up to 8 cards when you end your turn."
+    },
+    "Ferro di Cavallo": {
+      "name": "Horseshoe",
+      "desc": "Every time you have to flip a card you flip twice!"
+    },
+    "Piccone": {
+      "name": "Pickaxe",
+      "desc": "You get 1 more card when you draw at the beginning of the turn."
+    },
+    "Ricercato": {
+      "name": "Wanted",
+      "desc": "Play it on another player, who kills the target gets 2 extra cards and 1 gold nugget."
+    },
+    "Setaccio": {
+      "name": "Gold Pan",
+      "desc": "Pay 1 gold nugget to draw 1 card from the deck, up to twice per turn. (Click on the equipped card to use)"
+    },
+    "Stivali": {
+      "name": "Boots",
+      "desc": "Each time you lose 1 hp, you draw 1 card from the deck."
+    },
+    "Talismano": {
+      "name": "Lucky Charm",
+      "desc": "Each time you lose 1 hp, you get 1 gold nugget."
+    },
+    "Zaino": {
+      "name": "Rucksack",
+      "desc": "Pay 2 gold nugget to heal 1 HP. (Click on the equipped card to use)"
+    },
+    "Don Bell": {
+      "name": "Don Bell",
+      "desc": "When he ends his turn, he flips a card, if it flips Hearts ❤️ or Diamonds ♦️ he plays again."
+    },
+    "Dutch Will": {
+      "name": "Dutch Will",
+      "desc": "He draws 2 cards, discards 1 and takes 1 gold nugget."
+    },
+    "Jacky Murieta": {
+      "name": "Jacky Murieta",
+      "desc": "During his turn he can pay 2 gold nuggets to shoot another BANG!"
+    },
+    "Josh McCloud": {
+      "name": "Josh McCloud",
+      "desc": "He can pay 2 gold nuggets to get the first card from the Gold Rush deck."
+    },
+    "Madam Yto": {
+      "name": "Madam Yto",
+      "desc": "She draws 1 card from the deck each time a beer is played."
+    },
+    "Pretty Luzena": {
+      "name": "Pretty Luzena",
+      "desc": "Once per turn she can have a discount of 1 on the gold rush cards shop."
+    },
+    "Raddie Snake": {
+      "name": "Raddie Snake",
+      "desc": "He can throw away 1 gold nugget to draw 1 card from the deck during his turn (2 times max per turn)."
+    },
+    "Simeon Picos": {
+      "name": "Simeon Picos",
+      "desc": "He gets 1 gold nugget every time he loses 1 hp."
     }
   },
   "help": {
