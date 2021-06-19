@@ -31,6 +31,7 @@ for file in [f for f in os.listdir('.') if '.js' in f or '.map' in f or '.html' 
 app = socketio.WSGIApp(sio, static_files=static_files)
 games: List[Game] = []
 online_players = 0
+blacklist: List[str] = []
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'password': g.password} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
@@ -139,6 +140,8 @@ def create_room(sid, room_name):
         sio.enter_room(sid, room_name)
         g = Game(room_name, sio)
         g.add_player(sio.get_session(sid))
+        if room_name in blacklist:
+            g.is_hidden = True
         games.append(g)
         print(f'{sid} created a room named {room_name}')
         advertise_lobbies()
@@ -386,6 +389,11 @@ def hide_toogle(sid, data):
         game = [g for g in games if g.name==data['room']]
         if len(games) > 0:
             game[0].is_hidden = not game[0].is_hidden
+            if game[0].is_hidden:
+                if not data['room'] in blacklist:
+                    blacklist.append(data['room'])
+            elif data['room'] in blacklist:
+                blacklist.remove(data['room'])
             advertise_lobbies()
 
 @sio.event
