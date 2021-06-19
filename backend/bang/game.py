@@ -44,6 +44,7 @@ class Game:
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
         self.debug = self.name == 'debug'
         self.is_changing_pwd = False
+        self.is_hidden = False
 
     def reset(self):
         print('resetting lobby')
