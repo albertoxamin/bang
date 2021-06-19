@@ -1031,7 +1031,8 @@ class Player:
                 self.attacker.molly_discarded_cards = 0
                 self.attacker.notify_self()
             self.on_failed_response_cb()
-            self.game.responders_did_respond_resume_turn(did_lose=True)
+            if self.game:
+                self.game.responders_did_respond_resume_turn(did_lose=True)
         if self.mancato_needed <= 0:
             self.attacker = None
 
@@ -1050,7 +1051,7 @@ class Player:
         return max(1, range) + aim + self.character.sight_mod
 
     def get_visibility(self):
-        if not self.character:
+        if not self.character or not self.game or not self.game.players[self.game.turn].character:
             return 0
         covers = 0
         if self.game.check_event(ce.Lazo) or self.game.players[self.game.turn].character.check(self.game, chd.BelleStar):

@@ -45,6 +45,8 @@ class Game:
         self.attack_in_progress = False
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
         self.debug = self.name == 'debug'
+        self.is_changing_pwd = False
+        self.is_hidden = False
 
     def reset(self):
         print('resetting lobby')
@@ -118,12 +120,16 @@ class Game:
         self.sio.emit('chat_message', room=self.name, data=f'_joined|{player.name}')
 
     def set_private(self):
-        if self.password == '':
-            self.password = ''.join(random.choice("AEIOUJKZT123456789") for x in range(6))
-            print(self.name, 'is now private pwd', self.password)
-        else:
-            self.password = ''
-        self.notify_room()
+        if not self.is_changing_pwd:
+            self.is_changing_pwd = True
+            if self.password == '':
+                self.password = ''.join(random.choice("AEIOUJKZT123456789") for x in range(6))
+                print(self.name, 'is now private pwd', self.password)
+            else:
+                self.password = ''
+            self.notify_room()
+            eventlet.sleep(0.2)
+            self.is_changing_pwd = False
 
     def notify_character_selection(self):
         self.notify_room()

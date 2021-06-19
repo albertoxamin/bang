@@ -188,6 +188,10 @@ export default {
 		change_username() {
 			this.hasToSetUsername = true
 		},
+		kicked() {
+			window.location.replace(window.location.origin)
+			document.title = 'PewPew!'
+		},
 	},
 	computed: {
 		inviteLink() {
