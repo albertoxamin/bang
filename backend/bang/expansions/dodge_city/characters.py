@@ -97,6 +97,8 @@ class ChuckWengam(Character):
                 player.hand.append(player.game.deck.draw(True))
                 player.hand.append(player.game.deck.draw(True))
                 player.notify_self()
+                return True
+            return False
 
 class PatBrennan(Character):
     def __init__(self):
@@ -129,6 +131,8 @@ class DocHolyday(Character):
                     player.game.deck.scrap(player.hand.pop(c), True)
                 player.notify_self()
                 player.game.attack(player, data['against'])
+                return True
+            return False
 
 def all_characters() -> List[Character]:
     cards = [
