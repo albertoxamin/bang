@@ -48,7 +48,7 @@
 			<p v-if="hint"><i>{{hint}}</i></p>
 		</transition>
 		<Chooser v-if="is_my_turn && pending_action == 4 && (lives > 0 || is_ghost) && !(emporioCards && emporioCards.cards && emporioCards.cards.length > 0)" :text="$t('wait')" :cards="[]"/>
-		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
+		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="card_against.number !== 42 ? cancelCardAgainst : null"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond" :playAudio="true"/>
 		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose" :playAudio="true"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0 && !is_ghost && !spectator" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0; spectator = true}"/>
