@@ -436,7 +436,7 @@ class Player:
                 if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
                     self.hand.append(self.game.deck.draw())
                 self.manette()
-                self.notify_self()
+            self.notify_self()
 
     def manette(self):
         if self.game.check_event(ceh.Manette):
