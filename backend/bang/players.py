@@ -1100,7 +1100,7 @@ class Player:
     def gold_rush_discard(self):
         self.available_cards = [{
             'name': p.name,
-            'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+            'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'alt_text': ''.join(['🎴️'] * len(p.gold_rush_equipment)),
             'noDesc': True
         } for p in self.game.get_alive_players() if p != self and len(p.gold_rush_equipment) > 0]
