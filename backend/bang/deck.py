@@ -98,6 +98,7 @@ class Deck:
         if len(self.scrap_pile) > 0:
             card = self.scrap_pile.pop(-1)
             self.game.notify_scrap_pile()
+            card.reset_card()
             return card
         else:
             return self.draw()

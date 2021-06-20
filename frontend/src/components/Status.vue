@@ -19,9 +19,9 @@
 				<ul style="margin:0">
 					<li v-for="p in r.players" :key="p">
 						<p style="margin:0"><b>name:</b> {{p.name}}</p>
-						<p style="margin:0"><b>is_bot:</b> {{p.is_bot}}</p>
+						<p style="margin:0"><b>is_bot:</b> {{p.bot}}</p>
 						<p style="margin:0"><b>health:</b> {{p.health}}</p>
-						<button v-if="!p.is_bot" @click="kick(p.sid)">Kick</button>
+						<button v-if="!p.bot" @click="kick(p.sid)">Kick</button>
 					</li>
 				</ul>
 				<br>

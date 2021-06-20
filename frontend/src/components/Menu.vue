@@ -12,8 +12,8 @@
 		</div>
 		<div>
 			<div v-if="!didSetUsername">
-				<p>{{$t("choose_username")}}</p>
-				<form @submit="setUsername">
+				<p id="choose_username">{{$t("choose_username")}}</p>
+				<form @submit="setUsername" class="form" style="display:flex">
 					<input id="username" v-model="username" />
 					<input type="submit" class="btn" :value="$t('submit')"/>
 				</form>
@@ -24,7 +24,7 @@
 					<p>{{$t("online_players")}}{{onlinePlayers}}</p>
 					<Card :card="getSelfCard" :donotlocalize="true" style="position:absolute; top:10pt; left: 10pt;"/>
 					<h2>{{$t("create_lobby")}}</h2>
-					<form @submit="createLobby" style="display:flex">
+					<form @submit="createLobby" class="form" style="display:flex">
 						<p>{{$t("lobby_name")}}</p>
 						<input id="lobbyname" v-model="lobbyName"/>
 						<input type="submit" class="btn" :value="$t('submit')"/>
@@ -147,10 +147,25 @@ export default {
 	mounted() {
 		if (localStorage.getItem('username'))
 			this.username = localStorage.getItem('username')
+		else {
+			let names = ['player', 'cowboy', 'madman', 'horseshoe', 'mustang', '🤠️', 'dog lover', 'random', 'cows', 'seagull', 'pewneer', 'pioneer', 'django', 'tarantined', 'horse', 'cinnamom', 'toast', 'notPewDiePie', 'username', 'caveman', 'cat', 'gold', 'chicken', 'nugget', 'bullet', 'fire', 'scott', 'emiliano', 'apple', 'pear', 'pencil', 'youtuber', 'hi mom', 'discord guy', '🥰️', 'somebody', 'AAAAA', 'BBBB', 'pain', 'help?', 'gg', 'gigi', 'lmao', 'yikes', 'you?', 'kid', 'cowgirl', 'bite', 'hungry', 'joe', 'limbo', 'leeeroy', 'jenkins', 'batman', 'spiderman', 'luke skywalker', 'nemo', 'zemo', 'ironman', 'butterman', 'postman', 'father', 'son', 'sven', 'mike', 'straw', 'saaay', 'whaaaat', 'rick', 'morty', 'wubbalubbadubdub']
+			this.username = names[Math.floor(Math.random() * names.length)]
+		}
 		this.$socket.emit('get_online_players')
 	},
 }
 </script>
 
 <style>
+@media only screen and (max-width:1000px) {
+	.form {
+		flex-direction: column;
+	}
+	.form > input, .form>p{
+		font-size: 20pt;
+	}
+	#choose_username{
+		font-size: 20pt;
+	}
+}
 </style>
