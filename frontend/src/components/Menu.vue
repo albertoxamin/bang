@@ -147,7 +147,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.randomTip = `tip_${1+Math.floor(Math.random() * 6)}`
+		this.randomTip = `tip_${1+Math.floor(Math.random() * 7)}`
 		if (localStorage.getItem('username'))
 			this.username = localStorage.getItem('username')
 		else {
