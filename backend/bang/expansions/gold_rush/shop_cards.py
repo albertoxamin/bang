@@ -84,6 +84,7 @@ class CorsaAllOro(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         player.lives = player.max_lives
+        player.play_turn()
         return True
 
 class Rum(ShopCard):
@@ -93,7 +94,12 @@ class Rum(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         # Estrai 4 carte e ottieni 1 hp per ogni seme diverso
-        player.lives = min(player.lives+len({player.game.deck.pick_and_scrap().suit for i in range(4)}), player.max_lives)
+        suits = set()
+        for i in range(4):
+            c = player.game.deck.pick_and_scrap()
+            player.sio.emit('chat_message', room=player.game.name, data=f'_flipped|{player.name}|{c.name}|{c.num_suit()}')
+            suits.add(c.suit)
+        player.lives = min(player.lives+len(suits), player.max_lives)
         return True
 
 class UnionPacific(ShopCard):

@@ -1119,8 +1119,13 @@ class Player:
     def buy_gold_rush_card(self, index):
         print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')
         card: cs.Card = self.game.deck.shop_cards[index]
-        if self.pending_action == PendingAction.PLAY and self.gold_nuggets >= card.number:
-            self.gold_nuggets -= card.number
+        discount = 0
+        if self.character.check(self.game, grch.PrettyLuzena) and self.special_use_count < 1:
+            discount = 1
+        if self.pending_action == PendingAction.PLAY and self.gold_nuggets >= card.number - discount:
+            self.gold_nuggets -= card.number - discount
+            if self.character.check(self.game, grch.PrettyLuzena) and self.special_use_count < 1:
+                self.special_use_count += 1
             if card.play_card(self):
                 self.game.deck.shop_deck.append(card)
             self.game.deck.shop_cards[index] = None
