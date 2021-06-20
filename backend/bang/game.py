@@ -569,13 +569,13 @@ class Game:
                 player.attacker.notify_self()
 
             greg = [p for p in self.get_alive_players() if p.character.check(self, chd.GregDigger)]
-            if len(greg) > 0:
-                greg[0].lives = min(greg[0].lives+2, greg[0].max_lives)
+            for i in range(len(greg)):
+                greg[i].lives = min(greg[i].lives+2, greg[i].max_lives)
             herb = [p for p in self.get_alive_players() if p.character.check(self, chd.HerbHunter)]
-            if len(herb) > 0:
-                herb[0].hand.append(self.deck.draw(True))
-                herb[0].hand.append(self.deck.draw(True))
-                herb[0].notify_self()
+            for i in range(len(herb)):
+                herb[i].hand.append(self.deck.draw(True))
+                herb[i].hand.append(self.deck.draw(True))
+                herb[i].notify_self()
         self.is_handling_death = False
         if corpse.is_my_turn:
             corpse.is_my_turn = False
