@@ -507,7 +507,12 @@ class Game:
         if not player in self.players or player.is_ghost: return
         self.is_handling_death = True
         import bang.expansions.dodge_city.characters as chd
-        print(player.attacker)
+        print(f'the killer is {player.attacker}')
+        if len([c for c in player.equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker:
+            player.attacker.gold_nuggets += 1
+            player.attacker.hand.append(self.deck.draw(True))
+            player.attacker.hand.append(self.deck.draw(True))
+            player.attacker.notify_self()
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
                 self.deck.scrap(player.attacker.hand.pop(), True)
@@ -555,11 +560,6 @@ class Game:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
                 self.pending_winners = winners
-            if len([c for c in player.equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker:
-                player.attacker.gold_nuggets += 1
-                player.attacker.hand.append(self.deck.draw(True))
-                player.attacker.hand.append(self.deck.draw(True))
-                player.attacker.notify_self()
             vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
