@@ -558,8 +558,10 @@ class Game:
             else:
                 for i in range(len(player.hand)):
                     vulture[0].hand.append(player.hand.pop())
+                    vulture[0].hand[-1].reset_card()
                 for i in range(len(player.equipment)):
                     vulture[0].hand.append(player.equipment.pop())
+                    vulture[0].hand[-1].reset_card()
                 vulture[0].notify_self()
 
             #se Vulture Sam è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
