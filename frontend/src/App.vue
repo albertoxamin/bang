@@ -13,10 +13,10 @@
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
 			<select id="theme" class="btn" v-model="theme">
 				<option
-					v-for="(theme, i) in ['light.☀️.Light', 'dark.🌙️.Dark', 'sepia.🌇️.Sepia', 'grayscale.📰️.Grayscale']"
+					v-for="(theme, i) in ['light.☀️', 'dark.🌙️', 'sepia.🌇️', 'grayscale.📰️']"
 					:key="`theme-${i}`"
 					:value="theme.split('.')[0]">
-						{{theme.split('.')[1]}} {{theme.split('.')[2]}}
+						{{theme.split('.')[1]}} {{$t(`theme.${theme.split('.')[0]}`)}}
 				</option>
 			</select>
 			<select id="lang" class="btn" v-model="$i18n.locale" @change="storeLangPref">

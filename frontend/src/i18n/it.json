@@ -605,5 +605,11 @@
     "allcharacters": "Tutti i personaggi",
     "highnooncards": "Carte Evento High Noon",
     "foccards": "Carte Evento Fistful of Cards"
+  },
+  "theme": {
+    "sepia": "Seppia",
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "grayscale": "Scala di Grigi"
   }
 }

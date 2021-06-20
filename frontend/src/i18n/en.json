@@ -605,5 +605,11 @@
     "gotoallcharacters": "Jump to all characters",
     "highnooncards": "High Noon - Event Cards",
     "foccards": "Fistful of Cards - Event Cards"
+  },
+  "theme": {
+    "sepia": "Sepia",
+    "light": "Light",
+    "dark": "Dark",
+    "grayscale": "Grayscale"
   }
 }
