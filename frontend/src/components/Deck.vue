@@ -149,6 +149,11 @@ export default {
 			this.goldRushDesc = this.$t(`cards.${card.name}.desc`)
 		},
 	},
+	mounted() {
+		if (window.innerWidth < 1000) {
+			this.goldRushShopOpen = false;
+		}
+	},
 	watch: {
 		lastScrap(newVal, old) {
 			this.previousScrap = old
@@ -164,6 +169,7 @@ export default {
 	align-items: center;
 	justify-content: center;
 	flex-direction: row-reverse;
+	flex-wrap: wrap-reverse;
 }
 .last-scrap {
 	position: absolute;
