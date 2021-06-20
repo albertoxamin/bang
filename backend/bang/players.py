@@ -344,7 +344,7 @@ class Player:
         if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]):
             self.available_cards = [{
                 'name': p.name,
-                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
                 'noDesc': True
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
@@ -383,7 +383,7 @@ class Player:
         elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and len([c for c in self.hand if c.name == cs.Bang(0,0).name]) > 0:
             self.available_cards = [{
                 'name': p.name,
-                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'noDesc': True
             } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
@@ -457,8 +457,8 @@ class Player:
                     self.hand.append(self.game.deck.draw())
                 if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
                     self.hand.append(self.game.deck.draw())
-                self.manette()
-                self.notify_self()
+            self.notify_self()
+        self.manette()
 
     def manette(self):
         if self.game.check_event(ceh.Manette):

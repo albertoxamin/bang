@@ -1,5 +1,12 @@
 {
   "trademark": "Bang! is a trademark owned by DVGiochi",
+  "tip_1": "Better with friends!",
+  "tip_2": "The 🤖️ icon means that a player is a bot!",
+  "tip_3": "You can click on the cards of characters and equipments of the other players if you wish to know more!",
+  "tip_4": "Dodge City, High Noon, Fistful Of Cards included!",
+  "tip_5": "Found a bug? Message us on discord!",
+  "tip_6": "Now with a discord server!",
+  "tip_7": "If you want to help us translate the game in your language, ping us on discord!",
   "online_players": "Online players: ",
   "choose_username": "Pick an username:",
   "available_lobbies": "Available Lobbies:",
@@ -700,5 +707,11 @@
     "gotoallcharacters": "Jump to all characters",
     "highnooncards": "High Noon - Event Cards",
     "foccards": "Fistful of Cards - Event Cards"
+  },
+  "theme": {
+    "sepia": "Sepia",
+    "light": "Light",
+    "dark": "Dark",
+    "grayscale": "Grayscale"
   }
 }
