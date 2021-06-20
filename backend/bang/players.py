@@ -659,6 +659,26 @@ class Player:
             self.hand.append(self.available_cards[card_index])
             self.pending_action = PendingAction.PLAY
             self.notify_self()
+        elif self.choose_text == 'gold_rush_discard':
+            if card_index == len(self.available_cards) - 1:
+                self.pending_action = PendingAction.PLAY
+            else:
+                player = self.game.get_player_named(self.available_cards[card_index]['name'])
+                self.available_cards = [c for c in player.gold_rush_equipment if c.number+1 <= self.gold_nuggets]
+                self.available_cards.append({'icon': '❌', 'noDesc': True})
+                self.choose_text = 'gold_rush_discard_2|' + player.name
+            self.notify_self()
+        elif 'gold_rush_discard_2' in self.choose_text:
+            if card_index == len(self.available_cards) - 1:
+                self.pending_action = PendingAction.PLAY
+            else:
+                self.gold_nuggets -= self.available_cards[card_index].number + 1
+                player = self.game.get_player_named(self.choose_text.split('|')[1])
+                player.gold_rush_equipment.remove(self.available_cards[card_index])
+                self.game.deck.shop_deck.append(self.available_cards[card_index])
+                player.notify_self()
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character
                 self.character = self.not_chosen_character
@@ -1076,6 +1096,18 @@ class Player:
 
     def special(self, data):
         self.character.special(self, data)
+
+    def gold_rush_discard(self):
+        self.available_cards = [{
+            'name': p.name,
+            'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+            'alt_text': ''.join(['🎴️'] * len(p.gold_rush_equipment)),
+            'noDesc': True
+        } for p in self.game.get_alive_players() if p != self and len(p.gold_rush_equipment) > 0]
+        self.available_cards.append({'icon': '❌', 'noDesc': True})
+        self.choose_text = 'gold_rush_discard'
+        self.pending_action = PendingAction.CHOOSE
+        self.notify_self()
 
     def buy_gold_rush_card(self, index):
         print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')

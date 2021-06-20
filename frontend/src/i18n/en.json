@@ -58,6 +58,8 @@
   "you_win": "YOU WON",
   "you_lose": "YOU LOST",
   "special_ability": "SPECIAL ABILITY",
+  "gold_rush_discard": "Discard another player's gold rush equipment (paying the price + 1)",
+  "gold_rush_discard_2": "Discard another player's gold rush equipment (paying the price + 1)",
   "discard": "DISCARD",
   "to_regain_1_hp": "TO REGAIN 1 HP",
   "play_your_turn": "PLAY YOUR TURN",

@@ -155,7 +155,7 @@ export default {
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.special_use_count = self.special_use_count
-			this.choose_text = self.choose_text
+			this.choose_text = self.choose_text.split('|')[0]
 			this.is_my_turn = self.is_my_turn
 			this.committed_suit_manette = self.committed_suit_manette
 			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'

@@ -35,6 +35,9 @@
 		<transition name="list">
 			<p v-if="goldRushDesc" class="center-stuff">🤑️ <i>{{goldRushDesc}}</i> 🤑️</p>
 		</transition>
+		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
+			<button class="btn" v-if="pending_action == 2 && gold_nuggets > 2" @click="$socket.emit('gold_rush_discard')">{{$t('gold_rush_discard')}}</button>
+		</div>
 		<transition name="list">
 			<p v-if="desc" class="center-stuff"><i>{{desc}}</i></p>
 		</transition>

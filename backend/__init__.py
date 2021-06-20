@@ -461,6 +461,11 @@ def special(sid, data):
     ses.special(data)
 
 @sio.event
+def gold_rush_discard(sid):
+    ses: Player = sio.get_session(sid)
+    ses.gold_rush_discard()
+
+@sio.event
 def buy_gold_rush_card(sid, data:int):
     ses: Player = sio.get_session(sid)
     ses.buy_gold_rush_card(data)
