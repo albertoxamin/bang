@@ -456,29 +456,9 @@ def scrap(sid, card_index):
     ses.scrap(card_index)
 
 @sio.event
-def chuck_lose_hp_draw(sid):
+def special(sid, data):
     ses: Player = sio.get_session(sid)
-    ses.chuck_lose_hp_draw()
-
-@sio.event
-def holyday_special(sid, data):
-    ses: Player = sio.get_session(sid)
-    ses.holyday_special(data)
-
-@sio.event
-def murieta_special(sid):
-    ses: Player = sio.get_session(sid)
-    ses.murieta_special()
-
-@sio.event
-def cloud_special(sid):
-    ses: Player = sio.get_session(sid)
-    ses.cloud_special()
-
-@sio.event
-def snake_special(sid):
-    ses: Player = sio.get_session(sid)
-    ses.snake_special()
+    ses.special(data)
 
 @sio.event
 def buy_gold_rush_card(sid, data:int):

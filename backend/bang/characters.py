@@ -20,6 +20,13 @@ class Character(ABC):
             return False
         return isinstance(self, character)
 
+    def special(self, player, data):
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.Sbornia):
+            return False
+        player.sio.emit('chat_message', room=player.game.name, data=f'_use_special|{player.name}|{self.name}')
+        return True
+
 class BartCassidy(Character):
     def __init__(self):
         super().__init__("Bart Cassidy", max_lives=4)

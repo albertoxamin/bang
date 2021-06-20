@@ -1074,47 +1074,8 @@ class Player:
             self.game.deck.scrap(card)
             self.notify_self()
 
-    def holyday_special(self, data):
-        if self.character.check(self.game, chd.DocHolyday) and self.special_use_count < 1 and self.pending_action == PendingAction.PLAY:
-            self.special_use_count += 1
-            cards = sorted(data['cards'], reverse=True)
-            for c in cards:
-                self.game.deck.scrap(self.hand.pop(c), True)
-            self.notify_self()
-            self.game.attack(self, data['against'])
-
-    def chuck_lose_hp_draw(self):
-        if self.character.check(self.game, chd.ChuckWengam) and self.lives > 1 and self.is_my_turn:
-            self.lives -= 1
-            if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
-                self.gold_nuggets += 1
-            if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
-                self.hand.append(self.game.deck.draw())
-            self.hand.append(self.game.deck.draw(True))
-            self.hand.append(self.game.deck.draw(True))
-            self.notify_self()
-
-    def murieta_special(self):
-        if self.character.check(self.game, grch.JackyMurieta) and self.gold_nuggets >= 2 and self.is_my_turn:
-            self.gold_nuggets -= 2
-            self.has_played_bang = False
-            self.bang_used -= 1
-            self.notify_self()
-
-    def cloud_special(self):
-        if self.character.check(self.game, grch.JoshMcCloud) and self.gold_nuggets >= 2 and self.is_my_turn:
-            self.gold_nuggets -= 2
-            card = self.game.deck.shop_deck.pop(0)
-            if card.play_card(self):
-                self.game.deck.shop_deck.append(card)
-            self.notify_self()
-
-    def snake_special(self):
-        if self.character.check(self.game, grch.RaddieSnake) and self.gold_nuggets >= 1 and self.is_my_turn and self.special_use_count < 2:
-            self.gold_nuggets -= 1
-            self.special_use_count += 1
-            self.hand.append(self.game.deck.draw(True))
-            self.notify_self()
+    def special(self, data):
+        self.character.special(self, data)
 
     def buy_gold_rush_card(self, index):
         print(f'{self.name} wants to buy gr-card index {index} in room {self.game.name}')

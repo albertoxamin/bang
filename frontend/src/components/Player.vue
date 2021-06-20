@@ -22,12 +22,12 @@
 		</transition>
 		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
 			<button class="btn" v-if="is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
-			<button class="btn" v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 			<button class="btn" v-if="is_my_turn && character.name === 'José Delgado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
 			<button class="btn" v-if="is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1 && pending_action == 2" @click="holydayScrap=true">{{$t('special_ability')}}</button>
-			<button class="btn" v-if="is_my_turn && character.name === 'Jacky Murieta' && gold_nuggets >=2 && pending_action == 2" @click="()=>{$socket.emit('murieta_special')}">{{$t('special_ability')}}</button>
-			<button class="btn" v-if="is_my_turn && character.name === 'Josh McCloud' && gold_nuggets >=2 && pending_action == 2" @click="()=>{$socket.emit('cloud_special')}">{{$t('special_ability')}}</button>
-			<button class="btn" v-if="is_my_turn && character.name === 'Raddie Snake' && special_use_count < 2 && gold_nuggets >=1 && pending_action == 2" @click="()=>{$socket.emit('snake_special')}">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Jacky Murieta' && gold_nuggets >=2 && pending_action == 2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Josh McCloud' && gold_nuggets >=2 && pending_action == 2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
+			<button class="btn" v-if="is_my_turn && character.name === 'Raddie Snake' && special_use_count < 2 && gold_nuggets >=1 && pending_action == 2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
@@ -326,15 +326,12 @@ export default {
 			this.scrapHand.push(this.hand.indexOf(c))
 		},
 		holydayScrapBang(other) {
-			this.$socket.emit('holyday_special', {
+			this.$socket.emit('special', {
 				cards : [this.scrapHand[0], this.scrapHand[1]],
 				against: other.name
 			})
 			this.scrapHand = []
 			this.holydayScrap = false
-		},
-		chuckSpecial(){
-			this.$socket.emit('chuck_lose_hp_draw')
 		},
 		end_turn(){
 			// console.log('ending turn')

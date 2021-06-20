@@ -62,7 +62,7 @@
 									:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
 									:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
 					</div>
-					<div v-if="p.is_bot" style="position:absolute;bottom:57%;" class="center-stuff">
+					<div v-if="p.is_bot" style="position:absolute;bottom:57%;width:20pt;" class="center-stuff">
 						<span>🤖</span>
 					</div>
 				</div>

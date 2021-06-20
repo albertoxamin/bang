@@ -85,6 +85,19 @@ class ChuckWengam(Character):
         # self.desc_eng = "On his turn he may decide to lose 1 HP to draw 2 cards from the deck."
         self.icon = '💰'
 
+    def special(self, player, data):
+        if super().special(player, data):
+            if player.lives > 1 and player.is_my_turn:
+                import bang.expansions.gold_rush.shop_cards as grc
+                player.lives -= 1
+                if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
+                    player.gold_nuggets += 1
+                if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
+                    player.hand.append(player.game.deck.draw())
+                player.hand.append(player.game.deck.draw(True))
+                player.hand.append(player.game.deck.draw(True))
+                player.notify_self()
+
 class PatBrennan(Character):
     def __init__(self):
         super().__init__("Pat Brennan", max_lives=4)
@@ -105,6 +118,17 @@ class DocHolyday(Character):
         # self.desc = "Nel suo turno può scartare 2 carte per fare un bang."
         # self.desc_eng = "He can discard 2 cards to play a bang."
         self.icon = '✌🏻'
+
+    def special(self, player, data):
+        if super().special(player, data):
+            from bang.players import PendingAction
+            if player.special_use_count < 1 and player.pending_action == PendingAction.PLAY:
+                player.special_use_count += 1
+                cards = sorted(data['cards'], reverse=True)
+                for c in cards:
+                    player.game.deck.scrap(player.hand.pop(c), True)
+                player.notify_self()
+                player.game.attack(player, data['against'])
 
 def all_characters() -> List[Character]:
     cards = [

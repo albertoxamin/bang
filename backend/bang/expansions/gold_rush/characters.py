@@ -19,11 +19,28 @@ class JackyMurieta(Character):
         # puo pagare 2 pepite per sparare 1 bang extra
         self.icon = '💆‍♂️️'
 
+    def special(self, player, data):
+        if super().special(player, data):
+            if player.gold_nuggets >= 2 and player.is_my_turn:
+                player.gold_nuggets -= 2
+                player.has_played_bang = False
+                player.bang_used -= 1
+                player.notify_self()
+
 class JoshMcCloud(Character):
     def __init__(self):
         super().__init__("Josh McCloud", max_lives=4)
         # puo pagare 2 pepite per pescare il primo equipaggiamento dalla pila gold rush
         self.icon = '⛅️'
+
+    def special(self, player, data):
+        if super().special(player, data):
+            if player.gold_nuggets >= 2 and player.is_my_turn:
+                player.gold_nuggets -= 2
+                card = player.game.deck.shop_deck.pop(0)
+                if card.play_card(player):
+                    player.game.deck.shop_deck.append(card)
+                player.notify_self()
 
 class MadamYto(Character):
     def __init__(self):
@@ -42,6 +59,14 @@ class RaddieSnake(Character):
         super().__init__("Raddie Snake", max_lives=4)
         # può scartare 1 pepita per pescare 1 carta (2 volte per turno)
         self.icon = '🐍️'
+
+    def special(self, player, data):
+        if super().special(player, data):
+            if player.gold_nuggets >= 1 and player.is_my_turn and player.special_use_count < 2:
+                player.gold_nuggets -= 1
+                player.special_use_count += 1
+                player.hand.append(player.game.deck.draw(True))
+                player.notify_self()
 
 class SimeonPicos(Character):
     def __init__(self):
