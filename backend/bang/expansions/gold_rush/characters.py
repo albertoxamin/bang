@@ -27,7 +27,7 @@ class JackyMurieta(Character):
                 player.bang_used -= 1
                 player.notify_self()
                 return True
-            return False
+        return False
 
 class JoshMcCloud(Character):
     def __init__(self):
@@ -44,7 +44,7 @@ class JoshMcCloud(Character):
                     player.game.deck.shop_deck.append(card)
                 player.notify_self()
                 return True
-            return False
+        return False
 
 class MadamYto(Character):
     def __init__(self):
@@ -72,7 +72,7 @@ class RaddieSnake(Character):
                 player.hand.append(player.game.deck.draw(True))
                 player.notify_self()
                 return True
-            return False
+        return False
 
 class SimeonPicos(Character):
     def __init__(self):
