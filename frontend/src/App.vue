@@ -13,7 +13,7 @@
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
 			<select id="theme" class="btn" v-model="theme">
 				<option
-					v-for="(theme, i) in ['light.☀️.Light', 'dark.🌙️.Dark', 'sepia..Sepia', 'grayscale..Grayscale']"
+					v-for="(theme, i) in ['light.☀️.Light', 'dark.🌙️.Dark', 'sepia.🌇️.Sepia', 'grayscale.📰️.Grayscale']"
 					:key="`theme-${i}`"
 					:value="theme.split('.')[0]">
 						{{theme.split('.')[1]}} {{theme.split('.')[2]}}
@@ -111,6 +111,11 @@ export default {
 		if (localStorage.getItem('lang')) {
 			this.$i18n.locale = localStorage.getItem('lang');
 			document.documentElement.lang = this.$i18n.locale;
+		} else {
+			let userLang = navigator.language || navigator.userLanguage; 
+			if (['it', 'en'].indexOf(userLang) == -1)
+				userLang = 'en';
+			this.$i18n.locale = userLang.split('-')[0]
 		}
 		this.detectColorScheme()
 	},

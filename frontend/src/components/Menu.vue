@@ -2,10 +2,11 @@
 	<div id="app" class="dark-mode">
 		<div v-if="!isInLobby" id="logo" class="center-stuff" style="margin-bottom:10pt">
 			<h1 style="margin-bottom:0pt;">PewPew!</h1>
+			<p id="tip" style="margin-top: auto; color:darkorange">{{$t(randomTip)}}</p>
 			<p style="transform: scale(0.7);margin-top: auto;">v-{{version}}</p>
 			<div style="display:flex;justify-content: space-evenly;;min-height:140pt;">
 				<span style="font-size:48pt;transform:scaleX(-1) translateY(25%);">🔫️</span>
-				<TinyHand :ncards="5" ismyturn="true" style="position:none;transform:scale(1);bottom:none;width:120pt;"/>
+				<TinyHand :ncards="5" :ismyturn="true" style="position:none;transform:scale(1);bottom:none;width:120pt;"/>
 				<span style="font-size:48pt;transform:translateY(25%);">🔫️</span>
 			</div>
 			<i style="font-size: x-small;">{{$t("trademark")}}</i>
@@ -69,6 +70,7 @@ export default {
 		lobbyName: '',
 		isInLobby: false,
 		onlinePlayers: 0,
+		randomTip: '',
 	}),
 	computed: {
 		noLobbyAvailable() {
@@ -145,6 +147,7 @@ export default {
 		},
 	},
 	mounted() {
+		this.randomTip = `tip_${1+Math.floor(Math.random() * 6)}`
 		if (localStorage.getItem('username'))
 			this.username = localStorage.getItem('username')
 		else {
@@ -166,6 +169,22 @@ export default {
 	}
 	#choose_username{
 		font-size: 20pt;
+	}
+}
+#tip {
+	animation-name: zoom;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+@keyframes zoom {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(0.95);
+	}
+	100% {
+		transform: scale(1);
 	}
 }
 </style>
