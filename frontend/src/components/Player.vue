@@ -136,7 +136,9 @@ export default {
 			this.name = self.name
 			this.pending_action = self.pending_action
 			this.character = self.character
-			this.character.is_character = true
+			if (this.character != null) {
+				this.character.is_character = true
+			}
 			this.hand = self.hand
 			this.equipment = self.equipment
 			this.lives = self.lives
