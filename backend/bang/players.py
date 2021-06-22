@@ -457,8 +457,8 @@ class Player:
                     self.hand.append(self.game.deck.draw())
                 if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
                     self.hand.append(self.game.deck.draw())
-            self.notify_self()
         self.manette()
+        self.notify_self()
 
     def manette(self):
         if self.game.check_event(ceh.Manette):

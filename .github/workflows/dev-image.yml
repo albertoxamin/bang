@@ -1,17 +1,53 @@
 name: Docker Images CI
 on:
   push:
-    branches: [ dev ]
+    branches: dev
+
 jobs:
-  build:
+  buildx:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_BUILDKIT: '1'
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Unified Docker image
-      run: docker build . --file Dockerfile --tag albertoxamin/bang:dev
-    - name: Log into registry
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-    - name: Push images
-      run: docker push albertoxamin/bang:dev
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v3
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Docker Buildx (build)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/amd64,linux/arm/v7,linux/arm64 \
+            --output "type=image,push=false" \
+            --tag albertoxamin/bang:dev \
+            --file ./Dockerfile ./
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Docker Buildx (push)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --platform linux/amd64,linux/arm/v7,linux/arm64 \
+            --output "type=image,push=true" \
+            --tag albertoxamin/bang:dev \
+            --file ./Dockerfile ./
+      -
+        name: Inspect image
+        run: |
+          docker buildx imagetools inspect albertoxamin/bang:dev
