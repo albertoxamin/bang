@@ -8,7 +8,8 @@ COPY ./backend /dist/
 WORKDIR /dist
 RUN apt-get update && apt-get install -y \
     libevent-dev \
-    python-all-dev
+    python-all-dev \
+    gcc
 RUN pip install -r requirements.txt
 EXPOSE 5001
 ENTRYPOINT ["python", "/dist/__init__.py"]
