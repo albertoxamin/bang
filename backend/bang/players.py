@@ -457,7 +457,7 @@ class Player:
                     self.hand.append(self.game.deck.draw())
                 if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
                     self.hand.append(self.game.deck.draw())
-        self.manette()
+            self.manette()
         self.notify_self()
 
     def manette(self):
@@ -796,6 +796,7 @@ class Player:
             self.is_drawing = False
             self.pending_action = PendingAction.PLAY
             self.notify_self()
+        # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
             self.is_drawing = False
             card = self.available_cards.pop(card_index)
