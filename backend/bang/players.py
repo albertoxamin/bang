@@ -435,7 +435,7 @@ class Player:
                         return self.notify_self()
                 if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
                     self.hand.append(self.game.deck.draw())
-        self.manette()
+            self.manette()
         self.notify_self()
 
     def manette(self):
@@ -688,6 +688,7 @@ class Player:
                 self.pending_action = PendingAction.PLAY
                 self.manette()
             self.notify_self()
+        # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
             self.is_drawing = False
             card = self.available_cards.pop(card_index)
