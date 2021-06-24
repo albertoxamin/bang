@@ -232,6 +232,11 @@ class Player:
                 (self.game.check_event(ceh.Sermone) or self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(c) == type(cs.Bang)
             ) and not self.game.check_event(ce.Lazo))) and not ( isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice))]
             green_cards = [c for c in self.equipment if not self.game.check_event(ce.Lazo) and not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now]
+            if self.gold_nuggets > 0 and any([c.number <= self.gold_nuggets for c in self.game.deck.shop_cards]):
+                for i in range(len(self.game.deck.shop_cards)):
+                    if self.game.deck.shop_cards[i].number <= self.gold_nuggets:
+                        self.buy_gold_rush_card(i)
+                        return
             if len(equippables) > 0 and not self.game.check_event(ce.IlGiudice):
                 for c in equippables:
                     if self.play_card(self.hand.index(c)):
