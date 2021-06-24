@@ -39,7 +39,7 @@ class Bicchierino(ShopCard):
     def play_card(self, player, against=None, _with=None):
         player.available_cards = [{
             'name': p.name,
-            'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+            'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
             'noDesc': True
         } for p in player.game.get_alive_players()]
