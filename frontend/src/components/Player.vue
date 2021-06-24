@@ -285,7 +285,7 @@ export default {
 		sidScrap(c) {
 			this.scrapHand.push(this.hand.indexOf(c))
 			if (this.scrapHand.length == 2) {
-				let x = [this.hand.indexOf(this.scrapHand[0]), this.hand.indexOf(this.scrapHand[1])].sort().reverse()
+				let x = [this.scrapHand[0], this.scrapHand[1]].sort().reverse()
 				this.$socket.emit('scrap', x[0])
 				this.$socket.emit('scrap', x[1])
 				this.scrapHand = []
