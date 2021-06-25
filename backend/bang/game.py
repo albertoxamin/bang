@@ -426,9 +426,10 @@ class Game:
                 if len(most_hurt) > 0:
                     hurt_players = [p for p in self.players if p.lives == min(most_hurt)]
                     for p in hurt_players:
-                        p.lives += 1
-                        self.sio.emit('chat_message', room=self.name, data=f'_doctor_heal|{p.name}')
-                        p.notify_self()
+                        if p.lives != p.max_lives:
+                            p.lives += 1
+                            self.sio.emit('chat_message', room=self.name, data=f'_doctor_heal|{p.name}')
+                            p.notify_self()
             elif self.check_event(ceh.IDalton):
                 self.waiting_for = 0
                 self.ready_count = 0
