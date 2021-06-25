@@ -13,7 +13,7 @@
 					@click="fillCmd(msg.cmd)">{{msg.cmd}} <i class="std-text" style="font-size:8pt;">{{msg.help}}</i></p>
 		</div>
 		<form @submit="sendChatMessage" id="msg-form">
-			<input id="my-msg" v-model="text" style="flex-grow:2;"/>
+			<input id="my-msg" autocomplete="off" v-model="text" style="flex-grow:2;"/>
 			<input id="submit-message" type="submit" class="btn" :value="$t('submit')"/>
 		</form>
 	</div>
