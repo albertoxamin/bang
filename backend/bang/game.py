@@ -298,6 +298,7 @@ class Game:
         nextPlayer = pls[(pls.index(self.players[self.turn])+(len(pls)-len(self.available_cards))) % len(pls)]
         if len(self.available_cards) == 1:
             nextPlayer.hand.append(self.available_cards.pop())
+            nextPlayer.notify_self()
             self.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
