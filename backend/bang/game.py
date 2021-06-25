@@ -296,7 +296,12 @@ class Game:
         player.notify_self()
         pls = self.get_alive_players()
         nextPlayer = pls[(pls.index(self.players[self.turn])+(len(pls)-len(self.available_cards))) % len(pls)]
-        if nextPlayer == self.players[self.turn]:
+        if len(self.available_cards) == 1:
+            nextPlayer.hand.append(self.available_cards.pop())
+            self.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
+            self.players[self.turn].pending_action = pl.PendingAction.PLAY
+            self.players[self.turn].notify_self()
+        elif nextPlayer == self.players[self.turn]:
             self.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
