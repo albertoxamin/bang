@@ -82,10 +82,31 @@ class Game:
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
         if self.debug:
-            commands = ['/debug', '/set_chars', '/suicide', '/nextevent', '/notify', '/show_cards', '/ddc', '/dsh', '/togglebot', '/cancelgame', '/startgame', '/setbotspeed', '/addex', '/setcharacter', '/setevent', '/removecard', '/getcard', '/meinfo', '/gameinfo', '/mebot', '/getnuggets']
+            commands = [
+                {'cmd':'/debug', 'help':'Toggles the debug mode'},
+                {'cmd':'/set_chars', 'help':'Set how many characters to distribute - sample /set_chars 3'},
+                {'cmd':'/suicide', 'help':'Kills you'},
+                {'cmd':'/nextevent', 'help':'Flip the next event card'},
+                {'cmd':'/notify', 'help':'Send a message to a player - sample /notify player hi!'},
+                {'cmd':'/show_cards', 'help':'View the hand of another - sample /show_cards player'},
+                {'cmd':'/ddc', 'help':'Destroy all cards - sample /ddc player'},
+                {'cmd':'/dsh', 'help':'Set health - sample /dsh player'},
+                # {'cmd':'/togglebot', 'help':''},
+                {'cmd':'/cancelgame', 'help':'Stops the current game'},
+                {'cmd':'/startgame', 'help':'Force starts the game'},
+                {'cmd':'/setbotspeed', 'help':'Changes the bot response time - sample /setbotspeed 0.5'},
+                # {'cmd':'/addex', 'help':''},
+                {'cmd':'/setcharacter', 'help':'Changes your current character - sample /setcharacter Willy The Kid'},
+                {'cmd':'/setevent', 'help':'Changes the event deck - sample /setevent 0 Manette'},
+                {'cmd':'/removecard', 'help':'Remove a card from hand/equip - sample /removecard 0'},
+                {'cmd':'/getcard', 'help':'Get a brand new card - sample /getcard Birra'},
+                {'cmd':'/meinfo', 'help':'Get player data'},
+                {'cmd':'/gameinfo', 'help':'Get game data'},
+                {'cmd':'/mebot', 'help':'Toggles bot mode'},
+                {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'}]
             self.sio.emit('commands', room=self.name, data=commands)
         else:
-            self.sio.emit('commands', room=self.name, data=['/debug'])
+            self.sio.emit('commands', room=self.name, data=[{'cmd':'/debug', 'help':'Toggles the debug mode'}])
         self.sio.emit('spectators', room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):

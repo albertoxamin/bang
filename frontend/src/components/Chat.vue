@@ -5,12 +5,15 @@
 		<transition-group name="message" tag="div" id="chatbox">
 		<!-- <div id="chatbox"> -->
 			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
-			<p style="margin:1pt 15pt;" class="chat-message" v-for="(msg, i) in commandSuggestion" v-bind:key="`${i}-c`" :style="`color:orange`">{{msg}}</p>
 			<p class="end" key="end" style="color:#0000">.</p>
 		<!-- </div> -->
 		</transition-group>
+		<div v-if="commandSuggestion.length > 0">
+			<p style="margin:1pt 15pt;cursor:pointer;" class="chat-message" v-for="(msg, i) in commandSuggestion" v-bind:key="`${i}-c`" :style="`color:orange`"
+					@click="fillCmd(msg.cmd)">{{msg.cmd}} <i class="std-text" style="font-size:8pt;">{{msg.help}}</i></p>
+		</div>
 		<form @submit="sendChatMessage" id="msg-form">
-			<input v-model="text" style="flex-grow:2;"/>
+			<input id="my-msg" v-model="text" style="flex-grow:2;"/>
 			<input id="submit-message" type="submit" class="btn" :value="$t('submit')"/>
 		</form>
 	</div>
@@ -32,7 +35,7 @@ export default {
 		messages: [],
 		text: '',
 		spectators: 0,
-		commands: ['/debug'],
+		commands: [{cmd:'/debug', help:'Toggles the debug mode'}],
 	}),
 	computed: {
 		commandSuggestion() {
@@ -40,7 +43,7 @@ export default {
 			if (this.text.length < 1) {
 				return [];
 			}
-			return this.commands.filter(x => x.slice(0, this.text.length) == this.text);
+			return this.commands.filter(x => x.cmd.slice(0, this.text.length) == this.text);
 		},
 	},
 	sockets: {
@@ -115,6 +118,10 @@ export default {
 			}
 			e.preventDefault();
 		},
+		fillCmd(cmd) {
+			this.text = cmd;
+			document.getElementById('my-msg').focus();
+		}
 	},
 }
 </script>
@@ -135,6 +142,9 @@ input {
 .end {
 	height: 0pt;
 	margin-top: -1.5pt;
+}
+.std-text {
+	color: var(--font-color);
 }
 .chat {
 	display: flex;
