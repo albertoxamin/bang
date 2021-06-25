@@ -1151,7 +1151,7 @@ class Player:
         if not self.is_my_turn and not forced:
             return
         maxcards = self.lives if not self.character.check(self.game, chd.SeanMallory) else 10
-        if maxcards == self.lives and len([c for c in self.equipment if isinstance(c, grc.Cinturone)]) > 0:
+        if maxcards == self.lives and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Cinturone)]) > 0:
             maxcards = 8
         if len(self.hand) > maxcards and not forced:
             print(
