@@ -302,7 +302,7 @@ export default {
 	},
 	methods: {
 		maxHandLength() {
-			return (this.character.name === "Sean Mallory" && !(this.eventCard && this.eventCard.name == "Sbornia")?10:(this.equipment.filter(x => x.name == 'Cinturone').length>0?8:this.lives))
+			return (this.character.name === "Sean Mallory" && !(this.eventCard && this.eventCard.name == "Sbornia")?10:(this.gold_rush_equipment.filter(x => x.name == 'Cinturone').length>0?8:this.lives))
 		},
 		setCharacter(char) {
 			this.availableCharacters = []
