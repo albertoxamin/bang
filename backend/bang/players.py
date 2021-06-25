@@ -175,12 +175,15 @@ class Player:
         if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             print('dying, attacker', self.attacker)
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1:
+                if self.game.players[self.game.turn] != self:
+                    self.game.players[self.game.turn].pending_action = PendingAction.WAIT
+                    self.game.players[self.game.turn].notify_self()
+                self.scrapped_cards = 0
+                self.previous_pending_action = self.pending_action
+                self.pending_action = PendingAction.CHOOSE
+                self.choose_text = 'choose_sid_scrap'
+                self.available_cards = self.hand
                 self.lives += 1
-                #TODO Sid dovrebbe poter decidere cosa scartare
-                self.game.deck.scrap(self.hand.pop(
-                    randrange(0, len(self.hand))), True)
-                self.game.deck.scrap(self.hand.pop(
-                    randrange(0, len(self.hand))), True)
         ser = self.__dict__.copy()
         ser.pop('game')
         ser.pop('sio')
@@ -638,6 +641,16 @@ class Player:
             player.notify_self()
             self.pending_action = PendingAction.PLAY
             self.notify_self()
+        elif self.choose_text == 'choose_sid_scrap':
+            self.scrapped_cards += 1
+            self.game.deck.scrap(self.hand.pop(card_index), True)
+            if self.scrapped_cards == 2:
+                self.available_cards = []
+                self.pending_action = self.previous_pending_action
+                if self.game.players[self.game.turn] != self:
+                    self.game.players[self.game.turn].pending_action = PendingAction.PLAY
+                    self.game.players[self.game.turn].notify_self()
+            self.notify_self()
         elif self.choose_text == 'choose_bicchierino':
             player = self.game.get_player_named(self.available_cards[card_index]['name'])
             self.sio.emit('chat_message', room=self.game.name, data=f'_play_card_for|{self.name}|{"Bicchierino"}|{player.name}')
@@ -967,6 +980,7 @@ class Player:
                     if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
                         self.hand.append(self.game.deck.draw(True))
                     self.lives += 1 if not self.character.check(self.game, chd.TequilaJoe) else 2
+                    self.lives = min(self.lives, self.max_lives)
                     self.game.deck.scrap(self.hand.pop(i), True)
                     self.sio.emit('chat_message', room=self.game.name,
                                   data=f'_beer_save|{self.name}')

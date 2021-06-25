@@ -47,6 +47,7 @@
   "choose_manette": "Choose a suit, you will be able to play only cards with that suit on this turn.",
   "hand": "HAND",
   "card_against": "Who will you play your card against?",
+  "choose_sid_scrap": "Discard 2 cards to not die",
   "choose_card_to_get": "Choose a card",
   "choose_guess": "Guess the color of the suit",
   "choose_ranch": "Choose the cards to replace",
