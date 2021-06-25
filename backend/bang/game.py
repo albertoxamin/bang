@@ -583,6 +583,8 @@ class Game:
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
                 self.pending_winners = winners
             vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
+            for i in range(len(player.gold_rush_equipment)):
+                self.deck.shop_deck.append(player.gold_rush_equipment.pop()) # vulture sam doesnt get these cards
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
                     self.deck.scrap(player.hand.pop(), True)
