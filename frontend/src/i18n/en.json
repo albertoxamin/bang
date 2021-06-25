@@ -125,7 +125,8 @@
     "flip_event": "🎴 EVENT: {0} 🎴",
     "choose_manette": "{0} committed to play only cards of suit {1} in this turn.",
     "UnionPacific": "{0} played Union Pacific and draws 4 cards from the deck",
-    "use_special": "{0} used the special ability of their character ({1})"
+    "use_special": "{0} used the special ability of their character ({1})",
+    "gold_rush_pay_discard": "{0} discarded {2} from {1}."
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."

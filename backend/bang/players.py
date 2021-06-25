@@ -694,6 +694,7 @@ class Player:
                 player = self.game.get_player_named(self.choose_text.split('|')[1])
                 player.gold_rush_equipment.remove(self.available_cards[card_index])
                 self.game.deck.shop_deck.append(self.available_cards[card_index])
+                self.sio.emit('chat_message', room=self.game.name, data=f'_gold_rush_pay_discard|{self.name}|{player.name}|{self.available_cards[card_index].name}')
                 player.notify_self()
             self.pending_action = PendingAction.PLAY
             self.notify_self()
