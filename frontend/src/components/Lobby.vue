@@ -23,7 +23,9 @@
 			<div v-if="!started">
 				<h3>{{$t("expansions")}}</h3>
 				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
-					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}</PrettyCheck>
+					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}
+						<p v-if="ex.is_beta"  style="padding: 0px 10px;color: red;border-radius: 12pt;position: absolute;right: -50pt;top: -12pt;">BETA</p>
+					</PrettyCheck>
 					<br>
 				</div>
 				<h3>{{$t('mods')}}</h3>
@@ -120,6 +122,7 @@ export default {
 		password: '',
 		togglable_expansions: [],
 		expansions: [],
+		beta_expansions: ['gold_rush'],
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,
@@ -205,6 +208,7 @@ export default {
 				return {
 					id: x,
 					name: x.replace(/(^|_)([a-z])/g, function($0,$1,$2) {return ' ' + $2.toUpperCase()}),
+					is_beta: this.beta_expansions.indexOf(x) !== -1,
 					enabled: this.expansions.indexOf(x) !== -1
 				}
 			})
