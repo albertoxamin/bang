@@ -15,8 +15,8 @@ class ShopCard(Card):
 
     def play_card(self, player, against, _with=None):
         if self.kind == ShopCardKind.BROWN:
-            pass # use it now
-            return False
+            player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
+            return True
         elif self.kind == ShopCardKind.BLACK: # equip it
             if not self.is_duplicate_card(player):
                 self.reset_card()
@@ -46,7 +46,7 @@ class Bicchierino(ShopCard):
         player.choose_text = 'choose_bicchierino'
         player.pending_action = pl.PendingAction.CHOOSE
         player.notify_self()
-        return True
+        return super().play_card(player, against, _with)
 
 class Bottiglia(ShopCard):
     def __init__(self):
@@ -61,7 +61,7 @@ class Bottiglia(ShopCard):
         player.choose_text = 'choose_bottiglia'
         player.pending_action = pl.PendingAction.CHOOSE
         player.notify_self()
-        return True
+        return super().play_card(player, against, _with)
 
 class Complice(ShopCard):
     def __init__(self):
@@ -76,7 +76,7 @@ class Complice(ShopCard):
         player.choose_text = 'choose_complice'
         player.pending_action = pl.PendingAction.CHOOSE
         player.notify_self()
-        return True
+        return super().play_card(player, against, _with)
 
 class CorsaAllOro(ShopCard):
     def __init__(self):
@@ -86,7 +86,7 @@ class CorsaAllOro(ShopCard):
     def play_card(self, player, against=None, _with=None):
         player.lives = player.max_lives
         player.play_turn()
-        return True
+        return super().play_card(player, against, _with)
 
 class Rum(ShopCard):
     def __init__(self):
@@ -101,7 +101,7 @@ class Rum(ShopCard):
             player.sio.emit('chat_message', room=player.game.name, data=f'_flipped|{player.name}|{c.name}|{c.num_suit()}')
             suits.add(c.suit)
         player.lives = min(player.lives+len(suits), player.max_lives)
-        return True
+        return super().play_card(player, against, _with)
 
 class UnionPacific(ShopCard):
     def __init__(self):
@@ -113,7 +113,7 @@ class UnionPacific(ShopCard):
                         data=f'_UnionPacific|{player.name}|{self.name}')
         for i in range(4):
             player.hand.append(player.game.deck.draw())
-        return True
+        return super().play_card(player, against, _with)
 
 class Calumet(ShopCard):
     def __init__(self):
@@ -121,7 +121,7 @@ class Calumet(ShopCard):
         self.icon = '🚭️'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        return super().play_card(player, against, _with)
         # ti rende immuni ai quadri
 
 class Cinturone(ShopCard):
@@ -130,7 +130,7 @@ class Cinturone(ShopCard):
         self.icon = '🥡'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        return super().play_card(player, against, _with)
         # max carte a fine turno 8
 
 class FerroDiCavallo(ShopCard):
@@ -139,7 +139,7 @@ class FerroDiCavallo(ShopCard):
         self.icon = '🎠'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        return super().play_card(player, against, _with)
         # estrai come luky duke
 
 class Piccone(ShopCard):
@@ -148,7 +148,7 @@ class Piccone(ShopCard):
         self.icon = '⛏️'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        return super().play_card(player, against, _with)
         # peschi una carta in piu a inizio turno
 
 class Ricercato(ShopCard):
@@ -157,6 +157,7 @@ class Ricercato(ShopCard):
         self.icon = '🤠️'
 
     def play_card(self, player, against=None, _with=None):
+        player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
         player.available_cards = [{
             'name': p.name,
             'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
@@ -166,6 +167,7 @@ class Ricercato(ShopCard):
         player.choose_text = 'choose_ricercato'
         player.pending_action = pl.PendingAction.CHOOSE
         player.notify_self()
+        return True
         # la giochi su un altro giocatore, ricompensa di 2 carte e 1 pepita a chi lo uccide
 
 class Setaccio(ShopCard):
@@ -175,13 +177,15 @@ class Setaccio(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         if not self.can_be_used_now:
-            super().play_card(player, against, _with)
+            return super().play_card(player, against, _with)
         else:
             if player.gold_nuggets >= 1:
                 player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 1
                 player.hand.append(player.game.deck.draw())
                 player.notify_self()
+                return True
+            return False
         # paghi 1 pepita per pescare 1 carta durante il tuo turno (max 2 volte per turno)
 
 class Stivali(ShopCard):
@@ -190,7 +194,7 @@ class Stivali(ShopCard):
         self.icon = '🥾️'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        return super().play_card(player, against, _with)
         # peschi una carta ogni volta che vieni ferito
 
 class Talismano(ShopCard):
@@ -199,7 +203,7 @@ class Talismano(ShopCard):
         self.icon = '🧿'
 
     def play_card(self, player, against=None, _with=None):
-        super().play_card(player, against, _with)
+        return super().play_card(player, against, _with)
         # ottieni una pepita ogni volta che vieni ferito
 
 class Zaino(ShopCard):
@@ -209,13 +213,15 @@ class Zaino(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         if not self.can_be_used_now:
-            super().play_card(player, against, _with)
+            return super().play_card(player, against, _with)
         else:
             if player.gold_nuggets >= 2:
                 player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 2
                 player.lives = min(player.lives + 1, player.max_lives)
                 player.notify_self()
+                return True
+            return False
         # paga 2 pepite per recuperare 1 vita
 
 def get_cards() -> List[Card]:

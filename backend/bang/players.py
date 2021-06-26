@@ -637,7 +637,11 @@ class Player:
             self.notify_self()
         elif self.choose_text == 'choose_ricercato':
             player = self.game.get_player_named(self.available_cards[card_index]['name'])
-            player.gold_rush_equipment.append(grc.Ricercato())
+            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Ricercato|{player.name}')
+            if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0:
+                self.game.deck.shop_deck.append(grc.Ricercato())
+            else:
+                player.gold_rush_equipment.append(grc.Ricercato())
             player.notify_self()
             self.pending_action = PendingAction.PLAY
             self.notify_self()
