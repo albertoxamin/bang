@@ -1014,8 +1014,9 @@ class Player:
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
         if self.attacker and 'gold_rush' in self.game.expansions:
-            self.attacker.gold_nuggets += 1
-            self.attacker.notify_self()
+            if (isinstance(self.attacker, Player)):
+                self.attacker.gold_nuggets += 1
+                self.attacker.notify_self()
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
                 self.gold_nuggets += 1
             if self.character.check(self.game, grch.SimeonPicos):
