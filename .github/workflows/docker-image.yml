@@ -23,12 +23,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       -
-        name: Docker Buildx (build)
+        name: Docker Buildx (build amd64 arm64)
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache" \
-            --platform linux/amd64,linux/arm/v7 \
+            --platform linux/amd64,linux/arm64 \
+            --output "type=image,push=false" \
+            --tag albertoxamin/bang:latest \
+            --file ./Dockerfile ./
+      -
+        name: Docker Buildx (build armv-7)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/arm/v7 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:latest \
             --file ./Dockerfile ./
@@ -39,11 +49,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       -
-        name: Docker Buildx (push)
+        name: Docker Buildx (push all)
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
-            --platform linux/amd64,linux/arm/v7 \
+            --platform linux/amd64,linux/arm64,linux/arm/v7 \
             --output "type=image,push=true" \
             --tag albertoxamin/bang:latest \
             --file ./Dockerfile ./

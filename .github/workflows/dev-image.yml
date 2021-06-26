@@ -23,7 +23,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       -
-        name: Docker Buildx (build)
+        name: Docker Buildx (build amd64 arm64)
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
@@ -31,9 +31,9 @@ jobs:
             --platform linux/amd64,linux/arm64 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:dev \
-            --file ./Dockerfile-armv7 ./
+            --file ./Dockerfile ./
       -
-        name: Docker Buildx (build)
+        name: Docker Buildx (build armv-7)
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
@@ -41,7 +41,7 @@ jobs:
             --platform linux/arm/v7 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:dev \
-            --file ./Dockerfile-armv7 ./
+            --file ./Dockerfile ./
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
@@ -56,7 +56,7 @@ jobs:
             --platform linux/amd64,linux/arm/v7,linux/arm64 \
             --output "type=image,push=true" \
             --tag albertoxamin/bang:dev \
-            --file ./Dockerfile-armv7 ./
+            --file ./Dockerfile ./
       -
         name: Inspect image
         run: |
