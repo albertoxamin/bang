@@ -1136,7 +1136,7 @@ class Player:
             'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'alt_text': ''.join(['🎴️'] * len(p.gold_rush_equipment)),
             'noDesc': True
-        } for p in self.game.get_alive_players() if p != self and len([e for e in p.gold_rush_equipment if e.number <= self.gold_nuggets + 1]) > 0]
+        } for p in self.game.get_alive_players() if p != self and len([e for e in p.gold_rush_equipment if e.number + 1 <= self.gold_nuggets]) > 0]
         self.available_cards.append({'icon': '❌', 'noDesc': True})
         self.choose_text = 'gold_rush_discard'
         self.pending_action = PendingAction.CHOOSE
