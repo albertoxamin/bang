@@ -672,6 +672,7 @@ class Player:
         elif self.choose_text == 'choose_birra_function':
             if card_index == 0:
                 self.gold_nuggets += 1
+                self.sio.emit('chat_message', room=self.game.name, data=f'_get_nugget|{self.name}')
             else:
                 cs.Birra(1,1).play_card(self, skipChecks=True)
             self.pending_action = PendingAction.PLAY

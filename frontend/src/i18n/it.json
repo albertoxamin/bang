@@ -99,6 +99,7 @@
     "flipped": "{0} ha estratto {1} {2}.",
     "explode": "{0} ha fatto esplodere la dinamite.",
     "beer_save": "{0} ha usato una birra per recuperare una vita.",
+    "get_nugget":"{0} ha ottenuto una pepita d'oro usando una Birra.",
     "play_card": "{0} ha giocato {1}.",
     "purchase_card": "{0} ha comprato {1}.",
     "play_card_against": "{0} ha giocato {1} contro {2}.",
@@ -573,6 +574,10 @@
     "Per Un Pugno Di Carte": {
       "name": "Per Un Pugno Di Carte",
       "desc": "All'inizio del proprio turno, il giocatore subisce tanti bang quante carte ha in mano"
+    },
+    "Pepita": {
+      "name": "Pepita D'oro",
+      "desc": ""
     },
     "Bicchierino": {
       "name": "Bicchierino",

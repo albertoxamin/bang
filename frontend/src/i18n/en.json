@@ -99,6 +99,7 @@
     "flipped": "{0} flipped a {1} {2}.",
     "explode": "{0} blew up the dynamite.",
     "beer_save": "{0} used a beer to save his life.",
+    "get_nugget":"{0} got a gold nugget using a Beer.",
     "play_card": "{0} played {1}.",
     "purchase_card": "{0} purchased {1}.",
     "play_card_against": "{0} played {1} against {2}.",
@@ -573,6 +574,10 @@
     "Per Un Pugno Di Carte": {
       "name": "A Fistful of Cards",
       "desc": "On the beginning of his turn, the player is target of as many Bang as how many cards he has in his hand"
+    },
+    "Pepita": {
+      "name": "Gold Nugget",
+      "desc": ""
     },
     "Bicchierino": {
       "name": "Shot Glass",

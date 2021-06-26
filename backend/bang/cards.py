@@ -247,7 +247,7 @@ class Birra(Card):
             if 'gold_rush' in player.game.expansions and self.number != 42:
                 from bang.players import PendingAction
                 player.available_cards = [{
-                    'name': '',
+                    'name': 'Pepita',
                     'icon': '💵️',
                     'alt_text': '1',
                     'noDesc': True
@@ -256,14 +256,14 @@ class Birra(Card):
                 player.pending_action = PendingAction.CHOOSE
                 player.notify_self()
                 return True
-        if len(player.game.get_alive_players()) != 2 or self.number == 42:
+        if (len(player.game.get_alive_players()) != 2 or self.number == 42) and player.lives < player.max_lives:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd
             if player.character.check(player.game, chd.TequilaJoe):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
-        elif len(player.game.get_alive_players()) == 2:
+        elif len(player.game.get_alive_players()) == 2 or player.lives == player.max_lives:
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_spilled_beer|{player.name}|{self.name}')
             return True
