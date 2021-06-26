@@ -94,4 +94,5 @@ def all_characters() -> List[Character]:
     ]
     for c in cards:
         c.expansion_icon = '🤑️'
+        c.expansion = 'gold_rush'
     return cards

@@ -484,7 +484,7 @@ def get_cards(sid):
 @sio.event
 def get_characters(sid):
     import bang.characters as ch
-    cards = ch.all_characters(['dodge_city'])
+    cards = ch.all_characters(['dodge_city', 'gold_rush'])
     sio.emit('characters_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
@@ -502,6 +502,17 @@ def get_foccards(sid):
     chs.extend(ce.get_all_events())
     chs.append(ce.get_endgame_card())
     sio.emit('foccards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
+
+@sio.event
+def get_goldrushcards(sid):
+    import bang.expansions.gold_rush.shop_cards as grc
+    cards = grc.get_cards()
+    cards_dict = {}
+    for ca in cards:
+        if ca.name not in cards_dict:
+            cards_dict[ca.name] = ca
+    cards = [cards_dict[i] for i in cards_dict]
+    sio.emit('goldrushcards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)

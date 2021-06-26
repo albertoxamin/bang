@@ -154,6 +154,7 @@ def all_characters() -> List[Character]:
     ]
     for c in cards:
         c.expansion_icon = '🐄️'
+        c.expansion = 'dodge_city'
     return cards
 
 #Apache Kid: il suo effetto non conta nei duelli

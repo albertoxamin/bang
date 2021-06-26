@@ -709,8 +709,13 @@
     "sheriff": "Sheriff",
     "allcharacters": "All characters",
     "gotoallcharacters": "Jump to all characters",
+    "gotocards": "Jump to cards",
+    "gotohighnoon": "Jump to High Noon",
+    "gotofoc": "Jump to Fistful Of Cards",
+    "gotogoldrush": "Jump to Gold Rush",
     "highnooncards": "High Noon - Event Cards",
-    "foccards": "Fistful of Cards - Event Cards"
+    "foccards": "Fistful of Cards - Event Cards",
+    "goldrushcards": "Gold Rush Cards"
   },
   "theme": {
     "sepia": "Sepia",

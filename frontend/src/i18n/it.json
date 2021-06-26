@@ -708,9 +708,14 @@
     "renegade": "Rinnegato",
     "vice": "Vice",
     "gotoallcharacters": "Visualizza tutti i personaggi",
+    "gotocards": "Visualizza le carte",
+    "gotohighnoon": "Visualizza le carte High Noon",
+    "gotofoc": "Visualizza le carte Fistful Of Cards",
+    "gotogoldrush": "Visualizza le carte Gold Rush",
     "allcharacters": "Tutti i personaggi",
     "highnooncards": "Carte Evento High Noon",
-    "foccards": "Carte Evento Fistful of Cards"
+    "foccards": "Carte Evento Fistful of Cards",
+    "goldrushcards": "Carte Gold Rush"
   },
   "theme": {
     "sepia": "Seppia",

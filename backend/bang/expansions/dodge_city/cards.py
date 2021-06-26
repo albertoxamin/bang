@@ -440,4 +440,5 @@ def get_starting_deck() -> List[Card]:
     ]
     for c in cards:
         c.expansion_icon = '🐄️'
+        c.expansion = 'dodge_city'
     return cards
