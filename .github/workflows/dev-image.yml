@@ -31,7 +31,7 @@ jobs:
             --platform linux/amd64,linux/arm64 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:dev \
-            --file ./Dockerfile ./
+            --file ./Dockerfile-armv7 ./
       -
         name: Docker Buildx (build)
         run: |
@@ -56,7 +56,7 @@ jobs:
             --platform linux/amd64,linux/arm/v7,linux/arm64 \
             --output "type=image,push=true" \
             --tag albertoxamin/bang:dev \
-            --file ./Dockerfile ./
+            --file ./Dockerfile-armv7 ./
       -
         name: Inspect image
         run: |
