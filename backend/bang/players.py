@@ -174,6 +174,11 @@ class Player:
             self.hand.append(self.game.deck.draw(True))
         if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             print('dying, attacker', self.attacker)
+            if self.gold_nuggets >= 2 and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Zaino)]) > 0:
+                for i in range(len(self.gold_rush_equipment)):
+                    if isinstance(self.gold_rush_equipment[i], grc.Zaino):
+                        self.play_card(len(self.hand) + len(self.equipment) + i)
+                        return # play card will notify the player
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1 and self.lives == 0:
                 if self.game.players[self.game.turn] != self:
                     self.game.players[self.game.turn].pending_action = PendingAction.WAIT
