@@ -818,12 +818,14 @@ class Player:
                 self.pending_action = PendingAction.PLAY
                 self.manette()
             self.notify_self()
+        # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, grch.DutchWill):
-            self.hand.append(self.available_cards.pop(card_index))
-            if self.game.check_event(ceh.IlTreno) or len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
-                self.hand.append(self.available_cards.pop(0))
-            else:
-                self.game.deck.scrap(self.available_cards.pop(0), True)
+            self.hand.append(self.available_cards.pop(card_index)) #prendo la carta scelta
+            self.game.deck.scrap(self.available_cards.pop(0), True) #scarto l'altra
+            if self.game.check_event(ceh.IlTreno):
+                self.hand.append(self.game.deck.draw())
+            if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
+                self.hand.append(self.game.deck.draw())
             self.gold_nuggets += 1
             self.is_drawing = False
             self.pending_action = PendingAction.PLAY
