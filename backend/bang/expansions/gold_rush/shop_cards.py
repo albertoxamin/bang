@@ -41,6 +41,7 @@ class Bicchierino(ShopCard):
             'name': p.name,
             'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+            'is_character': True,
             'noDesc': True
         } for p in player.game.get_alive_players()]
         player.choose_text = 'choose_bicchierino'
@@ -155,6 +156,7 @@ class Ricercato(ShopCard):
     def __init__(self):
         super().__init__("Ricercato", 2, ShopCardKind.BLACK)
         self.icon = '🤠️'
+        self.can_target_self = True
 
     def play_card(self, player, against=None, _with=None):
         player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
@@ -162,8 +164,10 @@ class Ricercato(ShopCard):
             'name': p.name,
             'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+            'is_character': True,
             'noDesc': True
         } for p in player.game.get_alive_players() if p != player]
+        player.available_cards.append({'name': player.name, 'number':0,'icon': 'you', 'is_character': True})
         player.choose_text = 'choose_ricercato'
         player.pending_action = pl.PendingAction.CHOOSE
         player.notify_self()

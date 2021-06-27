@@ -49,10 +49,10 @@ export default {
 			//console.log(card)
 			if (card.noDesc || card.name == null || card.name == "PewPew!")
 				this.desc = ""
-			else if (card.desc)
-				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
 			else if (card.is_character)
 				this.desc = card.name
+			else if (card.desc)
+				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
 			else
 				this.desc = this.$t(`cards.${card.name}.desc`)
 		}

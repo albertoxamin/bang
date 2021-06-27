@@ -362,6 +362,7 @@ class Player:
                 'name': p.name,
                 'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+                'is_character': True,
                 'noDesc': True
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
@@ -390,6 +391,7 @@ class Player:
                 'name': p['name'],
                 'icon': p['role'].icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
                 'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives'])),
+                'is_character': True,
                 'desc': p['name']
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
@@ -400,6 +402,7 @@ class Player:
             self.available_cards = [{
                 'name': p.name,
                 'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
+                'is_character': True,
                 'noDesc': True
             } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
@@ -1138,6 +1141,7 @@ class Player:
         self.available_cards = [{
             'name': p.name,
             'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
+            'is_character': True,
             'alt_text': ''.join(['🎴️'] * len(p.gold_rush_equipment)),
             'noDesc': True
         } for p in self.game.get_alive_players() if p != self and len([e for e in p.gold_rush_equipment if e.number + 1 <= self.gold_nuggets]) > 0]

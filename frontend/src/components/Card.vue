@@ -1,7 +1,7 @@
 <template>
 	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used, 'gold-rush': card.expansion === 'gold_rush', 'brown':card.kind === 0, 'black':card.kind === 1,}">
 		<h4>{{cardName}}</h4>
-		<div class="emoji">{{card.icon}}</div>
+		<div class="emoji">{{emoji}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
 		<div class="suit">{{number}}{{suit}}</div>
 		<div class="expansion" v-if="card.expansion_icon">{{card.expansion_icon}}</div>
@@ -21,7 +21,13 @@ export default {
 			if (!this.donotlocalize && this.$t(`cards.${this.card.name}.name`) !== `cards.${this.card.name}.name`) {
 				return this.$t(`cards.${this.card.name}.name`)
 			}
+			if (this.card.name == "you") {
+				return this.$t('you')
+			}
 			return this.card.name
+		},
+		emoji(){
+			return this.card.icon != "you" ? this.card.icon : this.$t('you')
 		},
 		suit() {
 			if (this.card && !isNaN(this.card.suit)) {

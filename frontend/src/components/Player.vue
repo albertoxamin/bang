@@ -244,7 +244,6 @@ export default {
 					name: this.name,
 					number: 0,
 					icon: this.$t('you'),
-					desc: this.$t('you'),
 					is_character: true,
 				})
 			}
