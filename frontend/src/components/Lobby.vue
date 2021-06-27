@@ -302,12 +302,13 @@ export default {
 			if (Vue.config.devtools)
 				console.log(pl)
 			let arr = []
-			for (let i=0; i<pl.ncards; i++)
-				arr.push({
-					name: 'PewPew!',
-					icon: '💥',
-					is_back: true,
-				})
+			if (this.username != player_name)
+				for (let i=0; i<pl.ncards; i++)
+					arr.push({
+						name: 'PewPew!',
+						icon: '💥',
+						is_back: true,
+					})
 			pl.equipment.forEach(x=>arr.push(x))
 			this.chooseCards = arr
 			this.hasToChoose = true

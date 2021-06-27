@@ -277,9 +277,10 @@ class CatBalou(Card):
         # self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
         # self.desc_eng = "Choose and discard a card from any other player."
         self.need_target = True
+        self.can_target_self = True
 
     def play_card(self, player, against, _with=None):
-        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             if self.name == 'Cat Balou':
                 super().play_card(player, against=against)
             from bang.players import PendingAction
@@ -393,11 +394,12 @@ class Panico(Card):
         super().__init__(suit, 'Panico!', number, range=1)
         self.icon = '😱'
         self.need_target = True
+        self.can_target_self = True
         # self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
         # self.desc_eng = "Steal a card from a player at distance 1"
 
     def play_card(self, player, against, _with=None):
-        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             super().play_card(player, against=against)
             from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE
