@@ -541,11 +541,14 @@ class Game:
             player.attacker.hand.append(self.deck.draw(True))
             player.attacker.hand.append(self.deck.draw(True))
             player.attacker.notify_self()
+        # se lo sceriffo uccide il proprio vice
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
                 self.deck.scrap(player.attacker.hand.pop(), True)
             for i in range(len(player.attacker.equipment)):
                 self.deck.scrap(player.attacker.equipment.pop(), True)
+            for i in range(len(player.attacker.gold_rush_equipment)):
+                self.deck.shop_deck.append(player.attacker.gold_rush_equipment.pop())
             player.attacker.notify_self()
         elif player.attacker and player.attacker in self.players and (isinstance(player.role, roles.Outlaw) or self.initial_players == 3):
             for i in range(3):
@@ -588,9 +591,11 @@ class Game:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
                 self.pending_winners = winners
-            vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
+
             for i in range(len(player.gold_rush_equipment)):
                 self.deck.shop_deck.append(player.gold_rush_equipment.pop()) # vulture sam doesnt get these cards
+
+            vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
                     self.deck.scrap(player.hand.pop(), True)
@@ -628,6 +633,7 @@ class Game:
                 herb[i].hand.append(self.deck.draw(True))
                 herb[i].hand.append(self.deck.draw(True))
                 herb[i].notify_self()
+                
         self.is_handling_death = False
         if corpse.is_my_turn:
             corpse.is_my_turn = False
