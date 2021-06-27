@@ -595,6 +595,9 @@ class Game:
             for i in range(len(player.gold_rush_equipment)):
                 self.deck.shop_deck.append(player.gold_rush_equipment.pop()) # vulture sam doesnt get these cards
 
+            #il giocatore quando muore perde tutte le pepite se non è pistolero ombra
+            player.gold_nuggets = 0
+
             vulture = [p for p in self.get_alive_players() if p.character.check(self, characters.VultureSam)]
             if len(vulture) == 0:
                 for i in range(len(player.hand)):
@@ -639,7 +642,6 @@ class Game:
             corpse.is_my_turn = False
             corpse.notify_self()
             self.next_turn()
-
 
     def check_event(self, ev):
         if self.deck == None or len(self.deck.event_cards) == 0: return False
