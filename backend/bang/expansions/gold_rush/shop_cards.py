@@ -96,8 +96,10 @@ class Rum(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         # Estrai 4 carte e ottieni 1 hp per ogni seme diverso
+        import bang.characters as c
         suits = set()
-        for i in range(4):
+        num = 5 if player.character.check(player.game, c.LuckyDuke) else 4
+        for i in range(num):
             c = player.game.deck.pick_and_scrap()
             player.sio.emit('chat_message', room=player.game.name, data=f'_flipped|{player.name}|{c.name}|{c.num_suit()}')
             suits.add(c.suit)
