@@ -88,7 +88,7 @@
     "joined": "{0} joined the lobby",
     "died": "{0} died",
     "died_role": "{0} was a {1}!",
-    "won": "{0} won!",
+    "won": "{0} won! Their role was {1}",
     "choose_character": "{0} has {1} as character, his special ability is: {2}!",
     "starting": "The game is starting!",
     "sheriff": "{0} is the sheriff!",
@@ -576,8 +576,7 @@
       "desc": "On the beginning of his turn, the player is target of as many Bang as how many cards he has in his hand"
     },
     "Pepita": {
-      "name": "Gold Nugget",
-      "desc": ""
+      "name": "Gold Nugget"
     },
     "Bicchierino": {
       "name": "Shot Glass",

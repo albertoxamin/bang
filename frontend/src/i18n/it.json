@@ -88,7 +88,7 @@
     "joined": "{0} è entrato nella stanza",
     "died": "{0} è morto",
     "died_role": "{0} era {1}!",
-    "won": "{0} ha vinto!",
+    "won": "{0} ha vinto! Il suo ruolo era {1}",
     "choose_character": "{0} ha come personaggio {1}, la sua abilità speciale è: {2}!",
     "starting": "La partita sta iniziando!",
     "sheriff": "{0} è lo sceriffo!",
@@ -576,8 +576,7 @@
       "desc": "All'inizio del proprio turno, il giocatore subisce tanti bang quante carte ha in mano"
     },
     "Pepita": {
-      "name": "Pepita D'oro",
-      "desc": ""
+      "name": "Pepita D'oro"
     },
     "Bicchierino": {
       "name": "Bicchierino",

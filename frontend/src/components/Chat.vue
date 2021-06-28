@@ -57,7 +57,7 @@ export default {
 				}
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
-				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity"].indexOf(type) !== -1){
+				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity", 'won'].indexOf(type) !== -1){
 					params[1] = this.$t(`cards.${params[1]}.name`)
 				} else if (type === "choose_character"){
 					params.push(this.$t(`cards.${params[1]}.desc`))

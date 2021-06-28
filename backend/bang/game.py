@@ -382,7 +382,7 @@ class Game:
             if p.win_status:
                 if not self.someone_won:
                     self.someone_won = True
-                self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}')
+                self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}|{p.role.name}')
             p.notify_self()
         for i in range(5):
             self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
