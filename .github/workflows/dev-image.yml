@@ -23,12 +23,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       -
-        name: Docker Buildx (build amd64 arm64)
+        name: Docker Buildx (build amd64)
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache" \
-            --platform linux/amd64,linux/arm64 \
+            --platform linux/amd64 \
+            --output "type=image,push=false" \
+            --tag albertoxamin/bang:dev \
+            --file ./Dockerfile ./
+      -
+        name: Docker Buildx (build arm64)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/arm64 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:dev \
             --file ./Dockerfile ./
