@@ -1,4 +1,4 @@
-from dummy_socket import DummySocket
+from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 
