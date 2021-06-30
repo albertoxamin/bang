@@ -437,47 +437,34 @@ class Player:
             self.notify_self()
         else:
             self.pending_action = PendingAction.PLAY
-            if pile == 'scrap' and self.character.check(self.game, chars.PedroRamirez):
-                self.hand.append(self.game.deck.draw_from_scrap_pile())
-                if not self.game.check_event(ceh.Sete):
-                    self.hand.append(self.game.deck.draw())
-                self.sio.emit('chat_message', room=self.game.name,
-                              data=f'_draw_from_scrap|{self.name}')
-            elif type(pile) == str and pile != self.name and pile in self.game.players_map and self.character.check(self.game, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
-                self.hand.append(self.game.get_player_named(pile).hand.pop(
-                    randrange(0, len(self.game.get_player_named(pile).hand))))
-                self.game.get_player_named(pile).notify_self()
-                self.sio.emit('chat_message', room=self.game.name,
-                              data=f'_draw_from_player|{self.name}|{pile}')
-                if not self.game.check_event(ceh.Sete):
-                    self.hand.append(self.game.deck.draw())
-            elif self.character.check(self.game, chd.BillNoface):
-                self.hand.append(self.game.deck.draw())
-                if not self.game.check_event(ceh.Sete):
-                    for i in range(self.max_lives-self.lives):
-                        self.hand.append(self.game.deck.draw())
-            else:
-                if self.character.check(self.game, chd.PixiePete):
-                    self.hand.append(self.game.deck.draw())
-                for i in range(2):
+            num = 2 if not self.character.check(self.game, chd.BillNoface) else self.max_lives-self.lives+1
+            if self.character.check(self.game, chd.PixiePete): num += 1
+            if (len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0): num += 1
+            if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)): num += 1
+            elif self.game.check_event(ceh.Sete): num -= 1
+            for i in range(num):
+                if i == 0 and pile == 'scrap' and self.character.check(self.game, chars.PedroRamirez):
+                    self.hand.append(self.game.deck.draw_from_scrap_pile())
+                    self.sio.emit('chat_message', room=self.game.name, data=f'_draw_from_scrap|{self.name}')
+                elif i == 0 and type(pile) == str and pile != self.name and pile in self.game.players_map and self.character.check(self.game, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
+                    self.hand.append(self.game.get_player_named(pile).hand.pop( randrange(0, len(self.game.get_player_named(pile).hand))))
+                    self.game.get_player_named(pile).notify_self()
+                    self.sio.emit('chat_message', room=self.game.name, data=f'_draw_from_player|{self.name}|{pile}')
+                elif i == 1:
                     card: cs.Card = self.game.deck.draw()
-                    self.hand.append(card)
-                    if i == 1 and (self.character.check(self.game, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest)):
+                    if (self.character.check(self.game, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest)):
                         for p in self.game.get_alive_players():
                             if p != self:
                                 p.notify_card(self, card, 'blackjack_special' if self.character.check(self.game, chars.BlackJack) else 'foc.leggedelwest')
                         if self.game.check_event(ce.LeggeDelWest):
                             card.must_be_used = True
-                        if card.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]) and self.character.check(self.game, chars.BlackJack):
+                        if self.character.check(self.game, chars.BlackJack) and card.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
                             self.hand.append(self.game.deck.draw())
-                    if self.game.check_event(ceh.Sete):
-                        return self.notify_self()
-                if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)):
-                    self.hand.append(self.game.deck.draw())
-                if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
+                    self.hand.append(card)
+                else:
                     self.hand.append(self.game.deck.draw())
             self.manette()
-        self.notify_self()
+            self.notify_self()
 
     def manette(self):
         if self.game.check_event(ceh.Manette):
@@ -811,21 +798,33 @@ class Player:
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, chars.KitCarlson):
-            self.hand.append(self.available_cards.pop(card_index))
+            card: cs.Card = self.available_cards.pop(card_index)
+            if len(self.available_cards) == 1: #ho pescato la seconda carta
+                if self.game.check_event(ce.LeggeDelWest):
+                    card.must_be_used = True
+            self.hand.append(card)
             pickable_stop = 1
-            if self.game.check_event(ceh.Sete): pickable_stop = 2
+            if self.game.check_event(ceh.Sete): pickable_stop += 1
             if self.game.check_event(ceh.IlTreno) or len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
-                pickable_stop = 0
+                pickable_stop -= 1
             if len(self.available_cards) == pickable_stop:
-                if len(self.available_cards) > 0:
+                if len(self.available_cards) > 0: #la carta non scelta la rimettiamo in cima al mazzo
                     self.game.deck.put_on_top(self.available_cards.pop())
+                if len(self.available_cards) > 0: #se sono rimaste carte le scartiamo
+                    self.game.scrap(self.available_cards.pop())
+                #se c'è sia treno che piccone pesco un'altra carta
+                if self.game.check_event(ceh.IlTreno) and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
+                    self.hand.append(self.game.deck.draw())
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
                 self.manette()
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, grch.DutchWill):
-            self.hand.append(self.available_cards.pop(card_index)) #prendo la carta scelta
+            if not self.game.check_event(ceh.Sete):
+                self.hand.append(self.available_cards.pop(card_index)) #prendo la carta scelta
+            else:
+                self.game.deck.scrap(self.available_cards.pop(0), True) #non pesco carte
             self.game.deck.scrap(self.available_cards.pop(0), True) #scarto l'altra
             if self.game.check_event(ceh.IlTreno):
                 self.hand.append(self.game.deck.draw())
@@ -834,9 +833,11 @@ class Player:
             self.gold_nuggets += 1
             self.is_drawing = False
             self.pending_action = PendingAction.PLAY
+            self.manette()
             self.notify_self()
         # specifico per personaggio
         elif self.is_drawing and self.character.check(self.game, chd.PatBrennan):
+            #non pesca per niente dal mazzo 
             self.is_drawing = False
             card = self.available_cards.pop(card_index)
             card.reset_card()
