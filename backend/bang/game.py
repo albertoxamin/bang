@@ -49,13 +49,13 @@ class Game:
         self.is_hidden = False
 
     def reset(self):
-        print('resetting lobby')
+        print(f'{self.name}: resetting lobby')
         self.players.extend(self.spectators)
         self.spectators = []
         for bot in [p for p in self.players if p.is_bot]:
             bot.game = None
         self.players = [p for p in self.players if not p.is_bot]
-        print(self.players)
+        print(f'{self.name}: ' + self.players)
         self.started = False
         self.is_handling_death = False
         self.waiting_for = 0
@@ -111,7 +111,7 @@ class Game:
 
     def toggle_expansion(self, expansion_name):
         if not self.started:
-            print('toggling', expansion_name)
+            print(f'{self.name}: toggling', expansion_name)
             if expansion_name in self.expansions:
                 self.expansions.remove(expansion_name)
             else:
@@ -136,7 +136,7 @@ class Game:
                 self.expansions.append('dodge_city')
         player.join_game(self)
         self.players.append(player)
-        print(f'Added player {player.name} to game')
+        print(f'{self.name}: Added player {player.name} to game')
         self.notify_room()
         self.sio.emit('chat_message', room=self.name, data=f'_joined|{player.name}')
 
@@ -156,9 +156,7 @@ class Game:
         self.notify_room()
         if len([p for p in self.players if p.character == None]) == 0:
             for i in range(len(self.players)):
-                print(self.name)
-                print(self.players[i].name)
-                print(self.players[i].character)
+                print(self.name, self.players[i].name, self.players[i].character)
                 self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
@@ -180,7 +178,7 @@ class Game:
             self.players[i].set_available_character(char_cards[i * n : i * n + n])
 
     def start_game(self):
-        print('GAME IS STARING')
+        print(f'{self.name}: GAME IS STARING')
         if self.started:
             return
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
@@ -318,24 +316,24 @@ class Game:
         return self.players[self.players_map[name]]
 
     def responders_did_respond_resume_turn(self, did_lose=False):
-        print('did_lose', did_lose)
+        print(f'{self.name}: did_lose', did_lose)
         if self.player_bangs > 0 and self.check_event(ce.PerUnPugnoDiCarte):
             self.player_bangs -= 1
             if self.player_bangs >= 1:
-                print('bang again')
+                print(f'{self.name}: bang again')
                 if self.players[self.turn].get_banged(self.deck.event_cards[0]):
                     self.players[self.turn].notify_self()
                 else:
                     self.responders_did_respond_resume_turn()
             else:
-                print('ok play turn now')
+                print(f'{self.name}: ok play turn now')
                 self.player_bangs = 0
                 self.players[self.turn].play_turn()
         elif self.is_russian_roulette_on and self.check_event(ce.RouletteRussa):
             pls = self.get_alive_players()
             if did_lose:
                 target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
-                print('stop roulette')
+                print(f'{self.name}: stop roulette')
                 target_pl.lives -= 1
                 if len([c for c in target_pl.equipment if isinstance(c, grc.Talismano)]) > 0:
                     target_pl.gold_nuggets += 1
@@ -349,7 +347,7 @@ class Game:
             else:
                 self.player_bangs += 1
                 target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
-                print(f'next in line {target_pl.name}')
+                print(f'{self.name}: next in line {target_pl.name}')
                 if target_pl.get_banged(self.deck.event_cards[0]):
                     target_pl.notify_self()
                 else:
@@ -363,7 +361,7 @@ class Game:
                     return self.announces_winners()
                 if self.dalton_on:
                     self.dalton_on = False
-                    print(f'notifying {self.players[self.turn].name} about his turn')
+                    print(f'{self.name}: notifying {self.players[self.turn].name} about his turn')
                     self.players[self.turn].play_turn()
                 else:
                     self.players[self.turn].pending_action = pl.PendingAction.PLAY
@@ -371,9 +369,9 @@ class Game:
 
     def announces_winners(self, winners=None):
         if (winners is None):
-            print('WE HAVE A WINNER - pending winners')
+            print(f'{self.name}: WE HAVE A WINNER - pending winners')
         else:
-            print('WE HAVE A WINNER')
+            print(f'{self.name}: WE HAVE A WINNER')
         for p in self.get_alive_players():
             if winners is None:
                 p.win_status = p in self.pending_winners
@@ -398,7 +396,7 @@ class Game:
         if self.players[self.turn].is_dead:
             pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
             if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl == self.players[self.turn]:
-                print(f'{self.players[self.turn]} is dead, revive')
+                print(f'{self.name}: {self.players[self.turn]} is dead, revive')
                 self.did_resuscitate_deadman = True
                 pl.is_dead = False
                 pl.is_ghost = False
@@ -407,16 +405,16 @@ class Game:
                 pl.hand.append(self.deck.draw())
                 pl.notify_self()
             elif self.check_event(ceh.CittaFantasma):
-                print(f'{self.players[self.turn]} is dead, event ghost')
+                print(f'{self.name}: {self.players[self.turn]} is dead, event ghost')
                 self.players[self.turn].is_ghost = True
             else:
-                print(f'{self.players[self.turn]} is dead, next turn')
+                print(f'{self.name}: {self.players[self.turn]} is dead, next turn')
                 return self.next_turn()
         self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff) or ((self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) and not self.players[self.turn].is_ghost)  or (self.initial_players == 3 and any([p for p in self.players if p.is_dead and p.role.name == 'Vice']) and isinstance(self.players[self.turn].role, roles.Renegade))):
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
-                print(f'flip new event {self.deck.event_cards[0].name}')
+                print(f'{self.name}: flip new event {self.deck.event_cards[0].name}')
                 self.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
@@ -455,12 +453,12 @@ class Game:
             else:
                 self.responders_did_respond_resume_turn()
         else:
-            print(f'notifying {self.players[self.turn].name} about his turn')
+            print(f'{self.name}: notifying {self.players[self.turn].name} about his turn')
             self.players[self.turn].play_turn()
 
     def next_turn(self):
         if self.shutting_down: return
-        print(f'{self.players[self.turn].name} invoked next turn')
+        print(f'{self.name}: {self.players[self.turn].name} invoked next turn')
         if self.pending_winners and not self.someone_won:
                     return self.announces_winners()
         pls = self.get_alive_players()
@@ -482,11 +480,11 @@ class Game:
     def notify_gold_rush_shop(self, sid=None):
         if 'gold_rush' in self.expansions and self.deck and self.deck.shop_cards and len(self.deck.shop_cards) > 0:
             room = self.name if sid == None else sid
-            print(f'gold_rush_shop room={room}, data={self.deck.shop_cards}')
+            print(f'{self.name}: gold_rush_shop room={room}, data={self.deck.shop_cards}')
             self.sio.emit('gold_rush_shop', room=room, data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__))
 
     def notify_scrap_pile(self, sid=None):
-        print('scrap')
+        print(f'{self.name}: scrap')
         room = self.name if sid == None else sid
         if self.deck.peek_scrap_pile():
             self.sio.emit('scrap', room=room, data=self.deck.peek_scrap_pile().__dict__)
@@ -494,7 +492,7 @@ class Game:
             self.sio.emit('scrap', room=room, data=None)
 
     def handle_disconnect(self, player: pl.Player):
-        print(f'player {player.name} left the game {self.name}')
+        print(f'{self.name}: player {player.name} left the game')
         if player in self.spectators:
             self.spectators.remove(player)
             self.sio.emit('spectators', room=self.name, data=len(self.spectators))
@@ -506,7 +504,7 @@ class Game:
             if len([p for p in self.players if not p.is_bot]) == 0:
                 eventlet.sleep(5)
                 if len([p for p in self.players if not p.is_bot]) == 0:
-                    print(f'no players left in game {self.name}, shutting down')
+                    print(f'{self.name}: no players left in game, shutting down')
                     self.shutting_down = True
                     self.players = []
                     self.spectators = []
@@ -523,7 +521,7 @@ class Game:
         #     player.lives = 0
             # self.players.remove(player)
         if len([p for p in self.players if not p.is_bot]) == 0:
-            print(f'no players left in game {self.name}, shutting down')
+            print(f'{self.name}: no players left in game, shutting down')
             self.shutting_down = True
             self.players = []
             self.spectators = []
@@ -535,7 +533,7 @@ class Game:
         if not player in self.players or player.is_ghost: return
         self.is_handling_death = True
         import bang.expansions.dodge_city.characters as chd
-        print(f'the killer is {player.attacker}')
+        print(f'{self.name}: the killer is {player.attacker}')
         if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker:
             player.attacker.gold_nuggets += 1
             player.attacker.hand.append(self.deck.draw(True))
@@ -554,7 +552,7 @@ class Game:
             for i in range(3):
                 player.attacker.hand.append(self.deck.draw(True))
             player.attacker.notify_self()
-        print(f'player {player.name} died')
+        print(f'{self.name}: player {player.name} died')
         if self.waiting_for > 0 and player.pending_action == pl.PendingAction.RESPOND:
             self.responders_did_respond_resume_turn()
             player.pending_action = pl.PendingAction.WAIT
@@ -581,7 +579,7 @@ class Game:
                 p.notify_self()
         # self.players_map = {c.name: i for i, c in enumerate(self.players)}
         if self.started:
-            print('Check win status')
+            print(f'{self.name}: Check win status')
             attacker_role = None
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
