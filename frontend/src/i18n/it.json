@@ -82,6 +82,7 @@
   "submit": "Invia",
   "copy": "Copia invito",
   "no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
+  "cantplaycard": "Non puoi giocare questa carta in questo modo!",
   "chat": {
     "spectators": " | Uno spettatore sta guardando la partita | {n} spettatori stanno guardando la partita",
     "chat": "Chat",

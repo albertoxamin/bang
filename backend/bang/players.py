@@ -592,6 +592,7 @@ class Player:
                 self.hand.insert(hand_index, card)
                 if withCard:
                     self.hand.insert(_with, withCard)
+                self.sio.emit('cant_play_card', room=self.sid)
         elif (card.usable_next_turn and card.can_be_used_now) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK):
             if did_play_card:
                 self.game.deck.scrap(card, True)
