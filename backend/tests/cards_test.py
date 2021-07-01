@@ -1,3 +1,4 @@
+from bang.characters import Character
 from backend.bang.cards import Bang, Barile, Suit, Volcanic
 from tests.dummy_socket import DummySocket
 from bang.deck import Deck
@@ -15,11 +16,13 @@ def test_barile():
     for p in ps:
         p.set_character(p.available_characters[0].name)
     barrel_guy = g.players[g.turn]
+    barrel_guy.character = Character('test_char', 2)
     barrel_guy.draw('')
     barrel_guy.hand = [Barile(0,0)]
     barrel_guy.play_card(0)
     assert isinstance(barrel_guy.equipment[0], Barile)
     barrel_guy.end_turn()
+    barrel_guy.character = Character('test_char', 2)
     g.players[g.turn].draw('')
     g.players[g.turn].hand = [Volcanic(0,0), Bang(0,0), Bang(0,0)]
     g.players[g.turn].play_card(0)
