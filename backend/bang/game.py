@@ -53,9 +53,12 @@ class Game:
         self.players.extend(self.spectators)
         self.spectators = []
         for bot in [p for p in self.players if p.is_bot]:
-            bot.game = None
+            if bot.was_player:
+                bot.is_bot = False
+            else:
+                bot.game = None
         self.players = [p for p in self.players if not p.is_bot]
-        print(f'{self.name}: ' + self.players)
+        print(f'{self.name}: players: {self.players}')
         self.started = False
         self.is_handling_death = False
         self.waiting_for = 0
@@ -645,7 +648,7 @@ class Game:
         if self.deck == None or len(self.deck.event_cards) == 0: return False
         return isinstance(self.deck.event_cards[0], ev)
 
-    def get_visible_players(self, player: pl.Player):
+    def get_visible_players(self, player: pl.Player): # returns a dictionary because we need to add the distance
         pls = self.get_alive_players()
         if len(pls) == 0 or player not in pls: return []
         i = pls.index(player)

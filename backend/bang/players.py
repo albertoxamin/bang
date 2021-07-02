@@ -79,6 +79,7 @@ class Player:
         self.bang_used = 0
         self.gold_nuggets = 0
         self.gold_rush_equipment = []
+        self.was_player = False
 
     def join_game(self, game):
         self.game = game
@@ -236,13 +237,18 @@ class Player:
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
             non_blocked_cards = [card for card in self.hand if (not self.game.check_event(ceh.Manette) or card.suit == self.committed_suit_manette)]
-            equippables = [c for c in non_blocked_cards if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any([type(c) == type(x) for x in self.equipment])]
-            misc = [c for c in non_blocked_cards if (isinstance(c, cs.WellsFargo) or isinstance(c, cs.Indiani) or isinstance(c, cs.Gatling) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or (isinstance(c, cs.Birra) and self.lives < self.max_lives and not self.game.check_event(ceh.IlReverendo)) or (c.need_with and len(self.hand) > 1 and not c.need_target and not (isinstance(c, csd.Whisky) and self.lives == self.max_lives)))
-                    and not (not c.can_be_used_now and self.game.check_event(ce.IlGiudice))]
-            need_target = [c for c in non_blocked_cards if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (
-                (self.game.check_event(ceh.Sermone) or self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(c) == type(cs.Bang)
-            ) and not self.game.check_event(ce.Lazo))) and not ( isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice))]
+            equippables = [c for c in non_blocked_cards if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any([type(c) == type(x) and not (c.is_weapon and c.must_be_used) for x in self.equipment])]
+            misc = [c for c in non_blocked_cards if not c.need_target and (isinstance(c, cs.WellsFargo) or isinstance(c, cs.Indiani) or isinstance(c, cs.Gatling) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or ((isinstance(c, cs.Birra) and self.lives < self.max_lives or c.must_be_used) and not self.game.check_event(ceh.IlReverendo)) or (c.need_with and len(self.hand) > 1 and not (isinstance(c, csd.Whisky) and self.lives == self.max_lives)))
+                    and not (not c.can_be_used_now and self.game.check_event(ce.IlGiudice)) and not c.is_equipment]
+            need_target = [c for c in non_blocked_cards if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (type(c) == type(cs.Bang) and (self.game.check_event(ceh.Sermone) or (self.has_played_bang and (not any([isinstance(c, cs.Volcanic) for c in self.equipment]) or self.game.check_event(ce.Lazo))))) and not (isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice)) or isinstance(c, cs.Duello) or isinstance(c, cs.CatBalou) or isinstance(c, csd.Pugno)]
             green_cards = [c for c in self.equipment if not self.game.check_event(ce.Lazo) and not isinstance(c, cs.Mancato) and c.usable_next_turn and c.can_be_used_now]
+            if self.game.debug:
+                print(f'hand: {self.hand}')
+                print(f'non_blocked: {non_blocked_cards}')
+                print(f'equippables: {equippables}')
+                print(f'misc: {misc}')
+                print(f'need_target: {need_target}')
+                print(f'green_cards: {green_cards}')
             if self.gold_nuggets > 0 and any([c.number <= self.gold_nuggets for c in self.game.deck.shop_cards]):
                 for i in range(len(self.game.deck.shop_cards)):
                     if self.game.deck.shop_cards[i].number <= self.gold_nuggets:
@@ -254,14 +260,14 @@ class Player:
                         return
             elif len(misc) > 0:
                 for c in misc:
-                    if c.need_with and self.play_card(self.hand.index(c), _with=sample([j for j in range(len(self.hand)) if j != self.hand.index(c)], 1)[0]):
+                    if c.need_with and len(self.hand) > 1 and self.play_card(self.hand.index(c), _with=sample([j for j in range(len(self.hand)) if j != self.hand.index(c)], 1)[0]):
                         return
                     elif self.play_card(self.hand.index(c)):
                         return
             elif len(need_target) > 0:
                 for c in need_target:
                     _range = self.get_sight() if c.name == 'Bang!' or c.name == "Pepperbox" else c.range
-                    others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff']) and p['lives'] > 0 and not ((isinstance(c, cs.CatBalou) or isinstance(c, cs.Panico)) and p['cards'] == 0) and not (p['is_sheriff'] and isinstance(c, cs.Prigione))]
+                    others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'] and not c.must_be_used) and p['lives'] > 0 and not ((isinstance(c, cs.CatBalou) or isinstance(c, cs.Panico)) and p['cards'] == 0) and not (p['is_sheriff'] and isinstance(c, cs.Prigione))]
                     if len(others) == 0 or c not in self.hand:
                         continue
                     target = others[randrange(0, len(others))]
@@ -270,7 +276,7 @@ class Player:
                     if not c.need_with:
                         if self.play_card(self.hand.index(c), against=target['name']):
                             return
-                    else:
+                    elif len(self.hand) > 1:
                         if self.play_card(self.hand.index(c), against=target['name'], _with=sample([j for j in range(len(self.hand)) if j != self.hand.index(c)], 1)[0]):
                             return
             elif len(green_cards) > 0:
@@ -1170,6 +1176,29 @@ class Player:
             self.game.deck.fill_gold_rush_shop()
             self.notify_self()
 
+    def check_can_end_turn(self):
+        must_be_used_cards = [c for c in self.hand if c.must_be_used]
+        if self.game.check_event(ce.LeggeDelWest) and len(must_be_used_cards) > 0:
+            card = must_be_used_cards[0]
+            print(f'Legge del west card: {card.name}')
+            print(self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(card) == type(cs.Bang)))
+            if card.suit == cs.Suit.DIAMONDS and card.need_target and len([p for p in self.game.get_alive_players() if p != self and (not p.character.check(self.game, chd.ApacheKid) and not any([isinstance(c, grc.Calumet) for c in p.gold_rush_equipment]))]) == 0:
+                return True
+            elif (isinstance(card, cs.Bang) or (isinstance(card, cs.Mancato) and self.character.check(self.game, chars.CalamityJanet))) and self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment]) or len([p for p in self.game.get_visible_players(self) if self.get_sight() >= p['dist']]) == 0:
+                return True
+            elif isinstance(card, cs.Mancato) or (card.need_with and len(self.hand) < 2):
+                return True
+            elif isinstance(card, cs.Panico) and len([p for p in self.game.get_visible_players(self) if 1 >= p['dist']]) == 0 and len(self.equipment) == 0:
+                return True
+            elif isinstance(card, csd.Pugno) and len([p for p in self.game.get_visible_players(self) if 1 >= p['dist']]) == 0:
+                return True
+            elif isinstance(card, cs.Prigione) and len([p for p in self.game.get_visible_players(self) if not p['is_sheriff']]) == 0:
+                return True
+            elif not card.is_weapon and len([c for c in self.equipment if c.name == card.name]) > 0:
+                return True
+            return False
+        return True
+
     def end_turn(self, forced=False):
         print(f"{self.name} wants to end his turn")
         if not self.is_my_turn and not forced:
@@ -1178,8 +1207,9 @@ class Player:
         if maxcards == self.lives and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Cinturone)]) > 0:
             maxcards = 8
         if len(self.hand) > maxcards and not forced:
-            print(
-                f"{self.name}: I have to many cards in my hand and I can't end the turn")
+            print(f"{self.name}: I have to many cards in my hand and I can't end the turn")
+        elif not self.check_can_end_turn():
+            print(f"{self.name}: I must play the legge del west card")
         elif self.pending_action == PendingAction.PLAY or forced:
             if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
