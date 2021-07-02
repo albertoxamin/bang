@@ -1182,8 +1182,8 @@ class Player:
             card = must_be_used_cards[0]
             print(f'Legge del west card: {card.name}')
             print(self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(card) == type(cs.Bang)))
-            if card.suit == cs.Suit.DIAMONDS and card.need_target and len([p for p in self.game.get_alive_players() if p != self and (not p.character.check(self.game, chd.ApacheKid) and not any([isinstance(c, grc.Calumet) for c in p.gold_rush_equipment]))]) == 0:
-                return True
+            if card.suit == cs.Suit.DIAMONDS and card.need_target and len([p for p in self.game.get_alive_players() if (not p.character.check(self.game, chd.ApacheKid) and not any([isinstance(c, grc.Calumet) for c in p.gold_rush_equipment]))]) == 0:
+                return isinstance(card, cs.Bang) #TODO: insegnare ai bot a usare panico e cat balou su se stessi
             elif (isinstance(card, cs.Bang) or (isinstance(card, cs.Mancato) and self.character.check(self.game, chars.CalamityJanet))) and self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment]) or len([p for p in self.game.get_visible_players(self) if self.get_sight() >= p['dist']]) == 0:
                 return True
             elif isinstance(card, cs.Mancato) or (card.need_with and len(self.hand) < 2):
