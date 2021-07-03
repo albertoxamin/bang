@@ -833,6 +833,7 @@ class Player:
             else:
                 self.game.deck.scrap(self.available_cards.pop(0), True) #non pesco carte
             self.game.deck.scrap(self.available_cards.pop(0), True) #scarto l'altra
+            #legge del west non si applica perchè la seconda carta viene scartata
             if self.game.check_event(ceh.IlTreno):
                 self.hand.append(self.game.deck.draw())
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
@@ -1183,7 +1184,10 @@ class Player:
             print(f'Legge del west card: {card.name}')
             print(self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(card) == type(cs.Bang)))
             if card.suit == cs.Suit.DIAMONDS and card.need_target and len([p for p in self.game.get_alive_players() if (not p.character.check(self.game, chd.ApacheKid) and not any([isinstance(c, grc.Calumet) for c in p.gold_rush_equipment]))]) == 0:
-                return isinstance(card, cs.Bang) #TODO: insegnare ai bot a usare panico e cat balou su se stessi
+                if isinstance(card, cs.Bang): #TODO: insegnare ai bot a usare panico e cat balou su se stessi
+                     return True
+                else:
+                    return len(self.equipment) == 0 # se non ho carte equipaggiamento
             elif (isinstance(card, cs.Bang) or (isinstance(card, cs.Mancato) and self.character.check(self.game, chars.CalamityJanet))) and self.has_played_bang and not any([isinstance(c, cs.Volcanic) for c in self.equipment]) or len([p for p in self.game.get_visible_players(self) if self.get_sight() >= p['dist']]) == 0:
                 return True
             elif isinstance(card, cs.Mancato) or (card.need_with and len(self.hand) < 2):
