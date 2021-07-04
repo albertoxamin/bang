@@ -15,15 +15,14 @@ def test_barile():
         g.add_player(p)
     g.start_game()
     for p in ps:
+        p.available_characters = [Character('test_char', 2)]
         p.set_character(p.available_characters[0].name)
     barrel_guy = g.players[g.turn]
-    barrel_guy.character = Character('test_char', 2)
     barrel_guy.draw('')
     barrel_guy.hand = [Barile(0,0)]
     barrel_guy.play_card(0)
     assert isinstance(barrel_guy.equipment[0], Barile)
     barrel_guy.end_turn()
-    barrel_guy.character = Character('test_char', 2)
     g.players[g.turn].draw('')
     g.players[g.turn].hand = [Volcanic(0,0), Bang(0,0), Bang(0,0)]
     g.players[g.turn].play_card(0)
@@ -51,8 +50,9 @@ def test_volcanic():
         g.add_player(p)
     g.start_game()
     for p in ps:
+        p.available_characters = [Character('test_char', 3)]
         p.set_character(p.available_characters[0].name)
-        p.character = Character('test_char', 3)
+    for p in ps:
         p.hand = []
     volcanic_guy = g.players[g.turn]
     volcanic_guy.draw('')
@@ -73,8 +73,9 @@ def test_dinamite():
         g.add_player(p)
     g.start_game()
     for p in ps:
+        p.available_characters = [Character('test_char', 4)]
         p.set_character(p.available_characters[0].name)
-        p.character = Character('test_char', 4)
+    for p in ps:
         p.hand = []
     dinamite_guy = g.players[g.turn]
     dinamite_guy.draw('')
