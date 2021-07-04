@@ -1,3 +1,4 @@
+from random import randint
 from bang.characters import Character
 from backend.bang.cards import Bang, Barile, Suit, Volcanic
 from tests.dummy_socket import DummySocket
@@ -261,7 +262,24 @@ def test_birra_3p():
     assert g.players[g.turn].lives == g.players[g.turn].max_lives
 
 # test CatBalou
-#TODO
+def test_catbalou():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [CatBalou(0,0)]
+    g.players[g.turn].play_card(0, g.players[(g.turn+1)%2].name)
+    g.players[g.turn].choose(0)
+    assert len(g.players[g.turn].hand) == 0
+    assert len(g.deck.scrap_pile) == 2
+    assert len(g.players[(g.turn+1)%2].hand) == 3
+
 
 # test Diligenza
 def test_diligenza():
@@ -280,25 +298,186 @@ def test_diligenza():
     assert len(g.players[g.turn].hand) == 2
 
 # test Duello
-#TODO
+def test_duello():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    for p in ps:
+        p.hand = []
+    g.players[g.turn].draw('')
+    # winning duello
+    g.players[g.turn].hand = [Duello(0,0), Duello(0,0)]
+    g.players[g.turn].play_card(0, g.players[(g.turn+1)%2].name)
+    assert len(g.players[g.turn].hand) == 1
+    assert g.players[(g.turn+1)%2].lives == g.players[(g.turn+1)%2].max_lives - 1
+    # losing duello
+    g.players[(g.turn+1)%2].hand = [Bang(0,0)]
+    g.players[g.turn].play_card(0, g.players[(g.turn+1)%2].name)
+    assert g.players[g.turn].pending_action == PendingAction.WAIT
+    assert g.players[(g.turn+1)%2].pending_action == PendingAction.RESPOND
+    g.players[(g.turn+1)%2].respond(0)
+    assert g.players[(g.turn+1)%2].pending_action == PendingAction.WAIT
+    assert g.players[g.turn].lives == g.players[g.turn].max_lives - 1
 
 # test Emporio
-#TODO
+def test_emporio():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(7)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    for p in ps:
+        p.hand = []
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Emporio(0,0)]
+    g.players[g.turn].play_card(0)
+    assert g.players[g.turn].pending_action == PendingAction.CHOOSE
+    g.players[g.turn].choose(0)
+    print(g.players[g.turn].name)
+    for i in range(1, len(g.players)-1):
+        assert g.players[(g.turn+i)%7].pending_action == PendingAction.CHOOSE
+        g.players[(g.turn+i)%7].choose(0)
+    for p in ps:
+        assert len(p.hand) == 1
+    assert g.players[g.turn].pending_action == PendingAction.PLAY
 
 # test Gatling
-#TODO
+def test_gatling():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(7)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    # test lose gatling
+    for p in ps:
+        p.hand = []
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Gatling(0,0), Gatling(0,0)]
+    g.players[g.turn].play_card(0)
+    for p in ps:
+        if p != g.players[g.turn]:
+            assert p.lives == p.max_lives - 1
+    # test win gatling
+    for p in ps:
+        if p != g.players[g.turn]:
+            p.hand = [Mancato(0,0)]
+    g.players[g.turn].play_card(0)
+    assert g.players[g.turn].pending_action == PendingAction.WAIT
+    for p in ps:
+        if p != g.players[g.turn]:
+            p.respond(0)
+    assert g.players[g.turn].pending_action == PendingAction.PLAY
+    for p in ps:
+        if p != g.players[g.turn]:
+            assert p.lives == p.max_lives - 1
 
 # test Indiani
-#TODO
+def test_indiani():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(7)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    # test lose indiani
+    for p in ps:
+        p.hand = []
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Indiani(0,0), Indiani(0,0)]
+    g.players[g.turn].play_card(0)
+    for p in ps:
+        if p != g.players[g.turn]:
+            assert p.lives == p.max_lives - 1
+    # test win indiani
+    for p in ps:
+        if p != g.players[g.turn]:
+            p.hand = [Bang(0,0)]
+    g.players[g.turn].play_card(0)
+    assert g.players[g.turn].pending_action == PendingAction.WAIT
+    for p in ps:
+        if p != g.players[g.turn]:
+            p.respond(0)
+    assert g.players[g.turn].pending_action == PendingAction.PLAY
+    for p in ps:
+        if p != g.players[g.turn]:
+            assert p.lives == p.max_lives - 1
 
 # test Mancato
-#TODO
+def test_mancato():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    for p in ps:
+        p.hand = [Mancato(0,0)]
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Bang(0,0)]
+    g.players[g.turn].play_card(0, g.players[(g.turn+1)%2].name)
+    assert g.players[(g.turn+1)%2].pending_action == PendingAction.RESPOND
+    g.players[(g.turn+1)%2].respond(0)
+    assert g.players[(g.turn+1)%2].lives == g.players[(g.turn+1)%2].max_lives
+    assert g.players[(g.turn+1)%2].pending_action == PendingAction.WAIT
+    assert g.players[g.turn].pending_action == PendingAction.PLAY
 
 # test Panico
-#TODO
+def test_panico():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Panico(0,0)]
+    g.players[g.turn].play_card(0, g.players[(g.turn+1)%2].name)
+    g.players[g.turn].choose(0)
+    assert len(g.players[g.turn].hand) == 1
+    assert len(g.deck.scrap_pile) == 1
+    assert len(g.players[(g.turn+1)%2].hand) == 3
 
 # test Saloon
-#TODO
+def test_saloon():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(8)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    for p in ps:
+        p.lives = randint(p.max_lives-1, p.max_lives)
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Saloon(0,0)]
+    g.players[g.turn].play_card(0)
+    for p in ps:
+        assert p.lives == p.max_lives
 
 # test WellsFargo
 def test_diligenza():
