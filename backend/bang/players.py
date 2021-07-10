@@ -13,6 +13,7 @@ import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import eventlet
+from typing import List
 
 class PendingAction(IntEnum):
     PICK = 0
@@ -35,8 +36,8 @@ class Player:
         self.reset()
 
     def reset(self):
-        self.hand: cs.Card = []
-        self.equipment: cs.Card = []
+        self.hand: List[cs.Card] = []
+        self.equipment: List[cs.Card] = []
         self.role: r.Role = None
         self.character: chars.Character = None
         self.real_character: chars.Character = None
@@ -49,7 +50,7 @@ class Player:
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.pending_action: PendingAction = None
-        self.available_characters = []
+        self.available_characters: List[chars.Character] = []
         self.was_shot = False
         self.on_pick_cb = None
         self.on_failed_response_cb = None
@@ -78,7 +79,7 @@ class Player:
         self.using_rimbalzo = 0 # 0 no, 1 scegli giocatore, 2 scegli carta
         self.bang_used = 0
         self.gold_nuggets = 0
-        self.gold_rush_equipment = []
+        self.gold_rush_equipment: List[grc.ShopCard] = []
         self.was_player = False
 
     def join_game(self, game):
@@ -178,7 +179,7 @@ class Player:
             if self.gold_nuggets >= 2 and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Zaino)]) > 0:
                 for i in range(len(self.gold_rush_equipment)):
                     if isinstance(self.gold_rush_equipment[i], grc.Zaino):
-                        self.play_card(len(self.hand) + len(self.equipment) + i)
+                        self.gold_rush_equipment[i].play_card(self, None)
                         return # play card will notify the player
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1 and self.lives == 0:
                 if self.game.players[self.game.turn] != self:

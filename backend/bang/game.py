@@ -28,7 +28,7 @@ class Game:
         self.waiting_for = 0
         self.initial_players = 0
         self.password = ''
-        self.expansions = []
+        self.expansions: List[str] = []
         self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon', 'gold_rush']
         self.shutting_down = False
         self.is_competitive = False
@@ -40,7 +40,7 @@ class Game:
         self.incremental_turn = 0
         self.did_resuscitate_deadman = False
         self.is_handling_death = False
-        self.pending_winners = []
+        self.pending_winners: List[pl.Player] = []
         self.someone_won = False
         self.attack_in_progress = False
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
