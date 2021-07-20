@@ -385,6 +385,9 @@ class Game:
                     self.someone_won = True
                 self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}|{p.role.name}')
             p.notify_self()
+        if hasattr(self.sio, 'is_fake'):
+            print('announces_winners(): Running for tests, you will have to call reset manually!')
+            return
         for i in range(5):
             self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
             eventlet.sleep(1)
@@ -463,7 +466,7 @@ class Game:
         if self.shutting_down: return
         print(f'{self.name}: {self.players[self.turn].name} invoked next turn')
         if self.pending_winners and not self.someone_won:
-                    return self.announces_winners()
+            return self.announces_winners()
         pls = self.get_alive_players()
         if len(pls) > 0:
             if self.check_event(ceh.CorsaAllOro):
