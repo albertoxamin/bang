@@ -268,7 +268,11 @@ class Player:
             elif len(need_target) > 0:
                 for c in need_target:
                     _range = self.get_sight() if c.name == 'Bang!' or c.name == "Pepperbox" else c.range
-                    others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'] and not c.must_be_used) and p['lives'] > 0 and not ((isinstance(c, cs.CatBalou) or isinstance(c, cs.Panico)) and p['cards'] == 0) and not (p['is_sheriff'] and isinstance(c, cs.Prigione))]
+                    others = [p for p in self.game.get_visible_players(self) if _range >= p['dist'] and not (isinstance(self.role, r.Vice) and p['is_sheriff'] and not c.must_be_used) and p['lives'] > 0 and not 
+                    ((isinstance(c, cs.CatBalou) or isinstance(c, cs.Panico)) and p['cards'] == 0)
+                     and not (p['is_sheriff'] and isinstance(c, cs.Prigione))]
+                    if (isinstance(c, cs.Panico) or isinstance(c, cs.Panico))and len(self.equipment) > 0:
+                        others.append({'name': self.name, 'is_sheriff': isinstance(self.role, r.Sheriff)})
                     if len(others) == 0 or c not in self.hand:
                         continue
                     target = others[randrange(0, len(others))]
@@ -327,7 +331,11 @@ class Player:
                     self.pending_action = PendingAction.PLAY
                     self.notify_self()
                 else:
-                    self.choose(randrange(0, len(target.hand)+len(target.equipment)))
+                    try:
+                        self.choose(randrange(0, len(target.hand)+len(target.equipment)))
+                    except:
+                        self.choose(0)
+
 
     def play_turn(self, can_play_vendetta = True, again = False, can_play_again_don_bell=True):
         if (self.lives == 0 or self.is_dead) and not self.is_ghost:
@@ -1185,7 +1193,7 @@ class Player:
             print(f'Legge del west card: {card.name}')
             print(self.has_played_bang and not (any([isinstance(c, cs.Volcanic) for c in self.equipment]) and type(card) == type(cs.Bang)))
             if card.suit == cs.Suit.DIAMONDS and card.need_target and len([p for p in self.game.get_alive_players() if (not p.character.check(self.game, chd.ApacheKid) and not any([isinstance(c, grc.Calumet) for c in p.gold_rush_equipment]))]) == 0:
-                if isinstance(card, cs.Bang): #TODO: insegnare ai bot a usare panico e cat balou su se stessi
+                if isinstance(card, cs.Bang):
                      return True
                 else:
                     return len(self.equipment) == 0 # se non ho carte equipaggiamento
