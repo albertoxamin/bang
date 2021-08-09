@@ -129,6 +129,7 @@ def test_5p_renegade_gatling_win():
     print(roles)
     assert len(roles) == 4
     assert isinstance(g.players[g.turn].role, Sheriff)
+    g.players[g.turn].is_my_turn = False
     for i in range(len(g.players)):
         g.players[i].lives = 1
         g.players[i].hand = []
@@ -136,6 +137,38 @@ def test_5p_renegade_gatling_win():
     g.play_turn()
     g.players[g.turn].draw('')
     g.players[g.turn].hand = [Gatling(0,0)]
+    g.players[g.turn].play_card(0)
+    for i in range(len(g.players)):
+        if isinstance(g.players[i].role, Renegade):
+            print (g.players[i].role.name, 'win_status:', hasattr(g.players[i], 'win_status') and g.players[i].win_status)
+            assert (hasattr(g.players[i], 'win_status') and g.players[i].win_status)
+        else:
+            print(g.players[i].role.name, 'win_status:', (hasattr(g.players[i], 'win_status') and g.players[i].win_status))
+            assert not (hasattr(g.players[i], 'win_status') and g.players[i].win_status)
+
+# test that a game with 5 player the renegade kills all the other players and wins
+def test_5p_renegade_indiani_win():
+    sio = DummySocket()
+    g = Game('test', sio)
+    for i in range(5):
+        p = Player(f'p{i}', f'p{i}', sio)
+        g.add_player(p)
+    g.start_game()
+    for p in g.players:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    roles = {g.players[i].role.name:i for i in range(len(g.players))}
+    print(roles)
+    assert len(roles) == 4
+    assert isinstance(g.players[g.turn].role, Sheriff)
+    g.players[g.turn].is_my_turn = False
+    for i in range(len(g.players)):
+        g.players[i].lives = 1
+        g.players[i].hand = []
+    g.turn = roles['Rinnegato']
+    g.play_turn()
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Indiani(0,0)]
     g.players[g.turn].play_card(0)
     for i in range(len(g.players)):
         if isinstance(g.players[i].role, Renegade):

@@ -234,7 +234,7 @@ class Game:
         if self.waiting_for == 0:
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
-        self.attack_in_progress = False
+            self.attack_in_progress = False
         if self.pending_winners and not self.someone_won:
             return self.announces_winners()
 
@@ -252,7 +252,7 @@ class Game:
         if self.waiting_for == 0:
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
-        self.attack_in_progress = False
+            self.attack_in_progress = False
         if self.pending_winners and not self.someone_won:
             return self.announces_winners()
 
@@ -360,6 +360,7 @@ class Game:
             if self.ready_count == self.waiting_for:
                 self.waiting_for = 0
                 self.ready_count = 0
+                self.attack_in_progress = False
                 if self.pending_winners and not self.someone_won:
                     return self.announces_winners()
                 if self.dalton_on:
