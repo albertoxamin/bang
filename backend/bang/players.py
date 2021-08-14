@@ -827,7 +827,7 @@ class Player:
                 if len(self.available_cards) > 0: #la carta non scelta la rimettiamo in cima al mazzo
                     self.game.deck.put_on_top(self.available_cards.pop())
                 if len(self.available_cards) > 0: #se sono rimaste carte le scartiamo
-                    self.game.scrap(self.available_cards.pop())
+                    self.game.deck.scrap(self.available_cards.pop())
                 #se c'è sia treno che piccone pesco un'altra carta
                 if self.game.check_event(ceh.IlTreno) and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Piccone)]) > 0:
                     self.hand.append(self.game.deck.draw())
