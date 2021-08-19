@@ -61,3 +61,12 @@ jobs:
         name: Inspect image
         run: |
           docker buildx imagetools inspect albertoxamin/bang:latest
+
+      - name: Notify discord
+        uses: th0th/notify-discord@v0.4.1
+        if: ${{ always() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_JOB_NAME: "Docker image main :latest"
+          GITHUB_JOB_STATUS: ${{ job.status }}
