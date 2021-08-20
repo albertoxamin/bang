@@ -26,6 +26,7 @@ import dynamite_sfx from '@/assets/sounds/dynamite.mp3'
 import prison_sfx from '@/assets/sounds/prison.mp3'
 import turn_sfx from '@/assets/sounds/turn.mp3'
 import death_sfx from '@/assets/sounds/death.mp3'
+import cash_sfx from '@/assets/sounds/cash.mp3'
 export default {
 	name: 'Chat',
 	props: {
@@ -86,6 +87,8 @@ export default {
 					(new Audio(dynamite_sfx)).play();
 				} else if (type == 'prison_turn') {
 					(new Audio(prison_sfx)).play();
+				} else if (type == 'purchase_card') {
+					(new Audio(cash_sfx)).play();
 				} else {
 					(new Audio(notification_sfx)).play();
 				}
