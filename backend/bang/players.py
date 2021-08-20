@@ -1079,6 +1079,7 @@ class Player:
                 else:
                     self.hand.append(self.game.deck.draw(True))
             card.use_card(self)
+            print(f'{self.game.name}: {self.name} responded with {card.name}')
             self.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
             self.game.deck.scrap(card, True)
             self.notify_self()
