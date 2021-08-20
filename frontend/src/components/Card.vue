@@ -3,7 +3,7 @@
 		<h4>{{cardName}}</h4>
 		<div class="emoji">{{emoji}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
-		<div class="suit">{{number}}{{suit}}</div>
+		<div class="suit">{{number}}<span :style="`${(card.suit !== undefined && card.suit%2 === 0)? 'color:red':''}`">{{suit}}</span></div>
 		<div class="expansion" v-if="card.expansion_icon">{{card.expansion_icon}}</div>
 	</div>
 </template>
