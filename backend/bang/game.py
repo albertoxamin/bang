@@ -542,7 +542,7 @@ class Game:
         self.is_handling_death = True
         import bang.expansions.dodge_city.characters as chd
         print(f'{self.name}: the killer is {player.attacker}')
-        if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker:
+        if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker and player.attacker in self.players:
             player.attacker.gold_nuggets += 1
             player.attacker.hand.append(self.deck.draw(True))
             player.attacker.hand.append(self.deck.draw(True))
