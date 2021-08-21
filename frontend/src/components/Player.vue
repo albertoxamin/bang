@@ -277,7 +277,8 @@ export default {
 					noDesc: true,
 				}]
 			let expectedBangResponse = this.expected_response.indexOf('Bang!') !== -1
-			this.hand.filter(x => (x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1) || (this.character.name === "Elena Fuente" && !expectedBangResponse)).forEach(x=>{
+			let sborniaEvent = this.eventCard && this.eventCard.name == "Sbornia"
+			this.hand.filter(x => (x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1) || (!expectedBangResponse && this.character.name === "Elena Fuente" && !sborniaEvent)).forEach(x=>{
 				cc.push(x)
 			})
 			this.equipment.filter(x => x.usable_next_turn && x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
