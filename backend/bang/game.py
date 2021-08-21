@@ -519,6 +519,7 @@ class Game:
                     return True
             eventlet.sleep(15) # he may reconnect
             if player.is_bot:
+                player.was_player = False
                 if len(player.available_characters) > 0:
                     player.set_available_character(player.available_characters)
                 player.bot_spin()
