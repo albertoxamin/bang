@@ -210,6 +210,10 @@ def chat_message(sid, msg):
                         ses.game.add_player(bot)
                         bot.bot_spin()
                     return
+                if '/startwithseed' in msg and not ses.game.started:
+                    if len(msg.split()) > 1:
+                        ses.game.start_game(int(msg.split()[1]))
+                    return
                 elif '/removebot' in msg and not ses.game.started:
                     if any([p.is_bot for p in ses.game.players]):
                         [p for p in ses.game.players if p.is_bot][-1].disconnect()

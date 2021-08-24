@@ -106,7 +106,8 @@ class Game:
                 {'cmd':'/meinfo', 'help':'Get player data'},
                 {'cmd':'/gameinfo', 'help':'Get game data'},
                 {'cmd':'/mebot', 'help':'Toggles bot mode'},
-                {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'}]
+                {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
+                {'cmd':'/startwithseed', 'help':'start the game with custom seed'}]
             self.sio.emit('commands', room=self.name, data=commands)
         else:
             self.sio.emit('commands', room=self.name, data=[{'cmd':'/debug', 'help':'Toggles the debug mode'}])
@@ -180,10 +181,17 @@ class Game:
         for i in range(len(self.players)):
             self.players[i].set_available_character(char_cards[i * n : i * n + n])
 
-    def start_game(self):
-        print(f'{self.name}: GAME IS STARING')
+    def start_game(self, SEED=None):
         if self.started:
             return
+        print(f'{self.name}: GAME IS STARING')
+        if SEED == None:
+            import time
+            SEED = int(time.time())
+            random.seed(SEED)
+            print(f'{self.name}: SEED IS {SEED}')
+        else:
+            random.seed(SEED)
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         self.sio.emit('chat_message', room=self.name, data=f'_starting')
         self.sio.emit('start', room=self.name)
