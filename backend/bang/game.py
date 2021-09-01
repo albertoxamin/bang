@@ -167,7 +167,7 @@ class Game:
                     self.players[i].hand.append(self.deck.draw())
                 self.players[i].notify_self()
             current_roles = [x.role.name for x in self.players]
-            random.shuffle(current_roles)
+            self.rng.shuffle(current_roles)
             cr = ''
             for x in current_roles:
                 if (x not in cr):
@@ -177,7 +177,7 @@ class Game:
 
     def choose_characters(self):
         n = self.characters_to_distribute
-        char_cards = random.sample(characters.all_characters(self.expansions), len(self.players)*n)
+        char_cards = self.rng.sample(characters.all_characters(self.expansions), len(self.players)*n)
         for i in range(len(self.players)):
             self.players[i].set_available_character(char_cards[i * n : i * n + n])
 
@@ -188,10 +188,10 @@ class Game:
         if SEED == None:
             import time
             SEED = int(time.time())
-            random.seed(SEED)
-            print(f'{self.name}: SEED IS {SEED}')
-        else:
-            random.seed(SEED)
+        print(f'{self.name}: SEED IS {SEED}')
+        self.SEED = SEED
+        self.rng = random.Random(SEED)
+
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         self.sio.emit('chat_message', room=self.name, data=f'_starting')
         self.sio.emit('start', room=self.name)
@@ -218,7 +218,7 @@ class Game:
             available_roles = available_roles[:len(self.players)]
         else:
             available_roles = [roles.Renegade(), roles.Renegade()]
-        random.shuffle(available_roles)
+        self.rng.shuffle(available_roles)
         for i in range(len(self.players)):
             self.players[i].set_role(available_roles[i])
             if isinstance(available_roles[i], roles.Sheriff) or (len(available_roles) == 3 and isinstance(available_roles[i], roles.Vice)):

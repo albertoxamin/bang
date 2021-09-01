@@ -96,7 +96,7 @@ def get_endgame_card():
     end_game.expansion = 'high-noon'
     return end_game
 
-def get_all_events():
+def get_all_events(rng=random):
     cards = [
        Benedizione(),
        Maledizione(),
@@ -113,7 +113,7 @@ def get_all_events():
        Manette(),
        NuovaIdentita(),
     ]
-    random.shuffle(cards)
+    rng.shuffle(cards)
     for c in cards:
         c.expansion = 'high-noon'
     return cards

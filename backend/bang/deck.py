@@ -24,24 +24,24 @@ class Deck:
         self.event_cards: List[ce.CardEvent] = []
         endgame_cards: List[ce.CardEvent] = []
         if 'fistful_of_cards' in game.expansions:
-            self.event_cards.extend(ce.get_all_events())
+            self.event_cards.extend(ce.get_all_events(game.rng))
             endgame_cards.append(ce.get_endgame_card())
         if 'high_noon' in game.expansions:
-            self.event_cards.extend(ceh.get_all_events())
+            self.event_cards.extend(ceh.get_all_events(game.rng))
             endgame_cards.append(ceh.get_endgame_card())
         if len(self.event_cards) > 0:
-            random.shuffle(self.event_cards)
+            game.rng.shuffle(self.event_cards)
             self.event_cards = self.event_cards[:12]
             self.event_cards.insert(0, None)
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
-            self.event_cards.append(random.choice(endgame_cards))
-        random.shuffle(self.cards)
+            self.event_cards.append(game.rng.choice(endgame_cards))
+        game.rng.shuffle(self.cards)
         self.shop_deck: List[grc.ShopCard] = []
         self.shop_cards: List[grc.ShopCard] = []
         if 'gold_rush' in game.expansions:
             self.shop_cards = [None, None, None]
             self.shop_deck = grc.get_cards()
-            random.shuffle(self.shop_deck)
+            game.rng.shuffle(self.shop_deck)
             self.fill_gold_rush_shop()
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
@@ -91,7 +91,7 @@ class Deck:
 
     def reshuffle(self):
         self.cards = self.scrap_pile[:-1].copy()
-        random.shuffle(self.cards)
+        self.game.rng.shuffle(self.cards)
         self.scrap_pile = self.scrap_pile[-1:]
 
     def draw_from_scrap_pile(self) -> cs.Card:
