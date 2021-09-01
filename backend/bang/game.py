@@ -47,6 +47,7 @@ class Game:
         self.debug = self.name == 'debug'
         self.is_changing_pwd = False
         self.is_hidden = False
+        self.rng = random.Random()
 
     def reset(self):
         print(f'{self.name}: resetting lobby')
