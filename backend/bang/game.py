@@ -48,6 +48,7 @@ class Game:
         self.is_changing_pwd = False
         self.is_hidden = False
         self.rng = random.Random()
+        self.rpc_log = []
 
     def reset(self):
         print(f'{self.name}: resetting lobby')

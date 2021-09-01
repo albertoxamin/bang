@@ -191,9 +191,130 @@ def join_room(sid, room):
         games[i].notify_room(sid)
         games[i].notify_all()
 
+"""
+Sockets for the status page
+"""
+
+@sio.event
+def get_all_rooms(sid, deploy_key):
+    if 'DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']:
+        sio.emit('all_rooms', room=sid, data=[{
+            'name': g.name,
+            'hidden': g.is_hidden,
+            'players': [{'name':p.name, 'bot': p.is_bot, 'health': p.lives, 'sid': p.sid} for p in g.players],
+            'password': g.password,
+            'expansions': g.expansions,
+            'started': g.started,
+            'current_turn': g.turn,
+            'incremental_turn': g.incremental_turn,
+            'debug': g.debug,
+            'spectators': len(g.spectators)
+        } for g in games])
+
+@sio.event
+def kick(sid, data):
+    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+        sio.emit('kicked', room=data['sid'])
+
+@sio.event
+def hide_toogle(sid, data):
+    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+        game = [g for g in games if g.name==data['room']]
+        if len(games) > 0:
+            game[0].is_hidden = not game[0].is_hidden
+            if game[0].is_hidden:
+                if not data['room'] in blacklist:
+                    blacklist.append(data['room'])
+            elif data['room'] in blacklist:
+                blacklist.remove(data['room'])
+            advertise_lobbies()
+
+"""
+Sockets for the game
+"""
+
+@sio.event
+def start_game(sid):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};start_game')
+    ses.game.start_game()
+    advertise_lobbies()
+
+@sio.event
+def set_character(sid, name):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};set_character;{name}')
+    ses.set_character(name)
+
+@sio.event
+def refresh(sid):
+    ses: Player = sio.get_session(sid)
+    ses.notify_self()
+
+@sio.event
+def draw(sid, pile):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};draw;{pile}')
+    ses.draw(pile)
+
+@sio.event
+def pick(sid):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};pick')
+    ses.pick()
+
+@sio.event
+def end_turn(sid):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};end_turn')
+    ses.end_turn()
+
+@sio.event
+def play_card(sid, data):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};play_card;{json.dumps(data)}')
+    ses.play_card(data['index'], data['against'], data['with'])
+
+@sio.event
+def respond(sid, card_index):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};respond;{card_index}')
+    ses.respond(card_index)
+
+@sio.event
+def choose(sid, card_index):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};choose;{card_index}')
+    ses.choose(card_index)
+
+@sio.event
+def scrap(sid, card_index):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};scrap;{card_index}')
+    ses.scrap(card_index)
+
+@sio.event
+def special(sid, data):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};play_card;{json.dumps(data)}')
+    ses.special(data)
+
+@sio.event
+def gold_rush_discard(sid):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};gold_rush_discard;')
+    ses.gold_rush_discard()
+
+@sio.event
+def buy_gold_rush_card(sid, data:int):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};buy_gold_rush_card;{data}')
+    ses.buy_gold_rush_card(data)
+
 @sio.event
 def chat_message(sid, msg):
     ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f'{ses.name};chat_message;{msg}')
     if len(msg) > 0:
         if msg[0] == '/':
             commands = msg.split(';')
@@ -210,6 +331,38 @@ def chat_message(sid, msg):
                         ses.game.add_player(bot)
                         bot.bot_spin()
                     return
+                if '/replay' in msg:
+                    for i in range(len(ses.game.rpc_log)):
+                        print('replay:', i, 'of', len(ses.game.rpc_log))
+                        cmd = ses.game.rpc_log[i].split(';')
+                        player = [p for p in ses.game.players if p.name == cmd[0]][0]
+                        if cmd[1] == 'start_game':
+                            ses.game.start_game(ses.game.SEED)
+                        if cmd[1] == 'set_character':
+                            set_character(player.sid, cmd[2])
+                        if cmd[1] == 'draw':
+                            draw(player.sid, cmd[2])
+                        if cmd[1] == 'pick':
+                            pick(player.sid)
+                        if cmd[1] == 'end_turn':
+                            end_turn(player.sid)
+                        if cmd[1] == 'play_card':
+                            play_card(player.sid, json.loads(cmd[2]))
+                        if cmd[1] == 'respond':
+                            respond(player.sid, int(cmd[2]))
+                        if cmd[1] == 'choose':
+                            choose(player.sid, int(cmd[2]))
+                        if cmd[1] == 'scrap':
+                            scrap(player.sid, int(cmd[2]))
+                        if cmd[1] == 'special':
+                            special(player.sid, json.loads(cmd[2]))
+                        if cmd[1] == 'gold_rush_discard':
+                            gold_rush_discard(player.sid)
+                        if cmd[1] == 'buy_gold_rush_card':
+                            buy_gold_rush_card(player.sid, int(cmd[2]))
+                        if cmd[1] == 'chat_message':
+                            chat_message(player.sid, cmd[2])
+                        eventlet.sleep(1)
                 if '/startwithseed' in msg and not ses.game.started:
                     if len(msg.split()) > 1:
                         ses.game.start_game(int(msg.split()[1]))
@@ -378,105 +531,10 @@ def chat_message(sid, msg):
             color = sid.encode('utf-8').hex()[-3:]
             sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})
 
-@sio.event
-def get_all_rooms(sid, deploy_key):
-    if 'DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']:
-        sio.emit('all_rooms', room=sid, data=[{
-            'name': g.name,
-            'hidden': g.is_hidden,
-            'players': [{'name':p.name, 'bot': p.is_bot, 'health': p.lives, 'sid': p.sid} for p in g.players],
-            'password': g.password,
-            'expansions': g.expansions,
-            'started': g.started,
-            'current_turn': g.turn,
-            'incremental_turn': g.incremental_turn,
-            'debug': g.debug,
-            'spectators': len(g.spectators)
-        } for g in games])
 
-@sio.event
-def kick(sid, data):
-    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
-        sio.emit('kicked', room=data['sid'])
-
-@sio.event
-def hide_toogle(sid, data):
-    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
-        game = [g for g in games if g.name==data['room']]
-        if len(games) > 0:
-            game[0].is_hidden = not game[0].is_hidden
-            if game[0].is_hidden:
-                if not data['room'] in blacklist:
-                    blacklist.append(data['room'])
-            elif data['room'] in blacklist:
-                blacklist.remove(data['room'])
-            advertise_lobbies()
-
-@sio.event
-def start_game(sid):
-    ses: Player = sio.get_session(sid)
-    ses.game.start_game()
-    advertise_lobbies()
-
-@sio.event
-def set_character(sid, name):
-    ses: Player = sio.get_session(sid)
-    ses.set_character(name)
-
-@sio.event
-def refresh(sid):
-    ses: Player = sio.get_session(sid)
-    ses.notify_self()
-
-@sio.event
-def draw(sid, pile):
-    ses: Player = sio.get_session(sid)
-    ses.draw(pile)
-
-@sio.event
-def pick(sid):
-    ses: Player = sio.get_session(sid)
-    ses.pick()
-
-@sio.event
-def end_turn(sid):
-    ses: Player = sio.get_session(sid)
-    ses.end_turn()
-
-@sio.event
-def play_card(sid, data):
-    ses: Player = sio.get_session(sid)
-    ses.play_card(data['index'], data['against'], data['with'])
-
-@sio.event
-def respond(sid, data):
-    ses: Player = sio.get_session(sid)
-    ses.respond(data)
-
-@sio.event
-def choose(sid, card_index):
-    ses: Player = sio.get_session(sid)
-    ses.choose(card_index)
-
-@sio.event
-def scrap(sid, card_index):
-    ses: Player = sio.get_session(sid)
-    ses.scrap(card_index)
-
-@sio.event
-def special(sid, data):
-    ses: Player = sio.get_session(sid)
-    ses.special(data)
-
-@sio.event
-def gold_rush_discard(sid):
-    ses: Player = sio.get_session(sid)
-    ses.gold_rush_discard()
-
-@sio.event
-def buy_gold_rush_card(sid, data:int):
-    ses: Player = sio.get_session(sid)
-    ses.buy_gold_rush_card(data)
+"""
+Sockets for the help screen
+"""
 
 @sio.event
 def get_cards(sid):
