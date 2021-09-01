@@ -34,7 +34,7 @@ online_players = 0
 blacklist: List[str] = []
 
 def advertise_lobbies():
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'password': g.password} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
 
 @sio.event
