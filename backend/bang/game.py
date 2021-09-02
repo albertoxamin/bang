@@ -49,6 +49,7 @@ class Game:
         self.is_hidden = False
         self.rng = random.Random()
         self.rpc_log = []
+        self.is_replay = False
 
     def reset(self):
         print(f'{self.name}: resetting lobby')
@@ -192,8 +193,8 @@ class Game:
             SEED = int(time.time())
         print(f'{self.name}: SEED IS {SEED}')
         self.SEED = SEED
+        self.rpc_log = [f';players;{len(self.players)};{[p.name for p in self.players]};{self.expansions}', f';start_game;{SEED}']
         self.rng = random.Random(SEED)
-
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         self.sio.emit('chat_message', room=self.name, data=f'_starting')
         self.sio.emit('start', room=self.name)
