@@ -1,7 +1,6 @@
 import os
 import json
 import random
-from tests.dummy_socket import DummySocket
 from typing import List
 import eventlet
 import socketio
@@ -335,7 +334,7 @@ def chat_message(sid, msg, pl=None):
                         bot.bot_spin()
                     return
                 if '/report' in msg and not ses.game.is_replay:
-                    data = "\n".join(ses.game.rpc_log).strip()
+                    data = "\n".join(ses.game.rpc_log[:-1]).strip()
                     response = requests.post("http://hastebin.com/documents", data)
                     key = json.loads(response.text).get('key')
                     webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/{key}')
@@ -348,47 +347,13 @@ def chat_message(sid, msg, pl=None):
                         response = requests.get(f"http://hastebin.com/raw/{replay_id}")
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
-                        ses.game.players = []
-                        ses.game.is_replay = True
-                        for i in range(len(log)):
-                            print('replay:', i, 'of', len(log))
-                            cmd = log[i].split(';')
-                            if cmd[1] == 'players':
-                                ses.game.expansions = json.loads(cmd[4].replace("'",'"'))
-                                pnames = json.loads(cmd[3].replace("'",'"'))
-                                for p in pnames:
-                                    ses.game.add_player(Player(p, p, DummySocket(), bot=False))
-                                continue
-                            if cmd[1] == 'start_game':
-                                ses.game.start_game(int(cmd[2]))
-                                continue
-                            player = [p for p in ses.game.players if p.name == cmd[0]][0]
-                            if cmd[1] == 'set_character':
-                                player.set_character(cmd[2])
-                            if cmd[1] == 'draw':
-                                player.draw(cmd[2])
-                            if cmd[1] == 'pick':
-                                player.pick()
-                            if cmd[1] == 'end_turn':
-                                player.end_turn()
-                            if cmd[1] == 'play_card':
-                                data = json.loads(cmd[2])
-                                player.play_card(data['index'], data['against'], data['with'])
-                            if cmd[1] == 'respond':
-                                player.respond(int(cmd[2]))
-                            if cmd[1] == 'choose':
-                                player.choose(int(cmd[2]))
-                            if cmd[1] == 'scrap':
-                                player.scrap(int(cmd[2]))
-                            if cmd[1] == 'special':
-                                player.special(json.loads(cmd[2]))
-                            if cmd[1] == 'gold_rush_discard':
-                                player.gold_rush_discard()
-                            if cmd[1] == 'buy_gold_rush_card':
-                                player.buy_gold_rush_card(int(cmd[2]))
-                            if cmd[1] == 'chat_message':
-                                chat_message(None, cmd[2], player)
-                            eventlet.sleep(1)
+                        ses.game.replay(log)
+                    return
+                if '/replayspeed' in msg:
+                    _cmd = msg.split()
+                    if len(_cmd) == 2:
+                        ses.game.replay_speed = float(cmd[1])
+                    return
                 if '/startwithseed' in msg and not ses.game.started:
                     if len(msg.split()) > 1:
                         ses.game.start_game(int(msg.split()[1]))

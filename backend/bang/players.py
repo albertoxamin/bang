@@ -135,7 +135,9 @@ class Player:
             self.sio.emit('characters', room=self.sid, data=json.dumps(
                 available, default=lambda o: o.__dict__))
         else:
-            self.set_character(available[randrange(0, len(available))].name)
+            char_name = available[randrange(0, len(available))].name
+            self.game.rpc_log.append(f'{self.name};set_character;{char_name}')
+            self.set_character(char_name)
 
     def notify_card(self, player, card, message=''):
         try:
@@ -233,8 +235,10 @@ class Player:
         else:
             return
         if self.pending_action == PendingAction.PICK:
+            self.game.rpc_log.append(f'{self.name};pick;')
             self.pick()
         elif self.pending_action == PendingAction.DRAW:
+            self.game.rpc_log.append(f'{self.name};draw;')
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
             non_blocked_cards = [card for card in self.hand if (not self.game.check_event(ceh.Manette) or card.suit == self.committed_suit_manette)]
@@ -253,6 +257,7 @@ class Player:
             if self.gold_nuggets > 0 and any([c.number <= self.gold_nuggets for c in self.game.deck.shop_cards]):
                 for i in range(len(self.game.deck.shop_cards)):
                     if self.game.deck.shop_cards[i].number <= self.gold_nuggets:
+                        self.game.rpc_log.append(f'{self.name};buy_gold_rush_card;{i}')
                         self.buy_gold_rush_card(i)
                         return
             if len(equippables) > 0 and not self.game.check_event(ce.IlGiudice):
@@ -305,26 +310,33 @@ class Player:
             if maxcards == self.lives and len([c for c in self.gold_rush_equipment if isinstance(c, grc.Cinturone)]) > 0:
                 maxcards = 8
             if len(self.hand) > maxcards:
+                self.game.rpc_log.append(f'{self.name};scrap;{0}')
                 self.scrap(0)
             else:
+                self.game.rpc_log.append(f'{self.name};end_turn')
                 self.end_turn()
         elif self.pending_action == PendingAction.RESPOND:
             did_respond = False
             for i in range(len(self.hand)):
                 if self.hand[i].can_be_used_now and (self.hand[i].name in self.expected_response or self.character.check(self.game, chd.ElenaFuente)):
+                    self.game.rpc_log.append(f'{self.name};respond;{i}')
                     self.respond(i)
                     did_respond = True
                     break
             for i in range(len(self.equipment)):
                 if not self.game.check_event(ce.Lazo) and self.equipment[i].name in self.expected_response:
+                    self.game.rpc_log.append(f'{self.name};respond;{len(self.hand)+i}')
                     self.respond(len(self.hand)+i)
                     did_respond = True
                     break
             if not did_respond:
+                self.game.rpc_log.append(f'{self.name};respond;{-1}')
                 self.respond(-1)
         elif self.pending_action == PendingAction.CHOOSE:
             if not self.target_p:
-                self.choose(randrange(0, len(self.available_cards)))
+                card_index = randrange(0, len(self.available_cards))
+                self.game.rpc_log.append(f'{self.name};choose;{card_index}')
+                self.choose(card_index)
             else:
                 target = self.game.get_player_named(self.target_p)
                 if len(target.hand)+len(target.equipment) == 0:
@@ -332,8 +344,11 @@ class Player:
                     self.notify_self()
                 else:
                     try:
-                        self.choose(randrange(0, len(target.hand)+len(target.equipment)))
+                        card_index = randrange(0, len(target.hand)+len(target.equipment))
+                        self.game.rpc_log.append(f'{self.name};choose;{card_index}')
+                        self.choose(card_index)
                     except:
+                        self.game.rpc_log.append(f'{self.name};choose;{0}')
                         self.choose(0)
 
 
@@ -577,6 +592,13 @@ class Player:
         return playable_cards
 
     def play_card(self, hand_index: int, against=None, _with=None):
+        if self.is_bot:
+            data = {
+                "index": hand_index,
+                "against": against,
+                "with": _with
+            }
+            self.game.rpc_log.append(f'{self.name};play_card;{json.dumps(data)}')
         print(self.name, 'wants to play card ', hand_index, ' against:', against, ' with:', _with)
         if not self.is_my_turn or self.pending_action != PendingAction.PLAY or self.game.is_handling_death:
             print('but cannot')

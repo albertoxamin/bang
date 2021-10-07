@@ -13,7 +13,6 @@ import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
-
 class Game:
     def __init__(self, name, sio:socketio):
         super().__init__()
@@ -73,6 +72,52 @@ class Game:
             p.notify_self()
         eventlet.sleep(0.5)
         self.notify_room()
+
+    def replay(self, log):
+        from tests.dummy_socket import DummySocket
+        self.players = []
+        self.is_hidden = True
+        self.is_replay = True
+        self.replay_speed = 1
+        for i in range(len(log)):
+            print('replay:', i, 'of', len(log))
+            cmd = log[i].split(';')
+            if cmd[1] == 'players':
+                self.expansions = json.loads(cmd[4].replace("'",'"'))
+                pnames = json.loads(cmd[3].replace("'",'"'))
+                for p in pnames:
+                    self.add_player(pl.Player(p, p, DummySocket(self.sio), bot=False))
+                continue
+            if cmd[1] == 'start_game':
+                self.start_game(int(cmd[2]))
+                continue
+            player = [p for p in self.players if p.name == cmd[0]][0]
+            if cmd[1] == 'set_character':
+                player.set_character(cmd[2])
+            if cmd[1] == 'draw':
+                player.draw(cmd[2])
+            if cmd[1] == 'pick':
+                player.pick()
+            if cmd[1] == 'end_turn':
+                player.end_turn()
+            if cmd[1] == 'play_card':
+                data = json.loads(cmd[2])
+                player.play_card(data['index'], data['against'], data['with'])
+            if cmd[1] == 'respond':
+                player.respond(int(cmd[2]))
+            if cmd[1] == 'choose':
+                player.choose(int(cmd[2]))
+            if cmd[1] == 'scrap':
+                player.scrap(int(cmd[2]))
+            if cmd[1] == 'special':
+                player.special(json.loads(cmd[2]))
+            if cmd[1] == 'gold_rush_discard':
+                player.gold_rush_discard()
+            if cmd[1] == 'buy_gold_rush_card':
+                player.buy_gold_rush_card(int(cmd[2]))
+            # if cmd[1] == 'chat_message':
+            #     chat_message(None, cmd[2], player)
+            eventlet.sleep(self.replay_speed)
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
