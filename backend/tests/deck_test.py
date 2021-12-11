@@ -14,7 +14,7 @@ def test_draw():
     g = Game('test', DummySocket())
     g.deck = Deck(g)
     l = len(g.deck.cards)
-    assert g.deck.draw() != None
+    assert g.deck.draw(True) != None
     assert len(g.deck.cards) == l - 1
     assert len(g.deck.scrap_pile) == 0
 

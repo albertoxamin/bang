@@ -41,7 +41,7 @@ class Schivata(Mancato):
         return False
 
     def use_card(self, player):
-        player.hand.append(player.game.deck.draw())
+        player.hand.append(player.game.deck.draw(True))
         player.notify_self()
 
 class RagTime(Panico):
@@ -225,7 +225,7 @@ class Derringer(Pugnale):
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
-            player.hand.append(player.game.deck.draw())
+            player.hand.append(player.game.deck.draw(True))
             return super().play_card(player, against=against)
         else:
             if not self.is_duplicate_card(player):
@@ -236,7 +236,7 @@ class Derringer(Pugnale):
                 return False
 
     def use_card(self, player):
-        player.hand.append(player.game.deck.draw())
+        player.hand.append(player.game.deck.draw(True))
         player.notify_self()
 
 class Borraccia(Card):

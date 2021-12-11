@@ -399,7 +399,7 @@ class Game:
                 if target_pl.character.check(self, grch.SimeonPicos):
                     target_pl.gold_nuggets += 1
                 if len([c for c in target_pl.equipment if isinstance(c, grc.Stivali)]) > 0:
-                    target_pl.hand.append(self.deck.draw())
+                    target_pl.hand.append(self.deck.draw(True))
                 target_pl.notify_self()
                 self.is_russian_roulette_on = False
                 self.players[self.turn].play_turn()

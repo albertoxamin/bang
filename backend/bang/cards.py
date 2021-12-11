@@ -242,7 +242,7 @@ class Birra(Card):
             import bang.expansions.gold_rush.characters as grch
             madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto) and self.number != 42]
             for p in madamYto:
-                p.hand.append(player.game.deck.draw())
+                p.hand.append(player.game.deck.draw(True))
                 p.notify_self()
             if 'gold_rush' in player.game.expansions and self.number != 42:
                 from bang.players import PendingAction
@@ -304,7 +304,7 @@ class Diligenza(Card):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'_diligenza|{player.name}|{self.name}')
         for i in range(2):
-            player.hand.append(player.game.deck.draw())
+            player.hand.append(player.game.deck.draw(True))
         return True
 
 
@@ -439,7 +439,7 @@ class WellsFargo(Card):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'_wellsfargo|{player.name}|{self.name}')
         for i in range(3):
-            player.hand.append(player.game.deck.draw())
+            player.hand.append(player.game.deck.draw(True))
         return True
 
 

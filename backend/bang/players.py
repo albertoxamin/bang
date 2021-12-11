@@ -378,7 +378,7 @@ class Player:
             if self.character.check(self.game, grch.SimeonPicos):
                 self.gold_nuggets += 1
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
-                self.hand.append(self.game.deck.draw())
+                self.hand.append(self.game.deck.draw(True))
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                 self.hand.append(self.game.deck.draw(True))
                 self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
@@ -1069,7 +1069,7 @@ class Player:
             if self.character.check(self.game, grch.SimeonPicos):
                 self.gold_nuggets += 1
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
-                self.hand.append(self.game.deck.draw())
+                self.hand.append(self.game.deck.draw(True))
         self.heal_if_needed()
         self.mancato_needed = 0
         self.expected_response = []

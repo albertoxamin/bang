@@ -93,7 +93,7 @@ class ChuckWengam(Character):
                 if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
                     player.gold_nuggets += 1
                 if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
-                    player.hand.append(player.game.deck.draw())
+                    player.hand.append(player.game.deck.draw(True))
                 player.hand.append(player.game.deck.draw(True))
                 player.hand.append(player.game.deck.draw(True))
                 player.notify_self()
