@@ -10,6 +10,7 @@ WORKDIR /code
 COPY ./backend /code/
 RUN pip install --user -r requirements.txt
 # We get the dependencies with the full python image so we can compile the one with missing binaries
+ENV UseRobots=false
 
 FROM python:3.7.10-slim-stretch as app
 # copy the dependencies from the pybuilder
@@ -20,4 +21,5 @@ COPY --from=pybuilder /code /dist
 COPY --from=builder ./dist /dist/
 WORKDIR /dist
 EXPOSE 5001
+
 ENTRYPOINT ["python", "/dist/__init__.py"]

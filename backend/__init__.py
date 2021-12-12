@@ -15,19 +15,35 @@ import sys
 sys.setrecursionlimit(10**6) # this should prevents bots from stopping
 
 sio = socketio.Server(cors_allowed_origins="*")
-static_files={
-    '/': {'content_type': 'text/html', 'filename': 'index.html'},
-    '/game': {'content_type': 'text/html', 'filename': 'index.html'},
-    '/help': {'content_type': 'text/html', 'filename': 'index.html'},
-    '/status': {'content_type': 'text/html', 'filename': 'index.html'},
-    # '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
-    '/favicon.ico': {'filename': 'favicon.ico'},
-    '/img/icons': './img/icons',
-    '/manifest.json': {'filename': 'manifest.json'},
-    '/css': './css',
-    '/media': './media',
-    '/js': './js',
-}
+if "UseRobots" in os.environ and os.environ['UseRobots'].upper() == "TRUE":
+    static_files={
+        '/': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/game': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/help': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/status': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
+        '/favicon.ico': {'filename': 'favicon.ico'},
+        '/img/icons': './img/icons',
+        '/manifest.json': {'filename': 'manifest.json'},
+        '/css': './css',
+        '/media': './media',
+        '/js': './js',
+    }
+else:    
+    static_files={
+        '/': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/game': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/help': {'content_type': 'text/html', 'filename': 'index.html'},
+        '/status': {'content_type': 'text/html', 'filename': 'index.html'},
+        # '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
+        '/favicon.ico': {'filename': 'favicon.ico'},
+        '/img/icons': './img/icons',
+        '/manifest.json': {'filename': 'manifest.json'},
+        '/css': './css',
+        '/media': './media',
+        '/js': './js',
+    }
+
 for file in [f for f in os.listdir('.') if '.js' in f or '.map' in f or '.html' in f]:
     static_files[f'/{file}'] = f'./{file}'
 
