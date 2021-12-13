@@ -341,8 +341,12 @@ def chat_message(sid, msg, pl=None):
                     data = "\n".join(ses.game.rpc_log[:-1]).strip()
                     response = requests.post("http://hastebin.com/documents", data)
                     key = json.loads(response.text).get('key')
-                    webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/{key}')
-                    response = webhook.execute()
+                    if "DISCORD_WEBHOOK" in os.environ and os.environ['DISCORD_WEBHOOK'].len > 0:  
+                        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/{key}')
+                        response = webhook.execute()
+                    else:
+                        print("WARNING: DISCORD_WEBHOOK not found")
+                    print(f'New bug report, replay at https://hastebin.com/{key}')
                     return
                 if '/replay' in msg:
                     _cmd = msg.split()
