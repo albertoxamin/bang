@@ -344,6 +344,7 @@ def chat_message(sid, msg, pl=None):
                     if "DISCORD_WEBHOOK" in os.environ and os.environ['DISCORD_WEBHOOK'].len > 0:  
                         webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/{key}')
                         response = webhook.execute()
+                        sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
                     else:
                         print("WARNING: DISCORD_WEBHOOK not found")
                     print(f'New bug report, replay at https://hastebin.com/{key}')
