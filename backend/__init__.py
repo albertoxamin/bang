@@ -339,7 +339,7 @@ def chat_message(sid, msg, pl=None):
                     return
                 if '/report' in msg and not ses.game.is_replay:
                     data = "\n".join(ses.game.rpc_log[:-1]).strip()
-                    response = requests.post("http://hastebin.com/documents", data)
+                    response = requests.post("https://www.toptal.com/developers/hastebin/documents", data)
                     key = json.loads(response.text).get('key')
                     if "DISCORD_WEBHOOK" in os.environ and os.environ['DISCORD_WEBHOOK'].len > 0:  
                         webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/{key}')
