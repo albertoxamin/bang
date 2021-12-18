@@ -81,6 +81,7 @@ class Player:
         self.gold_nuggets = 0
         self.gold_rush_equipment: List[grc.ShopCard] = []
         self.was_player = False
+        self.setaccio_count = 0
 
     def join_game(self, game):
         self.game = game
@@ -356,6 +357,7 @@ class Player:
         if (self.lives == 0 or self.is_dead) and not self.is_ghost:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
+        self.setaccio_count = 0
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
@@ -608,7 +610,7 @@ class Player:
             return
         elif len(self.hand) + len(self.equipment) <= hand_index < len(self.hand) + len(self.equipment) + len(self.gold_rush_equipment) and len(self.gold_rush_equipment):
             print('which is a gold rush black card')
-            card: grc.ShopCard = self.gold_rush_equipment[hand_index - len(self.hand) + len(self.equipment)]
+            card: grc.ShopCard = self.gold_rush_equipment[hand_index - len(self.hand) - len(self.equipment)]
             return card.play_card(self)
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None

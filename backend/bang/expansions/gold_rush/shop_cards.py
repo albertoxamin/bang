@@ -185,9 +185,10 @@ class Setaccio(ShopCard):
         if not self.can_be_used_now:
             return super().play_card(player, against, _with)
         else:
-            if player.gold_nuggets >= 1:
+            if player.gold_nuggets >= 1 and player.setaccio_count < 2:
                 player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 1
+                player.setaccio_count += 1
                 player.hand.append(player.game.deck.draw(True))
                 player.notify_self()
                 return True
