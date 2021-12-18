@@ -341,19 +341,19 @@ def chat_message(sid, msg, pl=None):
                     data = "\n".join(ses.game.rpc_log[:-1]).strip()
                     response = requests.post("https://www.toptal.com/developers/hastebin/documents", data)
                     key = json.loads(response.text).get('key')
-                    if "DISCORD_WEBHOOK" in os.environ and os.environ['DISCORD_WEBHOOK'].len > 0:  
-                        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/{key}')
+                    if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
+                        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
                         response = webhook.execute()
                         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
                     else:
                         print("WARNING: DISCORD_WEBHOOK not found")
-                    print(f'New bug report, replay at https://hastebin.com/{key}')
+                    print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
                     return
                 if '/replay' in msg:
                     _cmd = msg.split()
                     if len(_cmd) == 2:
                         replay_id = _cmd[1]
-                        response = requests.get(f"http://hastebin.com/raw/{replay_id}")
+                        response = requests.get(f"https://www.toptal.com/developers/hastebin/raw/{replay_id}")
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
                         ses.game.replay(log)
