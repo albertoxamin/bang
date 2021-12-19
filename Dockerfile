@@ -22,4 +22,4 @@ COPY --from=builder ./dist /dist/
 WORKDIR /dist
 EXPOSE 5001
 
-ENTRYPOINT ["python", "/dist/__init__.py"]
+ENTRYPOINT ["python", "/dist/server.py"]

@@ -1,11 +1,10 @@
 from random import randint
 from bang.characters import Character
-from backend.bang.cards import Bang, Barile, Suit, Volcanic
+from bang.cards import *
 from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 from bang.players import Player, PendingAction
-from bang.cards import *
 
 # test card Barile
 def test_barile():
