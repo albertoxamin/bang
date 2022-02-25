@@ -99,7 +99,11 @@ class Player:
     def set_character(self, character: str):
         print(self.available_characters, character)
         if self.character == None:
-            self.character = next(x for x in self.available_characters if x.name == character)
+            try:
+                self.character = next(x for x in self.available_characters if x.name == character)
+            except:
+                # fix for wrong character encoding in the first part of some characters like Jose delgrado
+                self.character = next(x for x in self.available_characters if x.name.split()[1] == character.split()[1])
             if 'high_noon' in self.game.expansions:
                 # questo viene utilizzato per la carta nuova identità
                 self.not_chosen_character = next(x for x in self.available_characters if x.name != character)
