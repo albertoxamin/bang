@@ -51,6 +51,8 @@ export default {
 				this.desc = ""
 			else if (card.is_character)
 				this.desc = card.name
+			else if (card.goal)
+				this.desc = this.$t(`cards.${card.name}.name`)
 			else if (card.desc)
 				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
 			else
