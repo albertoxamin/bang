@@ -513,7 +513,7 @@ def chat_message(sid, msg, pl=None):
                         ses.gold_nuggets += int(cmd[1])
                         ses.notify_self()
                 elif '/gameinfo' in msg:
-                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.game.__dict__}'})
+                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {dict(filter(lambda x:x[0] != "rpc_log",ses.game.__dict__.items()))}'})
                 elif '/meinfo' in msg:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
                 elif '/mebot' in msg:
