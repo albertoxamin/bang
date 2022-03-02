@@ -74,6 +74,7 @@ class Card(ABC):
                 return False
             else:
                 player.equipment.append(self)
+            self.can_be_used_now = False
         if against:
             player.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card_against|{player.name}|{self.name}|{against}')
