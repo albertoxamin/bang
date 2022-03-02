@@ -1145,9 +1145,11 @@ class Player:
         if self.mancato_needed <= 0:
             self.attacker = None
 
-    def get_sight(self, countWeapon=True):
+    def get_sight(self, countWeapon=True): #come vedo io gli altri
         if not self.character:
             return 0
+        if self.game.check_event(ce.Lazo):
+            return 1 + self.character.sight_mod
         aim = 0
         range = 0
         for card in self.equipment:
@@ -1155,19 +1157,18 @@ class Player:
                 range += card.range
             else:
                 aim += card.sight_mod
-        if self.game.check_event(ce.Lazo):
-            return 1 + self.character.sight_mod
-        return max(1, range) + aim + self.character.sight_mod
+        return max(1,range) + aim + (self.character.sight_mod if not self.game.check_event(ceh.Sbornia) else 0)
 
-    def get_visibility(self):
+    def get_visibility(self): #come mi vedono gli altri
         if not self.character or not self.game or not self.game.players[self.game.turn].character:
             return 0
         covers = 0
+        ch_vis_mod = self.character.visibility_mod if not self.game.check_event(ceh.Sbornia) else 0
         if self.game.check_event(ce.Lazo) or self.game.players[self.game.turn].character.check(self.game, chd.BelleStar):
-            return self.character.visibility_mod
+            return ch_vis_mod
         for card in self.equipment:
             covers += card.vis_mod
-        return self.character.visibility_mod + covers
+        return ch_vis_mod + covers
 
     def scrap(self, card_index):
         if self.is_my_turn or self.character.check(self.game, chars.SidKetchum):
@@ -1230,9 +1231,9 @@ class Player:
                 return True
             elif isinstance(card, cs.Mancato) or (card.need_with and len(self.hand) < 2):
                 return True
-            elif isinstance(card, cs.Panico) and len([p for p in self.game.get_visible_players(self) if 1 >= p['dist']]) == 0 and len(self.equipment) == 0:
+            elif isinstance(card, cs.Panico) and len([p for p in self.game.get_visible_players(self) if self.get_sight(False) >= p['dist']]) == 0 and len(self.equipment) == 0:
                 return True
-            elif isinstance(card, csd.Pugno) and len([p for p in self.game.get_visible_players(self) if 1 >= p['dist']]) == 0:
+            elif isinstance(card, csd.Pugno) and len([p for p in self.game.get_visible_players(self) if self.get_sight(False) >= p['dist']]) == 0:
                 return True
             elif isinstance(card, cs.Prigione) and len([p for p in self.game.get_visible_players(self) if not p['is_sheriff']]) == 0:
                 return True

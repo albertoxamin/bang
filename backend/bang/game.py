@@ -713,11 +713,10 @@ class Game:
         pls = self.get_alive_players()
         if len(pls) == 0 or player not in pls: return []
         i = pls.index(player)
-        sight = player.get_sight()
         mindist = 99 if not self.check_event(ce.Agguato) else 1
         return [{
             'name': pls[j].name,
-            'dist': min([abs(i - j), (i+ abs(j-len(pls))), (j+ abs(i-len(pls))), mindist]) + pls[j].get_visibility() - (player.get_sight(countWeapon=False)-1),
+            'dist': min([abs(i - j), (i+ abs(j-len(pls))), (j+ abs(i-len(pls))), mindist]) + pls[j].get_visibility(),
             'lives': pls[j].lives,
             'max_lives': pls[j].max_lives,
             'is_sheriff': isinstance(pls[j].role, roles.Sheriff),
