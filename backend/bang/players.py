@@ -1253,32 +1253,35 @@ class Player:
         elif not self.check_can_end_turn():
             print(f"{self.name}: I must play the legge del west card")
         elif self.pending_action == PendingAction.PLAY or forced:
-            if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
-                picked: cs.Card = self.game.deck.pick_and_scrap()
-                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
-                if picked.check_suit(self.game, [cs.Suit.HEARTS]):
-                    self.play_turn(can_play_vendetta=False)
-                    return
-            if not forced and self.character.check(self.game, grch.DonBell) and self.can_play_again_don_bell:
-                picked: cs.Card = self.game.deck.pick_and_scrap()
-                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
-                if picked.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
-                    self.play_turn(can_play_vendetta=False, can_play_again_don_bell=False)
-                    return
-            self.is_my_turn = False
-            self.has_played_bang = False
             for i in range(len(self.equipment)):
                 if self.equipment[i].usable_next_turn and not self.equipment[i].can_be_used_now:
                     self.equipment[i].can_be_used_now = True
             for i in range(len(self.hand)):
                 if self.hand[i].must_be_used:
                     self.hand[i].must_be_used = False
+            self.has_played_bang = False
+        ##Vendetta##
+            if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
+                picked: cs.Card = self.game.deck.pick_and_scrap()
+                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                if picked.check_suit(self.game, [cs.Suit.HEARTS]):
+                    self.play_turn(can_play_vendetta=False)
+                    return
+        ##Don Bell##
+            if not forced and self.character.check(self.game, grch.DonBell) and self.can_play_again_don_bell:
+                picked: cs.Card = self.game.deck.pick_and_scrap()
+                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                if picked.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
+                    self.play_turn(can_play_vendetta=False, can_play_again_don_bell=False)
+                    return
+        ##Ghost##
             if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
                 self.is_ghost = False
                 for i in range(len(self.hand)):
                     self.game.deck.scrap(self.hand.pop(), True)
                 for i in range(len(self.equipment)):
                     self.game.deck.scrap(self.equipment.pop(), True)
+            self.is_my_turn = False
             self.committed_suit_manette = None
             self.pending_action = PendingAction.WAIT
             self.notify_self()
