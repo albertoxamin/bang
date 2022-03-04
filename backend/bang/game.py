@@ -432,7 +432,7 @@ class Game:
             print(f'{self.name}: WE HAVE A WINNER - pending winners')
         else:
             print(f'{self.name}: WE HAVE A WINNER')
-        for p in self.get_alive_players():
+        for p in self.players:
             if winners is None:
                 p.win_status = p in self.pending_winners
             else:
@@ -648,7 +648,6 @@ class Game:
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
             winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
-            #print(f'win check: ready-{self.ready_count} waiting-{self.waiting_for} winners:{len(winners)}')
             if not self.attack_in_progress and len(winners) > 0 and not self.someone_won:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.

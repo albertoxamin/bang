@@ -177,3 +177,37 @@ def test_5p_renegade_indiani_win():
         else:
             print(g.players[i].role.name, 'win_status:', (hasattr(g.players[i], 'win_status') and g.players[i].win_status))
             assert not (hasattr(g.players[i], 'win_status') and g.players[i].win_status)
+
+# test that a game with 5 player the renegade kills the sheriff but it isn't the last alive player and the outlaws wins
+def test_5p_outlaw_death_win():
+    sio = DummySocket()
+    g = Game('test', sio)
+    for i in range(5):
+        p = Player(f'p{i}', f'p{i}', sio)
+        g.add_player(p)
+    g.start_game()
+    for p in g.players:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    roles = {g.players[i].role.name:i for i in range(len(g.players))}
+    print(roles)
+    assert len(roles) == 4
+    assert isinstance(g.players[g.turn].role, Sheriff)
+    g.players[g.turn].is_my_turn = False
+    for i in range(len(g.players)):
+        g.players[i].lives = 1
+        g.players[i].hand = []
+    g.players[roles['Vice']].lives = 2
+    g.turn = roles['Rinnegato']
+    g.play_turn()
+    g.players[g.turn].draw('')
+    g.players[g.turn].hand = [Gatling(0,0)]
+    g.players[g.turn].play_card(0)
+    for i in range(len(g.players)):
+        if isinstance(g.players[i].role, Outlaw):
+            print (g.players[i].role.name, 'win_status:', hasattr(g.players[i], 'win_status') and g.players[i].win_status)
+            assert (hasattr(g.players[i], 'win_status') and g.players[i].win_status)
+            assert (hasattr(g.players[i], 'is_dead') and g.players[i].is_dead)
+        else:
+            print(g.players[i].role.name, 'win_status:', (hasattr(g.players[i], 'win_status') and g.players[i].win_status))
+            assert not (hasattr(g.players[i], 'win_status') and g.players[i].win_status)

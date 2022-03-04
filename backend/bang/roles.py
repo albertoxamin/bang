@@ -62,7 +62,9 @@ class Outlaw(Role):
             return True
         elif initial_players == 3 and attacker_role != None:
             return isinstance(dead_role, Vice) and isinstance(attacker_role, Outlaw)
-        elif initial_players != 3 and (not any([isinstance(p.role, Sheriff) for p in alive_players])) and any([isinstance(p.role, Outlaw) for p in alive_players]):
+        elif (initial_players != 3 and (not any([isinstance(p.role, Sheriff) for p in alive_players]))
+            and (any([isinstance(p.role, Outlaw) for p in alive_players])
+                or any([isinstance(p.role, Renegade) for p in alive_players]) and len(alive_players) > 1)):
             print("The Outlaw won!")
             return True
         return False
