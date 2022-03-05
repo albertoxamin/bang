@@ -437,7 +437,7 @@ class Game:
                 p.win_status = p in self.pending_winners
             else:
                 p.win_status = p in winners
-            if p.win_status:
+            if p.win_status and not (isinstance(p.role, roles.Renegade) and p.is_dead):
                 if not self.someone_won:
                     self.someone_won = True
                 self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}|{p.role.name}')
