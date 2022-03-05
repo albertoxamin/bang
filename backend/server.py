@@ -349,7 +349,7 @@ def chat_message(sid, msg, pl=None):
                         print("WARNING: DISCORD_WEBHOOK not found")
                     print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
                     return
-                if '/replay' in msg:
+                if '/replay' in msg and not '/replayspeed' in msg:
                     _cmd = msg.split()
                     if len(_cmd) == 2:
                         replay_id = _cmd[1]
@@ -361,7 +361,7 @@ def chat_message(sid, msg, pl=None):
                 if '/replayspeed' in msg:
                     _cmd = msg.split()
                     if len(_cmd) == 2:
-                        ses.game.replay_speed = float(cmd[1])
+                        ses.game.replay_speed = float(_cmd[1])
                     return
                 if '/startwithseed' in msg and not ses.game.started:
                     if len(msg.split()) > 1:

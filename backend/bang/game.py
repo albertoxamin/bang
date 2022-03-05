@@ -117,7 +117,7 @@ class Game:
                 player.buy_gold_rush_card(int(cmd[2]))
             # if cmd[1] == 'chat_message':
             #     chat_message(None, cmd[2], player)
-            eventlet.sleep(self.replay_speed)
+            eventlet.sleep(max(self.replay_speed, 0.1))
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
