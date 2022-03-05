@@ -1102,7 +1102,7 @@ class Player:
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
             #hand_index < len(self.hand) with the '<=' due to the hand.pop
             if self.character.check(self.game, chd.MollyStark) and hand_index <= len(self.hand) and not self.is_my_turn and self.event_type != 'duel':
-                if self.attacker.character.check(self.game, chars.SlabTheKiller) and isinstance(self.hand[hand_index], cs.Mancato):
+                if hasattr(self.attacker,'character') and self.attacker.character.check(self.game, chars.SlabTheKiller) and isinstance(self.hand[hand_index], cs.Mancato):
                     self.molly_discarded_cards += 1
                 else:
                     self.hand.append(self.game.deck.draw(True))
