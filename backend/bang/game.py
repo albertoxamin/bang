@@ -7,6 +7,7 @@ import eventlet
 
 import bang.players as pl
 import bang.characters as characters
+import bang.expansions.dodge_city.characters as chd
 from bang.deck import Deck
 import bang.roles as roles
 import bang.expansions.fistful_of_cards.card_events as ce
@@ -93,6 +94,8 @@ class Game:
                 continue
             player = [p for p in self.players if p.name == cmd[0]][0]
             if cmd[1] == 'set_character':
+                if player.character != None and isinstance(player.real_character, chd.VeraCuster):
+                    player.set_available_character([p.character for p in self.get_alive_players() if p != player])
                 player.set_character(cmd[2])
             if cmd[1] == 'draw':
                 player.draw(cmd[2])
