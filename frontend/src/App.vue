@@ -9,6 +9,7 @@
 		</div>
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;">
+			<input type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="()=>{sending_report = true}" :value=" $t('report') " />
 			<input type="button" class="btn" value="Discord" style="min-width:28pt;cursor:pointer;" @click="joinDiscord"/>
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
 			<select id="theme" class="btn" v-model="theme">
@@ -38,15 +39,19 @@
 				<button @click="showUpdateUI = false">Cancel</button>
 			</div>
 		</div>
+		<transition name="bounce">
+			<full-screen-input v-if="sending_report" :defaultValue="''" :text="$t('report_bug')" :val="report" :cancel="cancelReport" :send="sendReport" :canCancel="true"/>
+		</transition>
 	</div>
 </template>
 
 <script>
+import FullScreenInput from './components/FullScreenInput.vue'
 import Help from './components/Help.vue';
 // import Vue from 'vue'
 
 export default {
-  components: { Help },
+  components: { Help,	FullScreenInput },
 	name: 'App',
 	data: () => ({
 		isConnected: false,
@@ -54,6 +59,8 @@ export default {
 		showUpdateUI: false,
 		showHelp:false,
 		theme: 'light',
+		report: '',
+		sending_report: false,
 	}),
 	computed: {
 	},
@@ -99,7 +106,16 @@ export default {
 		},
 		joinDiscord() {
 			window.open('https://discord.gg/Dr58dZ2na8', '_blank');
-		}
+		},
+		cancelReport(){		
+			this.sending_report = false
+		},
+		sendReport(text){
+			if (text.trim().length > 0){
+				this.sending_report = false
+				this.$socket.emit('report', text)
+			}
+		},
 	},
 	watch: {
 		theme() {

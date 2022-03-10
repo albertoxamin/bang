@@ -80,7 +80,7 @@
 			<Chooser v-show="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
 		</transition>
 		<transition name="bounce">
-			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :cancel="setUsername" :cancelText="$t('ok')"/>
+			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :send="setUsername" :sendText="$t('ok')"/>
 		</transition>
 	</div>
 </template>

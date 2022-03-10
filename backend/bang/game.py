@@ -80,8 +80,10 @@ class Game:
         self.is_hidden = True
         self.is_replay = True
         self.replay_speed = 1
-        for i in range(len(log)):
-            print('replay:', i, 'of', len(log))
+        for i in range(len(log)-1):
+            print('replay:', i, 'of', len(log)-3, '->', log[i])
+            if (log[i] == "@@@"):
+                break
             cmd = log[i].split(';')
             if cmd[1] == 'players':
                 self.expansions = json.loads(cmd[4].replace("'",'"'))
