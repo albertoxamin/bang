@@ -101,7 +101,7 @@ def get_endgame_card():
     end_game.expansion = 'fistful-of-cards'
     return end_game
 
-def get_all_events():
+def get_all_events(rng=random):
     cards = [
         Agguato(),
         Cecchino(),
@@ -118,7 +118,7 @@ def get_all_events():
         RouletteRussa(),
         Vendetta(),
     ]
-    random.shuffle(cards)
+    rng.shuffle(cards)
     for c in cards:
         c.expansion = 'fistful-of-cards'
     return cards

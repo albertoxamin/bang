@@ -11,10 +11,16 @@
 				<span v-for="(n, i) in lives" v-bind:key="i" :alt="i">❤️</span>
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
 			</transition-group>
+			<div v-if="gold_nuggets > 0" style="display: flex;align-items: center;margin-left: 12pt;margin-right: -10pt;justify-content: space-evenly;width: 25pt;">
+				<transition name="list">
+					<span :key="gold_nuggets">{{gold_nuggets}}</span>
+				</transition>
+				<span>💵️</span>
+			</div>
 			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
-				<Card v-for="card in equipment" v-bind:key="card.name+card.number" :card="card" 
+				<Card v-for="card in equipmentComputed" v-bind:key="card.name+card.number" :card="card" 
 					@pointerenter.native="setDesc(card)" @pointerleave.native="desc=''"
-					@click.native="play_card(card, true)" :class="{'cant-play':((eventCard && eventCard.name == 'Lazo') || !card.can_be_used_now)}"/>
+					@click.native="play_card(card, true)" :class="{'cant-play':((eventCard && eventCard.name == 'Lazo') || (!card.can_be_used_now && !card.is_equipment))}"/>
 			</transition-group>
 		</div>
 		<transition name="list">
@@ -22,14 +28,17 @@
 		</transition>
 		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
 			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Sid Ketchum' && lives < max_lives && hand.length > 1" @click="sidWantsScrapForHealth=true">{{$t('special_ability')}}</button>
-			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="chuckSpecial">{{$t('special_ability')}}</button>
+			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Chuck Wengam' && lives > 1" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'José Delgado' && special_use_count < 2 && hand.filter(x => x.is_equipment).length > 0" @click="joseScrap=true">{{$t('special_ability')}}</button>
 			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Doc Holyday' && special_use_count < 1 && hand.length > 1" @click="holydayScrap=true">{{$t('special_ability')}}</button>
+			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Jacky Murieta' && gold_nuggets >=2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
+			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Josh McCloud' && gold_nuggets >=2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
+			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Raddie Snake' && special_use_count < 2 && gold_nuggets >=1" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
 			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
-				<Card v-for="card in handComputed" v-bind:key="card.name+card.number" :card="card" 
+				<Card v-for="card in handComputed" v-bind:key="card.name+card.number+card.suit" :card="card" 
 					@click.native="play_card(card, false)"
 					@pointerenter.native="setHint(card)" @pointerleave.native="hint=''"
 					:class="{'cant-play':card.cantBePlayed}"/>
@@ -39,18 +48,19 @@
 			<p v-if="hint"><i>{{hint}}</i></p>
 		</transition>
 		<Chooser v-if="is_my_turn && pending_action == 4 && (lives > 0 || is_ghost) && !(emporioCards && emporioCards.cards && emporioCards.cards.length > 0)" :text="$t('wait')" :cards="[]"/>
-		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="cancelCardAgainst"/>
+		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="card_against.number !== 42 ? cancelCardAgainst : null"/>
 		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond" :playAudio="true"/>
 		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose" :playAudio="true"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0 && !is_ghost && !spectator" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0; spectator = true}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
 		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t(notifycard.message)" class="turn-notify-4s"/>
+		<Chooser v-if="cantplaycard" :key="cantplaycard" :text="`${$t('cantplaycard')}`" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
 		<Chooser v-if="hasToPickResponse" :playAudio="true" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="handComputed.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
-		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${lives}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
+		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${maxHandLength()}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length} ${$t('to_regain_1_hp')}`"
 							:cards="notScrappedHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;scrapHand=[]}"/>
 		<Chooser v-if="joseScrap" :text="`${$t('discard')}`"
@@ -83,6 +93,7 @@ export default {
 		character: null,
 		availableCharacters: [],
 		equipment: [],
+		gold_rush_equipment: [],
 		hand: [],
 		lives: 0,
 		max_lives: 0,
@@ -118,6 +129,8 @@ export default {
 		spectator: false,
 		noStar: false,
 		committed_suit_manette: null,
+		gold_nuggets: 0,
+		cantplaycard: false,
 	}),
 	sockets: {
 		role(role) {
@@ -141,11 +154,12 @@ export default {
 			}
 			this.hand = self.hand
 			this.equipment = self.equipment
+			this.gold_rush_equipment = self.gold_rush_equipment
 			this.lives = self.lives
 			this.max_lives = self.max_lives
 			this.has_played_bang = self.has_played_bang
 			this.special_use_count = self.special_use_count
-			this.choose_text = self.choose_text
+			this.choose_text = self.choose_text.split('|')[0]
 			this.is_my_turn = self.is_my_turn
 			this.committed_suit_manette = self.committed_suit_manette
 			if (this.is_my_turn) document.title = this.$t('your_turn')+' | PewPew!'
@@ -169,6 +183,11 @@ export default {
 				this.shouldChooseCard = false
 			}
 			this.noStar = self.noStar
+			this.gold_nuggets = self.gold_nuggets
+			let mustplay = this.handComputed.filter(x => x.number == 42);
+			if (mustplay.length > 0) {
+				this.play_card(mustplay[0], false)
+			}
 		},
 		self_vis(vis) {
 			// console.log('received visibility update')
@@ -180,6 +199,12 @@ export default {
 			setTimeout(function(){
 					this.notifycard = null
 				}.bind(this), 4000)
+		},
+		cant_play_card() {
+			this.cantplaycard = true
+			setTimeout(function(){
+					this.cantplaycard = false
+				}.bind(this), 1000)
 		},
 		event_card(card) {
 			this.eventCard = card
@@ -227,7 +252,6 @@ export default {
 					name: this.name,
 					number: 0,
 					icon: this.$t('you'),
-					desc: this.$t('you'),
 					is_character: true,
 				})
 			}
@@ -243,7 +267,7 @@ export default {
 			return x[this.pending_action]
 		},
 		canEndTurn() {
-			return (this.pending_action == 2 && this.hand.length <= (this.character.name === "Sean Mallory" && !(this.eventCard && this.eventCard.name == "Sbornia")?10:this.lives))
+			return (this.pending_action == 2 && this.hand.length <= this.maxHandLength())
 		},
 		respondCards() {
 			let cc = [{
@@ -252,13 +276,21 @@ export default {
 					is_equipment: true,
 					noDesc: true,
 				}]
-			this.hand.filter(x => (x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1) || this.character.name === "Elena Fuente").forEach(x=>{
+			let expectedBangResponse = this.expected_response.indexOf('Bang!') !== -1
+			let sborniaEvent = this.eventCard && this.eventCard.name == "Sbornia"
+			this.hand.filter(x => (x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1) || (!expectedBangResponse && this.character.name === "Elena Fuente" && !sborniaEvent)).forEach(x=>{
 				cc.push(x)
 			})
 			this.equipment.filter(x => x.usable_next_turn && x.can_be_used_now && this.expected_response.indexOf(x.name) !== -1).forEach(x=>{
 				cc.push(x)
 			})
 			return cc
+		},
+		equipmentComputed() {
+			let eq = []
+			this.equipment.forEach(x => eq.push(x));
+			this.gold_rush_equipment.forEach(x => eq.push(x));
+			return eq
 		},
 		handComputed() {
 			return this.hand.map(x => {
@@ -278,6 +310,9 @@ export default {
 		}
 	},
 	methods: {
+		maxHandLength() {
+			return (this.character.name === "Sean Mallory" && !(this.eventCard && this.eventCard.name == "Sbornia")?10:(this.gold_rush_equipment.filter(x => x.name == 'Cinturone').length>0?8:this.lives))
+		},
 		setCharacter(char) {
 			this.availableCharacters = []
 			this.$socket.emit('set_character', char.name)
@@ -308,15 +343,12 @@ export default {
 			this.scrapHand.push(this.hand.indexOf(c))
 		},
 		holydayScrapBang(other) {
-			this.$socket.emit('holyday_special', {
+			this.$socket.emit('special', {
 				cards : [this.scrapHand[0], this.scrapHand[1]],
 				against: other.name
 			})
 			this.scrapHand = []
 			this.holydayScrap = false
-		},
-		chuckSpecial(){
-			this.$socket.emit('chuck_lose_hp_draw')
 		},
 		end_turn(){
 			// console.log('ending turn')
@@ -327,10 +359,11 @@ export default {
 			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
 		play_card(card, from_equipment) {
-			if (from_equipment && (!card.usable_next_turn || !card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
+			console.log('play' + card.name)
+			if (from_equipment && (!card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
 			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
-			let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
+			let cant_play_bang = (this.has_played_bang && card.number !==42 && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
 			if (this.pending_action == 2) {
 				this.can_target_sheriff = (card.name !== 'Prigione')
 				if (card.need_with && !this.card_with) {
@@ -383,7 +416,7 @@ export default {
 		really_play_card(card, against) {
 			let res = this.handComputed.indexOf(card)
 			if (res === -1) {
-				res = this.equipment.indexOf(card)
+				res = this.equipmentComputed.indexOf(card)
 				if (res !== -1) res += this.hand.length
 			}
 			let card_data	 = {

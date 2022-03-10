@@ -1,9 +1,9 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used}">
+	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used, 'gold-rush': card.expansion === 'gold_rush', 'brown':card.kind === 0, 'black':card.kind === 1,}">
 		<h4>{{cardName}}</h4>
-		<div class="emoji">{{card.icon}}</div>
+		<div class="emoji">{{emoji}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
-		<div class="suit">{{number}}{{suit}}</div>
+		<div class="suit">{{number}}<span :style="`${(card.suit !== undefined && card.suit%2 === 0)? 'color:red':''}`">{{suit}}</span></div>
 		<div class="expansion" v-if="card.expansion_icon">{{card.expansion_icon}}</div>
 	</div>
 </template>
@@ -21,16 +21,26 @@ export default {
 			if (!this.donotlocalize && this.$t(`cards.${this.card.name}.name`) !== `cards.${this.card.name}.name`) {
 				return this.$t(`cards.${this.card.name}.name`)
 			}
+			if (this.card.name == "you") {
+				return this.$t('you')
+			}
 			return this.card.name
+		},
+		emoji(){
+			return this.card.icon != "you" ? this.card.icon : this.$t('you')
 		},
 		suit() {
 			if (this.card && !isNaN(this.card.suit)) {
 				let x = ['♦️','♣️','♥️','♠️']
 				return x[this.card.suit];
+			} else if (this.card.suit) {
+				return this.card.suit;
 			}
 			return '';
 		},
 		number() {
+			if (isNaN(this.card.suit))
+				return this.card.number
 			if (this.card.number === 1) return 'A'
 			else if (this.card.number === 11) return 'J'
 			else if (this.card.number === 12) return 'Q'
@@ -106,6 +116,17 @@ export default {
 		rgb(30 102 152) 10px
 	);
 	border: 2pt solid rgb(50 122 172);
+}
+.card.brown.gold-rush {
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
+	border: 2pt dotted #9C7340;
+}
+.card.black.gold-rush {
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
+	border: 2pt dotted #000;
+}
+.card.back.gold-rush {
+	background: repeating-linear-gradient(347deg, #ffb32f, #987e51 );
 }
 .card h4 {
 	position: absolute;

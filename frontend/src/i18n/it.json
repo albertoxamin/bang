@@ -7,6 +7,7 @@
   "tip_5": "Se trovi un bug comunicacelo su discord!",
   "tip_6": "Adesso con un server discord!",
   "tip_7": "Se vuoi aiutarci a tradurre il gioco nella tua lingua scrivicelo su discord!",
+  "tip_8": "Se ti disconnetti durante una partita verrai sostituito da un bot (durante la tua assenza)!",
   "online_players": "Giocatori online: ",
   "choose_username": "Scegli un username:",
   "available_lobbies": "Stanze disponibili:",
@@ -47,6 +48,7 @@
   "hand": "MANO",
   "card_against": "Contro chi vuoi giocare la carta",
   "choose_card_to_get": "Scegli che carta pescare",
+  "choose_sid_scrap": "Scarta 2 carte per non morire",
   "choose_guess": "Indovina il colore del seme",
   "choose_ranch": "Scegli le carte da sostituire",
   "choose_dalton": "Scegli che equipaggiamento scartare",
@@ -55,12 +57,19 @@
   "choose_rimbalzo_player": "Scegli contro chi scartare il bang",
   "choose_rimbalzo_card": "Scegli contro che carta scartare il bang",
   "choose_nuova_identita": "Scegli se rimanere con il tuo personaggio corrente o se cambiarlo e ripartire con 2 vite.",
+  "choose_bicchierino": "Scegli a chi far recuperare 1 punto vita",
+  "choose_bottiglia": "Scegli come giocare Bottiglia!",
+  "choose_complice": "Scegli come giocare Complice!",
+  "choose_ricercato": "Scegli il giocatore su cui vuoi giocare Ricercato",
+  "choose_birra_function": "Scegli tra ottenere 1 pepita scartando la birra oppure giocare la birra.",
   "emporio_others": "{0} sta scegliendo che carta prendere dall'emporio",
   "you_died": "SEI MORTO",
   "spectate": "SPETTATORE",
   "you_win": "HAI VINTO",
   "you_lose": "HAI PERSO",
   "special_ability": "ABILITÀ SPECIALE",
+  "gold_rush_discard": "Fai scartare equipaggiamento gold rush (pagando pepite + 1)",
+  "gold_rush_discard_2": "Fai scartare equipaggiamento gold rush (pagando pepite + 1)",
   "discard": "SCARTA",
   "to_regain_1_hp": "PER RECUPERARE 1 VITA",
   "play_your_turn": "GIOCA IL TUO TURNO",
@@ -73,13 +82,14 @@
   "submit": "Invia",
   "copy": "Copia invito",
   "no_players_in_range": "Non vedi nessun giocatore, equipaggia un arma o un mirino!",
+  "cantplaycard": "Non puoi giocare questa carta in questo modo!",
   "chat": {
     "spectators": " | Uno spettatore sta guardando la partita | {n} spettatori stanno guardando la partita",
     "chat": "Chat",
     "joined": "{0} è entrato nella stanza",
     "died": "{0} è morto",
     "died_role": "{0} era {1}!",
-    "won": "{0} ha vinto!",
+    "won": "{0} ha vinto! Il suo ruolo era {1}",
     "choose_character": "{0} ha come personaggio {1}, la sua abilità speciale è: {2}!",
     "starting": "La partita sta iniziando!",
     "sheriff": "{0} è lo sceriffo!",
@@ -90,7 +100,9 @@
     "flipped": "{0} ha estratto {1} {2}.",
     "explode": "{0} ha fatto esplodere la dinamite.",
     "beer_save": "{0} ha usato una birra per recuperare una vita.",
+    "get_nugget":"{0} ha ottenuto una pepita d'oro usando una Birra.",
     "play_card": "{0} ha giocato {1}.",
+    "purchase_card": "{0} ha comprato {1}.",
     "play_card_against": "{0} ha giocato {1} contro {2}.",
     "play_card_for": "{0} ha giocato {1} per {2}.",
     "spilled_beer": "{0} ha rovesciato una {1}.",
@@ -113,7 +125,10 @@
     "prison_free": "{0} è uscito di prigione",
     "prison_turn": "{0} rimane in prigione questo turno",
     "flip_event": "🎴 EVENTO: {0} 🎴",
-    "choose_manette": "{0} si è impegnato ad usare solo carte di seme {1} in questo turno."
+    "choose_manette": "{0} si è impegnato ad usare solo carte di seme {1} in questo turno.",
+    "UnionPacific": "{0} ha giocato Union Pacific e ha pescato 4 carte",
+    "use_special": "{0} ha usato l'abilità speciale del suo personaggio ({1})",
+    "gold_rush_pay_discard": "{0} ha fatto scartare {2} a {1}."
   },
   "foc": {
     "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
@@ -553,13 +568,108 @@
       "name": "Manette",
       "desc": "Dopo aver pescato in fase 1, il giocatore di turno dichiara un seme: potrà usare solamente carte di quel seme nel suo turno"
     },
-    "Mezzogiorno di Fuoco":{
+    "Mezzogiorno di Fuoco": {
       "name": "Mezzogiorno di Fuoco",
       "desc": "Ogni giocatore perde 1 punto vita all'inizio del turno"
     },
-    "Per Un Pugno Di Carte":{
+    "Per Un Pugno Di Carte": {
       "name": "Per Un Pugno Di Carte",
       "desc": "All'inizio del proprio turno, il giocatore subisce tanti bang quante carte ha in mano"
+    },
+    "Pepita": {
+      "name": "Pepita D'oro"
+    },
+    "Bicchierino": {
+      "name": "Bicchierino",
+      "desc": "Un giocatore a scelta recupera una vita (anche se stessi)"
+    },
+    "Bottiglia": {
+      "name": "Bottiglia",
+      "desc": "Usa questa carta come Panico!, Birra o Bang!"
+    },
+    "Complice": {
+      "name": "Complice",
+      "desc": "Usa questa carta come Emporio, Duello o Cat Balou"
+    },
+    "Corsa All Oro_gr": {
+      "name": "Corsa All'Oro",
+      "desc": "Il tuo turno termina subito. Recuperi tutti i tuoi punti vita, poi gioca un altro turno"
+    },
+    "Rum": {
+      "name": "Rum",
+      "desc": "Estrai 4 carte dal mazzo, guadagni 1 vita per ogni seme diverso"
+    },
+    "Union Pacific": {
+      "name": "Union Pacific",
+      "desc": "Pesca 4 carte dal mazzo"
+    },
+    "Calumet": {
+      "name": "Calumet",
+      "desc": "Le carte di quadri giocate dagli altri giocatori non hanno effetto su di te"
+    },
+    "Cinturone": {
+      "name": "Cinturone",
+      "desc": "Alla fine del tuo turno puoi tenere in mano fino a 8 carte"
+    },
+    "Ferro di Cavallo": {
+      "name": "Ferro di Cavallo",
+      "desc": "Ogni volta che estrai scegli la migliore tra due carte"
+    },
+    "Piccone": {
+      "name": "Piccone",
+      "desc": "Pesca una carta in più nella tua fase 1"
+    },
+    "Ricercato": {
+      "name": "Ricercato",
+      "desc": "Scegli un giocatore qualsiasi, chi elimina quel giocatore pesca 2 carte in più e pesca una pepita"
+    },
+    "Setaccio": {
+      "name": "Setaccio",
+      "desc": "Fino a due volte in un turno puoi pagare una pepita per pescare una carta dal mazzo (Clicca sulla carta per usare l'abilità)"
+    },
+    "Stivali": {
+      "name": "Stivali",
+      "desc": "Ogni volta che perdi un punto vita peschi una carta dal mazzo"
+    },
+    "Talismano": {
+      "name": "Talismano",
+      "desc": "Ogni volta che perdi un punto vita prendi una pepita"
+    },
+    "Zaino": {
+      "name": "Zaino",
+      "desc": "Paga 2 pepite per recuperare un punto vita"
+    },
+    "Don Bell": {
+      "name": "Don Bell",
+      "desc": "Alla fine del suo turno estrae, se esce Cuori ❤️ o Quadri ♦️ gioca un altro turno"
+    },
+    "Dutch Will": {
+      "name": "Dutch Will",
+      "desc": "Pesca 2 carte, ne scarta 1 e pesca una pepita."
+    },
+    "Jacky Murieta": {
+      "name": "Jacky Murieta",
+      "desc": "Durante il suo turno può pagare 2 pepite per sparare un bang, può farlo più volte per turno"
+    },
+    "Josh McCloud": {
+      "name": "Josh McCloud",
+      "desc": "Può pescare la prima carta del mazzetto pagando solo due pepite"
+    },
+    "Madam Yto": {
+      "name": "Madam Yto",
+      "desc": "Ogni volta che viene giocata una Birra pesca 1 carta dal mazzo"
+    },
+    "Pretty Luzena": {
+      "name": "Pretty Luzena",
+      "desc": "Una volta per turno può pagare una carta del mazzetto a costo diminuito di 1"
+    },
+    "Raddie Snake": {
+      "name": "Raddie Snake",
+      "desc": "Durante il suo turno, può pagare una pepita per pescare 1 carta dal mazzo (fino a due volte per turno)"
+    },
+    "Simeon Picos": {
+      "name": "Simeon Picos",
+      "desc": "Ogni volta che viene ferito, prende una pepita"
     }
   },
   "help": {
@@ -603,9 +713,14 @@
     "renegade": "Rinnegato",
     "vice": "Vice",
     "gotoallcharacters": "Visualizza tutti i personaggi",
+    "gotocards": "Visualizza le carte",
+    "gotohighnoon": "Visualizza le carte High Noon",
+    "gotofoc": "Visualizza le carte Fistful Of Cards",
+    "gotogoldrush": "Visualizza le carte Gold Rush",
     "allcharacters": "Tutti i personaggi",
     "highnooncards": "Carte Evento High Noon",
-    "foccards": "Carte Evento Fistful of Cards"
+    "foccards": "Carte Evento Fistful of Cards",
+    "goldrushcards": "Carte Gold Rush"
   },
   "theme": {
     "sepia": "Seppia",

@@ -1,6 +1,10 @@
 <template>
 	<div>
 		<h1 id="help">{{$t('help.title')}}</h1>
+		<a href="#thecards"><p>{{$t('help.gotocards')}}</p></a>
+		<a href="#highnooncards"><p>{{$t('help.gotohighnoon')}}</p></a>
+		<a href="#foccards"><p>{{$t('help.gotofoc')}}</p></a>
+		<a href="#goldrushcards"><p>{{$t('help.gotogoldrush')}}</p></a>
 		<h2>{{$t('help.character')}}</h2>
 		<p>{{$t('help.characters_special')}}</p>
 		<a href="#basecharacters"><p>{{$t('help.gotoallcharacters')}}</p></a>
@@ -55,29 +59,31 @@
 			<li><p>{{$t('help.endgameshriffdeath')}}</p></li>
 			<li><p>{{$t('help.endgamesheriffwin')}}</p></li>
 		</ul>
-		<h2>{{$t('help.thecards')}}</h2>
-		<div>
-			<div v-for="(c, i) in cards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+		<h2 id="thecards">{{$t('help.thecards')}}</h2>
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in cards" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
 				<Card :card="c" @pointerenter.native="''" @pointerleave.native="''"/>
 				<div style="margin-left:6pt;">
 					<p>{{$t(`cards.${c.name}.desc`)}}</p>
 					<p v-if="c.is_equipment"><b>{{$t('help.equipment')}}</b></p>
 					<p v-if="c.is_weapon"><b>{{$t('help.weapon')}}</b></p>
+					<p v-if="c.expansion"><b>{{c.expansion}}</b></p>
 				</div>
 			</div>
 		</div>
 		<h2 id="basecharacters">{{$t('help.allcharacters')}}</h2>
-		<div>
-			<div v-for="(c, i) in characters" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in characters" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
 				<Card :card="c" @pointerenter.native="''" @pointerleave.native="''"/>
 				<div style="margin-left:6pt;">
 					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+					<p v-if="c.expansion"><b>{{c.expansion}}</b></p>
 				</div>
 			</div>
 		</div>
 		<h2 id="highnooncards">{{$t('help.highnooncards')}}</h2>
-		<div>
-			<div v-for="(c, i) in highnooncards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in highnooncards" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
 				<Card :card="c" :class="'high-noon last-event'" @pointerenter.native="''" @pointerleave.native="''"/>
 				<div style="margin-left:6pt;">
 					<p>{{$t(`cards.${c.name}.desc`)}}</p>
@@ -85,9 +91,18 @@
 			</div>
 		</div>
 		<h2 id="foccards">{{$t('help.foccards')}}</h2>
-		<div>
-			<div v-for="(c, i) in foccards" v-bind:key="c.name ? (c.name+c.number) : i" style="display:flex">
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in foccards" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
 				<Card :card="c" :class="'fistful-of-cards last-event'" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+				</div>
+			</div>
+		</div>
+		<h2 id="goldrushcards">{{$t('help.goldrushcards')}}</h2>
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in goldrushcards" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
+				<Card :card="c" class="gold-rush" @pointerenter.native="''" @pointerleave.native="''"/>
 				<div style="margin-left:6pt;">
 					<p>{{$t(`cards.${c.name}.desc`)}}</p>
 				</div>
@@ -111,6 +126,7 @@ export default {
 		characters: [],
 		highnooncards: [],
 		foccards: [],
+		goldrushcards: [],
 	}),
 	computed: {
 		endTurnCard() {
@@ -140,17 +156,41 @@ export default {
 				...x,
 			}))
 		},
+		goldrushcards_info(cardsJson) {
+			this.goldrushcards = JSON.parse(cardsJson).map(x=>({
+				...x,
+			}))
+		},
 	},
 	mounted() {
 		this.$socket.emit('get_cards')
 		this.$socket.emit('get_characters')
 		this.$socket.emit('get_highnooncards')
 		this.$socket.emit('get_foccards')
+		this.$socket.emit('get_goldrushcards')
 		document.getElementById('help').scrollIntoView();
 	}
 }
 </script>
 <style scoped>
+.flexy-cards-wrapper {
+	display: flex;
+	flex-flow: wrap;
+}
+.flexy-cards {
+	flex: 30%;
+	display:flex;
+}
+@media only screen and (max-width:500px) {
+	.flexy-cards {
+		flex: 100%;
+	}
+}
+@media only screen and (max-width:800px) {
+	.flexy-cards {
+		flex: 50%;
+	}
+}
 @keyframes pick {
 	0% {
 		transform: translate(0,0);

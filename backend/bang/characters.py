@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from bang.expansions import *
 from typing import List
 
 class Character(ABC):
@@ -18,6 +19,13 @@ class Character(ABC):
         if game.check_event(ceh.Sbornia):
             return False
         return isinstance(self, character)
+
+    def special(self, player, data):
+        import bang.expansions.high_noon.card_events as ceh
+        if player.game.check_event(ceh.Sbornia):
+            return False
+        player.sio.emit('chat_message', room=player.game.name, data=f'_use_special|{player.name}|{self.name}')
+        return True
 
 class BartCassidy(Character):
     def __init__(self):
@@ -158,4 +166,6 @@ def all_characters(expansions: List[str]):
     ]
     if 'dodge_city' in expansions:
         base_chars.extend(DodgeCity.get_characters())
+    if 'gold_rush' in expansions:
+        base_chars.extend(GoldRush.get_characters())
     return base_chars

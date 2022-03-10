@@ -3,6 +3,7 @@ import random
 import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.gold_rush.shop_cards as grc
 
 class Deck:
     def __init__(self, game):
@@ -21,20 +22,27 @@ class Deck:
                 self.all_cards_str.append(c.name)
         self.game = game
         self.event_cards: List[ce.CardEvent] = []
-        endgame_cards = []
+        endgame_cards: List[ce.CardEvent] = []
         if 'fistful_of_cards' in game.expansions:
-            self.event_cards.extend(ce.get_all_events())
+            self.event_cards.extend(ce.get_all_events(game.rng))
             endgame_cards.append(ce.get_endgame_card())
         if 'high_noon' in game.expansions:
-            self.event_cards.extend(ceh.get_all_events())
+            self.event_cards.extend(ceh.get_all_events(game.rng))
             endgame_cards.append(ceh.get_endgame_card())
         if len(self.event_cards) > 0:
-            random.shuffle(self.event_cards)
+            game.rng.shuffle(self.event_cards)
             self.event_cards = self.event_cards[:12]
             self.event_cards.insert(0, None)
             self.event_cards.insert(0, None) # 2 perchè iniziale, e primo flip dallo sceriffo
-            self.event_cards.append(random.choice(endgame_cards))
-        random.shuffle(self.cards)
+            self.event_cards.append(game.rng.choice(endgame_cards))
+        game.rng.shuffle(self.cards)
+        self.shop_deck: List[grc.ShopCard] = []
+        self.shop_cards: List[grc.ShopCard] = []
+        if 'gold_rush' in game.expansions:
+            self.shop_cards = [None, None, None]
+            self.shop_deck = grc.get_cards()
+            game.rng.shuffle(self.shop_deck)
+            self.fill_gold_rush_shop()
         self.scrap_pile: List[cs.Card] = []
         print(f'Deck initialized with {len(self.cards)} cards')
 
@@ -42,6 +50,16 @@ class Deck:
         if len(self.event_cards) > 0 and not (isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte) or isinstance(self.event_cards[0], ceh.MezzogiornoDiFuoco)):
             self.event_cards.append(self.event_cards.pop(0))
         self.game.notify_event_card()
+
+    def fill_gold_rush_shop(self):
+        if not any([c == None for c in self.shop_cards]):
+            return
+        for i in range(3):
+            if self.shop_cards[i] == None:
+                print(f'replacing gr-card {i}')
+                self.shop_cards[i] = self.shop_deck.pop(0)
+                self.shop_cards[i].reset_card()
+        self.game.notify_gold_rush_shop()
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
@@ -73,7 +91,7 @@ class Deck:
 
     def reshuffle(self):
         self.cards = self.scrap_pile[:-1].copy()
-        random.shuffle(self.cards)
+        self.game.rng.shuffle(self.cards)
         self.scrap_pile = self.scrap_pile[-1:]
 
     def draw_from_scrap_pile(self) -> cs.Card:
@@ -86,6 +104,7 @@ class Deck:
             return self.draw()
 
     def scrap(self, card: cs.Card, ignore_event = False):
+        if card.number == 42: return
         card.reset_card()
         if self.game.check_event(ce.MinieraAbbandonata) and not ignore_event:
             self.put_on_top(card)

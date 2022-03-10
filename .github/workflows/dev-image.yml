@@ -9,7 +9,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Set up Docker Buildx
         uses: crazy-max/ghaction-docker-buildx@v3
@@ -23,12 +23,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       -
-        name: Docker Buildx (build)
+        name: Docker Buildx (build amd64)
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache" \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 \
+            --platform linux/amd64 \
+            --output "type=image,push=false" \
+            --tag albertoxamin/bang:dev \
+            --file ./Dockerfile ./
+      -
+        name: Docker Buildx (build arm64)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/arm64 \
+            --output "type=image,push=false" \
+            --tag albertoxamin/bang:dev \
+            --file ./Dockerfile ./
+      -
+        name: Docker Buildx (build armv-7)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/arm/v7 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:dev \
             --file ./Dockerfile ./
@@ -51,3 +71,12 @@ jobs:
         name: Inspect image
         run: |
           docker buildx imagetools inspect albertoxamin/bang:dev
+      
+      - name: Notify discord
+        uses: th0th/notify-discord@v0.4.1
+        if: ${{ always() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_JOB_NAME: "Docker image :dev"
+          GITHUB_JOB_STATUS: ${{ job.status }}

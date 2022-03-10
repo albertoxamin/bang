@@ -23,7 +23,9 @@
 			<div v-if="!started">
 				<h3>{{$t("expansions")}}</h3>
 				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
-					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}</PrettyCheck>
+					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}
+						<p v-if="ex.is_beta"  style="padding: 0px 10px;color: red;border-radius: 12pt;position: absolute;right: -50pt;top: -12pt;">BETA</p>
+					</PrettyCheck>
 					<br>
 				</div>
 				<h3>{{$t('mods')}}</h3>
@@ -39,6 +41,9 @@
 			<transition-group name="list" tag="div" class="players-table">
 				<Card v-if="startGameCard" key="_start_game_" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
 				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
+					<transition-group v-if="p.gold_nuggets && p.gold_nuggets > 0" name="list" tag="div" style="position: absolute;top: -10pt; font-size:9pt;">
+						<span v-for="(n, i) in p.gold_nuggets" v-bind:key="i" :alt="i">💵️</span>
+					</transition-group>
 					<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">
 						<span v-for="(n, i) in p.lives" v-bind:key="i" :alt="i">❤️</span>
 						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
@@ -54,9 +59,12 @@
 					<div class="tiny-equipment">
 						<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
 									:card="card" @click.native="selectedInfo = p.equipment"
-									:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+1)*12,80))}pt`"/>
+									:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
+						<Card v-for="(card, i) in p.gold_rush_equipment" v-bind:key="card.name+card.number"
+									:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
+									:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
 					</div>
-					<div v-if="p.is_bot" style="position:absolute;bottom:57%;" class="center-stuff">
+					<div v-if="p.is_bot" style="position:absolute;bottom:57%;width:20pt;" class="center-stuff">
 						<span>🤖</span>
 					</div>
 				</div>
@@ -70,6 +78,8 @@
 		<Chooser v-if="selectedInfo" :text="$t('details')" :cards="selectedInfo" :cancelText="$t('ok')" :cancel="()=>{selectedInfo = null}" :select="()=>{selectedInfo = null}"/>
 		<transition name="bounce">
 			<Chooser v-show="hasToChoose" :text="`${$t('choose_card')}${target_p?$t('choose_card_from') + target_p:''}`" :cards="chooseCards" :select="chooseCard"/>
+		</transition>
+		<transition name="bounce">
 			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :cancel="setUsername" :cancelText="$t('ok')"/>
 		</transition>
 	</div>
@@ -114,6 +124,7 @@ export default {
 		password: '',
 		togglable_expansions: [],
 		expansions: [],
+		beta_expansions: ['gold_rush'],
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,
@@ -199,6 +210,7 @@ export default {
 				return {
 					id: x,
 					name: x.replace(/(^|_)([a-z])/g, function($0,$1,$2) {return ' ' + $2.toUpperCase()}),
+					is_beta: this.beta_expansions.indexOf(x) !== -1,
 					enabled: this.expansions.indexOf(x) !== -1
 				}
 			})
@@ -225,7 +237,7 @@ export default {
 		playersTable() {
 			if (Vue.config.devtools)
 				console.log('update players')
-			return this.players.map((x,i) => {
+			return this.players.map((x, i) => {
 				let offsetAngle = 360.0 / this.players.length
 				let rotateAngle = (i) * offsetAngle
 				let size = 130
@@ -292,12 +304,13 @@ export default {
 			if (Vue.config.devtools)
 				console.log(pl)
 			let arr = []
-			for (let i=0; i<pl.ncards; i++)
-				arr.push({
-					name: 'PewPew!',
-					icon: '💥',
-					is_back: true,
-				})
+			if (this.username != player_name)
+				for (let i=0; i<pl.ncards; i++)
+					arr.push({
+						name: 'PewPew!',
+						icon: '💥',
+						is_back: true,
+					})
 			pl.equipment.forEach(x=>arr.push(x))
 			this.chooseCards = arr
 			this.hasToChoose = true

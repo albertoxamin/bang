@@ -42,7 +42,10 @@ class Card(ABC):
         self.must_be_used = False
 
     def __str__(self):
-        char = ['♦️', '♣️', '♥️', '♠️'][int(self.suit)]
+        if str(self.suit).isnumeric():
+            char = ['♦️', '♣️', '♥️', '♠️'][int(self.suit)]
+        else:
+            char = self.suit
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
@@ -71,6 +74,7 @@ class Card(ABC):
                 return False
             else:
                 player.equipment.append(self)
+            self.can_be_used_now = False
         if against:
             player.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card_against|{player.name}|{self.name}|{against}')
@@ -84,7 +88,7 @@ class Card(ABC):
         pass
 
     def is_duplicate_card(self, player):
-        return self.name in [c.name for c in player.equipment]
+        return self.name in [c.name for c in player.equipment] or self.name in [c.name for c in player.gold_rush_equipment]
 
     def check_suit(self, game, accepted):
         import bang.expansions.high_noon.card_events as ceh
@@ -207,15 +211,16 @@ class Bang(Card):
     def play_card(self, player, against, _with=None):
         import bang.expansions.fistful_of_cards.card_events as ce
         import bang.expansions.high_noon.card_events as ceh
-        if player.game.check_event(ceh.Sermone):
+        if player.game.check_event(ceh.Sermone) and not self.number == 42: # 42 gold rush
             return False
-        if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None:
+        if ((player.has_played_bang and not self.number == 42) and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None): # 42 gold rush:
             return False
         elif against != None:
             import bang.characters as chars
             super().play_card(player, against=against)
-            player.bang_used += 1
-            player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
+            if not self.number == 42: # 42 gold rush
+                player.bang_used += 1
+                player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             if player.character.check(player.game, chars.WillyTheKid):
                 player.has_played_bang = False
             player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
@@ -230,18 +235,36 @@ class Birra(Card):
         # self.desc = "Gioca questa carta per recuperare un punto vita. Non puoi andare oltre al limite massimo del tuo personaggio. Se stai per perdere l'ultimo punto vita puoi giocare questa carta anche nel turno dell'avversario. La birra non ha più effetto se ci sono solo due giocatori"
         # self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
-    def play_card(self, player, against, _with=None):
+    def play_card(self, player, against=None, _with=None, skipChecks=False):
         import bang.expansions.high_noon.card_events as ceh
         if player.game.check_event(ceh.IlReverendo):
             return False
-        if len(player.game.get_alive_players()) != 2:
+        if not skipChecks:
+            import bang.expansions.gold_rush.characters as grch
+            madamYto = [p for p in player.game.get_alive_players() if p.character.check(player.game, grch.MadamYto) and self.number != 42]
+            for p in madamYto:
+                p.hand.append(player.game.deck.draw(True))
+                p.notify_self()
+            if 'gold_rush' in player.game.expansions and self.number != 42:
+                from bang.players import PendingAction
+                player.available_cards = [{
+                    'name': 'Pepita',
+                    'icon': '💵️',
+                    'alt_text': '1',
+                    'noDesc': True
+                }, self]
+                player.choose_text = 'choose_birra_function'
+                player.pending_action = PendingAction.CHOOSE
+                player.notify_self()
+                return True
+        if (len(player.game.get_alive_players()) != 2 or self.number == 42) and player.lives < player.max_lives:
             super().play_card(player, against=against)
             player.lives = min(player.lives+1, player.max_lives)
             import bang.expansions.dodge_city.characters as chd
             if player.character.check(player.game, chd.TequilaJoe):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
-        elif len(player.game.get_alive_players()) == 2:
+        elif len(player.game.get_alive_players()) == 2 or player.lives == player.max_lives:
             player.sio.emit('chat_message', room=player.game.name,
                             data=f'_spilled_beer|{player.name}|{self.name}')
             return True
@@ -255,9 +278,10 @@ class CatBalou(Card):
         # self.desc = "Fai scartare una carta a un qualsiasi giocatore, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
         # self.desc_eng = "Choose and discard a card from any other player."
         self.need_target = True
+        self.can_target_self = True
 
     def play_card(self, player, against, _with=None):
-        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             if self.name == 'Cat Balou':
                 super().play_card(player, against=against)
             from bang.players import PendingAction
@@ -281,7 +305,7 @@ class Diligenza(Card):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'_diligenza|{player.name}|{self.name}')
         for i in range(2):
-            player.hand.append(player.game.deck.draw())
+            player.hand.append(player.game.deck.draw(True))
         return True
 
 
@@ -371,11 +395,12 @@ class Panico(Card):
         super().__init__(suit, 'Panico!', number, range=1)
         self.icon = '😱'
         self.need_target = True
+        self.can_target_self = True
         # self.desc = "Pesca una carta da un giocatore a distanza 1, scegli a caso dalla mano, oppure fra quelle che ha in gioco"
         # self.desc_eng = "Steal a card from a player at distance 1"
 
     def play_card(self, player, against, _with=None):
-        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0:
+        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             super().play_card(player, against=against)
             from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE
@@ -415,7 +440,7 @@ class WellsFargo(Card):
         player.sio.emit('chat_message', room=player.game.name,
                         data=f'_wellsfargo|{player.name}|{self.name}')
         for i in range(3):
-            player.hand.append(player.game.deck.draw())
+            player.hand.append(player.game.deck.draw(True))
         return True
 
 
