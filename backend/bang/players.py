@@ -350,11 +350,11 @@ class Player:
                 else:
                     try:
                         card_index = randrange(0, len(target.hand)+len(target.equipment))
-                        self.game.rpc_log.append(f'{self.name};choose;{card_index}')
                         self.choose(card_index)
+                        self.game.rpc_log.append(f'{self.name};choose;{card_index}')
                     except:
-                        self.game.rpc_log.append(f'{self.name};choose;{0}')
                         self.choose(0)
+                        self.game.rpc_log.append(f'{self.name};choose;{0}')
 
 
     def play_turn(self, can_play_vendetta = True, again = False, can_play_again_don_bell=True):
