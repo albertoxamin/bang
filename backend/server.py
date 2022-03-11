@@ -58,6 +58,24 @@ def get_online_players(sid):
     sio.emit('players', room='lobby', data=online_players)
 
 @sio.event
+def report(sid, text):
+    ses: Player = sio.get_session(sid)
+    data=''
+    if hasattr(ses, 'game'):
+        data = "\n".join(ses.game.rpc_log[:-1]).strip()
+    data = data +"\n@@@\n" +text
+    #print(data)
+    response = requests.post("https://www.toptal.com/developers/hastebin/documents", data)
+    key = json.loads(response.text).get('key')
+    if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
+        response = webhook.execute()
+        sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
+    else:
+        print("WARNING: DISCORD_WEBHOOK not found")
+    print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
+
+@sio.event
 def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
@@ -336,18 +354,6 @@ def chat_message(sid, msg, pl=None):
                             bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
                         ses.game.add_player(bot)
                         bot.bot_spin()
-                    return
-                if '/report' in msg and not ses.game.is_replay:
-                    data = "\n".join(ses.game.rpc_log[:-1]).strip()
-                    response = requests.post("https://www.toptal.com/developers/hastebin/documents", data)
-                    key = json.loads(response.text).get('key')
-                    if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-                        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
-                        response = webhook.execute()
-                        sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
-                    else:
-                        print("WARNING: DISCORD_WEBHOOK not found")
-                    print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
                     return
                 if '/replay' in msg and not '/replayspeed' in msg:
                     _cmd = msg.split()

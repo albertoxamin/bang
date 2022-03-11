@@ -5,7 +5,10 @@
 			<input v-model="val" class="chooserInput"/>
 		</form>
 		<p v-if="hintText">{{hintText}}</p>
-		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn && val" @click="cancel(val)"><span>{{realCancelText}}</span></div>
+		<div class="center-stuff">
+			<div style="margin-top:6pt;margin-right:6pt;" class="button center-stuff" v-if="canCancel" @click="cancel()"><span>{{realCancelText}}</span></div>
+			<div style="margin-top:6pt;margin-left:6pt;"  class="button center-stuff" v-if="showSendBtn && val" @click="send(val)"><span>{{realSendText}}</span></div>
+		</div>
 	</div>
 </template>
 
@@ -14,21 +17,31 @@ export default {
 	name: 'FullScreenInput',
 	props: {
 		cancel: Function,
+		send: Function,
 		defaultValue: String,
 		cancelText: {
 			type: String,
 			default: '',
 		},
+		sendText: {
+			type: String,
+			default: '',
+		},
 		text: String,
 		hintText: String,
+		canCancel: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data: () => ({
 		val: '',
-		realCancelText: ''
+		realCancelText: '',
+		realSendText: ''
 	}),
 	computed: {
-		showCancelBtn() {
-			if (this.cancel)
+		showSendBtn() {
+			if (this.send)
 				return true
 			return false
 		}
@@ -36,14 +49,18 @@ export default {
 	methods: {
 		submit(e) {
 			e.preventDefault();
-			this.cancel(this.val);
+			this.send(this.val);
 		}
 	},
 	mounted() {
 		this.realCancelText = this.cancelText
+		this.realSendText = this.sendText
 		this.val = this.defaultValue
 		if (this.realCancelText == '') {
 			this.realCancelText = this.$t('cancel')
+		}
+		if (this.realSendText == '') {
+			this.realSendText = this.$t('send')
 		}
 	},
 }
