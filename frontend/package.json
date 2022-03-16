@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "caniuse-lite": "^1.0.30001314",
+    "caniuse-lite": "^1.0.30001317",
     "core-js": "^3.16.2",
     "pretty-checkbox-vue": "^1.1.9",
     "register-service-worker": "^1.7.2",
@@ -23,7 +23,7 @@
     "@vue/cli-plugin-babel": "~4.5.15",
     "@vue/cli-plugin-eslint": "~4.5.15",
     "@vue/cli-plugin-pwa": "~4.5.15",
-    "@vue/cli-plugin-router": "~5.0.1",
+    "@vue/cli-plugin-router": "~5.0.3",
     "@vue/cli-service": "~4.5.15",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
