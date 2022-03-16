@@ -238,7 +238,8 @@ export default {
 					if (!this.can_target_sheriff && x.is_sheriff)
 						return false
 					else
-						return x.dist <= this.range
+						//console.log("aa" +(this.sight-1))
+						return x.dist <= this.range + this.sight -1
 				}).map(player => {
 				return {
 					name: player.name,
