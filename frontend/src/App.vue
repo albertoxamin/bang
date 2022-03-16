@@ -176,6 +176,10 @@ html {
 		margin-top: -16pt;
 		zoom: 0.75;
 	}
+	#lang,#theme{
+		max-width: 26pt;
+		min-width: 0;
+	}
 }
 h1,h2,h3,h4,p,span,b,label{
 	font-family: Avenir, Helvetica, Arial, sans-serif;
