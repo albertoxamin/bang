@@ -110,6 +110,7 @@ export default {
 		win_status: undefined,
 		range: 1,
 		sight: 1,
+		sight_extra: 1,
 		can_target_sheriff: true,
 		show_role: false,
 		attacker: undefined,
@@ -171,6 +172,7 @@ export default {
 			this.available_cards = self.available_cards
 			this.win_status = self.win_status
 			this.sight = self.sight
+			this.sight_extra = self.sight_extra
 			this.attacker = self.attacker
 			this.mancato_needed = self.mancato_needed
 			this.is_ghost = self.is_ghost
@@ -239,7 +241,7 @@ export default {
 						return false
 					else
 						//console.log("aa" +(this.sight-1))
-						return x.dist <= this.range + this.sight -1
+						return x.dist <= this.range + this.sight_extra
 				}).map(player => {
 				return {
 					name: player.name,
@@ -360,7 +362,7 @@ export default {
 			this.$socket.emit('scrap', this.hand.indexOf(c))
 		},
 		play_card(card, from_equipment) {
-			console.log('play' + card.name)
+			console.log('play ' + card.name)
 			if (from_equipment && (!card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
 			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')

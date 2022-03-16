@@ -208,6 +208,7 @@ class Player:
         if self.attacker:
             ser['attacker'] = self.attacker.name
         ser['sight'] = self.get_sight()
+        ser['sight_extra'] = self.get_sight(False) -1
         ser['can_gold_rush_discard'] = len([p for p in self.game.get_alive_players() if p != self and len([e for e in p.gold_rush_equipment if e.number <= self.gold_nuggets + 1]) > 0]) > 0
         if self.character:
             ser['gold_rush_discount'] = 1 if self.character.check(self.game, grch.PrettyLuzena) and self.special_use_count < 1 else 0
