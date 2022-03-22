@@ -316,9 +316,16 @@ export default {
 			this.hasToChoose = true
 		},
 		chooseCard(card) {
-			this.$socket.emit('choose', this.chooseCards.indexOf(card))
+			let index = this.chooseCards.indexOf(card)
+			if (!this.debug_mode) {
+				let pl = this.players.filter(x=>x.name === this.target_p)[0]
+				if (index < pl.ncards) {
+					index = Math.floor(Math.random() * pl.ncards)
+				}
+			}
+			this.$socket.emit('choose', index)
 			if (Vue.config.devtools)
-				console.log(card + ' ' + this.chooseCards.indexOf(card))
+				console.log(card + ' ' + index)
 			this.chooseCards = []
 			this.hasToChoose = false
 			this.target_p = ''
