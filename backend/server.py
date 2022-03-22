@@ -445,10 +445,10 @@ def chat_message(sid, msg, pl=None):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and is changing {cmd[1]} health'})
                         if cmd[1] == "*":
                             for p in ses.game.players_map:
-                                ses.game.get_player_named(p).lives = int(cmd[2])
+                                ses.game.get_player_named(p).lives = min(int(cmd[2]), ses.game.get_player_named(p).max_lives)
                                 ses.game.get_player_named(p).notify_self()
                         elif cmd[1] in ses.game.players_map:
-                            ses.game.get_player_named(cmd[1]).lives = int(cmd[2])
+                            ses.game.get_player_named(cmd[1]).lives = min(int(cmd[2]), ses.game.get_player_named(cmd[1]).max_lives)
                             ses.game.get_player_named(cmd[1]).notify_self()
                     else:
                         sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} bad format'})
