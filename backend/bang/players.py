@@ -166,7 +166,6 @@ class Player:
             },{
                 'icon': '⚫',
                 'noDesc': True
-
             }]
             self.is_drawing = True
             self.choose_text = 'choose_guess'
