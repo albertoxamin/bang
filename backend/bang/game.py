@@ -398,7 +398,7 @@ class Game:
             if did_lose:
                 target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
                 print(f'{self.name}: stop roulette')
-                target_pl.lives -= 2
+                target_pl.lives -= 1
                 target_pl.heal_if_needed()
                 if len([c for c in target_pl.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
                     target_pl.gold_nuggets += 1
@@ -410,6 +410,7 @@ class Game:
                 self.is_russian_roulette_on = False
                 self.players[self.turn].play_turn()
             else:
+                self.player_bangs += 1
                 target_pl = pls[(pls.index(self.players[self.turn]) + self.player_bangs) % len(pls)]
                 print(f'{self.name}: next in line {target_pl.name}')
                 if target_pl.get_banged(self.deck.event_cards[0]):
