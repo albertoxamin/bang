@@ -284,12 +284,14 @@ def start_game(sid):
     ses.game.start_game()
     advertise_lobbies()
     if send_metrics:
-        api.Metric.send(metric='start_game', points=[(int(time.time()), 1)], tags=["server:backend", f"host:{os.environ['HOST']}"])
+        api.Metric.send(metric='start_game', points=[(int(time.time()), 1)], tags=["server:backend", f"host:{os.environ['HOST']}", [f"exp:{e}" for e in ses.game.expansions]])
 
 @sio.event
 def set_character(sid, name):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};set_character;{name}')
+    if send_metrics:
+        api.Metric.send(metric='set_character', points=[(int(time.time()), 1)], tags=["server:backend", f"host:{os.environ['HOST']}", f"char:{name}"])
     ses.set_character(name)
 
 @sio.event
