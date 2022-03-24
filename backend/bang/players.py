@@ -63,6 +63,7 @@ class Player:
         self.committed_suit_manette = None
         self.not_chosen_character = None
         try:
+            # pylint: disable=no-member
             del self.win_status
         except:
             pass

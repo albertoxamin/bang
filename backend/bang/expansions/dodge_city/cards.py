@@ -395,6 +395,7 @@ class FucileDaCaccia(Card):
             else:
                 return False
 
+# pylint: disable=function-redefined
 def get_starting_deck() -> List[Card]:
     cards = [
         Barile(Suit.CLUBS, 'A'),
