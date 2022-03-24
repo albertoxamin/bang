@@ -18,7 +18,7 @@ send_metrics = False
 if "DATADOG_API_KEY" in os.environ and "DATADOG_APP_KEY" in os.environ:
     initialize()
     send_metrics = True
-    api.Event.create(title="Backend start", text="", tags=["server:backend", f"host:{os.environ['HOST']}"], alert_type="info"))
+    api.Event.create(title="Backend start", text="", tags=["server:backend", f"host:{os.environ['HOST']}"], alert_type="info")
 else:
     print("Datadog not configured")
 
