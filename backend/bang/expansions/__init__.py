@@ -1,3 +1,4 @@
+# pylint: skip-file
 
 class DodgeCity():
     def get_characters():

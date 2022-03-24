@@ -134,6 +134,7 @@ class DocHolyday(Character):
                 return True
         return False
 
+# pylint: disable=function-redefined
 def all_characters() -> List[Character]:
     cards = [
         PixiePete(),

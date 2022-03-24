@@ -479,7 +479,7 @@ def test_saloon():
         assert p.lives == p.max_lives
 
 # test WellsFargo
-def test_diligenza():
+def test_wells_fargo():
     sio = DummySocket()
     g = Game('test', sio)
     ps = [Player(f'p{i}', f'p{i}', sio) for i in range(4)]
