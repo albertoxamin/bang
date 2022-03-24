@@ -3,7 +3,7 @@ dnspython==2.2.1
 eventlet==0.33.0
 greenlet==1.1.2
 python-engineio==3.14.2
-python-socketio==4.6.1
+python-socketio==5.5.2
 six==1.16.0
 pytest==7.1.1
 requests==2.27.1
