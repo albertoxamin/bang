@@ -83,6 +83,7 @@ class Player:
         self.gold_rush_equipment: List[grc.ShopCard] = []
         self.was_player = False
         self.setaccio_count = 0
+        self.choose_action = ''
 
     def join_game(self, game):
         self.game = game
