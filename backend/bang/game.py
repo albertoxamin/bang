@@ -22,6 +22,7 @@ class Game:
         super().__init__()
         self.sio = sio
         self.name = name
+        self.dd_api = dd_api
         self.players: List[pl.Player] = []
         self.spectators: List[pl.Player] = []
         self.deck: Deck = None
@@ -454,7 +455,7 @@ class Game:
                     self.dd_api.Metric.send(metric='player_win', points=[(int(time.time()), 1)], tags=["server:backend", f"host:{os.environ['HOST']}", f"char:{p.character.name}", f"role:{p.role.name}"])
             p.notify_self()
         if hasattr(self.sio, 'is_fake'):
-            print('announces_winners(): Running for tests, you will have to call reset manually!')
+            print('announces_winners(): Running for tests, you will have to pytcall reset manually!')
             return
         for i in range(5):
             self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
