@@ -272,7 +272,6 @@ def start_game(sid):
     ses: Player = sio.get_session(sid)
     ses.game.start_game()
     advertise_lobbies()
-    Metrics.send_metric('start_game', points=[1], tags=[f"exp:{e}" for e in ses.game.expansions])
 
 @sio.event
 def set_character(sid, name):

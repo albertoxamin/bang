@@ -258,6 +258,7 @@ class Game:
         self.choose_characters()
         if 'gold_rush' in self.expansions:
             self.notify_gold_rush_shop()
+        Metrics.send_metric('start_game', points=[1], tags=([f"exp:{e}" for e in self.expansions] + [f"players:{self.initial_players}"]))
 
     def distribute_roles(self):
         available_roles: List[roles.Role] = []
