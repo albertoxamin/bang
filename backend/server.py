@@ -1,3 +1,4 @@
+import imp
 import os
 import json
 import time
@@ -11,17 +12,10 @@ from bang.players import Player, PendingAction
 
 import requests
 from discord_webhook import DiscordWebhook
-from datadog import initialize, api
+from metrics import Metrics
 
 
-send_metrics = False
-if "DATADOG_API_KEY" in os.environ and "DATADOG_APP_KEY" in os.environ:
-    initialize()
-    send_metrics = True
-    api.Event.create(title="Backend start", text="", tags=["server:backend", f"host:{os.environ['HOST']}"], alert_type="info")
-else:
-    print("Datadog not configured")
-
+Metrics.init()
 
 import sys 
 sys.setrecursionlimit(10**6) # this should prevents bots from stopping
@@ -55,8 +49,7 @@ blacklist: List[str] = []
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
-    if send_metrics:
-        api.Metric.send(metric='lobbies', points=[(int(time.time()), len(games))], tags=["server:backend", "type:lobbies", f"host:{os.environ['HOST']}"])
+    Metrics.send_metric('lobbies', points=[len(games)])
 
 @sio.event
 def connect(sid, environ):
@@ -65,8 +58,7 @@ def connect(sid, environ):
     print('connect ', sid)
     sio.enter_room(sid, 'lobby')
     sio.emit('players', room='lobby', data=online_players)
-    if send_metrics:
-        api.Metric.send(metric='online_players', points=[(int(time.time()), online_players)], tags=["server:backend", f"host:{os.environ['HOST']}"])
+    Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
 def get_online_players(sid):
@@ -89,8 +81,7 @@ def report(sid, text):
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
     else:
         print("WARNING: DISCORD_WEBHOOK not found")
-    if send_metrics:
-        api.Event.create(title="BUG REPORT", text=data, tags=["server:backend", f"host:{os.environ['HOST']}"])
+    Metrics.send_event('BUG_REPORT', event_data=text)
     print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
 
 @sio.event
@@ -174,8 +165,7 @@ def disconnect(sid):
             games.pop(games.index(sio.get_session(sid).game))
         print('disconnect ', sid)
         advertise_lobbies()
-    if send_metrics:
-        api.Metric.send(metric='online_players', points=[(int(time.time()), online_players)], tags=["server:backend", f"host:{os.environ['HOST']}"])
+    Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
 def create_room(sid, room_name):
@@ -184,7 +174,7 @@ def create_room(sid, room_name):
             room_name += f'_{random.randint(0,100)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
-        g = Game(room_name, sio, api if send_metrics else None)
+        g = Game(room_name, sio)
         g.add_player(sio.get_session(sid))
         if room_name in blacklist:
             g.is_hidden = True
@@ -283,15 +273,13 @@ def start_game(sid):
     ses: Player = sio.get_session(sid)
     ses.game.start_game()
     advertise_lobbies()
-    if send_metrics:
-        api.Metric.send(metric='start_game', points=[(int(time.time()), 1)], tags=(["server:backend", f"host:{os.environ['HOST']}"] + [f"exp:{e}" for e in ses.game.expansions]))
+    Metrics.send_metric('start_game', points=[1], tags=[f"exp:{e}" for e in ses.game.expansions])
 
 @sio.event
 def set_character(sid, name):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};set_character;{name}')
-    if send_metrics:
-        api.Metric.send(metric='set_character', points=[(int(time.time()), 1)], tags=["server:backend", f"host:{os.environ['HOST']}", f"char:{name}"])
+    Metrics.send_metric('set_character', points=[1], tags=[f"char:{name}"])
     ses.set_character(name)
 
 @sio.event
