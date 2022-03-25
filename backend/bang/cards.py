@@ -59,7 +59,12 @@ class Card(ABC):
             self.must_be_used = False
 
     def play_card(self, player, against=None, _with=None):#self --> carta
+        import bang.expansions.fistful_of_cards.card_events as ce
+        if (player.game.check_event(ce.IlGiudice)) and self.usable_next_turn and not self.can_be_used_now:
+            return False
         if self.is_equipment:
+            if (player.game.check_event(ce.IlGiudice)):
+                return False
             if self.is_weapon:
                 has_weapon = False
                 for i in range(len(player.equipment)):
@@ -97,8 +102,6 @@ class Card(ABC):
         elif game.check_event(ceh.Maledizione):
             return Suit.SPADES in accepted
         return self.suit in accepted
-
-
 
 class Barile(Card):
     def __init__(self, suit, number):
@@ -146,6 +149,9 @@ class Prigione(Card):
         self.alt_text = "♥️= 🆓"
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
+        if (player.game.check_event(ce.IlGiudice)):
+                return False
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
             self.reset_card()
             player.sio.emit('chat_message', room=player.game.name,

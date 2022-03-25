@@ -149,11 +149,12 @@ class Bibbia(Schivata):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             pass
             return False
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -170,12 +171,13 @@ class Cappello(Mancato):
         self.alt_text = "😅"
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             pass
             return False
         else:
             self.reset_card()
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -203,11 +205,12 @@ class Pugnale(Pugno):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against=against)
         else:
             self.reset_card()
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -224,11 +227,12 @@ class Derringer(Pugnale):
         # self.desc_eng += ' and then draw a card.'
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             player.hand.append(player.game.deck.draw(True))
             return super().play_card(player, against=against)
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -250,13 +254,14 @@ class Borraccia(Card):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             super().play_card(player, against)
             player.lives = min(player.lives+1, player.max_lives)
             player.notify_self()
             return True
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -273,10 +278,11 @@ class PonyExpress(WellsFargo):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -293,10 +299,11 @@ class Howitzer(Gatling):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -313,11 +320,12 @@ class CanCan(CatBalou):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|{self.name}|{against}')
             return super().play_card(player, against)
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -336,10 +344,11 @@ class Conestoga(Panico):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -356,6 +365,7 @@ class Pepperbox(Bang):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             if against != None:
                 Card.play_card(self, player, against=against)
@@ -363,7 +373,7 @@ class Pepperbox(Bang):
                 return True
             return False
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
@@ -381,6 +391,7 @@ class FucileDaCaccia(Card):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
+        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             if against != None:
                 super().play_card(player, against=against)
@@ -388,7 +399,7 @@ class FucileDaCaccia(Card):
                 return True
             return False
         else:
-            if not self.is_duplicate_card(player):
+            if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):
                 self.reset_card()
                 player.equipment.append(self)
                 return True
