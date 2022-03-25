@@ -1,4 +1,6 @@
 from typing import List, Set, Dict, Tuple, Optional
+import bang.expansions.fistful_of_cards.card_events as ce
+import bang.expansions.high_noon.card_events as ceh
 from abc import ABC, abstractmethod
 from enum import IntEnum
 import bang.roles as r
@@ -59,7 +61,6 @@ class Card(ABC):
             self.must_be_used = False
 
     def play_card(self, player, against=None, _with=None):#self --> carta
-        import bang.expansions.fistful_of_cards.card_events as ce
         if (player.game.check_event(ce.IlGiudice)) and self.usable_next_turn and not self.can_be_used_now:
             return False
         if self.is_equipment:
@@ -96,7 +97,6 @@ class Card(ABC):
         return self.name in [c.name for c in player.equipment] or self.name in [c.name for c in player.gold_rush_equipment]
 
     def check_suit(self, game, accepted):
-        import bang.expansions.high_noon.card_events as ceh
         if game.check_event(ceh.Benedizione):
             return Suit.HEARTS in accepted
         elif game.check_event(ceh.Maledizione):
@@ -149,7 +149,6 @@ class Prigione(Card):
         self.alt_text = "♥️= 🆓"
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if (player.game.check_event(ce.IlGiudice)):
                 return False
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
@@ -215,8 +214,6 @@ class Bang(Card):
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
-        import bang.expansions.high_noon.card_events as ceh
         if player.game.check_event(ceh.Sermone) and not self.number == 42: # 42 gold rush
             return False
         if ((player.has_played_bang and not self.number == 42) and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None): # 42 gold rush:
@@ -242,7 +239,6 @@ class Birra(Card):
         # self.desc_eng = "Play this card to regain a life point. You cannot heal more than your character's maximum limit. If you are about to lose your last life point, you can also play this card on your opponent's turn. Beer no longer takes effect if there are only two players"
 
     def play_card(self, player, against=None, _with=None, skipChecks=False):
-        import bang.expansions.high_noon.card_events as ceh
         if player.game.check_event(ceh.IlReverendo):
             return False
         if not skipChecks:
@@ -381,10 +377,8 @@ class Mancato(Card):
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
         if against != None and player.character.check(player.game, chars.CalamityJanet):
-            import bang.expansions.fistful_of_cards.card_events as ce
             if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)):
                 return False
-            import bang.expansions.high_noon.card_events as ceh
             if player.game.check_event(ceh.Sermone):
                 return False
             player.sio.emit('chat_message', room=player.game.name,
