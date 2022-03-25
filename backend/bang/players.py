@@ -359,7 +359,7 @@ class Player:
                         self.game.rpc_log.append(f'{self.name};choose;{0}')
 
 
-    def play_turn(self, can_play_vendetta = True, again = False, can_play_again_don_bell=True):
+    def play_turn(self, can_play_vendetta = True, again = False):
         if (self.lives == 0 or self.is_dead) and not self.is_ghost:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
@@ -367,7 +367,6 @@ class Player:
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
-        self.can_play_again_don_bell = can_play_again_don_bell
         if not again:
             self.sio.emit('chat_message', room=self.game.name,
                           data=f'_turn|{self.name}')
@@ -1274,8 +1273,9 @@ class Player:
             if not forced and self.character.check(self.game, grch.DonBell) and self.can_play_again_don_bell:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
                 self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                self.can_play_again_don_bell = False
                 if picked.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
-                    self.play_turn(can_play_vendetta=False, can_play_again_don_bell=False)
+                    self.play_turn(can_play_vendetta=False)
                     return
         ##Ghost##
             if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
@@ -1285,6 +1285,7 @@ class Player:
                 for i in range(len(self.equipment)):
                     self.game.deck.scrap(self.equipment.pop(), True)
             self.is_my_turn = False
+            self.can_play_again_don_bell = True
             self.committed_suit_manette = None
             self.pending_action = PendingAction.WAIT
             self.notify_self()
