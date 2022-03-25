@@ -184,7 +184,7 @@ def create_room(sid, room_name):
             room_name += f'_{random.randint(0,100)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
-        g = Game(room_name, sio)
+        g = Game(room_name, sio, api if send_metrics else None)
         g.add_player(sio.get_session(sid))
         if room_name in blacklist:
             g.is_hidden = True
@@ -284,7 +284,7 @@ def start_game(sid):
     ses.game.start_game()
     advertise_lobbies()
     if send_metrics:
-        api.Metric.send(metric='start_game', points=[(int(time.time()), 1)], tags=["server:backend", f"host:{os.environ['HOST']}", [f"exp:{e}" for e in ses.game.expansions]])
+        api.Metric.send(metric='start_game', points=[(int(time.time()), 1)], tags=(["server:backend", f"host:{os.environ['HOST']}"] + [f"exp:{e}" for e in ses.game.expansions]))
 
 @sio.event
 def set_character(sid, name):
