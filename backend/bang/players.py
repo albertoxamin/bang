@@ -14,6 +14,7 @@ import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import eventlet
 from typing import List
+from metrics import Metrics
 
 class PendingAction(IntEnum):
     PICK = 0
@@ -647,6 +648,7 @@ class Player:
                 self.hand.insert(hand_index, card)
             else:
                 did_play_card = True
+        Metrics.send_metric('play_card', points=[1], tags=[f'success:{did_play_card}', f'card:{card.name}', f'bot:{self.is_bot}'])
         print("did play card:", did_play_card)
         self.notify_self()
         if self.is_bot:
