@@ -1,4 +1,5 @@
 from bang.cards import *
+import bang.expansions.fistful_of_cards.card_events as ce
 
 class Binocolo(Mirino):
     def __init__(self, suit, number):
@@ -149,7 +150,6 @@ class Bibbia(Schivata):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             pass
             return False
@@ -171,7 +171,6 @@ class Cappello(Mancato):
         self.alt_text = "😅"
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             pass
             return False
@@ -205,7 +204,6 @@ class Pugnale(Pugno):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against=against)
         else:
@@ -227,7 +225,6 @@ class Derringer(Pugnale):
         # self.desc_eng += ' and then draw a card.'
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             player.hand.append(player.game.deck.draw(True))
             return super().play_card(player, against=against)
@@ -254,7 +251,6 @@ class Borraccia(Card):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             super().play_card(player, against)
             player.lives = min(player.lives+1, player.max_lives)
@@ -278,7 +274,6 @@ class PonyExpress(WellsFargo):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
@@ -299,7 +294,6 @@ class Howitzer(Gatling):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
@@ -320,7 +314,6 @@ class CanCan(CatBalou):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|{self.name}|{against}')
             return super().play_card(player, against)
@@ -344,7 +337,6 @@ class Conestoga(Panico):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             return super().play_card(player, against)
         else:
@@ -365,7 +357,6 @@ class Pepperbox(Bang):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             if against != None:
                 Card.play_card(self, player, against=against)
@@ -391,7 +382,6 @@ class FucileDaCaccia(Card):
         self.can_be_used_now = False
 
     def play_card(self, player, against, _with=None):
-        import bang.expansions.fistful_of_cards.card_events as ce
         if self.can_be_used_now:
             if against != None:
                 super().play_card(player, against=against)
