@@ -49,6 +49,7 @@ def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
     Metrics.send_metric('lobbies', points=[len(games)])
+    Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
 def connect(sid, environ):
@@ -546,6 +547,8 @@ def chat_message(sid, msg, pl=None):
         else:
             color = sid.encode('utf-8').hex()[-3:]
             sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})
+            Metrics.send_metric('chat_message', points=[1], tags=[f'game:{ses.game.name.replace(" ","_")}'])
+
 
 
 """
@@ -562,6 +565,7 @@ def get_cards(sid):
             cards_dict[ca.name] = ca
     cards = [cards_dict[i] for i in cards_dict]
     sio.emit('cards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
+    Metrics.send_metric('help_screen_viewed', points=[1])
 
 @sio.event
 def get_characters(sid):

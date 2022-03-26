@@ -648,7 +648,7 @@ class Player:
                 self.hand.insert(hand_index, card)
             else:
                 did_play_card = True
-        Metrics.send_metric('play_card', points=[1], tags=[f'success:{did_play_card}', f'card:{card.name}', f'bot:{self.is_bot}'])
+        Metrics.send_metric('play_card', points=[1], tags=[f'success:{did_play_card}', f'card:{card.name}', f'bot:{self.is_bot}', f'exp:{card.expansion}'])
         print("did play card:", did_play_card)
         self.notify_self()
         if self.is_bot:
