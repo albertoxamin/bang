@@ -600,5 +600,12 @@ def get_goldrushcards(sid):
     cards = [cards_dict[i] for i in cards_dict]
     sio.emit('goldrushcards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
+def pool_metrics():
+    sio.sleep(60)
+    Metrics.send_metric('lobbies', points=[len(games)])
+    Metrics.send_metric('online_players', points=[online_players])
+    pool_metrics()
+
 if __name__ == '__main__':
+    sio.start_background_task(pool_metrics)
     eventlet.wsgi.server(eventlet.listen(('', 5001)), app)

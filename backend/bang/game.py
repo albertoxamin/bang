@@ -53,6 +53,12 @@ class Game:
         self.is_replay = False
 
     def reset(self):
+        for p in self.players:
+            if (p.sid == p.name):
+                p.is_bot = True
+        if (self.is_replay):
+            self.is_replay = False
+            print('replay ended')
         print(f'{self.name}: resetting lobby')
         self.players.extend(self.spectators)
         self.spectators = []
@@ -84,7 +90,9 @@ class Game:
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
             if (log[i] == "@@@"):
-                break
+                if self.is_replay:
+                    self.reset()
+                return
             cmd = log[i].split(';')
             if cmd[1] == 'players':
                 self.expansions = json.loads(cmd[4].replace("'",'"'))
@@ -124,6 +132,10 @@ class Game:
             # if cmd[1] == 'chat_message':
             #     chat_message(None, cmd[2], player)
             eventlet.sleep(max(self.replay_speed, 0.1))
+        eventlet.sleep(6)
+        if self.is_replay:
+            self.reset()
+            
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
@@ -659,7 +671,7 @@ class Game:
             attacker_role = None
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
-            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
+            winners = [p for p in self.players if p.role != None and p.role.on_player_death([p for p in self.get_alive_players() if not p.is_ghost], initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             if not self.attack_in_progress and len(winners) > 0 and not self.someone_won:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
@@ -695,12 +707,6 @@ class Game:
                     vulture[0].hand[-1].reset_card()
                 vulture[0].notify_self()
 
-            #se Vulture Sam è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
-            if player.attacker and player.attacker in self.get_alive_players() and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
-                for i in range(len(player.attacker.hand)):
-                    self.deck.scrap(player.attacker.hand.pop(), True)
-                player.attacker.notify_self()
-
             greg = [p for p in self.get_alive_players() if p.character.check(self, chd.GregDigger)]
             for i in range(len(greg)):
                 greg[i].lives = min(greg[i].lives+2, greg[i].max_lives)
@@ -709,6 +715,13 @@ class Game:
                 herb[i].hand.append(self.deck.draw(True))
                 herb[i].hand.append(self.deck.draw(True))
                 herb[i].notify_self()
+
+            #se Vulture Sam o Herb Hounter è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
+            if player.attacker and player.attacker in self.get_alive_players() and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
+                for i in range(len(player.attacker.hand)):
+                    self.deck.scrap(player.attacker.hand.pop(), True)
+                player.attacker.notify_self()
+
                 
         self.is_handling_death = False
         if corpse.is_my_turn:
