@@ -671,7 +671,7 @@ class Game:
             attacker_role = None
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
-            winners = [p for p in self.players if p.role != None and p.role.on_player_death(self.get_alive_players(), initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
+            winners = [p for p in self.players if p.role != None and p.role.on_player_death([p for p in self.get_alive_players() if not p.is_ghost], initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             if not self.attack_in_progress and len(winners) > 0 and not self.someone_won:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
