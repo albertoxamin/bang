@@ -53,6 +53,12 @@ class Game:
         self.is_replay = False
 
     def reset(self):
+        for p in self.players:
+            if (p.sid == p.name):
+                p.is_bot = True
+        if (self.is_replay):
+            self.is_replay = False
+            print('replay ended')
         print(f'{self.name}: resetting lobby')
         self.players.extend(self.spectators)
         self.spectators = []
@@ -84,7 +90,9 @@ class Game:
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
             if (log[i] == "@@@"):
-                break
+                if self.is_replay:
+                    self.reset()
+                return
             cmd = log[i].split(';')
             if cmd[1] == 'players':
                 self.expansions = json.loads(cmd[4].replace("'",'"'))
@@ -124,6 +132,10 @@ class Game:
             # if cmd[1] == 'chat_message':
             #     chat_message(None, cmd[2], player)
             eventlet.sleep(max(self.replay_speed, 0.1))
+        eventlet.sleep(6)
+        if self.is_replay:
+            self.reset()
+            
 
     def notify_room(self, sid=None):
         if len([p for p in self.players if p.character == None]) != 0 or sid:
