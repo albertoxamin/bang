@@ -695,12 +695,6 @@ class Game:
                     vulture[0].hand[-1].reset_card()
                 vulture[0].notify_self()
 
-            #se Vulture Sam è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
-            if player.attacker and player.attacker in self.get_alive_players() and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
-                for i in range(len(player.attacker.hand)):
-                    self.deck.scrap(player.attacker.hand.pop(), True)
-                player.attacker.notify_self()
-
             greg = [p for p in self.get_alive_players() if p.character.check(self, chd.GregDigger)]
             for i in range(len(greg)):
                 greg[i].lives = min(greg[i].lives+2, greg[i].max_lives)
@@ -709,6 +703,13 @@ class Game:
                 herb[i].hand.append(self.deck.draw(True))
                 herb[i].hand.append(self.deck.draw(True))
                 herb[i].notify_self()
+
+            #se Vulture Sam o Herb Hounter è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
+            if player.attacker and player.attacker in self.get_alive_players() and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
+                for i in range(len(player.attacker.hand)):
+                    self.deck.scrap(player.attacker.hand.pop(), True)
+                player.attacker.notify_self()
+
                 
         self.is_handling_death = False
         if corpse.is_my_turn:
