@@ -368,12 +368,16 @@ def chat_message(sid, msg, pl=None):
                     return
                 if '/replay' in msg and not '/replayspeed' in msg:
                     _cmd = msg.split()
-                    if len(_cmd) == 2:
+                    if len(_cmd) >= 2:
                         replay_id = _cmd[1]
                         response = requests.get(f"https://www.toptal.com/developers/hastebin/raw/{replay_id}")
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
-                        ses.game.replay(log)
+                        if len(_cmd) == 2:
+                            ses.game.replay(log)
+                        if len(_cmd) == 3:
+                            line = int(_cmd[2])
+                            ses.game.replay(log, speed=0.1, fast_forward=line)
                     return
                 if '/replayspeed' in msg:
                     _cmd = msg.split()

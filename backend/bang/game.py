@@ -81,12 +81,12 @@ class Game:
         eventlet.sleep(0.5)
         self.notify_room()
 
-    def replay(self, log):
+    def replay(self, log, speed=1.0, fast_forward = -1):
         from tests.dummy_socket import DummySocket
         self.players = []
         self.is_hidden = True
         self.is_replay = True
-        self.replay_speed = 1
+        self.replay_speed = speed
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
             if (log[i] == "@@@"):
@@ -134,6 +134,9 @@ class Game:
                 player.buy_gold_rush_card(int(cmd[2]))
             # if cmd[1] == 'chat_message':
             #     chat_message(None, cmd[2], player)
+            if i == fast_forward:
+                self.replay_speed = 1.0
+
             eventlet.sleep(max(self.replay_speed, 0.1))
         eventlet.sleep(6)
         if self.is_replay:
