@@ -81,12 +81,12 @@ class Game:
         eventlet.sleep(0.5)
         self.notify_room()
 
-    def replay(self, log):
+    def replay(self, log, speed=1.0, fast_forward = -1):
         from tests.dummy_socket import DummySocket
         self.players = []
         self.is_hidden = True
         self.is_replay = True
-        self.replay_speed = 1
+        self.replay_speed = speed
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
             if (log[i] == "@@@"):
@@ -116,7 +116,10 @@ class Game:
                 player.end_turn()
             if cmd[1] == 'play_card':
                 data = json.loads(cmd[2])
-                player.play_card(data['index'], data['against'], data['with'])
+                if len(data) != 0:
+                    player.play_card(data['index'], data['against'], data['with'])
+                else:
+                    player.special(data) #TODO: remove this, is only for the typo in the log
             if cmd[1] == 'respond':
                 player.respond(int(cmd[2]))
             if cmd[1] == 'choose':
@@ -131,6 +134,9 @@ class Game:
                 player.buy_gold_rush_card(int(cmd[2]))
             # if cmd[1] == 'chat_message':
             #     chat_message(None, cmd[2], player)
+            if i == fast_forward:
+                self.replay_speed = 1.0
+
             eventlet.sleep(max(self.replay_speed, 0.1))
         eventlet.sleep(6)
         if self.is_replay:
@@ -390,7 +396,9 @@ class Game:
             {'name':nextPlayer.name,'cards': self.available_cards}, default=lambda o: o.__dict__))
             nextPlayer.notify_self()
 
-    def get_player_named(self, name:str):
+    def get_player_named(self, name:str, next=False):
+        if next:
+            return self.players[(self.players_map[name]+1) % len(self.players)]
         return self.players[self.players_map[name]]
 
     def responders_did_respond_resume_turn(self, did_lose=False):
