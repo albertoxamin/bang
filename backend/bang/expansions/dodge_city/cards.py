@@ -75,18 +75,19 @@ class Rissa(CatBalou):
 
     def play_card(self, player, against, _with):
         if _with != None:
-            if len([p.name for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0]) == 0:
+            if len([p for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0]) == 0:
                 return False
             #se sono qui vuol dire che ci sono giocatori con carte in mano oltre a me
-            self.rissa_targets = []
-            target = player.game.get_player(player.name, next=True)
+            player.rissa_targets = []
+            target = player.game.get_player_named(player.name, next=True)
             while target != player:
                 if len(target.hand) + len(target.equipment) > 0:
-                    self.rissa_target.append(target)
-                target = player.game.get_player(target.name, next=True)
+                    player.rissa_targets.append(target)
+                target = player.game.get_player_named(target.name, next=True)
             player.game.deck.scrap(_with)
             player.event_type = 'rissa'
-            super().play_card(player, against=self.rissa_targets.pop(0))
+            print(f'rissa targets: {player.rissa_targets}')
+            super().play_card(player, against=player.rissa_targets.pop(0).name)
             player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
             return True
         return False

@@ -208,6 +208,7 @@ class Player:
         ser.pop('on_pick_cb')
         ser.pop('on_failed_response_cb')
         ser.pop('attacker')
+        ser.pop('rissa_targets')
         if self.attacker:
             ser['attacker'] = self.attacker.name
         ser['sight'] = self.get_sight()
@@ -680,6 +681,7 @@ class Player:
                 self.pending_action = PendingAction.PLAY
             else:
                 self.target_p = self.rissa_targets.pop(0).name
+                print(f'rissa targets: {self.rissa_targets}')
             self.notify_self()
         elif self.choose_text == 'choose_ricercato':
             player = self.game.get_player_named(self.available_cards[card_index]['name'])
