@@ -116,7 +116,10 @@ class Game:
                 player.end_turn()
             if cmd[1] == 'play_card':
                 data = json.loads(cmd[2])
-                player.play_card(data['index'], data['against'], data['with'])
+                if len(data) != 0:
+                    player.play_card(data['index'], data['against'], data['with'])
+                else:
+                    player.special(data) #TODO: remove this, is only for the typo in the log
             if cmd[1] == 'respond':
                 player.respond(int(cmd[2]))
             if cmd[1] == 'choose':

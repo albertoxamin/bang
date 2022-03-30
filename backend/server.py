@@ -331,7 +331,7 @@ def scrap(sid, card_index):
 @sio.event
 def special(sid, data):
     ses: Player = sio.get_session(sid)
-    ses.game.rpc_log.append(f'{ses.name};play_card;{json.dumps(data)}')
+    ses.game.rpc_log.append(f'{ses.name};special;{json.dumps(data)}')
     ses.special(data)
 
 @sio.event
