@@ -396,7 +396,9 @@ class Game:
             {'name':nextPlayer.name,'cards': self.available_cards}, default=lambda o: o.__dict__))
             nextPlayer.notify_self()
 
-    def get_player_named(self, name:str):
+    def get_player_named(self, name:str, next=False):
+        if next:
+            return self.players[(self.players_map[name]+1) % len(self.players)]
         return self.players[self.players_map[name]]
 
     def responders_did_respond_resume_turn(self, did_lose=False):

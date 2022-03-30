@@ -61,6 +61,7 @@ class Player:
         self.target_p: str = None
         self.is_drawing = False
         self.special_use_count = 0
+        self.rissa_targets = []
         self.committed_suit_manette = None
         self.not_chosen_character = None
         try:
@@ -657,7 +658,7 @@ class Player:
     def choose(self, card_index):
         if self.pending_action != PendingAction.CHOOSE:
             return
-        if self.target_p and self.target_p != '':  # panico, cat balou
+        if self.target_p and self.target_p != '':  # panico, cat balou, rissa
             target = self.game.get_player_named(self.target_p)
             card = None
             if (target.name == self.name):
@@ -672,15 +673,13 @@ class Player:
                 self.hand.append(card)
             else:
                 self.game.deck.scrap(card, True)
-            if self.event_type != 'rissa' or (self.event_type == 'rissa' and (len([p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0]) == 0 or self.target_p == [p.name for p in self.game.get_alive_players() if p != self and (len(p.hand)+len(p.equipment)) > 0][-1])):
+            if self.event_type != 'rissa' or len(self.rissa_targets) == 0:
                 self.event_type = ''
                 self.target_p = ''
                 self.choose_action = ''
                 self.pending_action = PendingAction.PLAY
             else:
-                self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
-                while self.target_p == self.name or len(self.game.players[self.game.players_map[self.target_p]].hand) + len(self.game.players[self.game.players_map[self.target_p]].equipment) == 0:
-                    self.target_p = self.game.players[(self.game.players_map[self.target_p]+1)%len(self.game.players)].name
+                self.target_p = self.rissa_targets.pop(0).name
             self.notify_self()
         elif self.choose_text == 'choose_ricercato':
             player = self.game.get_player_named(self.available_cards[card_index]['name'])
