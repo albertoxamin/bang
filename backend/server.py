@@ -524,7 +524,7 @@ def chat_message(sid, msg, pl=None):
                         cards  = cs.get_starting_deck(ses.game.expansions)
                         card_names = ' '.join(cmd[1:]).split(',')
                         for cn in card_names:
-                            ses.hand.append([c for c in cards if c.name == cn][0])
+                            ses.hand.append([c for c in cards if c.name.lower() == cn.lower() or c.name[0:-1].lower() == cn.lower()][0])
                             ses.notify_self()
                 elif '/getnuggets' in msg:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got nuggets'})

@@ -961,6 +961,7 @@ class Player:
 
     def get_banged(self, attacker, double=False, no_dmg=False, card_index=None):
         self.attacker = attacker
+        print(f'attacker -> {attacker}')
         self.mancato_needed = 1 if not double else 2
         if card_index != None:
             self.dmg_card_index = card_index
@@ -979,8 +980,9 @@ class Player:
                 self.take_no_damage_response()
             return False
         else:
-            if (not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) and not self.game.players[self.game.turn].character.check(self.game, chd.BelleStar)\
-                 or self.character.check(self.game, chars.Jourdonnais):
+            if ((not self.game.check_event(ce.Lazo) and len([c for c in self.equipment if isinstance(c, cs.Barile)]) > 0) \
+                 and not (self.game.players[self.game.turn].character.check(self.game, chd.BelleStar) and isinstance(attacker, Player))) \
+                 or self.character.check(self.game, chars.Jourdonnais): #se ho un barile e non c'è lazo e non mi sta attaccando Belle Star o se sono Jourdonnais
                 print('has barrel')
                 self.pending_action = PendingAction.PICK
                 if not no_dmg:

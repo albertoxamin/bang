@@ -90,6 +90,7 @@ class Game:
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
             if (log[i] == "@@@"):
+                eventlet.sleep(10)
                 if self.is_replay:
                     self.reset()
                 return
