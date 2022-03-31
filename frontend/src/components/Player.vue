@@ -111,6 +111,7 @@ export default {
 		range: 1,
 		sight: 1,
 		sight_extra: 1,
+		norangecard: false,
 		can_target_sheriff: true,
 		show_role: false,
 		attacker: undefined,
@@ -240,8 +241,11 @@ export default {
 					if (!this.can_target_sheriff && x.is_sheriff)
 						return false
 					else
-						//console.log("aa" +(this.sight-1))
-						return x.dist <= this.range + this.sight_extra
+						//console.log(x.name +" dist:" +x.dist +" range:" +this.range +" sight:" +this.sight +" sight_extra:" +this.sight_extra)
+						if (this.norangecard)
+							return x.dist <= this.range
+						else
+							return x.dist <= this.range + this.sight_extra
 				}).map(player => {
 				return {
 					name: player.name,
@@ -372,10 +376,13 @@ export default {
 				if (card.need_with && !this.card_with) {
 					this.card_with = card
 				} else if ((card.need_target || calamity_special) && !((card.name == 'Bang!' || (calamity_special && card.name=='Mancato!')) && cant_play_bang)) {
-						if (card.name == 'Bang!' || card.name == "Pepperbox" || calamity_special)
+						if (card.name == 'Bang!' || card.name == "Pepperbox" || calamity_special) {
 							this.range = this.sight
-						else
+							this.norangecard = true
+						} else {
 							this.range = card.range
+							this.norangecard = false
+						}
 					if (this.visiblePlayers.length == 0 && this.hand.length > this.lives) {
 						this.really_play_card(card, null)
 					}
@@ -401,6 +408,7 @@ export default {
 			if (this.card_with.need_target) {
 				this.card_against = this.card_with
 				this.range = this.card_against.range
+				this.norangecard = false
 				this.card_with = card
 			} else {
 				let card_data	 = {
