@@ -277,7 +277,8 @@ class Game:
         self.choose_characters()
         if 'gold_rush' in self.expansions:
             self.notify_gold_rush_shop()
-        Metrics.send_metric('start_game', points=[1], tags=([f"exp:{e}" for e in self.expansions] + [f"players:{self.initial_players}", f"competitive:{self.is_competitive}"]))
+        if not self.is_replay:
+            Metrics.send_metric('start_game', points=[1], tags=([f"exp:{e}" for e in self.expansions] + [f"players:{self.initial_players}", f"competitive:{self.is_competitive}"]))
 
     def distribute_roles(self):
         available_roles: List[roles.Role] = []
@@ -470,7 +471,8 @@ class Game:
                 if not self.someone_won:
                     self.someone_won = True
                 self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}|{p.role.name}')
-                Metrics.send_metric('player_win', points=[1], tags=[f"char:{p.character.name}", f"role:{p.role.name}"])
+                if not self.is_replay:
+                    Metrics.send_metric('player_win', points=[1], tags=[f"char:{p.character.name}", f"role:{p.role.name}"])
             p.notify_self()
         if hasattr(self.sio, 'is_fake'):
             print('announces_winners(): Running for tests, you will have to call reset manually!')
@@ -486,7 +488,8 @@ class Game:
 
     def play_turn(self):
         self.incremental_turn += 1
-        Metrics.send_metric('incremental_turn', points=[self.incremental_turn], tags=[f'game:{self.SEED}'])
+        if not self.is_replay:
+            Metrics.send_metric('incremental_turn', points=[self.incremental_turn], tags=[f'game:{self.SEED}'])
         if self.players[self.turn].is_dead:
             pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
             if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl == self.players[self.turn]:
@@ -630,7 +633,8 @@ class Game:
         import bang.expansions.dodge_city.characters as chd
         print(f'{self.name}: the killer is {player.attacker}')
         if player.character and player.role:
-            Metrics.send_metric('player_death', points=[1], tags=[f"char:{player.character.name}", f"role:{player.role.name}"])
+            if not self.is_replay:
+                Metrics.send_metric('player_death', points=[1], tags=[f"char:{player.character.name}", f"role:{player.role.name}"])
         if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker and player.attacker in self.players:
             player.attacker.gold_nuggets += 1
             player.attacker.hand.append(self.deck.draw(True))
