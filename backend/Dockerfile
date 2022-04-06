@@ -8,4 +8,4 @@ RUN RUN apt-get update && apt-get install -y \
 RUN pip install -r requirements.txt
 EXPOSE 5001
 
-ENTRYPOINT ["python", "/code/__init__.py"]
+ENTRYPOINT ["ddtrace-run", "python", "/code/__init__.py"]
