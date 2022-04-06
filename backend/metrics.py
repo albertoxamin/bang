@@ -1,6 +1,7 @@
 import os
 import time
 from datadog import initialize, api
+from ddtrace import tracer
 
 class Metrics:
     send_metrics = False
@@ -11,6 +12,12 @@ class Metrics:
             Metrics.send_metrics = True
             initialize()
             api.Event.create(title="Backend start", text="", tags=["server:backend", f"host:{os.environ['HOST']}"], alert_type="info")
+            if "DD_TRACE_AGENT_HOST" in os.environ and "DD_TRACE_AGENT_PORT" in os.environ:
+                tracer.configure(
+                    https=False,
+                    hostname=os.environ["DD_TRACE_AGENT_HOST"],
+                    port=os.environ["DD_TRACE_AGENT_PORT"],
+                )
         else:
             print("Datadog not configured")
 
