@@ -22,4 +22,9 @@ COPY --from=builder ./dist /dist/
 WORKDIR /dist
 EXPOSE 5001
 
-ENTRYPOINT ["python", "/dist/server.py"]
+ENV DD_SERVICE="bang-backend"
+ENV DD_ENV="dev-test"
+ENV DD_LOGS_INJECTION=true
+ENV DD_PROFILING_ENABLED=true
+
+ENTRYPOINT ["ddtrace-run", "python", "/dist/server.py"]
