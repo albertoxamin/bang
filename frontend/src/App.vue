@@ -49,6 +49,7 @@
 import FullScreenInput from './components/FullScreenInput.vue'
 import Help from './components/Help.vue';
 // import Vue from 'vue'
+import { datadogRum } from '@datadog/browser-rum';
 
 export default {
   components: { Help,	FullScreenInput },
@@ -134,6 +135,17 @@ export default {
 			this.$i18n.locale = userLang.split('-')[0]
 		}
 		this.detectColorScheme()
+		datadogRum.init({
+			applicationId: '076b1a5e-16a9-44eb-b320-27afd32c57a5',
+			clientToken: 'pub1cc4d0d6ea0a7235aa1eab86e7a192d4',
+			site: 'datadoghq.com',
+			service:'bang-frontend',
+			sampleRate: 100,
+			trackInteractions: true,
+			defaultPrivacyLevel: 'mask-user-input'
+		});
+			
+		datadogRum.startSessionReplayRecording();
 	},
 	created() {
 		if (this.$workbox) {
