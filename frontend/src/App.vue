@@ -48,7 +48,7 @@
 <script>
 import FullScreenInput from './components/FullScreenInput.vue'
 import Help from './components/Help.vue';
-// import Vue from 'vue'
+import Vue from 'vue'
 import { datadogRum } from '@datadog/browser-rum';
 
 export default {
@@ -142,7 +142,8 @@ export default {
 			service:'bang-frontend',
 			sampleRate: 100,
 			trackInteractions: true,
-			defaultPrivacyLevel: 'mask-user-input'
+			defaultPrivacyLevel: 'allow',
+			proxyUrl: (Vue.config.devtools ? `http://${window.location.hostname}:5001` : window.location.origin) + '/ddproxy',
 		});
 			
 		datadogRum.startSessionReplayRecording();

@@ -13,7 +13,6 @@ import requests
 from discord_webhook import DiscordWebhook
 from metrics import Metrics
 
-
 Metrics.init()
 
 import sys 
@@ -612,6 +611,24 @@ def pool_metrics():
     Metrics.send_metric('online_players', points=[online_players])
     pool_metrics()
 
+import urllib.parse
+class CustomProxyFix(object):
+    def __init__(self, app):
+        self.app = app
+        print('init')
+
+    def __call__(self, environ, start_response):
+        path = environ.get('PATH_INFO', '')
+        if 'ddproxy' in path:
+            newurl = urllib.parse.unquote(environ['QUERY_STRING'].replace('ddforward=', ''))
+            heads = {'X-Forwarded-For': environ['REMOTE_ADDR']}
+            for h in environ['headers_raw']:
+                heads[h[0]] = h[1]
+            r = requests.post(newurl, data=environ['wsgi.input'].read(), headers=heads)
+            start_response('200 OK', [])
+            return ['']
+        return self.app(environ, start_response)
+
 if __name__ == '__main__':
     sio.start_background_task(pool_metrics)
-    eventlet.wsgi.server(eventlet.listen(('', 5001)), app)
+    eventlet.wsgi.server(eventlet.listen(('', 5001)), CustomProxyFix(app))
