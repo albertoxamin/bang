@@ -27,7 +27,7 @@ jobs:
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache" \
-            --platform linux/arm64 \
+            --platform linux/amd64 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:test \
             --file ./Dockerfile ./
