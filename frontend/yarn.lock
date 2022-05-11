@@ -835,25 +835,25 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
-"@datadog/browser-core@4.8.1":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.8.1.tgz#46c5baea76bf94d8f10591340c947e6b62737744"
-  integrity sha512-0kWdFN4in7BncWzHNqZVUg+dJIzM5jgGOHh1jM2gkOfX548gVo3teaKJWYvufRoNIPwYs9Qm1glBVt4cFQL/Pw==
+"@datadog/browser-core@4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.9.0.tgz#4d8194c80bcd59e0f4eea2846c53fa92eb1aa751"
+  integrity sha512-ChXJfP1VWVhuCKH46UgqaokOKdquWCmt7b+B7YV538whIwdeNYz5HVhCCRVU4Nx/zaShCFAPtytRW6xld7cj/w==
 
-"@datadog/browser-rum-core@4.8.1":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.8.1.tgz#ae67974f606dbb4b5e98b36f2d725d025eeb6c0d"
-  integrity sha512-cXO30/qNLcnp+BBRgtcSs4F4iG5N5JuGj891D2rHhd++h/6UYU+ivhgUJq+ZrAVKldetdM9H8VCBkClIOfQhaQ==
+"@datadog/browser-rum-core@4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.9.0.tgz#d37f734b9d53beb647ca454293e8d77507b625d4"
+  integrity sha512-TbMfCXxf8kezsPreF7635Hn2GFlNQR1xWw2HVouAnXGV4wtqNp7RWeNrBoMA/3evsXJGdwwrzNFjpkguvShj3Q==
   dependencies:
-    "@datadog/browser-core" "4.8.1"
+    "@datadog/browser-core" "4.9.0"
 
-"@datadog/browser-rum@^4.8.1":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.8.1.tgz#58964ab11562613d905721aa08554a2dff1177e0"
-  integrity sha512-Mcj2twuS6cc96/lfSX3pxwxWyzuvmS2eBw1k1E5mcoC6USryJ1w0p9cHHJYp3MVpvhHP2b5NLi97ZVzETnQ+gA==
+"@datadog/browser-rum@^4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.9.0.tgz#47fb812b0d5304407f1882d5cf4e9a0698113ee8"
+  integrity sha512-24TaIDXBYUaD79GHQAvh+8B6GmF43GZ0oHAKT1FmQ6QnmcpN/wJf9++sTRINGQLi0dAzwAS9YrzToyWRHN1bjg==
   dependencies:
-    "@datadog/browser-core" "4.8.1"
-    "@datadog/browser-rum-core" "4.8.1"
+    "@datadog/browser-core" "4.9.0"
+    "@datadog/browser-rum-core" "4.9.0"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
