@@ -9,4 +9,4 @@ pytest==7.1.2
 requests==2.27.1
 discord-webhook==0.16.0
 datadog==0.44.0
-ddtrace==1.1.2
+ddtrace==1.1.3
