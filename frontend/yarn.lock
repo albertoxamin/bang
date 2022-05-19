@@ -835,25 +835,25 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
-"@datadog/browser-core@4.8.1":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.8.1.tgz#46c5baea76bf94d8f10591340c947e6b62737744"
-  integrity sha512-0kWdFN4in7BncWzHNqZVUg+dJIzM5jgGOHh1jM2gkOfX548gVo3teaKJWYvufRoNIPwYs9Qm1glBVt4cFQL/Pw==
+"@datadog/browser-core@4.10.3":
+  version "4.10.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.10.3.tgz#77e06923da6f414926b5e969375036ae7fa74be0"
+  integrity sha512-oDBIMsbGSOTp/nBiLR8Gi8NLhWCvLk6KdQSiNo6VACcww6xPSsrBuemNXTrST7qReyESokm2zoX33g9t2W7syg==
 
-"@datadog/browser-rum-core@4.8.1":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.8.1.tgz#ae67974f606dbb4b5e98b36f2d725d025eeb6c0d"
-  integrity sha512-cXO30/qNLcnp+BBRgtcSs4F4iG5N5JuGj891D2rHhd++h/6UYU+ivhgUJq+ZrAVKldetdM9H8VCBkClIOfQhaQ==
+"@datadog/browser-rum-core@4.10.3":
+  version "4.10.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.10.3.tgz#69e404e0ac282b7d9ab0c9f4c6661584fef379fb"
+  integrity sha512-z2GB1jftu6pMewbIzWoSnj8STHeglrP8xEDa8rliCPe3le9yr1gsZkqQJj1nVhYP2e1VTDAJfKCtWlPy57Uc9A==
   dependencies:
-    "@datadog/browser-core" "4.8.1"
+    "@datadog/browser-core" "4.10.3"
 
-"@datadog/browser-rum@^4.8.1":
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.8.1.tgz#58964ab11562613d905721aa08554a2dff1177e0"
-  integrity sha512-Mcj2twuS6cc96/lfSX3pxwxWyzuvmS2eBw1k1E5mcoC6USryJ1w0p9cHHJYp3MVpvhHP2b5NLi97ZVzETnQ+gA==
+"@datadog/browser-rum@^4.10.3":
+  version "4.10.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.10.3.tgz#d9baf5d8083007ca209c90edc9935c85487eecdd"
+  integrity sha512-NzzJYvaXqwYkeMYEaIY4LdVQHnOqMN33a3DebKV8oD28XhkXPPSoIPAq8Bf/Lu560U6bwlxpsO7h/woL4Bb93g==
   dependencies:
-    "@datadog/browser-core" "4.8.1"
-    "@datadog/browser-rum-core" "4.8.1"
+    "@datadog/browser-core" "4.10.3"
+    "@datadog/browser-rum-core" "4.10.3"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -2261,10 +2261,10 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001286, caniuse-lite@^1.0.30001338:
-  version "1.0.30001338"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001338.tgz#b5dd7a7941a51a16480bdf6ff82bded1628eec0d"
-  integrity sha512-1gLHWyfVoRDsHieO+CaeYe7jSo/MT7D7lhaXUiwwbuR5BwQxORs0f1tAwUSQr3YbxRXJvxHM/PA5FfPQRnsPeQ==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001286, caniuse-lite@^1.0.30001341:
+  version "1.0.30001341"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001341.tgz#59590c8ffa8b5939cf4161f00827b8873ad72498"
+  integrity sha512-2SodVrFFtvGENGCv0ChVJIDQ0KPaS1cg7/qtfMaICgeMolDdo/Z2OD32F0Aq9yl6F4YFwGPBS5AaPqNYiW4PoA==
 
 case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.4.0"
@@ -6966,10 +6966,10 @@ socket.io-client@^2.1.1:
     socket.io-parser "~3.3.0"
     to-array "0.1.4"
 
-socket.io-client@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-4.5.0.tgz#3858b6183bab31c5c4eaf3efd0fa50840ebb4504"
-  integrity sha512-HW61c1G7OrYGxaI79WRn17+b03iBCdvhBj4iqyXHBoL5M8w2MSO/vChsjA93knG4GYEai1/vbXWJna9dzxXtSg==
+socket.io-client@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-4.5.1.tgz#cab8da71976a300d3090414e28c2203a47884d84"
+  integrity sha512-e6nLVgiRYatS+AHXnOnGi4ocOpubvOUCGhyWw8v+/FxW8saHkinG6Dfhi9TU0Kt/8mwJIAASxvw6eujQmjdZVA==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.2"
@@ -7843,9 +7843,10 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-router@^3.5.3:
-  version "3.5.3"
-  resolved "https://registry.npmjs.org/vue-router/-/vue-router-3.5.3.tgz"
+vue-router@^3.5.4:
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.5.4.tgz#c453c0b36bc75554de066fefc3f2a9c3212aca70"
+  integrity sha512-x+/DLAJZv2mcQ7glH2oV9ze8uPwcI+H+GgTgTmb5I55bCgY3+vXWIsqbYUzbBSZnwFHEJku4eoaH/x98veyymQ==
 
 vue-socket.io@^3.0.10:
   version "3.0.10"
