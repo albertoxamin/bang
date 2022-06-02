@@ -12,6 +12,7 @@ class ShopCard(Card):
         self.kind = kind
         self.expansion_icon = '🤑️'
         self.expansion = 'gold_rush'
+        self.reset_card()
 
     def play_card(self, player, against, _with=None):
         if self.kind == ShopCardKind.BROWN:
