@@ -40,6 +40,7 @@ class JoshMcCloud(Character):
             if player.gold_nuggets >= 2 and player.is_my_turn:
                 player.gold_nuggets -= 2
                 card = player.game.deck.shop_deck.pop(0)
+                print(f'{player.name} ha comprato usando la abilità speciale {card.name}')
                 if card.play_card(player):
                     player.game.deck.shop_deck.append(card)
                 player.notify_self()
