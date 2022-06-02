@@ -456,13 +456,13 @@ class Player:
             self.lives += 1
             self.pending_action = PendingAction.PLAY
             self.notify_self()
-        elif self.character.check(self.game, chars.KitCarlson):
+        elif self.character.check(self.game, chars.KitCarlson) and not self.is_ghost:
             self.is_drawing = True
             self.available_cards = [self.game.deck.draw() for i in range(3)]
             self.choose_text = 'choose_card_to_get'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
-        elif self.character.check(self.game, grch.DutchWill):
+        elif self.character.check(self.game, grch.DutchWill) and not self.is_ghost:
             self.is_drawing = True
             self.available_cards = [self.game.deck.draw() for i in range(2)]
             self.choose_text = 'choose_card_to_get'
