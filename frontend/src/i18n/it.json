@@ -129,9 +129,10 @@
     "prison_turn": "{0} rimane in prigione questo turno",
     "flip_event": "🎴 EVENTO: {0} 🎴",
     "choose_manette": "{0} si è impegnato ad usare solo carte di seme {1} in questo turno.",
-    "UnionPacific": "{0} ha giocato Union Pacific e ha pescato 4 carte",
+    "UnionPacific": "{0} ha giocato Union Pacific e ha pescato 4 carte.",
     "use_special": "{0} ha usato l'abilità speciale del suo personaggio ({1})",
-    "gold_rush_pay_discard": "{0} ha fatto scartare {2} a {1}."
+    "gold_rush_pay_discard": "{0} ha fatto scartare {2} a {1}.",
+    "choose_emporio": "{0} ha scelto {1} da Emporio."
   },
   "foc": {
     "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"

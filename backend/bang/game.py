@@ -374,7 +374,9 @@ class Game:
         self.players[self.turn].notify_self()
 
     def respond_emporio(self, player, i):
-        player.hand.append(self.available_cards.pop(i))
+        card = self.available_cards.pop(i)
+        player.sio.emit('chat_message', room=self.name, data=f'_choose_emporio|{player.name}|{card.name}')
+        player.hand.append(card)
         player.available_cards = []
         player.pending_action = pl.PendingAction.WAIT
         player.notify_self()
