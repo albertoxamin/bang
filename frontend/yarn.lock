@@ -10,6 +10,14 @@
     event-pubsub "4.3.0"
     js-message "1.0.7"
 
+"@achrinza/node-ipc@^9.2.5":
+  version "9.2.5"
+  resolved "https://registry.yarnpkg.com/@achrinza/node-ipc/-/node-ipc-9.2.5.tgz#29788e608ff41121f0543491da723b243266ac28"
+  dependencies:
+    "@node-ipc/js-queue" "2.0.3"
+    event-pubsub "4.3.0"
+    js-message "1.0.7"
+
 "@apideck/better-ajv-errors@^0.3.1":
   version "0.3.4"
   resolved "https://registry.npmjs.org/@apideck/better-ajv-errors/-/better-ajv-errors-0.3.4.tgz"
@@ -1321,11 +1329,11 @@
   dependencies:
     "@vue/cli-shared-utils" "^4.5.17"
 
-"@vue/cli-plugin-router@~5.0.4":
-  version "5.0.4"
-  resolved "https://registry.npmjs.org/@vue/cli-plugin-router/-/cli-plugin-router-5.0.4.tgz"
+"@vue/cli-plugin-router@~5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-router/-/cli-plugin-router-5.0.6.tgz#b65d39845a8a53dc51b9c263bf75bdd24a53d8be"
   dependencies:
-    "@vue/cli-shared-utils" "^5.0.4"
+    "@vue/cli-shared-utils" "^5.0.6"
 
 "@vue/cli-plugin-vuex@^4.5.15":
   version "4.5.15"
@@ -1410,11 +1418,11 @@
     semver "^6.1.0"
     strip-ansi "^6.0.0"
 
-"@vue/cli-shared-utils@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.npmjs.org/@vue/cli-shared-utils/-/cli-shared-utils-5.0.4.tgz"
+"@vue/cli-shared-utils@^5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-5.0.6.tgz#f47202d68dfd4c2e41160c63721263b39cd97d1e"
   dependencies:
-    "@achrinza/node-ipc" "9.2.2"
+    "@achrinza/node-ipc" "^9.2.5"
     chalk "^4.1.2"
     execa "^1.0.0"
     joi "^17.4.0"
