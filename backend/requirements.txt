@@ -1,4 +1,4 @@
-certifi==2022.5.18.1
+certifi==2022.6.15.1
 dnspython==2.2.1
 eventlet==0.33.1
 greenlet==1.1.2
