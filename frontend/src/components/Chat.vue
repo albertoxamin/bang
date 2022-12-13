@@ -4,7 +4,7 @@
 		<h3>{{$t("chat.chat")}}</h3>
 		<transition-group name="message" tag="div" id="chatbox">
 		<!-- <div id="chatbox"> -->
-			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color}`">{{msg.text}}</p>
+			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}`">{{msg.text}}</p>
 			<p class="end" key="end" style="color:#0000">.</p>
 		<!-- </div> -->
 		</transition-group>
@@ -52,8 +52,10 @@ export default {
 			// console.log(msg)
 			if ((typeof msg === "string" && msg.indexOf('_') === 0) || (msg.color != null && msg.text.indexOf('_') === 0)) {
 				let t_color = null
+				let bg_color = null
 				if (msg.color != null) {
 					t_color = msg.color
+					bg_color = msg.bgcolor
 					msg = msg.text
 				}
 				let params = msg.split('|')
@@ -75,7 +77,7 @@ export default {
 					}
 				}
 				if (t_color != null) {
-					this.messages.push({color:t_color, text:this.$t(`chat.${type}`, params)});
+					this.messages.push({color:t_color, bgcolor: bg_color, text:this.$t(`chat.${type}`, params)});
 				} else {
 					this.messages.push({text:this.$t(`chat.${type}`, params)});
 				}
