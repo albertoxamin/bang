@@ -1,21 +1,30 @@
 <template>
-	<div class="chat">
-		<h4 v-if="spectators > 0">{{$tc("chat.spectators", spectators)}}</h4>
-		<h3>{{$t("chat.chat")}}</h3>
-		<transition-group name="message" tag="div" id="chatbox">
-		<!-- <div id="chatbox"> -->
-			<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}`">{{msg.text}}</p>
-			<p class="end" key="end" style="color:#0000">.</p>
-		<!-- </div> -->
-		</transition-group>
-		<div v-if="commandSuggestion.length > 0">
-			<p style="margin:1pt 15pt;cursor:pointer;" class="chat-message" v-for="(msg, i) in commandSuggestion" v-bind:key="`${i}-c`" :style="`color:orange`"
-					@click="fillCmd(msg.cmd)">{{msg.cmd}} <i class="std-text" style="font-size:8pt;">{{msg.help}}</i></p>
+	<div class="chat" :style="`${collapsed?'min-width:0':''}`">
+		<div class="chat-header">
+			<div style="display:flex;align-items: center;max-height: 20pt;">
+				<h3>{{$t("chat.chat")}}</h3>
+				<button class="btn" @click="collapsed = !collapsed" style="max-height:20pt;">{{collapsed?">>":"X"}}</button>
+			</div>
+			<h4 v-if="spectators > 0">{{$tc("chat.spectators", spectators)}}</h4>
 		</div>
-		<form @submit="sendChatMessage" id="msg-form">
-			<input id="my-msg" autocomplete="off" v-model="text" style="flex-grow:2;"/>
-			<input id="submit-message" type="submit" class="btn" :value="$t('submit')"/>
-		</form>
+		<div class="cont">
+			<transition-group name="message" tag="div" id="chatbox" :style="`${collapsed?'display:none':''}`">
+				<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;':''}`">{{msg.text}}</p>
+				<p class="end" key="end" style="color:#0000">.</p>
+			</transition-group>
+			<div v-if="commandSuggestion.length > 0">
+				<p style="margin:1pt 15pt;cursor:pointer;" class="chat-message" v-for="(msg, i) in commandSuggestion" v-bind:key="`${i}-c`" :style="`color:orange`"
+						@click="fillCmd(msg.cmd)">{{msg.cmd}} <i class="std-text" style="font-size:8pt;">{{msg.help}}</i></p>
+			</div>
+			<form @submit="sendChatMessage" id="msg-form">
+				<input id="my-msg" autocomplete="off" v-model="text" style="flex-grow:2;"/>
+				<input id="submit-message" type="submit" class="btn" :value="$t('submit')"/>
+			</form>
+		</div>
+		<transition-group name="message" tag="div" id="toast-chatbox">
+				<p style="margin:1pt;" class="chat-message" v-for="msg in toasts" v-bind:key="`${msg.text}-c`" :style="`width:fit-content;color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;padding-right:4pt;':''}`">{{msg.text}}</p>
+				<p class="end" key="end" style="color:#0000">.</p>
+			</transition-group>
 	</div>
 </template>
 
@@ -34,9 +43,11 @@ export default {
 	},
 	data: () => ({
 		messages: [],
+		toasts: [],
 		text: '',
 		spectators: 0,
 		commands: [{cmd:'/debug', help:'Toggles the debug mode'}],
+		collapsed: false,
 	}),
 	computed: {
 		commandSuggestion() {
@@ -97,6 +108,10 @@ export default {
 			} else { // a chat message
 				(new Audio(message_sfx)).play();
 				this.messages.push(msg);
+				if (this.collapsed || window.innerWidth < 1000) {
+					this.toasts.push(msg);
+					setTimeout(() => this.toasts.shift(), 5000);
+				}
 			}
 			let container = this.$el.querySelector("#chatbox");
 			container.scrollTop = container.scrollHeight;
@@ -151,7 +166,7 @@ input {
 .std-text {
 	color: var(--font-color);
 }
-.chat {
+.chat, .cont {
 	display: flex;
 	flex-direction: column;
 }
@@ -169,7 +184,10 @@ input {
   transform: translateX(30px);
 }
 @media only screen and (min-width:1000px) {
-	.chat { 
+	.chat-header {
+		margin-left: 10pt;
+	}
+	.chat, .cont { 
 		height: 90vh;
 		margin-left: 10pt;
 	}
@@ -177,6 +195,12 @@ input {
 		margin-left: 6pt;
 		margin-right: -5pt;
 	}
+}
+#toast-chatbox {
+	position: fixed;
+	bottom: 30pt;
+	left: 0;
+	background: #ffffffcf;
 }
 @media only screen and (max-width:1000px) {
 	#msg-form {
