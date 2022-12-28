@@ -115,6 +115,7 @@ export default {
 		can_target_sheriff: true,
 		show_role: false,
 		attacker: undefined,
+		attacking_card: undefined,
 		notifycard: null,
 		desc: '',
 		scrapHand: [],
@@ -175,6 +176,7 @@ export default {
 			this.sight = self.sight
 			this.sight_extra = self.sight_extra
 			this.attacker = self.attacker
+			this.attacking_card = self.attacking_card
 			this.mancato_needed = self.mancato_needed
 			this.is_ghost = self.is_ghost
 			if (this.pending_action == 5 && self.target_p) {
@@ -215,7 +217,8 @@ export default {
 	},
 	computed:{
 		respondText() {
-			return `${this.$t('choose_response')}${this.attacker?(this.$t('choose_response_to')+this.attacker):''}${(this.mancato_needed>1)?(` (${this.$t('choose_response_needed')} ` + this.mancato_needed + ')'):''}`
+			let attCard = this.attacking_card ? ' ('+this.$t('cards.'+this.attacking_card+'.name')+')' : '';
+			return `${this.$t('choose_response')}${this.attacker?(this.$t('choose_response_to')+this.attacker+attCard):''}${(this.mancato_needed>1)?(` (${this.$t('choose_response_needed')} ` + this.mancato_needed + ')'):''}`
 		},
 		showScrapScreen() {
 			return this.isEndingTurn && !this.canEndTurn && this.is_my_turn;

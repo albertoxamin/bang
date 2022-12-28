@@ -226,7 +226,7 @@ class Bang(Card):
                 player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             if player.character.check(player.game, chars.WillyTheKid):
                 player.has_played_bang = False
-            player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller))
+            player.game.attack(player, against, double=player.character.check(player.game, chars.SlabTheKiller), card_name=self.name)
             return True
         return False
 
@@ -350,7 +350,7 @@ class Gatling(Card):
 
     def play_card(self, player, against, _with=None):
         super().play_card(player, against=against)
-        player.game.attack_others(player)
+        player.game.attack_others(player, card_name=self.name)
         return True
 
 
@@ -385,7 +385,7 @@ class Mancato(Card):
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
             player.bang_used += 1
             player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
-            player.game.attack(player, against)
+            player.game.attack(player, against, card_name=self.name)
             return True
         return False
 

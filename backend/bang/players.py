@@ -57,6 +57,7 @@ class Player:
         self.on_failed_response_cb = None
         self.event_type: str = None
         self.expected_response = []
+        self.attacking_card = None
         self.attacker: Player = None
         self.target_p: str = None
         self.is_drawing = False
@@ -960,8 +961,9 @@ class Player:
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
-    def get_banged(self, attacker, double=False, no_dmg=False, card_index=None):
+    def get_banged(self, attacker, double=False, no_dmg=False, card_index=None, card_name=None):
         self.attacker = attacker
+        self.attacking_card = card_name
         print(f'attacker -> {attacker}')
         self.mancato_needed = 1 if not double else 2
         if card_index != None:
@@ -1016,6 +1018,7 @@ class Player:
 
     def get_indians(self, attacker):
         self.attacker = attacker
+        self.attacking_card = "Indiani!"
         if self.character.check(self.game, chd.ApacheKid) or len([c for c in self.gold_rush_equipment if isinstance(c, grc.Calumet)]) > 0: return False
         if not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0:
             print('Cant defend')
@@ -1033,6 +1036,7 @@ class Player:
 
     def get_dueled(self, attacker):
         self.attacker = attacker
+        self.attacking_card = "Duello"
         if (self.game.check_event(ceh.Sermone) and self.is_my_turn) or (not self.game.is_competitive and len([c for c in self.hand if isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato))]) == 0):
             print('Cant defend')
             self.take_damage_response()
@@ -1086,6 +1090,7 @@ class Player:
         self.heal_if_needed()
         self.mancato_needed = 0
         self.expected_response = []
+        self.attacking_card = None
         self.event_type = ''
         self.notify_self()
         self.attacker = None
@@ -1096,6 +1101,7 @@ class Player:
         self.dmg_card_index = -1
         self.mancato_needed = 0
         self.expected_response = []
+        self.attacking_card = None
         self.event_type = ''
         self.notify_self()
         self.attacker = None

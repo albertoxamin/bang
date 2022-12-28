@@ -25,7 +25,7 @@ class Pugno(Card):
     def play_card(self, player, against, _with=None):
         if against != None:
             super().play_card(player, against=against)
-            player.game.attack(player, against)
+            player.game.attack(player, against, card_name=self.name)
             return True
         return False
 
@@ -106,7 +106,7 @@ class SpringField(Card):
         if against != None and _with != None:
             player.game.deck.scrap(_with)
             super().play_card(player, against=against)
-            player.game.attack(player, against)
+            player.game.attack(player, against, card_name=self.name)
             return True
         return False
 
@@ -367,7 +367,7 @@ class Pepperbox(Bang):
         if self.can_be_used_now:
             if against != None:
                 Card.play_card(self, player, against=against)
-                player.game.attack(player, against)
+                player.game.attack(player, against, card_name=self.name)
                 return True
             return False
         else:
@@ -392,7 +392,7 @@ class FucileDaCaccia(Card):
         if self.can_be_used_now:
             if against != None:
                 super().play_card(player, against=against)
-                player.game.attack(player, against)
+                player.game.attack(player, against, card_name=self.name)
                 return True
             return False
         else:
