@@ -22,9 +22,8 @@
 			</form>
 		</div>
 		<transition-group name="message" tag="div" id="toast-chatbox">
-				<p style="margin:1pt;" class="chat-message" v-for="msg in toasts" v-bind:key="`${msg.text}-c`" :style="`width:fit-content;color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;padding-right:4pt;':''}`">{{msg.text}}</p>
-				<p class="end" key="end" style="color:#0000">.</p>
-			</transition-group>
+			<p style="margin:1pt;" class="chat-message" v-for="msg in toasts" v-bind:key="`${msg.text}-c`" :style="`width:fit-content;color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;padding-right:4pt;':''}`">{{msg.text}}</p>
+		</transition-group>
 	</div>
 </template>
 
@@ -200,7 +199,7 @@ input {
 	position: fixed;
 	bottom: 30pt;
 	left: 0;
-	background: #ffffffcf;
+	background: --var(--bg-color);
 }
 @media only screen and (max-width:1000px) {
 	#msg-form {
