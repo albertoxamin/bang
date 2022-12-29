@@ -124,6 +124,7 @@ def get_me(sid, room):
                 de_games[0].notify_room(sid)
                 eventlet.sleep(0.1)
                 de_games[0].notify_all()
+                de_games[0].notify_scrap_pile(sid)
                 sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
                 bot.notify_self()
                 if len(bot.available_characters) > 0:
@@ -133,6 +134,8 @@ def get_me(sid, room):
                 sio.get_session(sid).game = de_games[0]
                 sio.enter_room(sid, de_games[0].name)
                 de_games[0].notify_room(sid)
+                eventlet.sleep(0.1)
+
                 de_games[0].notify_event_card(sid)
                 de_games[0].notify_scrap_pile(sid)
                 de_games[0].notify_all()
