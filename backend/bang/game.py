@@ -303,7 +303,7 @@ class Game:
             self.players[i].notify_self()
         self.notify_event_card()
 
-    def attack_others(self, attacker: pl.Player):
+    def attack_others(self, attacker: pl.Player, card_name:str=None):
         self.attack_in_progress = True
         attacker.pending_action = pl.PendingAction.WAIT
         attacker.notify_self()
@@ -311,7 +311,7 @@ class Game:
         self.ready_count = 0
         for p in self.get_alive_players():
             if p != attacker:
-                if p.get_banged(attacker=attacker):
+                if p.get_banged(attacker=attacker, card_name=card_name):
                     self.waiting_for += 1
                     p.notify_self()
         if self.waiting_for == 0:
@@ -339,8 +339,8 @@ class Game:
         if self.pending_winners and not self.someone_won:
             return self.announces_winners()
 
-    def attack(self, attacker: pl.Player, target_username:str, double:bool=False):
-        if self.get_player_named(target_username).get_banged(attacker=attacker, double=double):
+    def attack(self, attacker: pl.Player, target_username:str, double:bool=False, card_name:str=None):
+        if self.get_player_named(target_username).get_banged(attacker=attacker, double=double, card_name=card_name):
             self.ready_count = 0
             self.waiting_for = 1
             attacker.pending_action = pl.PendingAction.WAIT

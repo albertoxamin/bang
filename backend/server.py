@@ -567,8 +567,11 @@ def chat_message(sid, msg, pl=None):
                 else:
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'{msg} COMMAND NOT FOUND'})
         else:
-            color = sid.encode('utf-8').hex()[-3:]
-            sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}','text':f'[{ses.name}]: {msg}'})
+            # get a color from sid
+            color = sid.encode('utf-8').hex()[0:6]
+            #bg color will be slightly darker and transparent
+            bg_color = f'{int(color[0:2],16)-10:02x}{int(color[2:4],16)-10:02x}{int(color[4:6],16)-10:02x}20'
+            sio.emit('chat_message', room=ses.game.name, data={'color': f'#{color}', 'bgcolor': f'#{bg_color}','text':f'[{ses.name}]: {msg}'})
             if not ses.game.is_replay:
                 Metrics.send_metric('chat_message', points=[1], tags=[f'game:{ses.game.name.replace(" ","_")}'])
 

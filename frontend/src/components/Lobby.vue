@@ -38,37 +38,40 @@
 				<p v-if="players.length < 3" class="center-stuff" style="min-height: 19px;">{{$t('minimum_players')}}</p>
 				<p v-else style="min-height: 19px;"> </p>
 			</div>
-			<transition-group name="list" tag="div" class="players-table">
-				<Card v-if="startGameCard" key="_start_game_" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
-				<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
-					<transition-group v-if="p.gold_nuggets && p.gold_nuggets > 0" name="list" tag="div" style="position: absolute;top: -10pt; font-size:9pt;">
-						<span v-for="(n, i) in p.gold_nuggets" v-bind:key="i" :alt="i">💵️</span>
-					</transition-group>
-					<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">
-						<span v-for="(n, i) in p.lives" v-bind:key="i" :alt="i">❤️</span>
-						<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
-					</transition-group>
-					<div v-else-if="p.is_ghost" class="tiny-health">
-						<span>👻</span>
+			<div style="position:relative;">
+				<div v-if="showTurnFlow" id="turn-indicator" :class="{reversed:turnReversed}"/>
+				<transition-group name="list" tag="div" class="players-table">
+					<Card v-if="startGameCard" key="_start_game_" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
+					<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
+						<transition-group v-if="p.gold_nuggets && p.gold_nuggets > 0" name="list" tag="div" style="position: absolute;top: -10pt; font-size:9pt;">
+							<span v-for="(n, i) in p.gold_nuggets" v-bind:key="i" :alt="i">💵️</span>
+						</transition-group>
+						<transition-group v-if="p.max_lives && !p.is_ghost" name="list" tag="div" class="tiny-health">
+							<span v-for="(n, i) in p.lives" v-bind:key="i" :alt="i">❤️</span>
+							<span v-for="(n, i) in (p.max_lives-p.lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
+						</transition-group>
+						<div v-else-if="p.is_ghost" class="tiny-health">
+							<span>👻</span>
+						</div>
+						<Card :card="p.card" @click.native="drawFromPlayer(p.name)"  :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
+						<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
+						<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
+						<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
+						<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
+						<div class="tiny-equipment">
+							<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
+										:card="card" @click.native="selectedInfo = p.equipment"
+										:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
+							<Card v-for="(card, i) in p.gold_rush_equipment" v-bind:key="card.name+card.number"
+										:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
+										:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
+						</div>
+						<div v-if="p.is_bot" style="position:absolute;bottom:57%;width:20pt;" class="center-stuff">
+							<span>🤖</span>
+						</div>
 					</div>
-					<Card :card="p.card" @click.native="drawFromPlayer(p.name)"  :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
-					<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
-					<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
-					<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
-					<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
-					<div class="tiny-equipment">
-						<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
-									:card="card" @click.native="selectedInfo = p.equipment"
-									:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
-						<Card v-for="(card, i) in p.gold_rush_equipment" v-bind:key="card.name+card.number"
-									:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
-									:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
-					</div>
-					<div v-if="p.is_bot" style="position:absolute;bottom:57%;width:20pt;" class="center-stuff">
-						<span>🤖</span>
-					</div>
-				</div>
-			</transition-group>
+				</transition-group>
+			</div>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
 				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose" :cancelChooseCardFromPlayer="()=>{hasToChoose=false}"/>
@@ -129,6 +132,9 @@ export default {
 		is_competitive: false,
 		disconnect_bot: false,
 		debug_mode: false,
+		showTurnFlow: false,
+		turnReversed: false,
+		turn: -1,
 	}),
 	sockets: {
 		room(data) {
@@ -347,7 +353,18 @@ export default {
 		privateRoom(old, _new) {
 			if (this.isRoomOwner && old !== _new)
 				this.$socket.emit('private')
-		}
+		},
+		players(_, _new) {
+			let x = _new.findIndex(x => x.is_my_turn);
+			if (x !== -1 && x !== this.turn) {
+				this.turnReversed = (x+1 === this.turn)
+				this.showTurnFlow = true;
+				setTimeout(() => {
+					this.showTurnFlow = false
+				}, 1000);
+				this.turn = x;
+			}
+		},
 	},
 	mounted() {
 		if (Vue.config.devtools)
@@ -408,6 +425,39 @@ export default {
 	flex-wrap: wrap;
 	justify-content: space-evenly;
 	margin-bottom: 12pt;
+}
+#turn-indicator{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-image:  linear-gradient(135deg, #cbcbcb33 25%, transparent 25%), linear-gradient(45deg, #cbcbcb33 25%, transparent 25%);
+	background-size: 80px 200px;
+	background-position: 0 100px;
+	background-position-x: 0;
+	opacity: 0;
+	background-repeat: repeat;
+	animation-name: next-turn-animation;
+	animation-duration: 1s;
+	animation-iteration-count: 3;
+	animation-timing-function: linear;
+}
+#turn-indicator.reversed {
+	background-image:  linear-gradient(225deg, #cbcbcb33 25%, transparent 25%), linear-gradient(315deg, #cbcbcb33 25%, transparent 25%);
+}
+
+@keyframes next-turn-animation {
+	0% {
+background-position-x: 0;
+opacity: 1;
+	}
+	50% {
+background-position-x: 80px;
+	}
+	100% {
+		opacity: 0;
+		background-position-x: 160px;
+	}
+	
 }
 .lobby {
 	display: flex;
