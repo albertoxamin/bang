@@ -627,9 +627,9 @@ class Player:
             withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
-        event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or (self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette and not (card.usable_next_turn and card.can_be_used_now))
+        event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or ((self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette) and not (card.usable_next_turn and card.can_be_used_now))
         if not(against != None and (self.game.get_player_named(against).character.check(self.game, chd.ApacheKid) or len([c for c in self.game.get_player_named(against).gold_rush_equipment if isinstance(c, grc.Calumet)]) > 0) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK) and not event_blocks_card:
-            if against == self.name and not isinstance(card, csd.Tequila) and not isinstance(card, cs.Panico) and not isinstance(card, cs.CatBalou):
+            if (against == self.name and not isinstance(card, csd.Tequila) and not isinstance(card, cs.Panico) and not isinstance(card, cs.CatBalou)) or event_blocks_card:
                 did_play_card = False
             else:
                 did_play_card = card.play_card(self, against, withCard)
