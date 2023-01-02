@@ -66,22 +66,23 @@ def get_online_players(sid):
 
 @sio.event
 def report(sid, text):
+    print(f'New report from {sid}: {text}')
     ses: Player = sio.get_session(sid)
     data=''
     if hasattr(ses, 'game'):
         data = "\n".join(ses.game.rpc_log[:-1]).strip()
     data = data +"\n@@@\n" +text
     #print(data)
-    response = requests.post("https://www.toptal.com/developers/hastebin/documents", data)
+    response = requests.post("https://hastebin.com/documents", data)
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/documents/{key}')
         response = webhook.execute()
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
     else:
         print("WARNING: DISCORD_WEBHOOK not found")
     Metrics.send_event('BUG_REPORT', event_data=text)
-    print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
+    print(f'New bug report, replay at https://hastebin.com/documents/{key}')
 
 @sio.event
 def set_username(sid, username):
@@ -373,7 +374,7 @@ def chat_message(sid, msg, pl=None):
                     _cmd = msg.split()
                     if len(_cmd) >= 2:
                         replay_id = _cmd[1]
-                        response = requests.get(f"https://www.toptal.com/developers/hastebin/raw/{replay_id}")
+                        response = requests.get(f"https://hastebin.com/documents/{replay_id}")
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
                         if len(_cmd) == 2:
