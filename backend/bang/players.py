@@ -50,7 +50,8 @@ class Player:
         if r.status_code == 200:
             res = r.json()
             self.avatar = f'https://cdn.discordapp.com/avatars/{res["id"]}/{res["avatar"]}.png'
-            self.sio.emit('chat_message', room=self.game.name, data=f'_change_username|{self.name}|{res["username"]}')
+            if self.game:
+                self.sio.emit('chat_message', room=self.game.name, data=f'_change_username|{self.name}|{res["username"]}')
             self.name = res['username']
             self.discord_id = res['id']
             if self.is_admin():

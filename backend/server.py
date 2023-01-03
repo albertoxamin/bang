@@ -96,7 +96,7 @@ def set_username(sid, username):
         username = username["name"]
         print(f'{sid} changed username to {username}')
         prev = ses.name
-        if len([p for p in ses.game.players if p.name == username]) > 0:
+        if ses.game and len([p for p in ses.game.players if p.name == username]) > 0:
             ses.name = f"{username}_{random.randint(0,100)}"
         else:
             ses.name = username

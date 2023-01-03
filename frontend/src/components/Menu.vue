@@ -115,7 +115,7 @@ export default {
 		discord_auth_succ(data) {
 			if (data.access_token) {
 				localStorage.setItem('discord_token', data.access_token)
-				this.$$router.push({path:'/'})
+				this.login()
 			}
 		},
 	},
@@ -157,13 +157,7 @@ export default {
 		init() {
 			location.reload();
 		},
-	},
-	mounted() {
-		if (this.$route.query.code) {
-			this.$socket.emit('discord_auth', {code:this.$route.query.code, origin:window.location.origin})
-		}
-		else if (localStorage.getItem('discord_token')) {
-			//get username from discord
+		login() {
 			fetch('https://discordapp.com/api/users/@me', {
 				headers: {
 					'Authorization': 'Bearer ' + localStorage.getItem('discord_token')
@@ -179,7 +173,16 @@ export default {
 			}).catch(err => {
 				console.error(err)
 				localStorage.removeItem('discord_token')
+				this.$router.replace({query: []})
 			})
+		}
+	},
+	mounted() {
+		if (localStorage.getItem('discord_token')) {
+			this.login()
+		} else if (this.$route.query.code) {
+			this.$socket.emit('discord_auth', {code:this.$route.query.code, origin:window.location.origin})
+			this.$router.replace({query: []})
 		}
 		this.randomTip = `tip_${1+Math.floor(Math.random() * 8)}`
 		if (localStorage.getItem('username'))
