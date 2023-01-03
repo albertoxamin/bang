@@ -85,6 +85,12 @@
 		<transition name="bounce">
 			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :send="setUsername" :sendText="$t('ok')"/>
 		</transition>
+		<transition name="bounce">
+			<div v-if="displayAdminStatus" style="position:absolute;width:100%;height:100%;overflow:auto;background:#000000bf;">
+				<input type="button" @click="displayAdminStatus = false" value="close"/>
+				<Status deploy_key="ok"/>
+			</div>
+		</transition>
 	</div>
 </template>
 
@@ -98,6 +104,7 @@ import Player from './Player.vue'
 import Deck from './Deck.vue'
 import TinyHand from './TinyHand.vue'
 import FullScreenInput from './FullScreenInput.vue'
+import Status from './Status.vue'
 
 export default {
 	name: 'Lobby',
@@ -109,7 +116,8 @@ export default {
 		Deck,
 		TinyHand,
 		PrettyCheck,
-		FullScreenInput
+		FullScreenInput,
+		Status
 	},
 	data: () => ({
 		username: '',
@@ -134,6 +142,7 @@ export default {
 		debug_mode: false,
 		showTurnFlow: false,
 		turnReversed: false,
+		displayAdminStatus: false,
 		turn: -1,
 	}),
 	sockets: {
@@ -179,6 +188,9 @@ export default {
 			}
 			this.username = username
 			// this.$socket.emit('get_cards', 'dodge_city')
+		},
+		mount_status() {
+			this.displayAdminStatus = true
 		},
 		// cards_info(data) {
 		// 	data = JSON.parse(data)

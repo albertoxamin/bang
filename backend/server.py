@@ -88,7 +88,8 @@ def report(sid, text):
 def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
-        sio.save_session(sid, Player(username["name"], sid, sio, discord_token=username["discord_token"]))
+        dt = username["discord_token"] if 'discord_token' in username else None
+        sio.save_session(sid, Player(username["name"], sid, sio, discord_token=dt))
         print(f'{sid} is now {username}')
         advertise_lobbies()
     elif ses.game == None or not ses.game.started:
@@ -110,7 +111,8 @@ def get_me(sid, room):
         if sio.get_session(sid).game:
             sio.get_session(sid).game.notify_room()
     else:
-        sio.save_session(sid, Player('player', sid, sio, discord_token=room['discord_token']))
+        dt = room["discord_token"] if 'discord_token' in room else None
+        sio.save_session(sid, Player('player', sid, sio, discord_token=dt))
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
@@ -236,7 +238,7 @@ Sockets for the status page
 
 @sio.event
 def get_all_rooms(sid, deploy_key):
-    if 'DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']:
+    if ('DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('all_rooms', room=sid, data=[{
             'name': g.name,
             'hidden': g.is_hidden,
@@ -252,12 +254,12 @@ def get_all_rooms(sid, deploy_key):
 
 @sio.event
 def kick(sid, data):
-    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('kicked', room=data['sid'])
 
 @sio.event
 def hide_toogle(sid, data):
-    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         game = [g for g in games if g.name==data['room']]
         if len(games) > 0:
             game[0].is_hidden = not game[0].is_hidden
@@ -405,13 +407,13 @@ def chat_message(sid, msg, pl=None):
                     if len(cmd) == 2 and 'DEPLOY_KEY' in os.environ and cmd[1] == os.environ['DEPLOY_KEY']:  # solo chi ha la deploy key può attivare la modalità debug
                         ses.game.debug = not ses.game.debug
                         ses.game.notify_room()
-                    elif ses == ses.game.players[0]: # solo l'owner può attivare la modalità debug
+                    elif ses == ses.game.players[0] or ses.is_admin(): # solo l'owner può attivare la modalità debug
                         ses.game.debug = not ses.game.debug
                         ses.game.notify_room()
                     if ses.game.debug:
                         sio.emit('chat_message', room=sid, data={'color': f'red','text':f'debug mode is now active, only the owner of the room can disable it with /debug'})
                     return
-                if not ses.game.debug:
+                if not ses.game.debug and not ses.is_admin():
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'debug mode is not active, only the owner of the room can enable it with /debug'})
                 elif '/set_chars' in msg and not ses.game.started:
                     cmd = msg.split()
@@ -539,9 +541,15 @@ def chat_message(sid, msg, pl=None):
                         ses.gold_nuggets += int(cmd[1])
                         ses.notify_self()
                 elif '/gameinfo' in msg:
-                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {dict(filter(lambda x:x[0] != "rpc_log",ses.game.__dict__.items()))}'})
+                    sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.game.__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
+                elif '/status' in msg and ses.is_admin():
+                    sio.emit('mount_status', room=sid)
                 elif '/meinfo' in msg:
-                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
+                    sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
+                elif '/playerinfo' in msg:
+                    cmd = msg.split()
+                    if len(cmd) == 2:
+                        sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.game.get_player_named(cmd[1]).__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
                 elif '/mebot' in msg:
                     ses.is_bot = not ses.is_bot
                     if (ses.is_bot):

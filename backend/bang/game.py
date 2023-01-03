@@ -178,6 +178,7 @@ class Game:
                 {'cmd':'/getcard', 'help':'Get a brand new card - sample /getcard Birra'},
                 {'cmd':'/meinfo', 'help':'Get player data'},
                 {'cmd':'/gameinfo', 'help':'Get game data'},
+                {'cmd':'/playerinfo', 'help':'Get player data - sample /playerinfo player'},
                 {'cmd':'/mebot', 'help':'Toggles bot mode'},
                 {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
                 {'cmd':'/startwithseed', 'help':'start the game with custom seed'}]
