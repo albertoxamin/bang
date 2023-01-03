@@ -46,7 +46,7 @@ blacklist: List[str] = []
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
-    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden])
     Metrics.send_metric('lobbies', points=[len([g for g in games if not g.is_replay])])
     Metrics.send_metric('online_players', points=[online_players])
 
@@ -76,13 +76,13 @@ def report(sid, text):
     response = requests.post("https://hastebin.com/documents", data)
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://hastebin.com/documents/{key}')
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
         response = webhook.execute()
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
     else:
         print("WARNING: DISCORD_WEBHOOK not found")
     Metrics.send_event('BUG_REPORT', event_data=text)
-    print(f'New bug report, replay at https://hastebin.com/documents/{key}')
+    print(f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
 
 @sio.event
 def set_username(sid, username):
@@ -113,6 +113,19 @@ def get_me(sid, room):
     else:
         dt = room["discord_token"] if 'discord_token' in room else None
         sio.save_session(sid, Player('player', sid, sio, discord_token=dt))
+        if 'replay' in room and room['replay'] != None:
+            create_room(sid, room['replay'])
+            sid = sio.get_session(sid)
+            sid.game.is_hidden = True
+            eventlet.sleep(0.5)
+            response = requests.get(f"https://hastebin.com/raw/{room['replay']}")
+            if response.status_code != 200:
+                sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Invalid replay code'})
+                return
+            log = response.text.splitlines()
+            sid.game.spectators.append(sid)
+            sid.game.replay(log)
+            return
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
@@ -377,7 +390,7 @@ def chat_message(sid, msg, pl=None):
                     _cmd = msg.split()
                     if len(_cmd) >= 2:
                         replay_id = _cmd[1]
-                        response = requests.get(f"https://hastebin.com/documents/{replay_id}")
+                        response = requests.get(f"https://hastebin.com/raw/{replay_id}")
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
                         if len(_cmd) == 2:

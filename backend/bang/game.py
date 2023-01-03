@@ -137,7 +137,7 @@ class Game:
             #     chat_message(None, cmd[2], player)
             if i == fast_forward:
                 self.replay_speed = 1.0
-
+            self.notify_room()
             eventlet.sleep(max(self.replay_speed, 0.1))
         eventlet.sleep(6)
         if self.is_replay:

@@ -383,9 +383,9 @@ export default {
 	mounted() {
 		if (Vue.config.devtools)
 			console.log('mounted lobby')
-		if (!this.$route.query.code)
+		if (!this.$route.query.code && !this.$route.query.replay)
 			return this.$router.push('/')
-		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username'), discord_token: localStorage.getItem('discord_token')})
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username'), discord_token: localStorage.getItem('discord_token'), replay: this.$route.query.replay})
 	},
 }
 </script>
