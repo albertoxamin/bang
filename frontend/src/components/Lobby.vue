@@ -156,6 +156,7 @@ export default {
 					name: x.name,
 					ready: x.ready,
 					is_bot: x.is_bot,
+					avatar: x.avatar,
 					ncards: 0,
 				}
 			})
@@ -296,6 +297,7 @@ export default {
 				number: ((this.username == player.name) ? this.$t('you') : (this.players[0].name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: icon,
 				is_character: true,
+				avatar: player.avatar,
 			}
 		},
 		startGame() {
@@ -345,7 +347,7 @@ export default {
 			if (name.trim().length > 0){
 				localStorage.setItem('username', name)
 				this.hasToSetUsername = false
-				this.$socket.emit('set_username', name)
+				this.$socket.emit('set_username', {name:name})
 			}
 		},
 	},
@@ -371,7 +373,7 @@ export default {
 			console.log('mounted lobby')
 		if (!this.$route.query.code)
 			return this.$router.push('/')
-		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username')})
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username'), discord_token: localStorage.getItem('discord_token')})
 	},
 }
 </script>

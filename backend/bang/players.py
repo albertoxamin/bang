@@ -16,6 +16,18 @@ import eventlet
 from typing import List
 from metrics import Metrics
 
+robot_pictures = [
+    'https://i.imgur.com/40rAFIb.jpg',
+    'https://i.imgur.com/gG77VRR.jpg',
+    'https://i.imgur.com/l2DTQeH.jpg',
+    'https://i.imgur.com/aPM2gix.jpg',
+    'https://i.imgur.com/ep5EB8c.jpg',
+    'https://i.imgur.com/qsOWIsf.jpg',
+    'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/robot_1f916.png',
+    'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/openmoji/338/robot_1f916.png',
+    'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/319/robot_1f916.png',
+]
+
 class PendingAction(IntEnum):
     PICK = 0
     DRAW = 1
@@ -26,13 +38,37 @@ class PendingAction(IntEnum):
 
 class Player:
 
-    def __init__(self, name, sid, sio, bot=False):
+    def get_avatar(self):
+        import requests
+        headers = {
+            'Authorization': 'Bearer ' + self.discord_token,
+        }
+        r = requests.get('https://discordapp.com/api/users/@me', headers=headers)
+        if r.status_code == 200:
+            res = r.json()
+            self.avatar = f'https://cdn.discordapp.com/avatars/{res["id"]}/{res["avatar"]}.png'
+            self.sio.emit('chat_message', room=self.game.name, data=f'_change_username|{self.name}|{res["username"]}')
+            self.name = res['username']
+            if self.game:
+                self.game.notify_room()
+                self.sio.emit('me', data=self.name, room=self.sid)
+        else:
+            print('error getting avatar', r.status_code, r.text)
+            print(r)
+
+    def __init__(self, name, sid, sio, bot=False, discord_token=None):
         import bang.game as g
         super().__init__()
         self.name = name
         self.sid = sid
         self.sio = sio
         self.is_bot = bot
+        self.discord_token = discord_token
+        self.avatar = ''
+        if self.is_bot:
+            self.avatar = robot_pictures[randrange(len(robot_pictures))]
+        if self.discord_token:
+            sio.start_background_task(self.get_avatar)
         self.game: g = None
         self.reset()
 
@@ -207,6 +243,7 @@ class Player:
         ser.pop('sio')
         ser.pop('sid')
         ser.pop('on_pick_cb')
+        ser.pop('discord_token')
         ser.pop('on_failed_response_cb')
         ser.pop('attacker')
         ser.pop('rissa_targets')

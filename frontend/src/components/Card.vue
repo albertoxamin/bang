@@ -1,7 +1,8 @@
 <template>
-	<div :class="{ card: true, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used, 'gold-rush': card.expansion === 'gold_rush', 'brown':card.kind === 0, 'black':card.kind === 1,}">
+	<div :class="{ card: true, avatarred:card.avatar, equipment: card.is_equipment, character:card.is_character, back:card.is_back, 'usable-next-turn':card.usable_next_turn, 'must-be-used':card.must_be_used, 'gold-rush': card.expansion === 'gold_rush', 'brown':card.kind === 0, 'black':card.kind === 1,}">
 		<h4>{{cardName}}</h4>
-		<div class="emoji">{{emoji}}</div>
+		<div v-if="card.avatar" class="avatar" :style="`background-image: url(${card.avatar});`"></div>
+		<div :class="{emoji:true, bottomed:card.avatar}">{{emoji}}</div>
 		<div class="alt_text">{{card.alt_text}}</div>
 		<div class="suit">{{number}}<span :style="`${(card.suit !== undefined && card.suit%2 === 0)? 'color:red':''}`">{{suit}}</span></div>
 		<div class="expansion" v-if="card.expansion_icon">{{card.expansion_icon}}</div>
@@ -72,6 +73,12 @@ export default {
 	word-wrap: normal;
 	/* word-wrap: break-word; */
 }
+.avatarred {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
 .card.back{
 	color:white;
 	background: repeating-linear-gradient(
@@ -117,6 +124,17 @@ export default {
 	);
 	border: 2pt solid rgb(50 122 172);
 }
+.avatar {
+	position: absolute;
+	width: 36pt;
+	margin: auto;
+	top: 25%;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	border-radius: 36pt;
+	height: 36pt;
+}
 .card.brown.gold-rush {
 	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
 	border: 2pt dotted #9C7340;
@@ -142,6 +160,10 @@ export default {
 	font-size:26pt;
 	top: 35%;
 } 
+.emoji.bottomed {
+	top: 45%;
+	left: 8pt;
+}
 .card.must-be-used {
 	filter: drop-shadow(0 0 5px red);
 }

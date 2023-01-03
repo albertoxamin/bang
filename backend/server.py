@@ -88,10 +88,11 @@ def report(sid, text):
 def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
-        sio.save_session(sid, Player(username, sid, sio))
+        sio.save_session(sid, Player(username["name"], sid, sio, discord_token=username["discord_token"]))
         print(f'{sid} is now {username}')
         advertise_lobbies()
     elif ses.game == None or not ses.game.started:
+        username = username["name"]
         print(f'{sid} changed username to {username}')
         prev = ses.name
         if len([p for p in ses.game.players if p.name == username]) > 0:
@@ -109,7 +110,7 @@ def get_me(sid, room):
         if sio.get_session(sid).game:
             sio.get_session(sid).game.notify_room()
     else:
-        sio.save_session(sid, Player('player', sid, sio))
+        sio.save_session(sid, Player('player', sid, sio, discord_token=room['discord_token']))
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
@@ -612,6 +613,18 @@ def get_goldrushcards(sid):
     cards = [cards_dict[i] for i in cards_dict]
     sio.emit('goldrushcards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
+@sio.event
+def discord_auth(sid, data):
+    res = requests.post('https://discord.com/api/oauth2/token', data={
+        'client_id': '1059452581027532880',
+        'client_secret': 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu',
+        'grant_type': 'authorization_code',
+        'redirect_uri': data['origin'],
+        'code': data['code'],
+    })
+    if res.status_code == 200:
+        sio.emit('discord_auth_succ', room=sid, data=res.json())
+
 def pool_metrics():
     sio.sleep(60)
     Metrics.send_metric('lobbies', points=[len([g for g in games if not g.is_replay])])
@@ -635,6 +648,10 @@ class CustomProxyFix(object):
             start_response('200 OK', [])
             return ['']
         return self.app(environ, start_response)
+
+
+discord_ci = '1059452581027532880'
+discord_cs = 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu'
 
 if __name__ == '__main__':
     sio.start_background_task(pool_metrics)

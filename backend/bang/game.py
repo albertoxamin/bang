@@ -149,7 +149,7 @@ class Game:
             self.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
-                'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot} for p in self.players],
+                'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot, 'avatar': p.avatar} for p in self.players],
                 'password': self.password,
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
@@ -763,6 +763,7 @@ class Game:
             'is_ghost': pls[j].is_ghost,
             'is_bot': pls[j].is_bot,
             'icon': pls[j].role.icon if (pls[j].role is not None) else '🤠',
+            'avatar': pls[j].avatar,
             'role': pls[j].role,
         } for j in range(len(pls)) if i != j]
 
@@ -788,6 +789,7 @@ class Game:
                 'character': p.character.__dict__ if p.character else None,
                 'real_character': p.real_character.__dict__ if p.real_character else None,
                 'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠',
+                'avatar': p.avatar,
                 'is_ghost': p.is_ghost,
                 'is_bot': p.is_bot,
             } for p in self.get_alive_players()]
