@@ -18,7 +18,7 @@ class SerpenteASonagli(Card):
         super().__init__(suit, 'SerpenteASonagli', number, is_equipment=True)
         self.need_target = True
         self.icon = '🐍️' # Ogni turno pesca se il seme picche -1hp
-        self.alt_text = "♠️=💔"
+        self.alt_text = "♠️ =💔"
         #TODO
 
 class Shotgun(Card):
@@ -93,6 +93,70 @@ class Salvo(Card):
             return True
         return False
 
+class Mira(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Mira', number)
+        self.icon = '👌🏻'
+        self.alt_text = "💥🃏 | 👤💥💥" 
+        self.need_target = True
+        self.need_with = True
+
+    def play_card(self, player, against, _with=None):
+        if against != None:
+            #TODO
+            # super().play_card(player, against=against)
+            # player.game.attack(player, against)
+            return True
+        return False
+
+class Bandidos(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Bandidos', number)
+        self.icon = '🤠️'
+        self.alt_text = "👤🃏🃏 | 👤💔" 
+    
+    def play_card(self, player, against, _with=None):
+        #TODO
+        # super().play_card(player, against=against)
+        # player.game.attack(player, against)
+        return True
+
+class Fuga(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Fuga', number)
+        self.icon = '🏃🏻'
+        self.alt_text = "❌" 
+    
+    def play_card(self, player, against, _with=None):
+        #TODO
+        # super().play_card(player, against=against)
+        # player.game.attack(player, against)
+        return True
+
+class Poker(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Poker', number)
+        self.icon = '🃏'
+        self.alt_text = "👤🃏 🃏🃏"
+    
+    def play_card(self, player, against, _with=None):
+        #TODO
+        # super().play_card(player, against=against)
+        # player.game.attack(player, against)
+        return True
+
+class RitornoDiFiamma(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'RitornoDiFiamma', number)
+        self.icon = '🔥'
+        self.alt_text = "😅 | 💥"
+    
+    def play_card(self, player, against, _with=None):
+        #TODO
+        # super().play_card(player, against=against)
+        # player.game.attack(player, against)
+        return True
+
 def get_starting_deck() -> List[Card]:
     cards = [
         Fantasma(Suit.SPADES, 9),
@@ -105,11 +169,11 @@ def get_starting_deck() -> List[Card]:
         Tomahawk(Suit.DIAMONDS, 'A'),
         Sventagliata(Suit.SPADES, 2),
         Salvo(Suit.HEARTS, 5),
-        # Bandidos(Suit.DIAMONDS,'Q'), # gli altri  giocatori scelgono se scartare 2 carte o perdere 1 punto vita
-        # Fuga(Suit.HEARTS, 3), # evita l'effetto di carte marroni (tipo panico cat balou) di cui sei bersaglio
-        # Mira(Suit.CLUBS, 6), # gioca questa con una carta bang, per fare -2hp
-        # Poker(Suit.HEARTS, 'J'), # tutti gli altri scartano 1 carta a scelta, se non ci sono assi allora pesca 2 dal mazzo
-        # RitornoDiFiamma(Suit.CLUBS, 'Q'), # un mancato che fa bang
+        Bandidos(Suit.DIAMONDS,'Q'), # gli altri  giocatori scelgono se scartare 2 carte o perdere 1 punto vita
+        Fuga(Suit.HEARTS, 3), # evita l'effetto di carte marroni (tipo panico cat balou) di cui sei bersaglio
+        Mira(Suit.CLUBS, 6),
+        Poker(Suit.HEARTS, 'J'), # tutti gli altri scartano 1 carta a scelta, se non ci sono assi allora pesca 2 dal mazzo
+        RitornoDiFiamma(Suit.CLUBS, 'Q'), # un mancato che fa bang
     ]
     for c in cards:
         c.expansion_icon = '👻️'
