@@ -55,6 +55,7 @@ class Player:
             self.name = res['username']
             self.discord_id = res['id']
             if self.is_admin():
+                if self.game: self.game.feature_flags()
                 self.sio.emit('chat_message', room=self.sid, data={'color':'green', 'text':'(you are admin)'})
             if self.game:
                 self.game.notify_room()

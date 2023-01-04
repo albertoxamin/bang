@@ -674,6 +674,66 @@
     "Simeon Picos": {
       "name": "Simeon Picos",
       "desc": "Ogni volta che viene ferito, prende una pepita"
+    },
+    "Fantasma": {
+      "name": "Fantasma",
+      "desc": "Gioca su un giocatore eliminato. Quel giocatore torna in gioco, ma non può guadagnare né perdere punti vita."
+    },
+    "Lemat": {
+      "name": "Lemat",
+      "desc": "Puoi usare ogni carta in mano come BANG!."
+    },
+    "SerpenteASonagli": {
+      "name": "Serpente a Sonagli",
+      "desc": "Gioca su chiunque. All'inizio del turno, quel giocatore estrae una carta, e se è Picche, perde 1 punto vita."
+    },
+    "Shotgun": {
+      "name": "Shotgun",
+      "desc": "Ogni volta che ferisci un giocatore, deve scartare una carta a dalla sua mano."
+    },
+    "Taglia": {
+      "name": "Taglia",
+      "desc": "Gioca su chiunque. Se quel giocatore è colpito da BANG!, chi ha sparato ottiene una carta dal mazzo."
+    },
+    "Mira": {
+      "name": "Mira",
+      "desc": "Gioca questa carta assieme a una carta BANG!. Se il bersaglio viene colpito, perde 2 punti vita."
+    },
+    "RitornoDiFiamma": {
+      "name": "Ritorno di Fiamma",
+      "desc": "Vale una carta Mancato! Il giocatore che ha sparato è bersaglio di un BANG!."
+    },
+    "Bandidos": {
+      "name": "Bandidos",
+      "desc": "Ogni giocatore sceglie se scartare 2 carte dalla mano (o 1 se ne ha solo 1) o perdere 1 punto vita."
+    },
+    "Fuga": {
+      "name": "Fuga",
+      "desc": "Può essere giocata fuori turno. Evita l'effetto di una carta marrone (non BANG!) di cui sei uno dei bersagli."
+    },
+    "Sventagliata": {
+      "name": "Sventagliata",
+      "desc": "Conta come l'unico BANGI del turno. Anche un giocatore a tua scelta a distanza 1 dal bersaglio (se ce, te escluso) è bersaglio di un BANG.."
+    },
+    "UltimoGiro": {
+      "name": "Ultimo Giro",
+      "desc": "Recupera 1 vita"
+    },
+    "Poker": {
+      "name": "Poker",
+      "desc": "Tutti gli altri scartano una carta dalla mano, allo stesso tempo. Se non c'è alcun Asso, pesca fino a 2 di quelle carte."
+    },
+    "Salvo": {
+      "name": "Salvo!",
+      "desc": "Può essere giocata fuori turno. Previeni la perdita di 1 punto vita di un altro giocatore. Se sopravvive, pesca 2 carte dalla sua mano o dal mazzo (scegli)."
+    },
+    "Tomahawk": {
+      "name": "Tomahawk",
+      "desc": "Attacca un giocatore fino a distanza 2."
+    },
+    "Tornado": {
+      "name": "Tornado",
+      "desc": "Tutti scartano una carta dalla mano (se possibile), poi ottengono 2 carte dal mazzo."
     }
   },
   "help": {
@@ -724,7 +784,8 @@
     "allcharacters": "Tutti i personaggi",
     "highnooncards": "Carte Evento High Noon",
     "foccards": "Carte Evento Fistful of Cards",
-    "goldrushcards": "Carte Gold Rush"
+    "goldrushcards": "Carte Gold Rush",
+    "valleyofshadowscards": "Carte The Valley of Shadows"
   },
   "theme": {
     "sepia": "Seppia",

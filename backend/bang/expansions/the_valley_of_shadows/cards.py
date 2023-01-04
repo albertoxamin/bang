@@ -17,6 +17,7 @@ class SerpenteASonagli(Card):
         super().__init__(suit, 'SerpenteASonagli', number, is_equipment=True)
         self.need_target = True
         self.icon = '🐍️' # Ogni turno pesca se il seme picche -1hp
+        self.alt_text = "♠️=💔"
         #TODO
 
 class Shotgun(Card):
@@ -34,7 +35,7 @@ class Taglia(Card):
 
 class UltimoGiro(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, 'Ultimo Giro', number)
+        super().__init__(suit, 'UltimoGiro', number)
         self.icon = '🥂'
         # self.desc = 'Recupera 1 vita'
         # self.desc_eng = 'Regain 1 HP'
@@ -78,9 +79,9 @@ class Sventagliata(Card):
 
 class Salvo(Card):
     def __init__(self, suit, number):
-        super().__init__(suit, 'Salvo!', number)
+        super().__init__(suit, 'Salvo', number)
         self.icon = '😇️'
-        self.alt_text = "👤😇️" # spara al target e anche, a uno a distanza 1 dal target
+        self.alt_text = "👤😇️" 
         self.need_target = True
 
     def play_card(self, player, against, _with=None):

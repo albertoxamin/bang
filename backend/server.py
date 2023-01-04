@@ -546,6 +546,17 @@ def chat_message(sid, msg, pl=None):
                         for cn in card_names:
                             ses.hand.append([c for c in cards if c.name.lower() == cn.lower() or c.name[0:-1].lower() == cn.lower()][0])
                             ses.notify_self()
+                elif '/getset' in msg:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
+                    cmd = msg.split()
+                    if len(cmd) >= 2:
+                        from bang.expansions import DodgeCity, TheValleyOfShadows
+                        if cmd[1] == 'dodgecity':
+                            ses.hand = DodgeCity.get_cards()
+                            ses.notify_self()
+                        elif 'valley' in cmd[1].lower():
+                            ses.hand = TheValleyOfShadows.get_cards()
+                            ses.notify_self()
                 elif '/getnuggets' in msg:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got nuggets'})
                     import bang.cards as cs
@@ -633,6 +644,17 @@ def get_goldrushcards(sid):
             cards_dict[ca.name] = ca
     cards = [cards_dict[i] for i in cards_dict]
     sio.emit('goldrushcards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
+
+@sio.event
+def get_valleyofshadowscards(sid):
+    import bang.expansions.the_valley_of_shadows.cards as tvos
+    cards = tvos.get_starting_deck()
+    cards_dict = {}
+    for ca in cards:
+        if ca.name not in cards_dict:
+            cards_dict[ca.name] = ca
+    cards = [cards_dict[i] for i in cards_dict]
+    sio.emit('valleyofshadows_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
 def discord_auth(sid, data):

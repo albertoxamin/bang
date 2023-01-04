@@ -30,7 +30,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions: List[str] = []
-        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon', 'gold_rush', 'the_valley_of_shadows']
+        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon', 'gold_rush']
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True
@@ -204,6 +204,10 @@ class Game:
         self.disconnect_bot = not self.disconnect_bot
         self.notify_room()
 
+    def feature_flags(self):
+        self.available_expansions.append('the_valley_of_shadows')
+        self.notify_room()
+
     def add_player(self, player: pl.Player):
         if player.is_bot and len(self.players) >= 8:
             return
@@ -213,6 +217,8 @@ class Game:
             if 'dodge_city' not in self.expansions:
                 self.expansions.append('dodge_city')
         player.join_game(self)
+        if player.is_admin():
+            self.feature_flags()
         self.players.append(player)
         print(f'{self.name}: Added player {player.name} to game')
         self.notify_room()

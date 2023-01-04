@@ -108,6 +108,15 @@
 				</div>
 			</div>
 		</div>
+		<h2 id="valleyofshadowscards">{{$t('help.valleyofshadowscards')}}</h2>
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in valleyofshadowscards" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
+				<Card :card="c" class="valley-of-shadows" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
@@ -127,6 +136,7 @@ export default {
 		highnooncards: [],
 		foccards: [],
 		goldrushcards: [],
+		valleyofshadowscards: [],
 	}),
 	computed: {
 		endTurnCard() {
@@ -161,6 +171,11 @@ export default {
 				...x,
 			}))
 		},
+		valleyofshadows_info(cardsJson) {
+			this.valleyofshadowscards = JSON.parse(cardsJson).map(x=>({
+				...x,
+			}))
+		},
 	},
 	mounted() {
 		this.$socket.emit('get_cards')
@@ -168,6 +183,7 @@ export default {
 		this.$socket.emit('get_highnooncards')
 		this.$socket.emit('get_foccards')
 		this.$socket.emit('get_goldrushcards')
+		this.$socket.emit('get_valleyofshadowscards')
 		document.getElementById('help').scrollIntoView();
 	}
 }
