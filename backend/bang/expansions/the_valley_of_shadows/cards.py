@@ -1,4 +1,5 @@
-from bang.cards import *
+from typing import List
+from bang.cards import Card, Suit
 
 class Fantasma(Card):
     def __init__(self, suit, number):

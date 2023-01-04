@@ -1,5 +1,5 @@
 from typing import List
-from bang.characters import *
+from bang.characters import Character
 
 def all_characters() -> List[Character]:
     cards = [
