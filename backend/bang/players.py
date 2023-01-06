@@ -609,7 +609,7 @@ class Player:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
                             self.game.next_player().notify_self()
                             break
-                    if any((isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment)):
+                    if any((isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) or isinstance(self.equipment[i], tvosc.SerpenteASonagli) for c in self.equipment)):
                         self.notify_self()
                         return
             for i in range(len(self.equipment)):
@@ -638,11 +638,12 @@ class Player:
                         print(f'Did pick {picked}')
                         self.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
-                        if picked.check_suit(self.game, [cs.Suit.SPADES]) and pickable_cards == 0:
+                        if not picked.check_suit(self.game, [cs.Suit.SPADES]):
+                            break
+                        elif pickable_cards == 0:
                             self.lives -= 1
                             self.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
-                            self.end_turn(forced=True)
-                            return
+                            break
             if any((isinstance(c, cs.Prigione) for c in self.equipment)):
                 self.notify_self()
                 return

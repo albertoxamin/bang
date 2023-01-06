@@ -169,6 +169,7 @@ export default {
 				this.username = data.username
 				this.didSetUsername = true
 				this.discordPic = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
+				localStorage.setItem('username', this.username)
 				this.$socket.emit('set_username', {name: this.username, discord_token: localStorage.getItem('discord_token')})
 			}).catch(err => {
 				console.error(err)

@@ -6,6 +6,7 @@
 				<Card v-for="(c, i) in cards" v-bind:key="c.name ? (c.name+c.number) : i" :card="c" @click.native="select(c)"	@pointerenter.native="showDesc(c)" @pointerleave.native="desc=''"/>
 		</transition-group>
 		</div>
+		<h2 v-if="timer > 0 && remainingTime > 0">{{remainingTime}}</h2>
 		<p v-if="hintText">{{hintText}}</p>
 		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn" @click="cancel"><span>{{realCancelText}}</span></div>
 		<p v-if="desc" style="bottom:10pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
@@ -29,13 +30,19 @@ export default {
 			type: String,
 			default: '',
 		},
+		timer: {
+			type: Number,
+			default: 0,
+		},
 		text: String,
 		hintText: String,
 		playAudio: Boolean,
 	},
 	data: () => ({
 		desc: '',
-		realCancelText: ''
+		realCancelText: '',
+		remainingTime: 0,
+		intervalID: '',
 	}),
 	computed: {
 		showCancelBtn() {
@@ -57,6 +64,14 @@ export default {
 				this.desc = (this.$i18n.locale=='it'?card.desc:card.desc_eng)
 			else
 				this.desc = this.$t(`cards.${card.name}.desc`)
+		},
+		countDown() {
+			if (this.remainingTime > 0) {
+				this.remainingTime--;
+			} else {
+				this.select(this.cards[0]);
+				window.clearInterval(this.intervalID);
+			}
 		}
 	},
 	mounted() {
@@ -69,6 +84,12 @@ export default {
 		}
 		if (this.playAudio) {
 			(new Audio(show_sfx)).play();
+		}
+		if (this.timer > 0) {
+			this.remainingTime = this.timer;
+			this.intervalID = window.setInterval(() => {
+				this.countDown();
+			}, 1000);
 		}
 	},
 }

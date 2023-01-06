@@ -73,7 +73,7 @@ def report(sid, text):
         data = "\n".join(ses.game.rpc_log[:-1]).strip()
     data = data +"\n@@@\n" +text
     #print(data)
-    response = requests.post("https://hastebin.com/documents", data)
+    response = requests.post("https://hastebin.com/documents", data.encode('utf-8'))
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
         webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
@@ -545,6 +545,16 @@ def chat_message(sid, msg, pl=None):
                         card_names = ' '.join(cmd[1:]).split(',')
                         for cn in card_names:
                             ses.hand.append([c for c in cards if c.name.lower() == cn.lower() or c.name[0:-1].lower() == cn.lower()][0])
+                            ses.notify_self()
+                elif '/equipcard' in msg:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
+                    import bang.cards as cs
+                    cmd = msg.split()
+                    if len(cmd) >= 2:
+                        cards  = cs.get_starting_deck(ses.game.expansions)
+                        card_names = ' '.join(cmd[1:]).split(',')
+                        for cn in card_names:
+                            ses.equipment.append([c for c in cards if c.name.lower() == cn.lower() or c.name[0:-1].lower() == cn.lower()][0])
                             ses.notify_self()
                 elif '/getset' in msg:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})

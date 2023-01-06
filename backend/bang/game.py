@@ -353,7 +353,7 @@ class Game:
 
     def can_card_reach(self, card: cs.Card, player: pl.Player, target:str):
         if card and card.range != 0 and card.range < 99:
-            return not any((True for p in self.get_visible_players(player) if p['name'] == target and p['dist'] >= card.range))
+            return not any((True for p in self.get_visible_players(player) if p['name'] == target and p['dist'] > card.range))
         return True
 
     def attack(self, attacker: pl.Player, target_username:str, double:bool=False, card_name:str=None):
