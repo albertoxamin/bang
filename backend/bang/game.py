@@ -5,6 +5,7 @@ import socketio
 import eventlet
 
 import bang.players as pl
+import bang.cards as cs
 import bang.characters as characters
 import bang.expansions.dodge_city.characters as chd
 from bang.deck import Deck
@@ -14,6 +15,33 @@ import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 from metrics import Metrics
+
+debug_commands = [
+    {'cmd':'/debug', 'help':'Toggles the debug mode'},
+    {'cmd':'/set_chars', 'help':'Set how many characters to distribute - sample /set_chars 3'},
+    {'cmd':'/suicide', 'help':'Kills you'},
+    {'cmd':'/nextevent', 'help':'Flip the next event card'},
+    {'cmd':'/notify', 'help':'Send a message to a player - sample /notify player hi!'},
+    {'cmd':'/show_cards', 'help':'View the hand of another - sample /show_cards player'},
+    {'cmd':'/ddc', 'help':'Destroy all cards - sample /ddc player'},
+    {'cmd':'/dsh', 'help':'Set health - sample /dsh player'},
+    # {'cmd':'/togglebot', 'help':''},
+    {'cmd':'/cancelgame', 'help':'Stops the current game'},
+    {'cmd':'/startgame', 'help':'Force starts the game'},
+    {'cmd':'/setbotspeed', 'help':'Changes the bot response time - sample /setbotspeed 0.5'},
+    # {'cmd':'/addex', 'help':''},
+    {'cmd':'/setcharacter', 'help':'Changes your current character - sample /setcharacter Willy The Kid'},
+    {'cmd':'/setevent', 'help':'Changes the event deck - sample /setevent 0 Manette'},
+    {'cmd':'/removecard', 'help':'Remove a card from hand/equip - sample /removecard 0'},
+    {'cmd':'/getcard', 'help':'Get a brand new card - sample /getcard Birra'},
+    {'cmd':'/meinfo', 'help':'Get player data'},
+    {'cmd':'/gameinfo', 'help':'Get game data'},
+    {'cmd':'/playerinfo', 'help':'Get player data - sample /playerinfo player'},
+    {'cmd':'/mebot', 'help':'Toggles bot mode'},
+    {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
+    {'cmd':'/startwithseed', 'help':'start the game with custom seed'},
+    {'cmd':'/getset', 'help':'get extension set of cards sample - /get valley', 'admin':True},
+]
 
 class Game:
     def __init__(self, name, sio:socketio):
@@ -158,31 +186,7 @@ class Game:
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
         if self.debug:
-            commands = [
-                {'cmd':'/debug', 'help':'Toggles the debug mode'},
-                {'cmd':'/set_chars', 'help':'Set how many characters to distribute - sample /set_chars 3'},
-                {'cmd':'/suicide', 'help':'Kills you'},
-                {'cmd':'/nextevent', 'help':'Flip the next event card'},
-                {'cmd':'/notify', 'help':'Send a message to a player - sample /notify player hi!'},
-                {'cmd':'/show_cards', 'help':'View the hand of another - sample /show_cards player'},
-                {'cmd':'/ddc', 'help':'Destroy all cards - sample /ddc player'},
-                {'cmd':'/dsh', 'help':'Set health - sample /dsh player'},
-                # {'cmd':'/togglebot', 'help':''},
-                {'cmd':'/cancelgame', 'help':'Stops the current game'},
-                {'cmd':'/startgame', 'help':'Force starts the game'},
-                {'cmd':'/setbotspeed', 'help':'Changes the bot response time - sample /setbotspeed 0.5'},
-                # {'cmd':'/addex', 'help':''},
-                {'cmd':'/setcharacter', 'help':'Changes your current character - sample /setcharacter Willy The Kid'},
-                {'cmd':'/setevent', 'help':'Changes the event deck - sample /setevent 0 Manette'},
-                {'cmd':'/removecard', 'help':'Remove a card from hand/equip - sample /removecard 0'},
-                {'cmd':'/getcard', 'help':'Get a brand new card - sample /getcard Birra'},
-                {'cmd':'/meinfo', 'help':'Get player data'},
-                {'cmd':'/gameinfo', 'help':'Get game data'},
-                {'cmd':'/playerinfo', 'help':'Get player data - sample /playerinfo player'},
-                {'cmd':'/mebot', 'help':'Toggles bot mode'},
-                {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
-                {'cmd':'/startwithseed', 'help':'start the game with custom seed'}]
-            self.sio.emit('commands', room=self.name, data=commands)
+            self.sio.emit('commands', room=self.name, data=[x for x in debug_commands if 'admin' not in x])
         else:
             self.sio.emit('commands', room=self.name, data=[{'cmd':'/debug', 'help':'Toggles the debug mode'}])
         self.sio.emit('spectators', room=self.name, data=len(self.spectators))
@@ -205,7 +209,8 @@ class Game:
         self.notify_room()
 
     def feature_flags(self):
-        self.available_expansions.append('the_valley_of_shadows')
+        if 'the_valley_of_shadows' not in self.expansions:
+            self.available_expansions.append('the_valley_of_shadows')
         self.notify_room()
 
     def add_player(self, player: pl.Player):
@@ -345,6 +350,11 @@ class Game:
             self.attack_in_progress = False
         if self.pending_winners and not self.someone_won:
             return self.announces_winners()
+
+    def can_card_reach(self, card: cs.Card, player: pl.Player, target:str):
+        if card and card.range != 0 and card.range < 99:
+            return not any((True for p in self.get_visible_players(player) if p['name'] == target and p['dist'] >= card.range))
+        return True
 
     def attack(self, attacker: pl.Player, target_username:str, double:bool=False, card_name:str=None):
         if self.get_player_named(target_username).get_banged(attacker=attacker, double=double, card_name=card_name):
@@ -510,7 +520,7 @@ class Game:
                 pl.hand.append(self.deck.draw())
                 pl.hand.append(self.deck.draw())
                 pl.notify_self()
-            elif self.check_event(ceh.CittaFantasma):
+            elif self.check_event(ceh.CittaFantasma) or self.players[self.turn].is_ghost:
                 print(f'{self.name}: {self.players[self.turn]} is dead, event ghost')
                 self.players[self.turn].is_ghost = True
             else:
@@ -777,8 +787,8 @@ class Game:
     def get_alive_players(self):
         return [p for p in self.players if not p.is_dead or p.is_ghost]
 
-    def get_dead_players(self):
-        return [p for p in self.players if p.is_dead]
+    def get_dead_players(self, include_ghosts=True):
+        return [p for p in self.players if p.is_dead and (include_ghosts or not p.is_ghost)]
 
     def notify_all(self):
         if self.started:

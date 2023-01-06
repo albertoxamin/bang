@@ -12,6 +12,7 @@ import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
+import bang.expansions.the_valley_of_shadows.cards as tvosc
 import eventlet
 from typing import List
 from metrics import Metrics
@@ -208,6 +209,10 @@ class Player:
         self.sio.emit('notify_card', room=self.sid, data=mess)
 
     def notify_self(self):
+        if any((True for c in self.equipment if isinstance(c, tvosc.Fantasma))):
+            self.is_ghost = True
+        elif self.is_ghost and not self.game.check_event(ceh.CittaFantasma):
+            self.is_ghost = False
         if self.is_ghost: self.lives = 0
         if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
             self.available_cards = [{
@@ -247,6 +252,7 @@ class Player:
                 self.choose_text = 'choose_sid_scrap'
                 self.available_cards = self.hand
                 self.lives += 1
+        
         ser = self.__dict__.copy()
         ser.pop('game')
         ser.pop('sio')
@@ -269,14 +275,12 @@ class Player:
             self.pending_action = PendingAction.WAIT
             ser['hand'] = []
             ser['equipment'] = []
-            self.sio.emit('self', room=self.sid, data=json.dumps(
-                ser, default=lambda o: o.__dict__))
+            self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
         if self.game and self.game.started: # falso quando un bot viene eliminato dalla partita
             self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
             self.game.notify_all()
-        self.sio.emit('self', room=self.sid, data=json.dumps(
-            ser, default=lambda o: o.__dict__))
+        self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
 
     def bot_spin(self):
         while self.is_bot and self.game != None and not self.game.shutting_down:
@@ -449,6 +453,7 @@ class Player:
                 'name': p.name,
                 'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
+                'avatar': p.avatar,
                 'is_character': True,
                 'noDesc': True
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
@@ -460,7 +465,7 @@ class Player:
             self.available_cards = [self.character, self.not_chosen_character]
             self.choose_text = 'choose_nuova_identita'
             self.pending_action = PendingAction.CHOOSE
-        elif not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) for c in self.equipment]):
+        elif not self.game.check_event(ce.Lazo) and any([isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) or isinstance(c, tvosc.SerpenteASonagli) for c in self.equipment]):
             self.is_giving_life = False
             self.pending_action = PendingAction.PICK
         else:
@@ -490,6 +495,7 @@ class Player:
                 'name': p.name,
                 'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'is_character': True,
+                'avatar': p.avatar,
                 'noDesc': True
             } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
@@ -624,7 +630,20 @@ class Player:
                             self.sio.emit('chat_message', room=self.game.name, data=f'_prison_free|{self.name}')
                             break
                     break
-            if any([isinstance(c, cs.Prigione) for c in self.equipment]):
+            for i in range(len(self.equipment)):
+                if isinstance(self.equipment[i], tvosc.SerpenteASonagli):
+                    while pickable_cards > 0:
+                        pickable_cards -= 1
+                        picked: cs.Card = self.game.deck.pick_and_scrap()
+                        print(f'Did pick {picked}')
+                        self.sio.emit('chat_message', room=self.game.name,
+                                      data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                        if picked.check_suit(self.game, [cs.Suit.SPADES]) and pickable_cards == 0:
+                            self.lives -= 1
+                            self.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
+                            self.end_turn(forced=True)
+                            return
+            if any((isinstance(c, cs.Prigione) for c in self.equipment)):
                 self.notify_self()
                 return
             if isinstance(self.real_character, chd.VeraCuster):
@@ -797,6 +816,15 @@ class Player:
                 self.game.deck.shop_deck.append(self.available_cards[card_index])
                 self.sio.emit('chat_message', room=self.game.name, data=f'_gold_rush_pay_discard|{self.name}|{player.name}|{self.available_cards[card_index].name}')
                 player.notify_self()
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif 'choose_fantasma' in self.choose_text:
+            if card_index <= len(self.available_cards):
+                player = self.game.get_player_named(self.available_cards[card_index]['name'])
+                player.equipment.append(self.game.deck.scrap_pile.pop(-1))
+                player.notify_self()
+                self.game.notify_all()
+                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|Fantasma|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
@@ -1251,6 +1279,7 @@ class Player:
             'name': p.name,
             'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'is_character': True,
+            'avatar': p.avatar,
             'alt_text': ''.join(['🎴️'] * len(p.gold_rush_equipment)),
             'noDesc': True
         } for p in self.game.get_alive_players() if p != self and len([e for e in p.gold_rush_equipment if e.number + 1 <= self.gold_nuggets]) > 0]
@@ -1336,7 +1365,7 @@ class Player:
                     self.play_turn(can_play_vendetta=False)
                     return
         ##Ghost##
-            if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma):
+            if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma) and not any((True for c in self.equipment if isinstance(c, tvosc.Fantasma))):
                 self.is_ghost = False
                 for i in range(len(self.hand)):
                     self.game.deck.scrap(self.hand.pop(), True)
