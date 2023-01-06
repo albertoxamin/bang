@@ -527,7 +527,7 @@ class Game:
                 print(f'{self.name}: {self.players[self.turn]} is dead, next turn')
                 return self.next_turn()
         self.player_bangs = 0
-        if isinstance(self.players[self.turn].role, roles.Sheriff) or ((self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) and not self.players[self.turn].is_ghost)  or (self.initial_players == 3 and any([p for p in self.players if p.is_dead and p.role.name == 'Vice']) and isinstance(self.players[self.turn].role, roles.Renegade))):
+        if isinstance(self.players[self.turn].role, roles.Sheriff) or ((self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) and not self.players[self.turn].is_ghost)  or (self.initial_players == 3 and any((p for p in self.players if p.is_dead and p.role.name == 'Vice')) and isinstance(self.players[self.turn].role, roles.Renegade))):
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'{self.name}: flip new event {self.deck.event_cards[0].name}')

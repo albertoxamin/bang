@@ -216,7 +216,7 @@ class Bang(Card):
     def play_card(self, player, against, _with=None):
         if player.game.check_event(ceh.Sermone) and not self.number == 42: # 42 gold rush
             return False
-        if ((player.has_played_bang and not self.number == 42) and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)) and against != None): # 42 gold rush:
+        if ((player.has_played_bang and not self.number == 42) and (not any((isinstance(c, Volcanic) for c in player.equipment)) or player.game.check_event(ce.Lazo)) and against != None): # 42 gold rush:
             return False
         elif against != None:
             import bang.characters as chars
@@ -377,7 +377,7 @@ class Mancato(Card):
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
         if against != None and player.character.check(player.game, chars.CalamityJanet):
-            if player.has_played_bang and (not any([isinstance(c, Volcanic) for c in player.equipment]) or player.game.check_event(ce.Lazo)):
+            if player.has_played_bang and (not any((isinstance(c, Volcanic) for c in player.equipment)) or player.game.check_event(ce.Lazo)):
                 return False
             if player.game.check_event(ceh.Sermone):
                 return False

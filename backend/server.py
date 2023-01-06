@@ -131,7 +131,7 @@ def get_me(sid, room):
             join_room(sid, room)
         elif len(de_games) == 1 and de_games[0].started:
             print('room exists')
-            if room['username'] != None and any([p.name == room['username'] for p in de_games[0].players if p.is_bot]):
+            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if p.is_bot)):
                 print('getting inside the bot')
                 bot = [p for p in de_games[0].players if p.is_bot and p.name == room['username'] ][0]
                 bot.sid = sid
@@ -164,7 +164,7 @@ def get_me(sid, room):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            if room['username'] == None or any([p.name == room['username'] for p in sio.get_session(sid).game.players]):
+            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players)):
                 sio.emit('change_username', room=sid)
             else:
                 sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
@@ -381,7 +381,7 @@ def chat_message(sid, msg, pl=None):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                     else:
                         bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
-                        while any([p for p in ses.game.players if p.name == bot.name]):
+                        while any((p for p in ses.game.players if p.name == bot.name)):
                             bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
                         ses.game.add_player(bot)
                         bot.bot_spin()
@@ -409,7 +409,7 @@ def chat_message(sid, msg, pl=None):
                         ses.game.start_game(int(msg.split()[1]))
                     return
                 elif '/removebot' in msg and not ses.game.started:
-                    if any([p.is_bot for p in ses.game.players]):
+                    if any((p.is_bot for p in ses.game.players)):
                         [p for p in ses.game.players if p.is_bot][-1].disconnect()
                     return
                 elif '/togglecomp' in msg and ses.game:
