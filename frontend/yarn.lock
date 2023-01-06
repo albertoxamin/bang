@@ -834,22 +834,22 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
-"@datadog/browser-core@4.11.4":
-  version "4.11.4"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.11.4.tgz#a0dfc9b8d62c5cdecd4c81f3cb66805e59813af9"
+"@datadog/browser-core@4.29.1":
+  version "4.29.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.29.1.tgz#9e0e1cc0e8843f39d32030ec1ad8c8ce0574b5b5"
 
-"@datadog/browser-rum-core@4.11.4":
-  version "4.11.4"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.11.4.tgz#d6c7626f2b9eafff7e278148af5e23c91cec2c88"
+"@datadog/browser-rum-core@4.29.1":
+  version "4.29.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.29.1.tgz#61c946af179cc403a997773fd5038634944f3892"
   dependencies:
-    "@datadog/browser-core" "4.11.4"
+    "@datadog/browser-core" "4.29.1"
 
-"@datadog/browser-rum@^4.11.4":
-  version "4.11.4"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.11.4.tgz#358653631e4717749e526030f43fc91f3f144223"
+"@datadog/browser-rum@^4.29.1":
+  version "4.29.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.29.1.tgz#97629ca5b159079f931f6ce9dc56cf8cf685ed5c"
   dependencies:
-    "@datadog/browser-core" "4.11.4"
-    "@datadog/browser-rum-core" "4.11.4"
+    "@datadog/browser-core" "4.29.1"
+    "@datadog/browser-rum-core" "4.29.1"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -3516,10 +3516,9 @@ eventemitter3@^4.0.0:
   version "4.0.7"
   resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz"
 
-"events@^3.0.0":
-  "integrity" "sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q=="
-  "resolved" "https://registry.npmjs.org/events/-/events-3.3.0.tgz"
-  "version" "3.3.0"
+events@^3.0.0:
+  version "3.3.0"
+  resolved "https://registry.npmjs.org/events/-/events-3.3.0.tgz"
 
 eventsource@^1.0.7:
   version "1.1.1"
