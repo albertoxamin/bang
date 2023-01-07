@@ -37,6 +37,7 @@
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
+			<span id="hand_text" style="bottom:40pt;">{{hand.length}}/{{maxHandLength()}}</span>
 			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
 				<Card v-for="card in handComputed" v-bind:key="card.name+card.number+card.suit" :card="card" 
 					@click.native="play_card(card, false)"
