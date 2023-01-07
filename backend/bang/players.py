@@ -609,7 +609,7 @@ class Player:
                             self.game.next_player().equipment.append(self.equipment.pop(i))
                             self.game.next_player().notify_self()
                             break
-                    if any((isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) or isinstance(self.equipment[i], tvosc.SerpenteASonagli) for c in self.equipment)):
+                    if any((isinstance(c, cs.Dinamite) or isinstance(c, cs.Prigione) or isinstance(c, tvosc.SerpenteASonagli) for c in self.equipment)):
                         self.notify_self()
                         return
             for i in range(len(self.equipment)):
