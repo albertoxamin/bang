@@ -426,13 +426,13 @@ class Player:
                           data=f'_turn|{self.name}')
             print(f'{self.name}: I was notified that it is my turn')
         self.was_shot = False
+        self.attacker = None
         self.is_my_turn = True
         self.is_waiting_for_action = True
         self.has_played_bang = False
         self.special_use_count = 0
         self.bang_used = 0
         if self.game.check_event(ceh.MezzogiornoDiFuoco):
-            self.attacker = None
             self.lives -= 1
             if len([c for c in self.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
                 self.gold_nuggets += 1
@@ -576,7 +576,7 @@ class Player:
         pickable_cards = 1 + self.character.pick_mod
         if len([c for c in self.gold_rush_equipment if isinstance(c, grc.FerroDiCavallo)]) > 0:
             pickable_cards += 1
-        if self.is_my_turn:
+        if self.is_my_turn and self.attacker == None:
             for i in range(len(self.equipment)):
                 if i < len(self.equipment) and isinstance(self.equipment[i], cs.Dinamite):
                     while pickable_cards > 0:
@@ -1212,7 +1212,15 @@ class Player:
                         self.molly_discarded_cards = 0
                         self.notify_self()
                     self.game.responders_did_respond_resume_turn(did_lose=False)
+                    if isinstance(card, tvosc.RitornoDiFiamma):
+                        self.game.attack(self, self.attacker.name, card_name=card.name)
                 self.event_type = ''
+            elif len([c for c in self.hand if (isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0 and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
+                self.on_failed_response_cb()
+                if self.game:
+                    self.game.responders_did_respond_resume_turn(did_lose=True)
+                    if isinstance(card, tvosc.RitornoDiFiamma):
+                        self.game.attack(self, self.attacker.name, card_name=card.name)
             else:
                 self.pending_action = PendingAction.RESPOND
                 self.notify_self()

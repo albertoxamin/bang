@@ -5,6 +5,7 @@ from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 from bang.players import Player, PendingAction
+import bang.cards as cs
 
 # test UltimoGiro
 def test_ultimo_giro():
@@ -69,3 +70,73 @@ def test_fantasma():
     pl.choose(0)
     assert pl.pending_action == PendingAction.PLAY
     assert len(fantasma_guy.equipment) == 1 and isinstance(fantasma_guy.equipment[0], Fantasma)
+
+# test SerpenteASonagli
+def test_serpente_a_sonagli():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    p = g.players[g.turn]
+    serp = g.players[(g.turn+1)%3]
+    p.draw('')
+    p.hand = [SerpenteASonagli(0,0)]
+    assert len(p.hand) == 1
+    p.play_card(0, serp.name)
+    assert len(p.hand) == 0
+    assert len(serp.equipment) == 1 and isinstance(serp.equipment[0], SerpenteASonagli)
+    p.end_turn()
+    assert serp.pending_action == PendingAction.PICK
+    g.deck.cards[0] = Bang(Suit.SPADES, 5)
+    serp.pick()
+    assert serp.lives == 3
+    serp.draw('')
+    serp.hand = [SerpenteASonagli(0,0)]
+    serp.play_card(0, g.players[(g.turn+1)%3].name)
+    assert len(serp.hand) == 0
+    serp.end_turn()
+    assert g.players[g.turn].pending_action == PendingAction.PICK
+    g.deck.cards[0] = Bang(Suit.HEARTS, 5)
+    g.players[g.turn].pick()
+    assert g.players[g.turn].lives == 4
+
+# test RitornoDiFiamma
+def test_ritorno_di_fiamma():
+    sio = DummySocket()
+    g = Game('test', sio)
+    g.expansions = ['the_valley_of_shadows']
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    p = g.players[g.turn]
+    p1 = g.players[(g.turn+1)%3]
+    p.draw('')
+    p.hand = [Bang(1, 1)]
+    p1.hand = [RitornoDiFiamma(0,0)]
+    p.play_card(0, p1.name)
+    assert len(p.hand) == 0
+    assert len(p1.hand) == 1
+    p1.respond(0)
+    assert len(p1.hand) == 0
+    assert p.lives == 3
+    p.end_turn()
+    p1.draw('')
+    p1.hand = [Bang(1, 1)]
+    p.equipment = [cs.Barile(0,0)]
+    p.hand = [RitornoDiFiamma(0,0)]
+    p1.play_card(0, p.name)
+    assert p.pending_action == PendingAction.PICK
+    g.deck.cards[0] = Bang(Suit.SPADES, 5)
+    p.pick()
+    assert p.pending_action == PendingAction.RESPOND
+    p.respond(0)
+    assert p1.lives == 3

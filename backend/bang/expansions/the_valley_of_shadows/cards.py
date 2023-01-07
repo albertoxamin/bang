@@ -1,7 +1,7 @@
 from typing import List
 import bang.roles as r
 import bang.players as pl
-from bang.cards import Card, Suit, Bang
+from bang.cards import Card, Suit, Bang, Mancato
 import bang.expansions.fistful_of_cards.card_events as ce
 
 class Fantasma(Card):
@@ -177,17 +177,18 @@ class Poker(Card):
         # player.game.attack(player, against)
         return True
 
-class RitornoDiFiamma(Card):
+class RitornoDiFiamma(Mancato):
     def __init__(self, suit, number):
-        super().__init__(suit, 'RitornoDiFiamma', number)
+        super().__init__(suit, number)
+        self.name = 'RitornoDiFiamma'
         self.icon = '🔥'
         self.alt_text = "😅 | 💥"
     
     def play_card(self, player, against, _with=None):
-        #TODO
-        # super().play_card(player, against=against)
-        # player.game.attack(player, against)
-        return True
+        return False
+
+    def use_card(self, player):
+        player.notify_self()
 
 def get_starting_deck() -> List[Card]:
     cards = [
@@ -205,7 +206,7 @@ def get_starting_deck() -> List[Card]:
         # Fuga(Suit.HEARTS, 3), # evita l'effetto di carte marroni (tipo panico cat balou) di cui sei bersaglio
         # Mira(Suit.CLUBS, 6),
         # Poker(Suit.HEARTS, 'J'), # tutti gli altri scartano 1 carta a scelta, se non ci sono assi allora pesca 2 dal mazzo
-        # RitornoDiFiamma(Suit.CLUBS, 'Q'), # un mancato che fa bang
+        RitornoDiFiamma(Suit.CLUBS, 'Q'), # un mancato che fa bang
     ]
     for c in cards:
         c.expansion_icon = '👻️'
