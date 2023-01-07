@@ -56,7 +56,6 @@ class Shotgun(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Shotgun', number, is_equipment=True, is_weapon=True, range=1)
         self.icon = '🔫' # Ogni volta che colpisci un giocatore deve scartare una carta
-        #TODO
 
 class Taglia(Card):
     def __init__(self, suit, number):
@@ -196,7 +195,7 @@ def get_starting_deck() -> List[Card]:
         Fantasma(Suit.SPADES, 10),
         # Lemat(Suit.DIAMONDS, 4),
         SerpenteASonagli(Suit.HEARTS, 7),
-        # Shotgun(Suit.SPADES, 'K'),
+        Shotgun(Suit.SPADES, 'K'),
         # Taglia(Suit.CLUBS, 9),
         UltimoGiro(Suit.DIAMONDS, 8),
         Tomahawk(Suit.DIAMONDS, 'A'),

@@ -1152,6 +1152,10 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
+        if self.attacker and len(self.hand) > 0 and any((isinstance(c, tvosc.Shotgun) for c in self.attacker.equipment)):
+            c = self.hand.pop(randrange(0, len(self.hand)))
+            self.game.deck.scrap(c, True)
+            self.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
         if self.attacker and 'gold_rush' in self.game.expansions:
             if (isinstance(self.attacker, Player)):
                 self.attacker.gold_nuggets += 1

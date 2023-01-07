@@ -132,7 +132,8 @@
     "UnionPacific": "{0} played Union Pacific and draws 4 cards from the deck",
     "use_special": "{0} used the special ability of their character ({1})",
     "gold_rush_pay_discard": "{0} discarded {2} from {1}.",
-    "choose_emporio": "{0} has chosen {1} from General Store."
+    "choose_emporio": "{0} has chosen {1} from General Store.",
+    "shotgun_scrap": "When the shotgun hit {0} a card flew away from his hand ({1})"
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."
