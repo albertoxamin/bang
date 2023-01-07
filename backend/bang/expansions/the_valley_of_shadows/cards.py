@@ -62,7 +62,18 @@ class Taglia(Card):
         super().__init__(suit, 'Taglia', number, is_equipment=True)
         self.need_target = True
         self.icon = '💰' # chiunque colpisca il giocatore con la taglia pesca una carta dal mazzo, si toglie solo con panico, cat balou, dalton
-        #TODO
+
+    def play_card(self, player, against, _with=None):
+        if (player.game.check_event(ce.IlGiudice)):
+            return False
+        if against != None:
+            self.reset_card()
+            player.sio.emit('chat_message', room=player.game.name,
+                          data=f'_play_card_against|{player.name}|{self.name}|{against}')
+            player.game.get_player_named(against).equipment.append(self)
+            player.game.get_player_named(against).notify_self()
+            return True
+        return False
 
 class UltimoGiro(Card):
     def __init__(self, suit, number):
@@ -196,7 +207,7 @@ def get_starting_deck() -> List[Card]:
         # Lemat(Suit.DIAMONDS, 4),
         SerpenteASonagli(Suit.HEARTS, 7),
         Shotgun(Suit.SPADES, 'K'),
-        # Taglia(Suit.CLUBS, 9),
+        Taglia(Suit.CLUBS, 9),
         UltimoGiro(Suit.DIAMONDS, 8),
         Tomahawk(Suit.DIAMONDS, 'A'),
         # Sventagliata(Suit.SPADES, 2),
