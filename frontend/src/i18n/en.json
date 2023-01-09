@@ -138,7 +138,8 @@
     "gold_rush_pay_discard": "{0} discarded {2} from {1}.",
     "choose_emporio": "{0} has chosen {1} from General Store.",
     "shotgun_scrap": "When the shotgun hit {0} a card flew away from his hand ({1})",
-    "taglia_reward": "{1} got a card from the bounty on {0}"
+    "taglia_reward": "{1} got a card from the bounty on {0}",
+    "snake_bit": "{0} was bitten by the Rattle Snake."
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."

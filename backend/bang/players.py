@@ -731,7 +731,7 @@ class Player:
             target = self.game.get_player_named(self.target_p)
             card = None
             if (target.name == self.name):
-                card = self.equipment.pop(card_index)
+                card = self.equipment.pop(card_index if card_index < len(target.hand) else card_index - len(target.hand))
             elif card_index >= len(target.hand):
                 card = target.equipment.pop(card_index - len(target.hand))
             else:
@@ -838,7 +838,7 @@ class Player:
             self.notify_self()
         elif 'choose_bandidos' in self.choose_text:
             if card_index <= len(self.available_cards):
-                self.available_cards.pop(card_index))
+                self.available_cards.pop(card_index)
                 self.game.deck.scrap_pile.append(self.hand.pop(card_index))
                 self.mancato_needed -= 1
             else:

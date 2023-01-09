@@ -138,7 +138,8 @@
     "gold_rush_pay_discard": "{0} ha fatto scartare {2} a {1}.",
     "choose_emporio": "{0} ha scelto {1} da Emporio.",
     "shotgun_scrap": "Quando lo shotgun ha colpito {0} gli ha tolto una carta ({1})",
-    "taglia_reward": "{1} ha ottenuto ricompensa dalla taglia su {0}"
+    "taglia_reward": "{1} ha ottenuto ricompensa dalla taglia su {0}",
+    "snake_bit": "{0} è stato morso dal Serpente a Sonagli."
   },
   "foc": {
     "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
