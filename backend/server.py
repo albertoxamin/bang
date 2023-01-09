@@ -68,7 +68,7 @@ def bang_handler(func):
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden])
-    Metrics.send_metric('lobbies', points=[len([g for g in games if not g.is_replay])])
+    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
@@ -736,7 +736,7 @@ def discord_auth(sid, data):
 
 def pool_metrics():
     sio.sleep(60)
-    Metrics.send_metric('lobbies', points=[len([g for g in games if not g.is_replay])])
+    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
     pool_metrics()
 

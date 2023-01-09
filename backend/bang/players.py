@@ -448,7 +448,7 @@ class Player:
                 return self.notify_self()
 
         #non è un elif perchè vera custer deve fare questo poi cambiare personaggio
-        if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and len([p for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]):
+        if self.game.check_event(ce.FratelliDiSangue) and self.lives > 1 and not self.is_giving_life and sum(p != self and p.lives < p.max_lives for p in self.game.get_alive_players()):
             self.available_cards = [{
                 'name': p.name,
                 'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
@@ -477,7 +477,7 @@ class Player:
         self.notify_self()
 
     def draw(self, pile):
-        if self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Cecchino) and len([c for c in self.hand if c.name == cs.Bang(0,0).name]) >= 2:
+        if self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Cecchino) and sum((c.name == cs.Bang(0,0).name for c in self.hand)) >= 2:
             self.is_using_checchino = True
             self.available_cards = [{
                 'name': p['name'],
@@ -1224,7 +1224,7 @@ class Player:
                     if isinstance(card, tvosc.RitornoDiFiamma):
                         self.game.attack(self, self.attacker.name, card_name=card.name)
                 self.event_type = ''
-            elif len([c for c in self.hand if (isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente)]) == 0 and len([c for c in self.equipment if c.can_be_used_now and isinstance(c, cs.Mancato)]) == 0:
+            elif not any(((isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente) for c in self.hand)) and not any((c.can_be_used_now and isinstance(c, cs.Mancato) for c in self.equipment)):
                 self.on_failed_response_cb()
                 if self.game:
                     self.game.responders_did_respond_resume_turn(did_lose=True)
