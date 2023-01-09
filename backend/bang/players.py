@@ -838,6 +838,7 @@ class Player:
             self.notify_self()
         elif 'choose_bandidos' in self.choose_text:
             if card_index <= len(self.available_cards):
+                self.available_cards.pop(card_index))
                 self.game.deck.scrap_pile.append(self.hand.pop(card_index))
                 self.mancato_needed -= 1
             else:
