@@ -18,7 +18,7 @@ import traceback
 sys.setrecursionlimit(10**6) # this should prevents bots from stopping
 
 import logging
-logger = logging.basicConfig(filename='out.log', level='ERROR')
+logging.basicConfig(filename='out.log', level='ERROR')
 from functools import wraps
 
 Metrics.init()
