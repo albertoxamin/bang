@@ -121,7 +121,7 @@ def set_username(sid, username):
         username = username["name"]
         print(f'{sid} changed username to {username}')
         prev = ses.name
-        if ses.game and len([p for p in ses.game.players if p.name == username]) > 0:
+        if ses.game and any((p.name == username for p in ses.game.players)):
             ses.name = f"{username}_{random.randint(0,100)}"
         else:
             ses.name = username
@@ -157,7 +157,7 @@ def get_me(sid, room):
             join_room(sid, room)
         elif len(de_games) == 1 and de_games[0].started:
             print('room exists')
-            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if p.is_bot)):
+            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt)))):
                 print('getting inside the bot')
                 bot = [p for p in de_games[0].players if p.is_bot and p.name == room['username'] ][0]
                 bot.sid = sid
@@ -217,7 +217,7 @@ def disconnect(sid):
 @bang_handler
 def create_room(sid, room_name):
     if sio.get_session(sid).game == None:
-        while len([g for g in games if g.name == room_name]):
+        while any((g.name == room_name for g in games)):
             room_name += f'_{random.randint(0,100)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
@@ -263,7 +263,7 @@ def join_room(sid, room):
         print(f'{sid} joined a room named {room_name}')
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
-        while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
+        while any((p.name == sio.get_session(sid).name and not p.is_bot for p in games[i].players)):
             sio.get_session(sid).name += f'_{random.randint(0,100)}'
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
         games[i].add_player(sio.get_session(sid))
@@ -639,7 +639,7 @@ def chat_message(sid, msg, pl=None):
                         ses.was_player = True
                     ses.bot_spin()
                 elif '/arcadekick' in msg and ses.game.started:
-                    if len([p for p in ses.game.players if p.pending_action != PendingAction.WAIT]) == 0:
+                    if not any((p.pending_action != PendingAction.WAIT for p in ses.game.players)):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'','text':f'KICKING THE ARCADE CABINET'})
                         ses.game.next_turn()
                 else:

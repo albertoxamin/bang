@@ -173,7 +173,7 @@ class Game:
             
 
     def notify_room(self, sid=None):
-        if len([p for p in self.players if p.character == None]) != 0 or sid:
+        if any((p.character == None for p in self.players)) or sid:
             self.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
@@ -243,7 +243,7 @@ class Game:
 
     def notify_character_selection(self):
         self.notify_room()
-        if len([p for p in self.players if p.character == None]) == 0:
+        if not any((p.character == None for p in self.players)):
             for i in range(len(self.players)):
                 print(self.name, self.players[i].name, self.players[i].character)
                 self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
@@ -443,11 +443,11 @@ class Game:
                 print(f'{self.name}: stop roulette')
                 target_pl.lives -= 1
                 target_pl.heal_if_needed()
-                if len([c for c in target_pl.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
+                if any((isinstance(c, grc.Talismano) for c in target_pl.gold_rush_equipment)):
                     target_pl.gold_nuggets += 1
                 if target_pl.character.check(self, grch.SimeonPicos):
                     target_pl.gold_nuggets += 1
-                if len([c for c in target_pl.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
+                if any((isinstance(c, grc.Stivali) for c in target_pl.gold_rush_equipment)):
                     target_pl.hand.append(self.deck.draw(True))
                 target_pl.notify_self()
                 self.is_russian_roulette_on = False
@@ -617,9 +617,9 @@ class Game:
             player.game = None
         if self.disconnect_bot and self.started:
             player.is_bot = True
-            if len([p for p in self.players if not p.is_bot]) == 0:
+            if not any((not p.is_bot for p in self.players)):
                 eventlet.sleep(5)
-                if len([p for p in self.players if not p.is_bot]) == 0:
+                if not any((not p.is_bot for p in self.players)):
                     print(f'{self.name}: no players left in game, shutting down')
                     self.shutting_down = True
                     self.players = []
@@ -637,7 +637,7 @@ class Game:
         # else:
         #     player.lives = 0
             # self.players.remove(player)
-        if len([p for p in self.players if not p.is_bot]) == 0:
+        if not any((not p.is_bot for p in self.players)):
             print(f'{self.name}: no players left in game, shutting down')
             self.shutting_down = True
             self.players = []
@@ -654,7 +654,7 @@ class Game:
         if player.character and player.role:
             if not self.is_replay:
                 Metrics.send_metric('player_death', points=[1], tags=[f"char:{player.character.name}", f"role:{player.role.name}"])
-        if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker and player.attacker in self.players:
+        if any((isinstance(c, grc.Ricercato) for c in player.gold_rush_equipment)) and player.attacker and player.attacker in self.players:
             player.attacker.gold_nuggets += 1
             player.attacker.hand.append(self.deck.draw(True))
             player.attacker.hand.append(self.deck.draw(True))
