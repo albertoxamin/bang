@@ -828,6 +828,14 @@ class Player:
                 self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|Fantasma|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
+        elif 'choose_tornado' in self.choose_text:
+            if card_index <= len(self.available_cards):
+                self.game.deck.scrap_pile.append(self.hand.pop(card_index))
+                self.hand.append(self.game.deck.draw())
+                self.hand.append(self.game.deck.draw())
+            self.pending_action = PendingAction.WAIT
+            self.game.responders_did_respond_resume_turn()
+            self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character
                 self.character = self.not_chosen_character
@@ -1035,6 +1043,13 @@ class Player:
                 self.expected_response.append(cs.Bang(0, 0).name)
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
+
+    def get_discarded(self, attacker=None, card_name=None):
+        self.pending_action = PendingAction.CHOOSE
+        if card_name == 'Tornado':
+            self.choose_text = 'choose_tornado'
+        self.available_cards = self.hand
+        return True
 
     def get_banged(self, attacker, double=False, no_dmg=False, card_index=None, card_name=None):
         self.attacker = attacker

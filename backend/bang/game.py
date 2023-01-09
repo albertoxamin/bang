@@ -315,6 +315,22 @@ class Game:
             self.players[i].notify_self()
         self.notify_event_card()
 
+    def discard_others(self, attacker: pl.Player, card_name:str=None):
+        self.attack_in_progress = True
+        attacker.pending_action = pl.PendingAction.WAIT
+        attacker.notify_self()
+        self.waiting_for = 0
+        self.ready_count = 0
+        for p in self.get_alive_players():
+            if len(p.hand) > 0:
+                if p.get_discarded(attacker=attacker, card_name=card_name):
+                    self.waiting_for += 1
+                    p.notify_self()
+        if self.waiting_for == 0:
+            attacker.pending_action = pl.PendingAction.PLAY
+            attacker.notify_self()
+            self.attack_in_progress = False
+
     def attack_others(self, attacker: pl.Player, card_name:str=None):
         self.attack_in_progress = True
         attacker.pending_action = pl.PendingAction.WAIT

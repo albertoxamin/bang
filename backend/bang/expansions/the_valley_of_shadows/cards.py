@@ -104,6 +104,15 @@ class Tomahawk(Card):
             return True
         return False
 
+class Tornado(Card):
+    def __init__(self, suit, number):
+        super().__init__(suit, 'Tornado', number)
+        self.icon = '🌪️' 
+
+    def play_card(self, player, against, _with=None):
+        player.game.discard_others(player, card_name=self.name)
+        return True
+
 class Sventagliata(Bang):
     def __init__(self, suit, number):
         super().__init__(suit, number)
@@ -217,6 +226,7 @@ def get_starting_deck() -> List[Card]:
         # Mira(Suit.CLUBS, 6),
         # Poker(Suit.HEARTS, 'J'), # tutti gli altri scartano 1 carta a scelta, se non ci sono assi allora pesca 2 dal mazzo
         RitornoDiFiamma(Suit.CLUBS, 'Q'), # un mancato che fa bang
+        Tornado(Suit.CLUBS, "A"),
     ]
     for c in cards:
         c.expansion_icon = '👻️'
