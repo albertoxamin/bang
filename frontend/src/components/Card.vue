@@ -177,7 +177,7 @@ export default {
 	left:3pt;
 }
 .card.character .suit {
-	font-size: x-small;
+	font-size: small;
 	right: 3pt;
 	text-align: center;
 }

@@ -56,8 +56,6 @@ export default {
 			//console.log(card)
 			if (card.noDesc || card.name == null || card.name == "PewPew!")
 				this.desc = ""
-			else if (card.is_character)
-				this.desc = card.name
 			else if (card.goal)
 				this.desc = this.$t(`cards.${card.name}.name`)
 			else if (card.desc)

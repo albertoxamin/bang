@@ -208,7 +208,8 @@ def disconnect(sid):
         sio.emit('players', room='lobby', data=online_players)
         if sio.get_session(sid).game and sio.get_session(sid).disconnect():
             sio.close_room(sio.get_session(sid).game.name)
-            games.pop(games.index(sio.get_session(sid).game))
+            if sio.get_session(sid).game in games:
+                games.pop(games.index(sio.get_session(sid).game))
         print('disconnect ', sid)
         advertise_lobbies()
     Metrics.send_metric('online_players', points=[online_players])

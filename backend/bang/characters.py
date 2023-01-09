@@ -9,6 +9,7 @@ class Character(ABC):
         self.max_lives = max_lives
         self.sight_mod = sight_mod
         self.visibility_mod = visibility_mod
+        self.is_character = True
         self.pick_mod = pick_mod
         self.desc = desc
         self.icon = '🤷‍♂️'
