@@ -167,9 +167,7 @@ class Bandidos(Card):
         self.alt_text = "👤🃏🃏/💔" 
     
     def play_card(self, player, against, _with=None):
-        #TODO
-        # super().play_card(player, against=against)
-        # player.game.attack(player, against)
+        player.game.discard_others(player, card_name=self.name)
         return True
 
 class Fuga(Card):
@@ -221,7 +219,7 @@ def get_starting_deck() -> List[Card]:
         Tomahawk(Suit.DIAMONDS, 'A'),
         # Sventagliata(Suit.SPADES, 2),
         # Salvo(Suit.HEARTS, 5),
-        # Bandidos(Suit.DIAMONDS,'Q'), # gli altri  giocatori scelgono se scartare 2 carte o perdere 1 punto vita
+        Bandidos(Suit.DIAMONDS,'Q'), # gli altri  giocatori scelgono se scartare 2 carte o perdere 1 punto vita
         # Fuga(Suit.HEARTS, 3), # evita l'effetto di carte marroni (tipo panico cat balou) di cui sei bersaglio
         # Mira(Suit.CLUBS, 6),
         # Poker(Suit.HEARTS, 'J'), # tutti gli altri scartano 1 carta a scelta, se non ci sono assi allora pesca 2 dal mazzo

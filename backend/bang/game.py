@@ -327,7 +327,7 @@ class Game:
         self.waiting_for = 0
         self.ready_count = 0
         for p in self.get_alive_players():
-            if len(p.hand) > 0:
+            if len(p.hand) > 0 and (p != attacker or card_name == 'Tornado'):
                 if p.get_discarded(attacker=attacker, card_name=card_name):
                     self.waiting_for += 1
                     p.notify_self()

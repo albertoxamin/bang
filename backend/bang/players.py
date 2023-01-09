@@ -836,6 +836,16 @@ class Player:
             self.pending_action = PendingAction.WAIT
             self.game.responders_did_respond_resume_turn()
             self.notify_self()
+        elif 'choose_bandidos' in self.choose_text:
+            if card_index <= len(self.available_cards):
+                self.game.deck.scrap_pile.append(self.hand.pop(card_index))
+                self.mancato_needed -= 1
+            else:
+                self.lives -= 1
+            if self.mancato_needed <= 0:
+                self.pending_action = PendingAction.WAIT
+                self.game.responders_did_respond_resume_turn()
+            self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character
                 self.character = self.not_chosen_character
@@ -1046,9 +1056,13 @@ class Player:
 
     def get_discarded(self, attacker=None, card_name=None):
         self.pending_action = PendingAction.CHOOSE
+        self.available_cards = self.hand.copy()
         if card_name == 'Tornado':
             self.choose_text = 'choose_tornado'
-        self.available_cards = self.hand
+        if card_name == 'Bandidos':
+            self.choose_text = 'choose_bandidos'
+            self.mancato_needed = min(2, len(self.hand))
+            self.available_cards.append({'name': '-1hp', 'icon': '💔', 'noDesc': True})
         return True
 
     def get_banged(self, attacker, double=False, no_dmg=False, card_index=None, card_name=None):
