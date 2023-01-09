@@ -87,7 +87,7 @@
 			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :send="setUsername" :sendText="$t('ok')"/>
 		</transition>
 		<transition name="bounce">
-			<div v-if="displayAdminStatus" style="position:absolute;width:100%;height:100%;overflow:auto;background:#000000bf;">
+			<div v-if="displayAdminStatus" id="admin-status">
 				<input type="button" @click="displayAdminStatus = false" value="close"/>
 				<Status deploy_key="ok"/>
 			</div>
@@ -455,6 +455,9 @@ export default {
 	flex-wrap: wrap;
 	justify-content: space-evenly;
 	margin-bottom: 12pt;
+}
+#admin-status {
+	position:absolute;width:100%;height:100%;overflow:auto;background:var(--bg-color); opacity: 0.8;
 }
 #turn-indicator{
 	position: absolute;
