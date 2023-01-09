@@ -303,7 +303,7 @@ class Player:
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
             non_blocked_cards = [card for card in self.hand if (not self.game.check_event(ceh.Manette) or card.suit == self.committed_suit_manette)]
-            equippables = [c for c in non_blocked_cards if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not any((type(c) == type(x) and not (c.is_weapon and c.must_be_used) for x in self.equipment))]
+            equippables = [c for c in non_blocked_cards if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not c.need_target and not any((type(c) == type(x) and not (c.is_weapon and c.must_be_used) for x in self.equipment))]
             misc = [c for c in non_blocked_cards if not c.need_target and (isinstance(c, cs.WellsFargo) or isinstance(c, cs.Indiani) or isinstance(c, cs.Gatling) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or ((isinstance(c, cs.Birra) and self.lives < self.max_lives or c.must_be_used) and not self.game.check_event(ceh.IlReverendo)) or (c.need_with and len(self.hand) > 1 and not (isinstance(c, csd.Whisky) and self.lives == self.max_lives)))
                     and not (not c.can_be_used_now and self.game.check_event(ce.IlGiudice)) and not c.is_equipment]
             need_target = [c for c in non_blocked_cards if c.need_target and c.can_be_used_now and not (c.need_with and len(self.hand) < 2) and not (type(c) == type(cs.Bang) and (self.game.check_event(ceh.Sermone) or (self.has_played_bang and (not any((isinstance(c, cs.Volcanic) for c in self.equipment)) or self.game.check_event(ce.Lazo))))) and not (isinstance(c, cs.Prigione) and self.game.check_event(ce.IlGiudice)) or isinstance(c, cs.Duello) or isinstance(c, cs.CatBalou) or isinstance(c, csd.Pugno)]
@@ -323,6 +323,8 @@ class Player:
                         return
             if len(equippables) > 0 and not self.game.check_event(ce.IlGiudice):
                 for c in equippables:
+                    if isinstance(c, tvosc.Fantasma) and len(self.game.get_dead_players(include_ghosts=False)) == 0:
+                        continue
                     if self.play_card(self.hand.index(c)):
                         return
             elif len(misc) > 0:
@@ -1259,7 +1261,7 @@ class Player:
                 self.on_failed_response_cb()
                 if self.game:
                     self.game.responders_did_respond_resume_turn(did_lose=True)
-                    if isinstance(card, tvosc.RitornoDiFiamma):
+                    if isinstance(card, tvosc.RitornoDiFiamma) and self.attacker:
                         self.game.attack(self, self.attacker.name, card_name=card.name)
             else:
                 self.pending_action = PendingAction.RESPOND

@@ -639,6 +639,10 @@ def chat_message(sid, msg, pl=None):
                     cmd = msg.split()
                     if len(cmd) == 2:
                         sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.game.get_player_named(cmd[1]).__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
+                elif '/cardinfo' in msg:
+                    cmd = msg.split()
+                    if len(cmd) == 2:
+                        sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.hand[int(cmd[1])].__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
                 elif '/mebot' in msg:
                     ses.is_bot = not ses.is_bot
                     if (ses.is_bot):

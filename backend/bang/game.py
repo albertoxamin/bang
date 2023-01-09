@@ -37,6 +37,7 @@ debug_commands = [
     {'cmd':'/meinfo', 'help':'Get player data'},
     {'cmd':'/gameinfo', 'help':'Get game data'},
     {'cmd':'/playerinfo', 'help':'Get player data - sample /playerinfo player'},
+    {'cmd':'/cardinfo', 'help':'Get card data - sample /cardinfo handindex'},
     {'cmd':'/mebot', 'help':'Toggles bot mode'},
     {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
     {'cmd':'/startwithseed', 'help':'start the game with custom seed'},
