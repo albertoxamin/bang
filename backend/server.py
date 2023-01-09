@@ -332,6 +332,12 @@ def start_game(sid):
 
 @sio.event
 @bang_handler
+def shuffle_players(sid):
+    ses: Player = sio.get_session(sid)
+    ses.game.shuffle_players()
+
+@sio.event
+@bang_handler
 def set_character(sid, name):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};set_character;{name}')

@@ -80,6 +80,11 @@ class Game:
         self.rpc_log = []
         self.is_replay = False
 
+    def shuffle_players(self):
+        if not self.started:
+            random.shuffle(self.players)
+            self.notify_room()
+
     def reset(self):
         for p in self.players:
             if (p.sid == p.name):

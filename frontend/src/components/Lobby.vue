@@ -70,6 +70,7 @@
 							<span>🤖</span>
 						</div>
 					</div>
+					<Card v-if="startGameCard" key="_shuffle_players_" :donotlocalize="true" :card="shufflePlayersCard" @click.native="shufflePlayers" class="fistful-of-cards"/>
 				</transition-group>
 			</div>
 			<div v-if="started">
@@ -240,7 +241,7 @@ export default {
 			return ''
 		},
 		isRoomOwner() {
-			return this.players.length > 0 && this.players[0].name == this.username
+			return this.players.length > 0 && this.players.filter(x => !x.is_bot)[0].name == this.username
 		},
 		startGameCard() {
 			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
@@ -249,6 +250,16 @@ export default {
 					icon: '▶️',
 					is_equipment: true,
 					number: `${this.players.length}🤠`
+				}
+			}
+			return null;
+		},
+		shufflePlayersCard() {
+			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
+				return {
+					name: this.$t('shuffle_players'),
+					icon: '🔀',
+					is_equipment: true,
 				}
 			}
 			return null;
@@ -302,11 +313,12 @@ export default {
 		},
 		getPlayerCard(player) {
 			let icon = ''
+			let owner = this.players.filter(x => !x.is_bot)[0];
 			if (!this.started) icon = '🤠'
 			else icon = player.ready !== undefined ? ((player.ready)?'👍': '🤔') : (player.is_sheriff ? '⭐' : player.icon)
 			return {
 				name: player.name,
-				number: ((this.username == player.name) ? this.$t('you') : (this.players[0].name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
+				number: ((this.username == player.name) ? this.$t('you') : (owner.name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: icon,
 				is_character: true,
 				avatar: player.avatar,
@@ -315,6 +327,10 @@ export default {
 		startGame() {
 			this.started = true;
 			this.$socket.emit('start_game')
+		},
+		shufflePlayers() {
+			this.started = true;
+			this.$socket.emit('shuffle_players')
 		},
 		choose(player_name) {
 			if (Vue.config.devtools)
