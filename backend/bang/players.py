@@ -1141,6 +1141,7 @@ class Player:
 
     def take_damage_response(self):
         self.lives -= 1
+        self.sio.emit('hurt', room=self.sid, data=f'')
         if self.lives > 0:
             if self.character.check(self.game, chars.BartCassidy):
                 self.sio.emit('chat_message', room=self.game.name,

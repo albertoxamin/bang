@@ -70,6 +70,7 @@
 							:cards="notScrappedHand" :select="holydayScrapAdd" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="visiblePlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 		<Chooser style="filter: grayscale(1);" v-if="emporioCards && emporioCards.cards && emporioCards.cards.length > 0 && (pending_action === 4 || pending_action === null)" :text="$t('emporio_others', [emporioCards.name])" :cards="emporioCards.cards"/>
+		<div style="position: fixed;width: 100%;height: 100%;background: #ff000070;top: 0;left: 0;" v-if="hurt" class="hurt-notify"/>
 	</div>
 </template>
 
@@ -135,6 +136,7 @@ export default {
 		committed_suit_manette: null,
 		gold_nuggets: 0,
 		cantplaycard: false,
+		hurt: false,
 	}),
 	sockets: {
 		role(role) {
@@ -205,6 +207,12 @@ export default {
 			setTimeout(function(){
 					this.notifycard = null
 				}.bind(this), 4000)
+		},
+		hurt() {
+			this.hurt = true
+			setTimeout(function(){
+					this.hurt = false
+			}.bind(this), 500)
 		},
 		cant_play_card() {
 			this.cantplaycard = true
@@ -512,6 +520,10 @@ export default {
 	display:flex;
 	margin: 10pt 0pt;
 	overflow:auto;
+}
+.hurt-notify {
+	pointer-events: none;
+	animation: disappear 0.5s ease-in forwards;
 }
 .turn-notify {
 	pointer-events: none;
