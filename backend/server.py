@@ -13,10 +13,15 @@ import requests
 from discord_webhook import DiscordWebhook
 from metrics import Metrics
 
-Metrics.init()
-
-import sys 
+import sys
+import traceback
 sys.setrecursionlimit(10**6) # this should prevents bots from stopping
+
+import logging
+logger = logging.basicConfig(filename='out.log', level='ERROR')
+from functools import wraps
+
+Metrics.init()
 
 sio = socketio.Server(cors_allowed_origins="*")
 
@@ -44,6 +49,22 @@ games: List[Game] = []
 online_players = 0
 blacklist: List[str] = []
 
+def send_to_debug(error):
+    for g in games:
+        if g.debug or any((p.is_admin() for p in g.players)):
+            sio.emit('chat_message', room=g.name, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
+
+def bang_handler(func):
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            logging.exception(e)
+            print(traceback.format_exc())
+            send_to_debug(traceback.format_exc())
+    return wrapper_func
+
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden])
@@ -51,6 +72,7 @@ def advertise_lobbies():
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
+@bang_handler
 def connect(sid, environ):
     global online_players
     online_players += 1
@@ -60,11 +82,13 @@ def connect(sid, environ):
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
+@bang_handler
 def get_online_players(sid):
     global online_players
     sio.emit('players', room='lobby', data=online_players)
 
 @sio.event
+@bang_handler
 def report(sid, text):
     print(f'New report from {sid}: {text}')
     ses: Player = sio.get_session(sid)
@@ -85,6 +109,7 @@ def report(sid, text):
     print(f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
 
 @sio.event
+@bang_handler
 def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
@@ -105,6 +130,7 @@ def set_username(sid, username):
         ses.game.notify_room()
 
 @sio.event
+@bang_handler
 def get_me(sid, room):
     if isinstance(sio.get_session(sid), Player):
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
@@ -174,6 +200,7 @@ def get_me(sid, room):
                     sio.get_session(sid).game.notify_room()
 
 @sio.event
+@bang_handler
 def disconnect(sid):
     global online_players
     online_players -= 1
@@ -187,6 +214,7 @@ def disconnect(sid):
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
+@bang_handler
 def create_room(sid, room_name):
     if sio.get_session(sid).game == None:
         while len([g for g in games if g.name == room_name]):
@@ -202,25 +230,30 @@ def create_room(sid, room_name):
         advertise_lobbies()
 
 @sio.event
+@bang_handler
 def private(sid):
     g = sio.get_session(sid).game
     g.set_private()
     advertise_lobbies()
 
 @sio.event
+@bang_handler
 def toggle_expansion(sid, expansion_name):
     g = sio.get_session(sid).game
     g.toggle_expansion(expansion_name)
 
 @sio.event
+@bang_handler
 def toggle_comp(sid):
     sio.get_session(sid).game.toggle_competitive()
 
 @sio.event
+@bang_handler
 def toggle_replace_with_bot(sid):
     sio.get_session(sid).game.toggle_disconnect_bot()
 
 @sio.event
+@bang_handler
 def join_room(sid, room):
     room_name = room['name']
     i = [g.name for g in games].index(room_name)
@@ -250,6 +283,7 @@ Sockets for the status page
 """
 
 @sio.event
+@bang_handler
 def get_all_rooms(sid, deploy_key):
     if ('DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('all_rooms', room=sid, data=[{
@@ -266,11 +300,13 @@ def get_all_rooms(sid, deploy_key):
         } for g in games])
 
 @sio.event
+@bang_handler
 def kick(sid, data):
     if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('kicked', room=data['sid'])
 
 @sio.event
+@bang_handler
 def hide_toogle(sid, data):
     if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         game = [g for g in games if g.name==data['room']]
@@ -288,12 +324,14 @@ Sockets for the game
 """
 
 @sio.event
+@bang_handler
 def start_game(sid):
     ses: Player = sio.get_session(sid)
     ses.game.start_game()
     advertise_lobbies()
 
 @sio.event
+@bang_handler
 def set_character(sid, name):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};set_character;{name}')
@@ -302,47 +340,55 @@ def set_character(sid, name):
     ses.set_character(name)
 
 @sio.event
+@bang_handler
 def refresh(sid):
     ses: Player = sio.get_session(sid)
     ses.notify_self()
 
 @sio.event
+@bang_handler
 def draw(sid, pile):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};draw;{pile}')
     ses.draw(pile)
 
 @sio.event
+@bang_handler
 def pick(sid):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};pick')
     ses.pick()
 
 @sio.event
+@bang_handler
 def end_turn(sid):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};end_turn')
     ses.end_turn()
 
 @sio.event
+@bang_handler
 def play_card(sid, data):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};play_card;{json.dumps(data)}')
     ses.play_card(data['index'], data['against'], data['with'])
 
 @sio.event
+@bang_handler
 def respond(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};respond;{card_index}')
     ses.respond(card_index)
 
 @sio.event
+@bang_handler
 def choose(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};choose;{card_index}')
     ses.choose(card_index)
 
 @sio.event
+@bang_handler
 def scrap(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};scrap;{card_index}')
@@ -355,18 +401,21 @@ def special(sid, data):
     ses.special(data)
 
 @sio.event
+@bang_handler
 def gold_rush_discard(sid):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};gold_rush_discard;')
     ses.gold_rush_discard()
 
 @sio.event
+@bang_handler
 def buy_gold_rush_card(sid, data:int):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};buy_gold_rush_card;{data}')
     ses.buy_gold_rush_card(data)
 
 @sio.event
+@bang_handler
 def chat_message(sid, msg, pl=None):
     ses: Player = sio.get_session(sid) if pl is None else pl
     ses.game.rpc_log.append(f'{ses.name};chat_message;{msg}')
@@ -611,6 +660,7 @@ Sockets for the help screen
 """
 
 @sio.event
+@bang_handler
 def get_cards(sid):
     import bang.cards as c
     cards = c.get_starting_deck(['dodge_city'])
@@ -623,12 +673,14 @@ def get_cards(sid):
     Metrics.send_metric('help_screen_viewed', points=[1])
 
 @sio.event
+@bang_handler
 def get_characters(sid):
     import bang.characters as ch
     cards = ch.all_characters(['dodge_city', 'gold_rush'])
     sio.emit('characters_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_highnooncards(sid):
     import bang.expansions.high_noon.card_events as ceh
     chs = []
@@ -637,6 +689,7 @@ def get_highnooncards(sid):
     sio.emit('highnooncards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_foccards(sid):
     import bang.expansions.fistful_of_cards.card_events as ce
     chs = []
@@ -645,6 +698,7 @@ def get_foccards(sid):
     sio.emit('foccards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_goldrushcards(sid):
     import bang.expansions.gold_rush.shop_cards as grc
     cards = grc.get_cards()
@@ -656,6 +710,7 @@ def get_goldrushcards(sid):
     sio.emit('goldrushcards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_valleyofshadowscards(sid):
     import bang.expansions.the_valley_of_shadows.cards as tvos
     cards = tvos.get_starting_deck()
@@ -667,6 +722,7 @@ def get_valleyofshadowscards(sid):
     sio.emit('valleyofshadows_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def discord_auth(sid, data):
     res = requests.post('https://discord.com/api/oauth2/token', data={
         'client_id': '1059452581027532880',
