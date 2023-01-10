@@ -9,7 +9,10 @@
 		</div>
 		<div class="cont">
 			<transition-group name="message" tag="div" id="chatbox" :style="`${collapsed?'display:none':''}`">
-				<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;':''}`">{{msg.text}}</p>
+				<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;':''}`">
+					<JsonViewer v-if="msg.type == 'json'" :value="msg.json"/>
+					<span v-else>{{msg.text}}</span>
+				</p>
 				<p class="end" key="end" style="color:#0000">.</p>
 			</transition-group>
 			<div v-if="commandSuggestion.length > 0">
@@ -35,10 +38,15 @@ import prison_sfx from '@/assets/sounds/prison.mp3'
 import turn_sfx from '@/assets/sounds/turn.mp3'
 import death_sfx from '@/assets/sounds/death.mp3'
 import cash_sfx from '@/assets/sounds/cash.mp3'
+import JsonViewer from 'vue-json-viewer'
+
 export default {
 	name: 'Chat',
 	props: {
 		username: String
+	},
+	components: {
+		JsonViewer
 	},
 	data: () => ({
 		messages: [],
@@ -59,7 +67,6 @@ export default {
 	},
 	sockets: {
 		chat_message(msg) {
-			// console.log(msg)
 			if ((typeof msg === "string" && msg.indexOf('_') === 0) || (msg.color != null && msg.text.indexOf('_') === 0)) {
 				let t_color = null
 				let bg_color = null
@@ -107,6 +114,9 @@ export default {
 			} else { // a chat message
 				(new Audio(message_sfx)).play();
 				this.messages.push(msg);
+				if (msg.type && msg.type === 'json') {
+					msg.json = JSON.parse(msg.text);
+				}
 				if (this.collapsed || window.innerWidth < 1000) {
 					this.toasts.push(msg);
 					setTimeout(() => this.toasts.shift(), 5000);

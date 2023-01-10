@@ -5,6 +5,7 @@ import socketio
 import eventlet
 
 import bang.players as pl
+import bang.cards as cs
 import bang.characters as characters
 import bang.expansions.dodge_city.characters as chd
 from bang.deck import Deck
@@ -14,6 +15,34 @@ import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 from metrics import Metrics
+
+debug_commands = [
+    {'cmd':'/debug', 'help':'Toggles the debug mode'},
+    {'cmd':'/set_chars', 'help':'Set how many characters to distribute - sample /set_chars 3'},
+    {'cmd':'/suicide', 'help':'Kills you'},
+    {'cmd':'/nextevent', 'help':'Flip the next event card'},
+    {'cmd':'/notify', 'help':'Send a message to a player - sample /notify player hi!'},
+    {'cmd':'/show_cards', 'help':'View the hand of another - sample /show_cards player'},
+    {'cmd':'/ddc', 'help':'Destroy all cards - sample /ddc player'},
+    {'cmd':'/dsh', 'help':'Set health - sample /dsh player'},
+    # {'cmd':'/togglebot', 'help':''},
+    {'cmd':'/cancelgame', 'help':'Stops the current game'},
+    {'cmd':'/startgame', 'help':'Force starts the game'},
+    {'cmd':'/setbotspeed', 'help':'Changes the bot response time - sample /setbotspeed 0.5'},
+    # {'cmd':'/addex', 'help':''},
+    {'cmd':'/setcharacter', 'help':'Changes your current character - sample /setcharacter Willy The Kid'},
+    {'cmd':'/setevent', 'help':'Changes the event deck - sample /setevent 0 Manette'},
+    {'cmd':'/removecard', 'help':'Remove a card from hand/equip - sample /removecard 0'},
+    {'cmd':'/getcard', 'help':'Get a brand new card - sample /getcard Birra'},
+    {'cmd':'/meinfo', 'help':'Get player data'},
+    {'cmd':'/gameinfo', 'help':'Get game data'},
+    {'cmd':'/playerinfo', 'help':'Get player data - sample /playerinfo player'},
+    {'cmd':'/cardinfo', 'help':'Get card data - sample /cardinfo handindex'},
+    {'cmd':'/mebot', 'help':'Toggles bot mode'},
+    {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
+    {'cmd':'/startwithseed', 'help':'start the game with custom seed'},
+    {'cmd':'/getset', 'help':'get extension set of cards sample - /get valley', 'admin':True},
+]
 
 class Game:
     def __init__(self, name, sio:socketio):
@@ -51,6 +80,11 @@ class Game:
         self.rng = random.Random()
         self.rpc_log = []
         self.is_replay = False
+
+    def shuffle_players(self):
+        if not self.started:
+            random.shuffle(self.players)
+            self.notify_room()
 
     def reset(self):
         for p in self.players:
@@ -137,7 +171,7 @@ class Game:
             #     chat_message(None, cmd[2], player)
             if i == fast_forward:
                 self.replay_speed = 1.0
-
+            self.notify_room()
             eventlet.sleep(max(self.replay_speed, 0.1))
         eventlet.sleep(6)
         if self.is_replay:
@@ -145,11 +179,11 @@ class Game:
             
 
     def notify_room(self, sid=None):
-        if len([p for p in self.players if p.character == None]) != 0 or sid:
+        if any((p.character == None for p in self.players)) or sid:
             self.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
-                'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot} for p in self.players],
+                'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot, 'avatar': p.avatar} for p in self.players],
                 'password': self.password,
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
@@ -158,30 +192,7 @@ class Game:
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
         if self.debug:
-            commands = [
-                {'cmd':'/debug', 'help':'Toggles the debug mode'},
-                {'cmd':'/set_chars', 'help':'Set how many characters to distribute - sample /set_chars 3'},
-                {'cmd':'/suicide', 'help':'Kills you'},
-                {'cmd':'/nextevent', 'help':'Flip the next event card'},
-                {'cmd':'/notify', 'help':'Send a message to a player - sample /notify player hi!'},
-                {'cmd':'/show_cards', 'help':'View the hand of another - sample /show_cards player'},
-                {'cmd':'/ddc', 'help':'Destroy all cards - sample /ddc player'},
-                {'cmd':'/dsh', 'help':'Set health - sample /dsh player'},
-                # {'cmd':'/togglebot', 'help':''},
-                {'cmd':'/cancelgame', 'help':'Stops the current game'},
-                {'cmd':'/startgame', 'help':'Force starts the game'},
-                {'cmd':'/setbotspeed', 'help':'Changes the bot response time - sample /setbotspeed 0.5'},
-                # {'cmd':'/addex', 'help':''},
-                {'cmd':'/setcharacter', 'help':'Changes your current character - sample /setcharacter Willy The Kid'},
-                {'cmd':'/setevent', 'help':'Changes the event deck - sample /setevent 0 Manette'},
-                {'cmd':'/removecard', 'help':'Remove a card from hand/equip - sample /removecard 0'},
-                {'cmd':'/getcard', 'help':'Get a brand new card - sample /getcard Birra'},
-                {'cmd':'/meinfo', 'help':'Get player data'},
-                {'cmd':'/gameinfo', 'help':'Get game data'},
-                {'cmd':'/mebot', 'help':'Toggles bot mode'},
-                {'cmd':'/getnuggets', 'help':'Adds nuggets to yourself - sample /getnuggets 5'},
-                {'cmd':'/startwithseed', 'help':'start the game with custom seed'}]
-            self.sio.emit('commands', room=self.name, data=commands)
+            self.sio.emit('commands', room=self.name, data=[x for x in debug_commands if 'admin' not in x])
         else:
             self.sio.emit('commands', room=self.name, data=[{'cmd':'/debug', 'help':'Toggles the debug mode'}])
         self.sio.emit('spectators', room=self.name, data=len(self.spectators))
@@ -203,6 +214,11 @@ class Game:
         self.disconnect_bot = not self.disconnect_bot
         self.notify_room()
 
+    def feature_flags(self):
+        if 'the_valley_of_shadows' not in self.expansions:
+            self.available_expansions.append('the_valley_of_shadows')
+        self.notify_room()
+
     def add_player(self, player: pl.Player):
         if player.is_bot and len(self.players) >= 8:
             return
@@ -212,6 +228,8 @@ class Game:
             if 'dodge_city' not in self.expansions:
                 self.expansions.append('dodge_city')
         player.join_game(self)
+        if player.is_admin():
+            self.feature_flags()
         self.players.append(player)
         print(f'{self.name}: Added player {player.name} to game')
         self.notify_room()
@@ -231,7 +249,7 @@ class Game:
 
     def notify_character_selection(self):
         self.notify_room()
-        if len([p for p in self.players if p.character == None]) == 0:
+        if not any((p.character == None for p in self.players)):
             for i in range(len(self.players)):
                 print(self.name, self.players[i].name, self.players[i].character)
                 self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
@@ -303,6 +321,22 @@ class Game:
             self.players[i].notify_self()
         self.notify_event_card()
 
+    def discard_others(self, attacker: pl.Player, card_name:str=None):
+        self.attack_in_progress = True
+        attacker.pending_action = pl.PendingAction.WAIT
+        attacker.notify_self()
+        self.waiting_for = 0
+        self.ready_count = 0
+        for p in self.get_alive_players():
+            if len(p.hand) > 0 and (p != attacker or card_name == 'Tornado'):
+                if p.get_discarded(attacker=attacker, card_name=card_name):
+                    self.waiting_for += 1
+                    p.notify_self()
+        if self.waiting_for == 0:
+            attacker.pending_action = pl.PendingAction.PLAY
+            attacker.notify_self()
+            self.attack_in_progress = False
+
     def attack_others(self, attacker: pl.Player, card_name:str=None):
         self.attack_in_progress = True
         attacker.pending_action = pl.PendingAction.WAIT
@@ -338,6 +372,11 @@ class Game:
             self.attack_in_progress = False
         if self.pending_winners and not self.someone_won:
             return self.announces_winners()
+
+    def can_card_reach(self, card: cs.Card, player: pl.Player, target:str):
+        if card and card.range != 0 and card.range < 99:
+            return not any((True for p in self.get_visible_players(player) if p['name'] == target and p['dist'] > card.range))
+        return True
 
     def attack(self, attacker: pl.Player, target_username:str, double:bool=False, card_name:str=None):
         if self.get_player_named(target_username).get_banged(attacker=attacker, double=double, card_name=card_name):
@@ -426,11 +465,11 @@ class Game:
                 print(f'{self.name}: stop roulette')
                 target_pl.lives -= 1
                 target_pl.heal_if_needed()
-                if len([c for c in target_pl.gold_rush_equipment if isinstance(c, grc.Talismano)]) > 0:
+                if any((isinstance(c, grc.Talismano) for c in target_pl.gold_rush_equipment)):
                     target_pl.gold_nuggets += 1
                 if target_pl.character.check(self, grch.SimeonPicos):
                     target_pl.gold_nuggets += 1
-                if len([c for c in target_pl.gold_rush_equipment if isinstance(c, grc.Stivali)]) > 0:
+                if any((isinstance(c, grc.Stivali) for c in target_pl.gold_rush_equipment)):
                     target_pl.hand.append(self.deck.draw(True))
                 target_pl.notify_self()
                 self.is_russian_roulette_on = False
@@ -503,14 +542,14 @@ class Game:
                 pl.hand.append(self.deck.draw())
                 pl.hand.append(self.deck.draw())
                 pl.notify_self()
-            elif self.check_event(ceh.CittaFantasma):
+            elif self.check_event(ceh.CittaFantasma) or self.players[self.turn].is_ghost:
                 print(f'{self.name}: {self.players[self.turn]} is dead, event ghost')
                 self.players[self.turn].is_ghost = True
             else:
                 print(f'{self.name}: {self.players[self.turn]} is dead, next turn')
                 return self.next_turn()
         self.player_bangs = 0
-        if isinstance(self.players[self.turn].role, roles.Sheriff) or ((self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) and not self.players[self.turn].is_ghost)  or (self.initial_players == 3 and any([p for p in self.players if p.is_dead and p.role.name == 'Vice']) and isinstance(self.players[self.turn].role, roles.Renegade))):
+        if isinstance(self.players[self.turn].role, roles.Sheriff) or ((self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) and not self.players[self.turn].is_ghost)  or (self.initial_players == 3 and any((p for p in self.players if p.is_dead and p.role.name == 'Vice')) and isinstance(self.players[self.turn].role, roles.Renegade))):
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'{self.name}: flip new event {self.deck.event_cards[0].name}')
@@ -600,9 +639,9 @@ class Game:
             player.game = None
         if self.disconnect_bot and self.started:
             player.is_bot = True
-            if len([p for p in self.players if not p.is_bot]) == 0:
+            if not any((not p.is_bot for p in self.players)):
                 eventlet.sleep(5)
-                if len([p for p in self.players if not p.is_bot]) == 0:
+                if not any((not p.is_bot for p in self.players)):
                     print(f'{self.name}: no players left in game, shutting down')
                     self.shutting_down = True
                     self.players = []
@@ -620,7 +659,7 @@ class Game:
         # else:
         #     player.lives = 0
             # self.players.remove(player)
-        if len([p for p in self.players if not p.is_bot]) == 0:
+        if not any((not p.is_bot for p in self.players)):
             print(f'{self.name}: no players left in game, shutting down')
             self.shutting_down = True
             self.players = []
@@ -637,7 +676,7 @@ class Game:
         if player.character and player.role:
             if not self.is_replay:
                 Metrics.send_metric('player_death', points=[1], tags=[f"char:{player.character.name}", f"role:{player.role.name}"])
-        if len([c for c in player.gold_rush_equipment if isinstance(c, grc.Ricercato)]) > 0 and player.attacker and player.attacker in self.players:
+        if any((isinstance(c, grc.Ricercato) for c in player.gold_rush_equipment)) and player.attacker and player.attacker in self.players:
             player.attacker.gold_nuggets += 1
             player.attacker.hand.append(self.deck.draw(True))
             player.attacker.hand.append(self.deck.draw(True))
@@ -763,14 +802,15 @@ class Game:
             'is_ghost': pls[j].is_ghost,
             'is_bot': pls[j].is_bot,
             'icon': pls[j].role.icon if (pls[j].role is not None) else '🤠',
+            'avatar': pls[j].avatar,
             'role': pls[j].role,
         } for j in range(len(pls)) if i != j]
 
     def get_alive_players(self):
         return [p for p in self.players if not p.is_dead or p.is_ghost]
 
-    def get_dead_players(self):
-        return [p for p in self.players if p.is_dead]
+    def get_dead_players(self, include_ghosts=True):
+        return [p for p in self.players if p.is_dead and (include_ghosts or not p.is_ghost)]
 
     def notify_all(self):
         if self.started:
@@ -788,6 +828,7 @@ class Game:
                 'character': p.character.__dict__ if p.character else None,
                 'real_character': p.real_character.__dict__ if p.real_character else None,
                 'icon': p.role.icon if self.initial_players == 3 and p.role else '🤠',
+                'avatar': p.avatar,
                 'is_ghost': p.is_ghost,
                 'is_bot': p.is_bot,
             } for p in self.get_alive_players()]

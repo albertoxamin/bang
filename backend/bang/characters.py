@@ -9,6 +9,7 @@ class Character(ABC):
         self.max_lives = max_lives
         self.sight_mod = sight_mod
         self.visibility_mod = visibility_mod
+        self.is_character = True
         self.pick_mod = pick_mod
         self.desc = desc
         self.icon = '🤷‍♂️'
@@ -145,7 +146,7 @@ class WillyTheKid(Character):
         self.icon = '🎉'
 
 def all_characters(expansions: List[str]):
-    from bang.expansions import DodgeCity
+    from bang.expansions import DodgeCity, TheValleyOfShadows
     base_chars = [
         BartCassidy(),
         BlackJack(),
@@ -168,4 +169,6 @@ def all_characters(expansions: List[str]):
         base_chars.extend(DodgeCity.get_characters())
     if 'gold_rush' in expansions:
         base_chars.extend(GoldRush.get_characters())
+    if 'the_valley_of_shadows' in expansions:
+        base_chars.extend(TheValleyOfShadows.get_characters())
     return base_chars

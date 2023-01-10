@@ -9,9 +9,10 @@
   "tip_7": "If you want to help us translate the game in your language, ping us on discord!",
   "tip_8": "If you disconnect during in an ongoing game you will be replaced by a bot (while you are gone)!",
   "online_players": "Online players: ",
+  "shuffle_players": "Shuffle Players",
   "choose_username": "Pick an username:",
-  "report_bug":"Write what the bug consists of",
-  "report":"Report a bug",
+  "report_bug": "Write what the bug consists of",
+  "report": "Report a bug",
   "available_lobbies": "Available Lobbies:",
   "spectate_lobbies": "Spectate ongoing games:",
   "no_lobby_available": "No lobbies available",
@@ -56,6 +57,9 @@
   "choose_ranch": "Choose the cards to replace",
   "choose_dalton": "Choose which equipment to discard",
   "choose_fratelli_di_sangue": "Choose who you want to donate one of your lives",
+  "choose_fantasma": "Choose who to bring back to life",
+  "choose_tornado": "Choose a card to discard for the tornado",
+  "choose_bandidos": "Choose between discarding 2 cards or losing a life (1 card if you only have 1)",
   "choose_cecchino": "Choose who to shoot",
   "choose_rimbalzo_player": "Choose the target of the bang",
   "choose_rimbalzo_card": "Choose the card to discard the bang to",
@@ -103,7 +107,7 @@
     "flipped": "{0} flipped a {1} {2}.",
     "explode": "{0} blew up the dynamite.",
     "beer_save": "{0} used a beer to save his life.",
-    "get_nugget":"{0} got a gold nugget using a Beer.",
+    "get_nugget": "{0} got a gold nugget using a Beer.",
     "play_card": "{0} played {1}.",
     "purchase_card": "{0} purchased {1}.",
     "play_card_against": "{0} played {1} against {2}.",
@@ -132,7 +136,10 @@
     "UnionPacific": "{0} played Union Pacific and draws 4 cards from the deck",
     "use_special": "{0} used the special ability of their character ({1})",
     "gold_rush_pay_discard": "{0} discarded {2} from {1}.",
-    "choose_emporio": "{0} has chosen {1} from General Store."
+    "choose_emporio": "{0} has chosen {1} from General Store.",
+    "shotgun_scrap": "When the shotgun hit {0} a card flew away from his hand ({1})",
+    "taglia_reward": "{1} got a card from the bounty on {0}",
+    "snake_bit": "{0} was bitten by the Rattle Snake."
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."
@@ -674,6 +681,66 @@
     "Simeon Picos": {
       "name": "Simeon Picos",
       "desc": "He gets 1 gold nugget every time he loses 1 hp."
+    },
+    "Fantasma": {
+      "name": "Ghost",
+      "desc": "Play on any eliminated player: That player is back in the game, but can't gain nor lose life points."
+    },
+    "Lemat": {
+      "name": "Lemat",
+      "desc": "During your turn you can use any card as BANG!."
+    },
+    "SerpenteASonagli": {
+      "name": "Serpente a Sonagli",
+      "desc": "Play on any player. At the beginning of his turn. if that player draws on Spades, he loses I life point."
+    },
+    "Shotgun": {
+      "name": "Shotgun",
+      "desc": "Every time you wound a player, they must discard a card from their hand."
+    },
+    "Taglia": {
+      "name": "Bounty",
+      "desc": "Play on anyone. If that player is hit by BANG!, the person who shot gets a card from the deck."
+    },
+    "Mira": {
+      "name": "Aim",
+      "desc": "Play this card along with a BANG! card. If the target is hit, they lose 2 life points."
+    },
+    "RitornoDiFiamma": {
+      "name": "Backfire",
+      "desc": "Counts as a Missed! card. The player who shot is the target of a BANG!."
+    },
+    "Bandidos": {
+      "name": "Bandidos",
+      "desc": "Each player chooses to discard 2 cards from their hand (or 1 if they only have 1) or lose 1 life point."
+    },
+    "Fuga": {
+      "name": "Escape",
+      "desc": "Can be played out of turn. Avoids the effect of a brown (not BANG!) card you are a target of."
+    },
+    "Sventagliata": {
+      "name": "Fanning",
+      "desc": "Counts as the only BANG! of the turn. A player of your choice at distance 1 from the target (if any, excluding yourself) is also a target of a BANG.."
+    },
+    "UltimoGiro": {
+      "name": "Last Call",
+      "desc": "Recovers 1 life point"
+    },
+    "Poker": {
+      "name": "Poker",
+      "desc": "All other players discard a card from their hand, at the same time. If there are no Aces, draw up to 2 of those cards."
+    },
+    "Salvo": {
+      "name": "Saved!",
+      "desc": "Can be played out of turn. Prevents another player from losing 1 life point. If they survive, they draw 2 cards from their hand or deck (your choice)."
+    },
+    "Tomahawk": {
+      "name": "Tomahawk",
+      "desc": "Attacks a player up to distance 2."
+    },
+    "Tornado": {
+      "name": "Tornado",
+      "desc": "Everyone discards a card from their hand (if possible), then draws 2 cards from the deck."
     }
   },
   "help": {
@@ -724,7 +791,8 @@
     "gotogoldrush": "Jump to Gold Rush",
     "highnooncards": "High Noon - Event Cards",
     "foccards": "Fistful of Cards - Event Cards",
-    "goldrushcards": "Gold Rush Cards"
+    "goldrushcards": "Gold Rush Cards",
+    "valleyofshadowscards": "The Valley of Shadows Cards"
   },
   "theme": {
     "sepia": "Sepia",

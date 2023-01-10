@@ -135,6 +135,7 @@ export default {
 			this.$i18n.locale = userLang.split('-')[0]
 		}
 		this.detectColorScheme()
+		if (window.location.origin.indexOf('localhost') !== -1) return;
 		datadogRum.init({
 			applicationId: '076b1a5e-16a9-44eb-b320-27afd32c57a5',
 			clientToken: 'pub1cc4d0d6ea0a7235aa1eab86e7a192d4',

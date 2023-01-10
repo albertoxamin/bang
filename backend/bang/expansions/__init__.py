@@ -13,3 +13,12 @@ class GoldRush():
     def get_characters():
         from bang.expansions.gold_rush import characters
         return characters.all_characters()
+
+class TheValleyOfShadows():
+    def get_characters():
+        from bang.expansions.the_valley_of_shadows import characters
+        return characters.all_characters()
+
+    def get_cards():
+        from bang.expansions.the_valley_of_shadows import cards
+        return cards.get_starting_deck()

@@ -18,6 +18,7 @@
 					<input id="username" v-model="username" />
 					<input type="submit" class="btn" :value="$t('submit')"/>
 				</form>
+				<a class="btn" :href="redirectUrl">Login with Discord</a>
 				<p v-if="onlinePlayers > 0">{{$t("online_players")}}{{onlinePlayers}}</p>
 			</div>
 			<div v-else>
@@ -71,8 +72,12 @@ export default {
 		isInLobby: false,
 		onlinePlayers: 0,
 		randomTip: '',
+		discordPic: '',
 	}),
 	computed: {
+		redirectUrl() {
+			return 'https://discordapp.com/api/oauth2/authorize?client_id=1059452581027532880&response_type=code&scope=identify&redirect_uri=' + window.location.origin;
+		},
 		noLobbyAvailable() {
 			return this.openLobbies && this.openLobbies.length == 0
 		},
@@ -85,6 +90,7 @@ export default {
 				number: this.$t('you'),
 				icon: '🤠',
 				is_character: true,
+				avatar: this.discordPic,
 			}
 		},
 		version() {
@@ -105,14 +111,20 @@ export default {
 		players(num) {
 			this.onlinePlayers = num;
 			// console.log('PLAYERS:' + num)
-		}
+		},
+		discord_auth_succ(data) {
+			if (data.access_token) {
+				localStorage.setItem('discord_token', data.access_token)
+				this.login()
+			}
+		},
 	},
 	methods: {
 		setUsername(e){
 			if (this.username.trim().length > 0){
 				this.didSetUsername = true
 				localStorage.setItem('username', this.username)
-				this.$socket.emit('set_username', this.username)
+				this.$socket.emit('set_username', {name:this.username})
 				e.preventDefault();
 			}
 		},
@@ -145,8 +157,34 @@ export default {
 		init() {
 			location.reload();
 		},
+		login() {
+			fetch('https://discordapp.com/api/users/@me', {
+				headers: {
+					'Authorization': 'Bearer ' + localStorage.getItem('discord_token')
+				}
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+				this.username = data.username
+				this.didSetUsername = true
+				this.discordPic = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
+				localStorage.setItem('username', this.username)
+				this.$socket.emit('set_username', {name: this.username, discord_token: localStorage.getItem('discord_token')})
+			}).catch(err => {
+				console.error(err)
+				localStorage.removeItem('discord_token')
+				this.$router.replace({query: []})
+			})
+		}
 	},
 	mounted() {
+		if (localStorage.getItem('discord_token')) {
+			this.login()
+		} else if (this.$route.query.code) {
+			this.$socket.emit('discord_auth', {code:this.$route.query.code, origin:window.location.origin})
+			this.$router.replace({query: []})
+		}
 		this.randomTip = `tip_${1+Math.floor(Math.random() * 8)}`
 		if (localStorage.getItem('username'))
 			this.username = localStorage.getItem('username')

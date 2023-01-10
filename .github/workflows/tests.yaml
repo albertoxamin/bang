@@ -3,7 +3,7 @@ on:
   pull_request:
 
 jobs:
-  buildx:
+  build-amd64:
     runs-on: ubuntu-latest
     steps:
       -
@@ -31,6 +31,24 @@ jobs:
             --output "type=image,push=false" \
             --tag albertoxamin/bang:test \
             --file ./Dockerfile ./
+  build-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v3
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
       -
         name: Docker Buildx (test build arm64)
         run: |
@@ -38,6 +56,34 @@ jobs:
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache" \
             --platform linux/arm64 \
+            --output "type=image,push=false" \
+            --tag albertoxamin/bang:test \
+            --file ./Dockerfile ./
+  build-armv-7:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v3
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Docker Buildx (test build armv-7)
+        run: |
+          docker buildx build \
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --platform linux/arm/v7 \
             --output "type=image,push=false" \
             --tag albertoxamin/bang:test \
             --file ./Dockerfile ./

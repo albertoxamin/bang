@@ -75,7 +75,7 @@ class Rissa(CatBalou):
 
     def play_card(self, player, against, _with):
         if _with != None:
-            if len([p for p in player.game.players if p != player and (len(p.hand)+len(p.equipment)) > 0]) == 0:
+            if not any((p != player and (len(p.hand)+len(p.equipment)) > 0 for p in player.game.players)):
                 return False
             #se sono qui vuol dire che ci sono giocatori con carte in mano oltre a me
             player.rissa_targets = []

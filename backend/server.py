@@ -14,10 +14,15 @@ from discord_webhook import DiscordWebhook
 from metrics import Metrics
 from ddtrace import tracer
 
-Metrics.init()
-
-import sys 
+import sys
+import traceback
 sys.setrecursionlimit(10**6) # this should prevents bots from stopping
+
+import logging
+logging.basicConfig(filename='out.log', level='ERROR')
+from functools import wraps
+
+Metrics.init()
 
 sio = socketio.Server(cors_allowed_origins="*")
 
@@ -45,13 +50,30 @@ games: List[Game] = []
 online_players = 0
 blacklist: List[str] = []
 
+def send_to_debug(error):
+    for g in games:
+        if g.debug or any((p.is_admin() for p in g.players)):
+            sio.emit('chat_message', room=g.name, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
+
+def bang_handler(func):
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            logging.exception(e)
+            print(traceback.format_exc())
+            send_to_debug(traceback.format_exc())
+    return wrapper_func
+
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
-    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started])
-    Metrics.send_metric('lobbies', points=[len([g for g in games if not g.is_replay])])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden])
+    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
+@bang_handler
 def connect(sid, environ):
     global online_players
     online_players += 1
@@ -61,40 +83,46 @@ def connect(sid, environ):
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
+@bang_handler
 def get_online_players(sid):
     global online_players
     sio.emit('players', room='lobby', data=online_players)
 
 @sio.event
+@bang_handler
 def report(sid, text):
+    print(f'New report from {sid}: {text}')
     ses: Player = sio.get_session(sid)
     data=''
     if hasattr(ses, 'game'):
         data = "\n".join(ses.game.rpc_log[:-1]).strip()
     data = data +"\n@@@\n" +text
     #print(data)
-    response = requests.post("https://www.toptal.com/developers/hastebin/documents", data)
+    response = requests.post("https://hastebin.com/documents", data.encode('utf-8'))
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
         response = webhook.execute()
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
     else:
         print("WARNING: DISCORD_WEBHOOK not found")
     Metrics.send_event('BUG_REPORT', event_data=text)
-    print(f'New bug report, replay at https://www.toptal.com/developers/hastebin/{key}')
+    print(f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
 
 @sio.event
+@bang_handler
 def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
-        sio.save_session(sid, Player(username, sid, sio))
+        dt = username["discord_token"] if 'discord_token' in username else None
+        sio.save_session(sid, Player(username["name"], sid, sio, discord_token=dt))
         print(f'{sid} is now {username}')
         advertise_lobbies()
     elif ses.game == None or not ses.game.started:
+        username = username["name"]
         print(f'{sid} changed username to {username}')
         prev = ses.name
-        if len([p for p in ses.game.players if p.name == username]) > 0:
+        if ses.game and any((p.name == username for p in ses.game.players)):
             ses.name = f"{username}_{random.randint(0,100)}"
         else:
             ses.name = username
@@ -104,19 +132,34 @@ def set_username(sid, username):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def get_me(sid, room):
     if isinstance(sio.get_session(sid), Player):
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
         if sio.get_session(sid).game:
             sio.get_session(sid).game.notify_room()
     else:
-        sio.save_session(sid, Player('player', sid, sio))
+        dt = room["discord_token"] if 'discord_token' in room else None
+        sio.save_session(sid, Player('player', sid, sio, discord_token=dt))
+        if 'replay' in room and room['replay'] != None:
+            create_room(sid, room['replay'])
+            sid = sio.get_session(sid)
+            sid.game.is_hidden = True
+            eventlet.sleep(0.5)
+            response = requests.get(f"https://hastebin.com/raw/{room['replay']}")
+            if response.status_code != 200:
+                sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Invalid replay code'})
+                return
+            log = response.text.splitlines()
+            sid.game.spectators.append(sid)
+            sid.game.replay(log)
+            return
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
         elif len(de_games) == 1 and de_games[0].started:
             print('room exists')
-            if room['username'] != None and any([p.name == room['username'] for p in de_games[0].players if p.is_bot]):
+            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt)))):
                 print('getting inside the bot')
                 bot = [p for p in de_games[0].players if p.is_bot and p.name == room['username'] ][0]
                 bot.sid = sid
@@ -126,6 +169,7 @@ def get_me(sid, room):
                 de_games[0].notify_room(sid)
                 eventlet.sleep(0.1)
                 de_games[0].notify_all()
+                de_games[0].notify_scrap_pile(sid)
                 sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
                 bot.notify_self()
                 if len(bot.available_characters) > 0:
@@ -135,6 +179,8 @@ def get_me(sid, room):
                 sio.get_session(sid).game = de_games[0]
                 sio.enter_room(sid, de_games[0].name)
                 de_games[0].notify_room(sid)
+                eventlet.sleep(0.1)
+
                 de_games[0].notify_event_card(sid)
                 de_games[0].notify_scrap_pile(sid)
                 de_games[0].notify_all()
@@ -146,7 +192,7 @@ def get_me(sid, room):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            if room['username'] == None or any([p.name == room['username'] for p in sio.get_session(sid).game.players]):
+            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players)):
                 sio.emit('change_username', room=sid)
             else:
                 sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
@@ -157,6 +203,7 @@ def get_me(sid, room):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def disconnect(sid):
     global online_players
     online_players -= 1
@@ -164,16 +211,18 @@ def disconnect(sid):
         sio.emit('players', room='lobby', data=online_players)
         if sio.get_session(sid).game and sio.get_session(sid).disconnect():
             sio.close_room(sio.get_session(sid).game.name)
-            games.pop(games.index(sio.get_session(sid).game))
+            if sio.get_session(sid).game in games:
+                games.pop(games.index(sio.get_session(sid).game))
         print('disconnect ', sid)
         advertise_lobbies()
     Metrics.send_metric('online_players', points=[online_players])
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def create_room(sid, room_name):
     if sio.get_session(sid).game == None:
-        while len([g for g in games if g.name == room_name]):
+        while any((g.name == room_name for g in games)):
             room_name += f'_{random.randint(0,100)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
@@ -186,26 +235,31 @@ def create_room(sid, room_name):
         advertise_lobbies()
 
 @sio.event
+@bang_handler
 def private(sid):
     g = sio.get_session(sid).game
     g.set_private()
     advertise_lobbies()
 
 @sio.event
+@bang_handler
 def toggle_expansion(sid, expansion_name):
     g = sio.get_session(sid).game
     g.toggle_expansion(expansion_name)
 
 @sio.event
+@bang_handler
 def toggle_comp(sid):
     sio.get_session(sid).game.toggle_competitive()
 
 @sio.event
+@bang_handler
 def toggle_replace_with_bot(sid):
     sio.get_session(sid).game.toggle_disconnect_bot()
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def join_room(sid, room):
     room_name = room['name']
     i = [g.name for g in games].index(room_name)
@@ -215,7 +269,7 @@ def join_room(sid, room):
         print(f'{sid} joined a room named {room_name}')
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
-        while len([p for p in games[i].players if p.name == sio.get_session(sid).name]):
+        while any((p.name == sio.get_session(sid).name and not p.is_bot for p in games[i].players)):
             sio.get_session(sid).name += f'_{random.randint(0,100)}'
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
         games[i].add_player(sio.get_session(sid))
@@ -236,8 +290,9 @@ Sockets for the status page
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def get_all_rooms(sid, deploy_key):
-    if 'DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']:
+    if ('DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('all_rooms', room=sid, data=[{
             'name': g.name,
             'hidden': g.is_hidden,
@@ -252,13 +307,15 @@ def get_all_rooms(sid, deploy_key):
         } for g in games])
 
 @sio.event
+@bang_handler
 def kick(sid, data):
-    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('kicked', room=data['sid'])
 
 @sio.event
+@bang_handler
 def hide_toogle(sid, data):
-    if 'DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']:
+    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         game = [g for g in games if g.name==data['room']]
         if len(games) > 0:
             game[0].is_hidden = not game[0].is_hidden
@@ -274,6 +331,7 @@ Sockets for the game
 """
 
 @sio.event
+@bang_handler
 def start_game(sid):
     ses: Player = sio.get_session(sid)
     ses.game.start_game()
@@ -281,6 +339,13 @@ def start_game(sid):
 
 @tracer.wrap
 @sio.event
+@bang_handler
+def shuffle_players(sid):
+    ses: Player = sio.get_session(sid)
+    ses.game.shuffle_players()
+
+@sio.event
+@bang_handler
 def set_character(sid, name):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};set_character;{name}')
@@ -289,12 +354,14 @@ def set_character(sid, name):
     ses.set_character(name)
 
 @sio.event
+@bang_handler
 def refresh(sid):
     ses: Player = sio.get_session(sid)
     ses.notify_self()
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def draw(sid, pile):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};draw;{pile}')
@@ -302,6 +369,7 @@ def draw(sid, pile):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def pick(sid):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};pick')
@@ -309,6 +377,7 @@ def pick(sid):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def end_turn(sid):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};end_turn')
@@ -316,6 +385,7 @@ def end_turn(sid):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def play_card(sid, data):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};play_card;{json.dumps(data)}')
@@ -323,6 +393,7 @@ def play_card(sid, data):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def respond(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};respond;{card_index}')
@@ -330,6 +401,7 @@ def respond(sid, card_index):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def choose(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};choose;{card_index}')
@@ -337,6 +409,7 @@ def choose(sid, card_index):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def scrap(sid, card_index):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};scrap;{card_index}')
@@ -351,6 +424,7 @@ def special(sid, data):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def gold_rush_discard(sid):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};gold_rush_discard;')
@@ -358,6 +432,7 @@ def gold_rush_discard(sid):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def buy_gold_rush_card(sid, data:int):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};buy_gold_rush_card;{data}')
@@ -365,6 +440,7 @@ def buy_gold_rush_card(sid, data:int):
 
 @tracer.wrap
 @sio.event
+@bang_handler
 def chat_message(sid, msg, pl=None):
     ses: Player = sio.get_session(sid) if pl is None else pl
     ses.game.rpc_log.append(f'{ses.name};chat_message;{msg}')
@@ -379,7 +455,7 @@ def chat_message(sid, msg, pl=None):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                     else:
                         bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
-                        while any([p for p in ses.game.players if p.name == bot.name]):
+                        while any((p for p in ses.game.players if p.name == bot.name)):
                             bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
                         ses.game.add_player(bot)
                         bot.bot_spin()
@@ -388,7 +464,7 @@ def chat_message(sid, msg, pl=None):
                     _cmd = msg.split()
                     if len(_cmd) >= 2:
                         replay_id = _cmd[1]
-                        response = requests.get(f"https://www.toptal.com/developers/hastebin/raw/{replay_id}")
+                        response = requests.get(f"https://hastebin.com/raw/{replay_id}")
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
                         if len(_cmd) == 2:
@@ -407,7 +483,7 @@ def chat_message(sid, msg, pl=None):
                         ses.game.start_game(int(msg.split()[1]))
                     return
                 elif '/removebot' in msg and not ses.game.started:
-                    if any([p.is_bot for p in ses.game.players]):
+                    if any((p.is_bot for p in ses.game.players)):
                         [p for p in ses.game.players if p.is_bot][-1].disconnect()
                     return
                 elif '/togglecomp' in msg and ses.game:
@@ -418,13 +494,13 @@ def chat_message(sid, msg, pl=None):
                     if len(cmd) == 2 and 'DEPLOY_KEY' in os.environ and cmd[1] == os.environ['DEPLOY_KEY']:  # solo chi ha la deploy key può attivare la modalità debug
                         ses.game.debug = not ses.game.debug
                         ses.game.notify_room()
-                    elif ses == ses.game.players[0]: # solo l'owner può attivare la modalità debug
+                    elif ses == ses.game.players[0] or ses.is_admin(): # solo l'owner può attivare la modalità debug
                         ses.game.debug = not ses.game.debug
                         ses.game.notify_room()
                     if ses.game.debug:
                         sio.emit('chat_message', room=sid, data={'color': f'red','text':f'debug mode is now active, only the owner of the room can disable it with /debug'})
                     return
-                if not ses.game.debug:
+                if not ses.game.debug and not ses.is_admin():
                     sio.emit('chat_message', room=sid, data={'color': f'','text':f'debug mode is not active, only the owner of the room can enable it with /debug'})
                 elif '/set_chars' in msg and not ses.game.started:
                     cmd = msg.split()
@@ -544,6 +620,27 @@ def chat_message(sid, msg, pl=None):
                         for cn in card_names:
                             ses.hand.append([c for c in cards if c.name.lower() == cn.lower() or c.name[0:-1].lower() == cn.lower()][0])
                             ses.notify_self()
+                elif '/equipcard' in msg:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
+                    import bang.cards as cs
+                    cmd = msg.split()
+                    if len(cmd) >= 2:
+                        cards  = cs.get_starting_deck(ses.game.expansions)
+                        card_names = ' '.join(cmd[1:]).split(',')
+                        for cn in card_names:
+                            ses.equipment.append([c for c in cards if c.name.lower() == cn.lower() or c.name[0:-1].lower() == cn.lower()][0])
+                            ses.notify_self()
+                elif '/getset' in msg:
+                    sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got a card'})
+                    cmd = msg.split()
+                    if len(cmd) >= 2:
+                        from bang.expansions import DodgeCity, TheValleyOfShadows
+                        if cmd[1] == 'dodgecity':
+                            ses.hand = DodgeCity.get_cards()
+                            ses.notify_self()
+                        elif 'valley' in cmd[1].lower():
+                            ses.hand = TheValleyOfShadows.get_cards()
+                            ses.notify_self()
                 elif '/getnuggets' in msg:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and got nuggets'})
                     import bang.cards as cs
@@ -552,16 +649,26 @@ def chat_message(sid, msg, pl=None):
                         ses.gold_nuggets += int(cmd[1])
                         ses.notify_self()
                 elif '/gameinfo' in msg:
-                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {dict(filter(lambda x:x[0] != "rpc_log",ses.game.__dict__.items()))}'})
+                    sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.game.__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
+                elif '/status' in msg and ses.is_admin():
+                    sio.emit('mount_status', room=sid)
                 elif '/meinfo' in msg:
-                    sio.emit('chat_message', room=sid, data={'color': f'','text':f'info: {ses.__dict__}'})
+                    sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
+                elif '/playerinfo' in msg:
+                    cmd = msg.split()
+                    if len(cmd) == 2:
+                        sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.game.get_player_named(cmd[1]).__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
+                elif '/cardinfo' in msg:
+                    cmd = msg.split()
+                    if len(cmd) == 2:
+                        sio.emit('chat_message', room=sid, data={'color': f'', 'text':json.dumps(ses.hand[int(cmd[1])].__dict__, default=lambda o: f'<{o.__class__.__name__}() not serializable>'), 'type': 'json'})
                 elif '/mebot' in msg:
                     ses.is_bot = not ses.is_bot
                     if (ses.is_bot):
                         ses.was_player = True
                     ses.bot_spin()
                 elif '/arcadekick' in msg and ses.game.started:
-                    if len([p for p in ses.game.players if p.pending_action != PendingAction.WAIT]) == 0:
+                    if not any((p.pending_action != PendingAction.WAIT for p in ses.game.players)):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'','text':f'KICKING THE ARCADE CABINET'})
                         ses.game.next_turn()
                 else:
@@ -582,6 +689,7 @@ Sockets for the help screen
 """
 
 @sio.event
+@bang_handler
 def get_cards(sid):
     import bang.cards as c
     cards = c.get_starting_deck(['dodge_city'])
@@ -594,12 +702,14 @@ def get_cards(sid):
     Metrics.send_metric('help_screen_viewed', points=[1])
 
 @sio.event
+@bang_handler
 def get_characters(sid):
     import bang.characters as ch
     cards = ch.all_characters(['dodge_city', 'gold_rush'])
     sio.emit('characters_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_highnooncards(sid):
     import bang.expansions.high_noon.card_events as ceh
     chs = []
@@ -608,6 +718,7 @@ def get_highnooncards(sid):
     sio.emit('highnooncards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_foccards(sid):
     import bang.expansions.fistful_of_cards.card_events as ce
     chs = []
@@ -616,6 +727,7 @@ def get_foccards(sid):
     sio.emit('foccards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
 
 @sio.event
+@bang_handler
 def get_goldrushcards(sid):
     import bang.expansions.gold_rush.shop_cards as grc
     cards = grc.get_cards()
@@ -626,9 +738,34 @@ def get_goldrushcards(sid):
     cards = [cards_dict[i] for i in cards_dict]
     sio.emit('goldrushcards_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
+@sio.event
+@bang_handler
+def get_valleyofshadowscards(sid):
+    import bang.expansions.the_valley_of_shadows.cards as tvos
+    cards = tvos.get_starting_deck()
+    cards_dict = {}
+    for ca in cards:
+        if ca.name not in cards_dict:
+            cards_dict[ca.name] = ca
+    cards = [cards_dict[i] for i in cards_dict]
+    sio.emit('valleyofshadows_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
+
+@sio.event
+@bang_handler
+def discord_auth(sid, data):
+    res = requests.post('https://discord.com/api/oauth2/token', data={
+        'client_id': '1059452581027532880',
+        'client_secret': 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu',
+        'grant_type': 'authorization_code',
+        'redirect_uri': data['origin'],
+        'code': data['code'],
+    })
+    if res.status_code == 200:
+        sio.emit('discord_auth_succ', room=sid, data=res.json())
+
 def pool_metrics():
     sio.sleep(60)
-    Metrics.send_metric('lobbies', points=[len([g for g in games if not g.is_replay])])
+    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
     pool_metrics()
 
@@ -649,6 +786,10 @@ class CustomProxyFix(object):
             start_response('200 OK', [])
             return ['']
         return self.app(environ, start_response)
+
+
+discord_ci = '1059452581027532880'
+discord_cs = 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu'
 
 if __name__ == '__main__':
     sio.start_background_task(pool_metrics)

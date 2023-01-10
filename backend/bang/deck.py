@@ -52,7 +52,7 @@ class Deck:
         self.game.notify_event_card()
 
     def fill_gold_rush_shop(self):
-        if not any([c == None for c in self.shop_cards]):
+        if not any((c == None for c in self.shop_cards)):
             return
         for i in range(3):
             if self.shop_cards[i] == None:

@@ -42,7 +42,7 @@
 				<div v-if="showTurnFlow" id="turn-indicator" :class="{reversed:turnReversed}"/>
 				<transition-group name="list" tag="div" class="players-table">
 					<Card v-if="startGameCard" key="_start_game_" :donotlocalize="true" :card="startGameCard" @click.native="startGame"/>
-					<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;">
+					<div v-for="p in playersTable" v-bind:key="p.card.name" style="position:relative;" class="player-in-table">
 						<transition-group v-if="p.gold_nuggets && p.gold_nuggets > 0" name="list" tag="div" style="position: absolute;top: -10pt; font-size:9pt;">
 							<span v-for="(n, i) in p.gold_nuggets" v-bind:key="i" :alt="i">💵️</span>
 						</transition-group>
@@ -70,6 +70,7 @@
 							<span>🤖</span>
 						</div>
 					</div>
+					<Card v-if="startGameCard" key="_shuffle_players_" :donotlocalize="true" :card="shufflePlayersCard" @click.native="shufflePlayers" class="fistful-of-cards"/>
 				</transition-group>
 			</div>
 			<div v-if="started">
@@ -85,6 +86,12 @@
 		<transition name="bounce">
 			<full-screen-input v-if="!started && hasToSetUsername" :defaultValue="storedUsername" :text="$t('choose_username')" :val="username" :send="setUsername" :sendText="$t('ok')"/>
 		</transition>
+		<transition name="bounce">
+			<div v-if="displayAdminStatus" id="admin-status">
+				<input type="button" @click="displayAdminStatus = false" value="close"/>
+				<Status deploy_key="ok"/>
+			</div>
+		</transition>
 	</div>
 </template>
 
@@ -98,6 +105,7 @@ import Player from './Player.vue'
 import Deck from './Deck.vue'
 import TinyHand from './TinyHand.vue'
 import FullScreenInput from './FullScreenInput.vue'
+import Status from './Status.vue'
 
 export default {
 	name: 'Lobby',
@@ -109,7 +117,8 @@ export default {
 		Deck,
 		TinyHand,
 		PrettyCheck,
-		FullScreenInput
+		FullScreenInput,
+		Status
 	},
 	data: () => ({
 		username: '',
@@ -134,6 +143,7 @@ export default {
 		debug_mode: false,
 		showTurnFlow: false,
 		turnReversed: false,
+		displayAdminStatus: false,
 		turn: -1,
 	}),
 	sockets: {
@@ -156,6 +166,7 @@ export default {
 					name: x.name,
 					ready: x.ready,
 					is_bot: x.is_bot,
+					avatar: x.avatar,
 					ncards: 0,
 				}
 			})
@@ -178,6 +189,9 @@ export default {
 			}
 			this.username = username
 			// this.$socket.emit('get_cards', 'dodge_city')
+		},
+		mount_status() {
+			this.displayAdminStatus = true
 		},
 		// cards_info(data) {
 		// 	data = JSON.parse(data)
@@ -227,7 +241,7 @@ export default {
 			return ''
 		},
 		isRoomOwner() {
-			return this.players.length > 0 && this.players[0].name == this.username
+			return this.players.length > 0 && this.players.filter(x => !x.is_bot)[0].name == this.username
 		},
 		startGameCard() {
 			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
@@ -236,6 +250,16 @@ export default {
 					icon: '▶️',
 					is_equipment: true,
 					number: `${this.players.length}🤠`
+				}
+			}
+			return null;
+		},
+		shufflePlayersCard() {
+			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
+				return {
+					name: this.$t('shuffle_players'),
+					icon: '🔀',
+					is_equipment: true,
 				}
 			}
 			return null;
@@ -289,18 +313,24 @@ export default {
 		},
 		getPlayerCard(player) {
 			let icon = ''
+			let owner = this.players.filter(x => !x.is_bot)[0];
 			if (!this.started) icon = '🤠'
 			else icon = player.ready !== undefined ? ((player.ready)?'👍': '🤔') : (player.is_sheriff ? '⭐' : player.icon)
 			return {
 				name: player.name,
-				number: ((this.username == player.name) ? this.$t('you') : (this.players[0].name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
+				number: ((this.username == player.name) ? this.$t('you') : (owner.name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: icon,
 				is_character: true,
+				avatar: player.avatar,
 			}
 		},
 		startGame() {
 			this.started = true;
 			this.$socket.emit('start_game')
+		},
+		shufflePlayers() {
+			this.started = true;
+			this.$socket.emit('shuffle_players')
 		},
 		choose(player_name) {
 			if (Vue.config.devtools)
@@ -345,7 +375,7 @@ export default {
 			if (name.trim().length > 0){
 				localStorage.setItem('username', name)
 				this.hasToSetUsername = false
-				this.$socket.emit('set_username', name)
+				this.$socket.emit('set_username', {name:name})
 			}
 		},
 	},
@@ -369,9 +399,9 @@ export default {
 	mounted() {
 		if (Vue.config.devtools)
 			console.log('mounted lobby')
-		if (!this.$route.query.code)
+		if (!this.$route.query.code && !this.$route.query.replay)
 			return this.$router.push('/')
-		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username')})
+		this.$socket.emit('get_me', {name:this.$route.query.code, password:this.$route.query.pwd, username: localStorage.getItem('username'), discord_token: localStorage.getItem('discord_token'), replay: this.$route.query.replay})
 	},
 }
 </script>
@@ -426,6 +456,9 @@ export default {
 	justify-content: space-evenly;
 	margin-bottom: 12pt;
 }
+#admin-status {
+	position:absolute;width:100%;height:100%;overflow:auto;background:var(--bg-color); opacity: 0.8;
+}
 #turn-indicator{
 	position: absolute;
 	width: 100%;
@@ -470,6 +503,12 @@ background-position-x: 80px;
 	.chat {
 		min-width: 25vw;
 		max-width: 25vw;
+	}
+	.player-in-table {
+		transition: all 0.2s ease-in-out;
+	}
+	.player-in-table:hover {
+		transform: translateY(-5px) scale(1.05);
 	}
 }
 </style>

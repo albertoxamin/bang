@@ -37,6 +37,7 @@
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
+			<span id="hand_text" style="bottom:40pt;">{{hand.length}}/{{maxHandLength()}}</span>
 			<transition-group name="list" tag="div" :class="{hand:true, 'play-cards':pending_action===2}">
 				<Card v-for="card in handComputed" v-bind:key="card.name+card.number+card.suit" :card="card" 
 					@click.native="play_card(card, false)"
@@ -49,15 +50,15 @@
 		</transition>
 		<Chooser v-if="is_my_turn && pending_action == 4 && (lives > 0 || is_ghost) && !(emporioCards && emporioCards.cards && emporioCards.cards.length > 0)" :text="$t('wait')" :cards="[]"/>
 		<Chooser v-if="card_against" :text="$t('card_against')" :hint-text="visiblePlayers.length === 0 ? $t('no_players_in_range'):''" :cards="visiblePlayers" :select="selectAgainst" :cancel="card_against.number !== 42 ? cancelCardAgainst : null"/>
-		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond" :playAudio="true"/>
-		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose" :playAudio="true"/>
+		<Chooser v-if="pending_action == 3" :text="respondText" :cards="respondCards" :select="respond" :playAudio="true" :timer="30"/>
+		<Chooser v-if="shouldChooseCard" :text="$t(choose_text)" :cards="available_cards" :select="choose" :playAudio="true" :timer="30"/>
 		<Chooser v-if="lives <= 0 && max_lives > 0 && !is_ghost && !spectator" :text="$t('you_died')" :cancelText="$t('spectate')" :cancel="()=>{max_lives = 0; spectator = true}"/>
 		<Chooser v-if="win_status !== undefined" :text="win_status?$t('you_win'):$t('you_lose')" />
-		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')" />
+		<Chooser v-if="show_role" :text="$t('you_are')" :cards="[my_role]" :hintText="($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" :select="() => {show_role=false}" :cancel="() => {show_role=false}" :cancelText="$t('ok')"/>
 		<Chooser v-if="notifycard" :key="notifycard.card" :text="`${notifycard.player} ${$t('did_pick_as')}:`" :cards="[notifycard.card]" :hintText="$t(notifycard.message)" class="turn-notify-4s"/>
 		<Chooser v-if="cantplaycard" :key="cantplaycard" :text="`${$t('cantplaycard')}`" class="turn-notify-4s"/>
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
-		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter"/>
+		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter" :timer="45"/>
 		<Chooser v-if="hasToPickResponse" :playAudio="true" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
 		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="handComputed.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${maxHandLength()}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
@@ -69,6 +70,7 @@
 							:cards="notScrappedHand" :select="holydayScrapAdd" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 		<Chooser v-if="holydayScrap && scrapHand.length == 2" :text="$t('card_against')" :cards="visiblePlayers" :select="holydayScrapBang" :cancel="() => {holydayScrap = false;scrapHand=[]}"/>
 		<Chooser style="filter: grayscale(1);" v-if="emporioCards && emporioCards.cards && emporioCards.cards.length > 0 && (pending_action === 4 || pending_action === null)" :text="$t('emporio_others', [emporioCards.name])" :cards="emporioCards.cards"/>
+		<div style="position: fixed;width: 100%;height: 100%;background: #ff000070;top: 0;left: 0;" v-if="hurt" class="hurt-notify"/>
 	</div>
 </template>
 
@@ -134,6 +136,7 @@ export default {
 		committed_suit_manette: null,
 		gold_nuggets: 0,
 		cantplaycard: false,
+		hurt: false,
 	}),
 	sockets: {
 		role(role) {
@@ -205,6 +208,12 @@ export default {
 					this.notifycard = null
 				}.bind(this), 4000)
 		},
+		hurt() {
+			this.hurt = true
+			setTimeout(function(){
+					this.hurt = false
+			}.bind(this), 500)
+		},
 		cant_play_card() {
 			this.cantplaycard = true
 			setTimeout(function(){
@@ -234,6 +243,7 @@ export default {
 					name: player.name,
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
 					icon: this.noStar ? player.icon : player.is_sheriff ? '⭐' : '🤠',
+					avatar: player.avatar,
 					is_character: true,
 				}})
 			return vis
@@ -255,6 +265,7 @@ export default {
 					number: player.dist !== undefined ? `${player.dist}⛰` : '',
 					icon: this.noStar ? player.icon : player.is_sheriff ? '⭐' : '🤠',
 					alt_text: Array(player.lives+1).join('❤️')+Array(player.max_lives-player.lives+1).join('💀'),
+					avatar: player.avatar,
 					is_character: true,
 				}})
 			if (this.card_against && this.card_against.can_target_self) {
@@ -509,6 +520,10 @@ export default {
 	display:flex;
 	margin: 10pt 0pt;
 	overflow:auto;
+}
+.hurt-notify {
+	pointer-events: none;
+	animation: disappear 0.5s ease-in forwards;
 }
 .turn-notify {
 	pointer-events: none;

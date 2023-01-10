@@ -297,8 +297,6 @@ def test_SlabTheKiller():
     g.players[g.turn].play_card(0, g.players[(g.turn+1)%2].name)
     assert g.players[(g.turn+1)%2].pending_action == PendingAction.RESPOND
     g.players[(g.turn+1)%2].respond(0)
-    assert g.players[(g.turn+1)%2].pending_action == PendingAction.RESPOND
-    g.players[(g.turn+1)%2].respond(-1)
     assert g.players[(g.turn+1)%2].pending_action == PendingAction.WAIT
     assert g.players[(g.turn+1)%2].lives == 3
 

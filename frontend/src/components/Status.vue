@@ -31,8 +31,14 @@
 </template>
 <script>
 export default {
-	name: 'Help',
+	name: 'Status',
 	components: {
+	},
+	props: {
+		onpage: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data:()=>({
 		rooms: [],
@@ -46,7 +52,7 @@ export default {
 		},
 	},
 	mounted() {
-		if (this.deploy_key == "")
+		if (this.deploy_key == "" && this.onpage)
 			this.deploy_key = prompt('Write the key');
 		this.refresh();
 	},
