@@ -22,4 +22,6 @@ COPY --from=builder ./dist /dist/
 WORKDIR /dist
 EXPOSE 5001
 
+ENV PATH=/root/.local/bin:${PATH}
+
 ENTRYPOINT ["python", "/dist/server.py"]

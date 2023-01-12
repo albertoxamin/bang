@@ -948,15 +948,15 @@
   "resolved" "https://registry.npmjs.org/@datadog/browser-rum-core/-/browser-rum-core-4.7.0.tgz"
   "version" "4.7.0"
   dependencies:
-    "@datadog/browser-core" "4.7.0"
+    "@datadog/browser-core" "4.11.4"
 
 "@datadog/browser-rum@^4.7.0":
   "integrity" "sha512-Hy2jTsYKZaeQK3TkFwKzLcKOtlxtQuKTAc43aQfTfFiu7fgzPGIOcb+XvJeL+QIsRZltjs4dlq9Sdsdc7UWVMw=="
   "resolved" "https://registry.npmjs.org/@datadog/browser-rum/-/browser-rum-4.7.0.tgz"
   "version" "4.7.0"
   dependencies:
-    "@datadog/browser-core" "4.7.0"
-    "@datadog/browser-rum-core" "4.7.0"
+    "@datadog/browser-core" "4.11.4"
+    "@datadog/browser-rum-core" "4.11.4"
 
 "@hapi/address@2.x.x":
   "integrity" "sha512-QD1PhQk+s31P1ixsX0H0Suoupp3VMXzIVMSwobR3F3MSUO2YCV0B7xqLcUw/Bh8yuvd3LhpyqLQWTNcRmp6IdQ=="
