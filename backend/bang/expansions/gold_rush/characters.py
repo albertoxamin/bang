@@ -79,7 +79,7 @@ class SimeonPicos(Character):
     def __init__(self):
         super().__init__("Simeon Picos", max_lives=4)
         # ottiene 1 pepita ogni volta che perde 1 punto vita
-        self.icon = '🏇️'
+        self.icon = '🥲'
 
 
 def all_characters() -> List[Character]:
