@@ -66,6 +66,7 @@ class Game:
         self.player_bangs = 0
         self.is_russian_roulette_on = False
         self.dalton_on = False
+        self.poker_on = False
         self.bot_speed = 1.5
         self.incremental_turn = 0
         self.did_resuscitate_deadman = False
@@ -336,6 +337,8 @@ class Game:
             attacker.pending_action = pl.PendingAction.PLAY
             attacker.notify_self()
             self.attack_in_progress = False
+        elif card_name == 'Poker':
+            self.poker_on = True
 
     def attack_others(self, attacker: pl.Player, card_name:str=None):
         self.attack_in_progress = True
@@ -485,6 +488,7 @@ class Game:
         else:
             self.ready_count += 1
             if self.ready_count == self.waiting_for:
+                tmp = self.ready_count
                 self.waiting_for = 0
                 self.ready_count = 0
                 self.attack_in_progress = False
@@ -494,8 +498,13 @@ class Game:
                     self.dalton_on = False
                     print(f'{self.name}: notifying {self.players[self.turn].name} about his turn')
                     self.players[self.turn].play_turn()
+                elif self.poker_on and not any(c.number == 1 for c in self.deck.scrap_pile[-tmp:]):
+                    self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
+                    self.players[self.turn].choose_text = f'choose_from_poker;{min(2, tmp)}'
+                    self.players[self.turn].available_cards = self.deck.scrap_pile[-tmp:]
                 else:
                     self.players[self.turn].pending_action = pl.PendingAction.PLAY
+                self.poker_on = False
                 self.players[self.turn].notify_self()
 
     def announces_winners(self, winners=None):

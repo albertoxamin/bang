@@ -839,16 +839,31 @@ class Player:
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:
             if card_index <= len(self.available_cards):
-                self.game.deck.scrap_pile.append(self.hand.pop(card_index))
+                self.game.deck.scrap(self.hand.pop(card_index))
                 self.hand.append(self.game.deck.draw())
                 self.hand.append(self.game.deck.draw())
             self.pending_action = PendingAction.WAIT
             self.game.responders_did_respond_resume_turn()
             self.notify_self()
+        elif 'choose_poker' in self.choose_text:
+            if card_index <= len(self.available_cards):
+                self.game.deck.scrap(self.hand.pop(card_index))
+            self.pending_action = PendingAction.WAIT
+            self.game.responders_did_respond_resume_turn()
+            self.notify_self()
+        elif 'choose_from_poker' in self.choose_text:
+            st_idx = len(self.game.deck.scrap_pile)-len(self.available_cards)
+            self.available_cards.pop(card_index)
+            self.hand.append(self.game.deck.scrap_pile.pop(st_idx + card_index))
+            self.game.notify_scrap_pile()
+            if self.choose_text.split(';')[1] == '1':
+                self.pending_action = PendingAction.PLAY
+            else: self.choose_text = 'choose_from_poker;1'
+            self.notify_self()
         elif 'choose_bandidos' in self.choose_text:
             if card_index <= len(self.available_cards):
                 self.available_cards.pop(card_index)
-                self.game.deck.scrap_pile.append(self.hand.pop(card_index))
+                self.game.deck.scrap(self.hand.pop(card_index))
                 self.mancato_needed -= 1
             else:
                 self.lives -= 1
@@ -1069,6 +1084,8 @@ class Player:
         self.available_cards = self.hand.copy()
         if card_name == 'Tornado':
             self.choose_text = 'choose_tornado'
+        if card_name == 'Poker':
+            self.choose_text = 'choose_poker'
         if card_name == 'Bandidos':
             self.choose_text = 'choose_bandidos'
             self.mancato_needed = min(2, len(self.hand))
