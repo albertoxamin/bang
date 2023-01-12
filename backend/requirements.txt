@@ -1,12 +1,11 @@
-certifi==2022.5.18.1
+certifi==2021.10.8
 dnspython==2.2.1
-eventlet==0.33.1
+eventlet==0.33.0
 greenlet==1.1.2
 python-engineio==3.14.2
 python-socketio==4.6.1
 six==1.16.0
-pytest==7.1.2
-requests==2.28.0
-discord-webhook==0.16.3
+pytest==7.1.1
+requests==2.27.1
+discord-webhook==0.15.0
 datadog==0.44.0
-ddtrace==1.1.4
