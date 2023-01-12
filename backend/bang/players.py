@@ -27,6 +27,13 @@ robot_pictures = [
     'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/robot_1f916.png',
     'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/openmoji/338/robot_1f916.png',
     'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/319/robot_1f916.png',
+    'https://i.imgur.com/0plPBZR.png',
+    'https://i.imgur.com/DScxoSX.png',
+    'https://i.imgur.com/YzPQChj.png',
+    'https://i.imgur.com/v3BvnX4.png',
+    'https://i.imgur.com/1XHsE9f.png',
+    'https://i.imgur.com/q0CrH2c.png',
+    'https://i.imgur.com/Z5vXgd4.png',
 ]
 
 class PendingAction(IntEnum):
