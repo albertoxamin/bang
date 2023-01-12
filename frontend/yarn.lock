@@ -7862,9 +7862,9 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-router@^3.5.3:
-  version "3.5.3"
-  resolved "https://registry.npmjs.org/vue-router/-/vue-router-3.5.3.tgz"
+vue-router@^3.6.5:
+  version "3.6.5"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.6.5.tgz#95847d52b9a7e3f1361cb605c8e6441f202afad8"
 
 vue-socket.io@^3.0.10:
   version "3.0.10"
