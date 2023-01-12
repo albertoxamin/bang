@@ -1,5 +1,5 @@
 <template>
-	<div class="chat" :style="`${collapsed?'min-width:0':''}`">
+	<div :class="{chat:true, chat_spectators:spectators > 0}" :style="`${collapsed?'min-width:0':''}`">
 		<div class="chat-header">
 			<div style="display:flex;align-items: center;max-height: 20pt;">
 				<h3>{{$t("chat.chat")}}</h3>
@@ -7,7 +7,7 @@
 			</div>
 			<h4 v-if="spectators > 0" style="margin:0">{{$tc("chat.spectators", spectators)}}</h4>
 		</div>
-		<div class="cont">
+		<div :class="{cont:true, cont_spectators:spectators > 0}">
 			<transition-group name="message" tag="div" id="chatbox" :style="`${collapsed?'display:none':''}`">
 				<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;':''}`">
 					<JsonViewer v-if="msg.type == 'json'" :value="msg.json"/>
@@ -180,6 +180,9 @@ input {
 	flex-direction: column;
 	max-height: 90vh;
 }
+.chat_spectators, .cont_spectators {
+	max-height: 84vh;
+}
 #msg-form {
 	width:100%;
 	padding:0;
@@ -200,6 +203,9 @@ input {
 	.chat, .cont { 
 		height: 88vh;
 		margin-left: 10pt;
+	}	
+	.chat_spectators, .cont_spectators {
+		max-height: 84vh;
 	}
 	#submit-message {
 		margin-left: 6pt;
