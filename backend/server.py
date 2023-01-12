@@ -12,7 +12,6 @@ from bang.players import Player, PendingAction
 import requests
 from discord_webhook import DiscordWebhook
 from metrics import Metrics
-from ddtrace import tracer
 
 import sys
 import traceback
@@ -130,7 +129,6 @@ def set_username(sid, username):
         sio.emit('me', data=ses.name, room=sid)
         ses.game.notify_room()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def get_me(sid, room):
@@ -201,7 +199,6 @@ def get_me(sid, room):
                 if not sio.get_session(sid).game.started:
                     sio.get_session(sid).game.notify_room()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def disconnect(sid):
@@ -217,7 +214,6 @@ def disconnect(sid):
         advertise_lobbies()
     Metrics.send_metric('online_players', points=[online_players])
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def create_room(sid, room_name):
@@ -257,7 +253,6 @@ def toggle_comp(sid):
 def toggle_replace_with_bot(sid):
     sio.get_session(sid).game.toggle_disconnect_bot()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def join_room(sid, room):
@@ -288,7 +283,6 @@ def join_room(sid, room):
 Sockets for the status page
 """
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def get_all_rooms(sid, deploy_key):
@@ -337,7 +331,6 @@ def start_game(sid):
     ses.game.start_game()
     advertise_lobbies()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def shuffle_players(sid):
@@ -359,7 +352,6 @@ def refresh(sid):
     ses: Player = sio.get_session(sid)
     ses.notify_self()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def draw(sid, pile):
@@ -367,7 +359,6 @@ def draw(sid, pile):
     ses.game.rpc_log.append(f'{ses.name};draw;{pile}')
     ses.draw(pile)
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def pick(sid):
@@ -375,7 +366,6 @@ def pick(sid):
     ses.game.rpc_log.append(f'{ses.name};pick')
     ses.pick()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def end_turn(sid):
@@ -383,7 +373,6 @@ def end_turn(sid):
     ses.game.rpc_log.append(f'{ses.name};end_turn')
     ses.end_turn()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def play_card(sid, data):
@@ -391,7 +380,6 @@ def play_card(sid, data):
     ses.game.rpc_log.append(f'{ses.name};play_card;{json.dumps(data)}')
     ses.play_card(data['index'], data['against'], data['with'])
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def respond(sid, card_index):
@@ -399,7 +387,6 @@ def respond(sid, card_index):
     ses.game.rpc_log.append(f'{ses.name};respond;{card_index}')
     ses.respond(card_index)
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def choose(sid, card_index):
@@ -407,7 +394,6 @@ def choose(sid, card_index):
     ses.game.rpc_log.append(f'{ses.name};choose;{card_index}')
     ses.choose(card_index)
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def scrap(sid, card_index):
@@ -415,14 +401,12 @@ def scrap(sid, card_index):
     ses.game.rpc_log.append(f'{ses.name};scrap;{card_index}')
     ses.scrap(card_index)
 
-@tracer.wrap
 @sio.event
 def special(sid, data):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f'{ses.name};special;{json.dumps(data)}')
     ses.special(data)
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def gold_rush_discard(sid):
@@ -430,7 +414,6 @@ def gold_rush_discard(sid):
     ses.game.rpc_log.append(f'{ses.name};gold_rush_discard;')
     ses.gold_rush_discard()
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def buy_gold_rush_card(sid, data:int):
@@ -438,7 +421,6 @@ def buy_gold_rush_card(sid, data:int):
     ses.game.rpc_log.append(f'{ses.name};buy_gold_rush_card;{data}')
     ses.buy_gold_rush_card(data)
 
-@tracer.wrap
 @sio.event
 @bang_handler
 def chat_message(sid, msg, pl=None):

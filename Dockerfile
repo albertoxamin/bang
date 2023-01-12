@@ -22,12 +22,6 @@ COPY --from=builder ./dist /dist/
 WORKDIR /dist
 EXPOSE 5001
 
-ENV DD_SERVICE=bang-backend
-ENV DD_ENV=dev-test
-ENV DD_LOGS_INJECTION=true
-ENV DD_PROFILING_ENABLED=true
-ENV DD_TRACE_AGENT_URL=http://0.0.0.0:8126
-
 ENV PATH=/root/.local/bin:${PATH}
 
-ENTRYPOINT ["ddtrace-run", "python", "/dist/server.py"]
+ENTRYPOINT ["python", "/dist/server.py"]
