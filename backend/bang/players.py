@@ -1209,12 +1209,12 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
-        if self.attacker and any((isinstance(c, tvosc.Taglia) for c in self.equipment)):
+        if self.attacker and not self.game.check_event(ce.Lazo) and any((isinstance(c, tvosc.Taglia) for c in self.equipment)):
             self.attacker.hand.append(self.game.deck.draw(True))
             self.sio.emit('chat_message', room=self.game.name,
                 data=f'_taglia_reward|{self.name}|{self.attacker.name}')
             self.attacker.notify_self()
-        if self.attacker and len(self.hand) > 0 and any((isinstance(c, tvosc.Shotgun) for c in self.attacker.equipment)):
+        if self.attacker and not self.game.check_event(ce.Lazo) and len(self.hand) > 0 and any((isinstance(cd, tvosc.Shotgun) for cd in self.attacker.equipment)):
             c = self.hand.pop(randrange(0, len(self.hand)))
             self.game.deck.scrap(c, True)
             self.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
