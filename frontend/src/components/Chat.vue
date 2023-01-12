@@ -5,7 +5,7 @@
 				<h3>{{$t("chat.chat")}}</h3>
 				<button class="btn" @click="collapsed = !collapsed" style="max-height:20pt;">{{collapsed?">>":"X"}}</button>
 			</div>
-			<h4 v-if="spectators > 0">{{$tc("chat.spectators", spectators)}}</h4>
+			<h4 v-if="spectators > 0" style="margin:0">{{$tc("chat.spectators", spectators)}}</h4>
 		</div>
 		<div class="cont">
 			<transition-group name="message" tag="div" id="chatbox" :style="`${collapsed?'display:none':''}`">
@@ -178,6 +178,7 @@ input {
 .chat, .cont {
 	display: flex;
 	flex-direction: column;
+	max-height: 90vh;
 }
 #msg-form {
 	width:100%;
@@ -197,7 +198,7 @@ input {
 		margin-left: 10pt;
 	}
 	.chat, .cont { 
-		height: 90vh;
+		height: 88vh;
 		margin-left: 10pt;
 	}
 	#submit-message {

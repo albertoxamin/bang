@@ -329,7 +329,6 @@ export default {
 			this.$socket.emit('start_game')
 		},
 		shufflePlayers() {
-			this.started = true;
 			this.$socket.emit('shuffle_players')
 		},
 		choose(player_name) {

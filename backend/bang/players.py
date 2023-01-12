@@ -211,8 +211,8 @@ class Player:
     def notify_self(self):
         if any((True for c in self.equipment if isinstance(c, tvosc.Fantasma))):
             self.is_ghost = True
-        elif self.is_ghost and not self.game.check_event(ceh.CittaFantasma):
-            self.is_ghost = False
+        elif self.is_ghost:
+            self.is_ghost = self.game.check_event(ceh.CittaFantasma) and self.is_my_turn
         if self.is_ghost: self.lives = 0
         if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
             self.available_cards = [{
