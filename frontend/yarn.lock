@@ -7834,9 +7834,9 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.npmjs.org/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz"
 
-vue-i18n@^8.27.1:
-  version "8.27.1"
-  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-8.27.1.tgz"
+vue-i18n@^8.28.2:
+  version "8.28.2"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.28.2.tgz#913558066e274395c0a9f40b2f3393d5c2636840"
 
 vue-json-viewer@^2.2.22:
   version "2.2.22"
