@@ -423,7 +423,7 @@ class Player:
 
 
     def play_turn(self, can_play_vendetta = True, again = False):
-        if (self.lives == 0 or self.is_dead) and not self.is_ghost:
+        if ((self.lives == 0 or self.is_dead) and not self.is_ghost) or (self.is_ghost and any(isinstance(c, tvosc.Fantasma) for c in self.equipment) and self.game.check_event(ce.Lazo)):
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.setaccio_count = 0
@@ -1209,13 +1209,13 @@ class Player:
                 self.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
-        if isinstance(self.attacker, Player):
-            if self.attacker and any((isinstance(c, tvosc.Taglia) for c in self.equipment)):
+        if isinstance(self.attacker, Player) and not self.game.check_event(ce.Lazo):
+            if any((isinstance(c, tvosc.Taglia) for c in self.equipment)):
                 self.attacker.hand.append(self.game.deck.draw(True))
                 self.sio.emit('chat_message', room=self.game.name,
                     data=f'_taglia_reward|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
-            if self.attacker and len(self.hand) > 0 and any((isinstance(c, tvosc.Shotgun) for c in self.attacker.equipment)):
+            if len(self.hand) > 0 and any((isinstance(cd, tvosc.Shotgun) for cd in self.attacker.equipment)):
                 c = self.hand.pop(randrange(0, len(self.hand)))
                 self.game.deck.scrap(c, True)
                 self.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
