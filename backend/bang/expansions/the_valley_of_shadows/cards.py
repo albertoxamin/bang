@@ -133,7 +133,7 @@ class Salvo(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Salvo', number)
         self.icon = '😇️'
-        self.alt_text = "👤😇️" 
+        self.alt_text = "👤😅" 
         self.need_target = True
 
     def play_card(self, player, against, _with=None):

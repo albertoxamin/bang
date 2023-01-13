@@ -865,12 +865,13 @@ class Player:
             else: self.choose_text = 'choose_from_poker;1'
             self.notify_self()
         elif 'choose_bandidos' in self.choose_text:
-            if card_index <= len(self.available_cards):
+            if card_index < len(self.hand):
                 self.available_cards.pop(card_index)
                 self.game.deck.scrap(self.hand.pop(card_index))
                 self.mancato_needed -= 1
             else:
                 self.lives -= 1
+                self.mancato_needed = 0
             if self.mancato_needed <= 0:
                 self.pending_action = PendingAction.WAIT
                 self.game.responders_did_respond_resume_turn()
