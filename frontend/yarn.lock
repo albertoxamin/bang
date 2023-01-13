@@ -832,22 +832,22 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@datadog/browser-core@4.30.0":
-  version "4.30.0"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.30.0.tgz#a7e1f0f3c83d69145862c23c67d98731cdec72dc"
+"@datadog/browser-core@4.30.1":
+  version "4.30.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.30.1.tgz#ee03c9fd83dde67ef21cb6db3f48c879ef721af0"
 
-"@datadog/browser-rum-core@4.30.0":
-  version "4.30.0"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.30.0.tgz#a7c53cef250f572dcb6976fdacacac082fac1b6b"
+"@datadog/browser-rum-core@4.30.1":
+  version "4.30.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.30.1.tgz#da88d95af2c8c7811fe05da62ef036dd19fbe55e"
   dependencies:
-    "@datadog/browser-core" "4.30.0"
+    "@datadog/browser-core" "4.30.1"
 
-"@datadog/browser-rum@^4.30.0":
-  version "4.30.0"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.30.0.tgz#4835f35f94bb12fe9bf4c1ad3b9977deb6032380"
+"@datadog/browser-rum@^4.30.1":
+  version "4.30.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.30.1.tgz#4497824fc166bef2dff6736dac42c627ea703e8e"
   dependencies:
-    "@datadog/browser-core" "4.30.0"
-    "@datadog/browser-rum-core" "4.30.0"
+    "@datadog/browser-core" "4.30.1"
+    "@datadog/browser-rum-core" "4.30.1"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
