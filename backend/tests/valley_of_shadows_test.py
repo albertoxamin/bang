@@ -196,3 +196,61 @@ def test_bandidos():
     p1.choose(0)
     assert p1.pending_action == PendingAction.WAIT
     assert p.pending_action == PendingAction.PLAY
+
+# test Poker
+def test_poker():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    p = g.players[g.turn]
+    p1 = g.players[(g.turn+1)%3]
+    p.draw('')
+    p.hand = [Poker(0,0), Poker(0,0)]
+    p1.hand = [Bang(1, 1), Bang(2, 2)]
+    p.play_card(0)
+    assert len(p.hand) == 1
+    assert p.pending_action == PendingAction.WAIT
+    assert p1.pending_action == PendingAction.CHOOSE
+    p1.choose(0)
+    assert p.pending_action == PendingAction.PLAY
+    p.play_card(0)
+    assert p.pending_action == PendingAction.WAIT
+    assert p1.pending_action == PendingAction.CHOOSE
+    p1.choose(0)
+    assert p.pending_action == PendingAction.CHOOSE
+    p.choose(0)
+    assert p1.pending_action == PendingAction.WAIT
+    assert p.pending_action == PendingAction.PLAY
+    assert len(p.hand) == 1
+
+# test Tornado
+def test_tornado():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    p = g.players[g.turn]
+    p1 = g.players[(g.turn+1)%3]
+    p.draw('')
+    p.hand = [Tornado(0,0), Bang(1, 1)]
+    p1.hand = [Bang(2, 2)]
+    p.play_card(0)
+    assert len(p.hand) == 1
+    assert p.pending_action == PendingAction.CHOOSE
+    assert p1.pending_action == PendingAction.CHOOSE
+    p.choose(0)
+    p1.choose(0)
+    assert p.pending_action == PendingAction.PLAY
+    assert len(p.hand) == 2
+    assert len(p1.hand) == 2
