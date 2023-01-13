@@ -100,7 +100,7 @@ def report(sid, text):
     response = requests.post("https://hastebin.com/documents", data.encode('utf-8'))
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://bang.xamin.it/game?replay={key}')
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://bang.xamin.it/game?replay={key} \n Info: {text}')
         response = webhook.execute()
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
     else:
