@@ -136,7 +136,7 @@ export default {
 		password: '',
 		togglable_expansions: [],
 		expansions: [],
-		beta_expansions: ['gold_rush'],
+		beta_expansions: ['the_valley_of_shadows'],
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,

@@ -47,7 +47,7 @@ class PendingAction(IntEnum):
 class Player:
 
     def is_admin(self):
-        return self.discord_id in {'244893980960096266'}
+        return self.discord_id in {'244893980960096266', '539795574019457034'}
 
     def get_avatar(self):
         import requests
@@ -57,7 +57,11 @@ class Player:
         r = requests.get('https://discordapp.com/api/users/@me', headers=headers)
         if r.status_code == 200:
             res = r.json()
-            self.avatar = f'https://cdn.discordapp.com/avatars/{res["id"]}/{res["avatar"]}.png'
+            print(res)
+            if res["avatar"] == None:
+                self.avatar = robot_pictures[randrange(len(robot_pictures))]
+            else:
+                self.avatar = f'https://cdn.discordapp.com/avatars/{res["id"]}/{res["avatar"]}.png'
             if self.game:
                 self.sio.emit('chat_message', room=self.game.name, data=f'_change_username|{self.name}|{res["username"]}')
             self.name = res['username']
