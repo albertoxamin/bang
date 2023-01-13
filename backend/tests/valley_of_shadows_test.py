@@ -110,7 +110,7 @@ def test_ritorno_di_fiamma():
     sio = DummySocket()
     g = Game('test', sio)
     g.expansions = ['the_valley_of_shadows']
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -129,6 +129,7 @@ def test_ritorno_di_fiamma():
     assert len(p1.hand) == 0
     assert p.lives == 3
     p.end_turn()
+    assert p1.is_my_turn
     p1.draw('')
     p1.hand = [Bang(1, 1)]
     p.equipment = [cs.Barile(0,0)]
@@ -140,6 +141,39 @@ def test_ritorno_di_fiamma():
     assert p.pending_action == PendingAction.RESPOND
     p.respond(0)
     assert p1.lives == 3
+
+# test RitornoDiFiamma with gatling
+def test_ritorno_di_fiamma_gatling():
+    sio = DummySocket()
+    g = Game('test', sio)
+    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    g.expansions = ['the_valley_of_shadows']
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+    p = g.players[g.turn]
+    p1 = g.players[(g.turn+1)%3]
+    p2 = g.players[(g.turn+2)%3]
+    p.draw('')
+    p.hand = [cs.Gatling(1, 1), Mancato(0,0)]
+    p1.hand = [RitornoDiFiamma(0,0)]
+    p2.hand = [Mancato(0,0)]
+    p.play_card(0)
+    assert len(p.hand) == 1
+    assert p1.pending_action == PendingAction.RESPOND
+    assert p2.pending_action == PendingAction.RESPOND
+    p1.respond(0)
+    assert p2.pending_action == PendingAction.RESPOND
+    assert p.pending_action == PendingAction.WAIT
+    p2.respond(0)
+    # end of gatling
+    assert p.pending_action == PendingAction.RESPOND
+    p.respond(0)
+    assert len(p.hand) == 0
+    assert p.pending_action == PendingAction.PLAY
 
 # test Taglia
 def test_taglia():

@@ -290,6 +290,7 @@ class Game:
         self.started = True
         self.someone_won = False
         self.attack_in_progress = False
+        self.attack_queue = []
         self.deck = Deck(self)
         self.initial_players = len(self.players)
         self.distribute_roles()
@@ -381,13 +382,20 @@ class Game:
             return not any((True for p in self.get_visible_players(player) if p['name'] == target and p['dist'] > card.range))
         return True
 
-    def attack(self, attacker: pl.Player, target_username:str, double:bool=False, card_name:str=None):
+    def attack(self, attacker: pl.Player, target_username:str, double:bool=False, card_name:str=None, skip_queue:bool=False):
+        if self.attack_in_progress and not skip_queue:
+            self.attack_queue.append((attacker, target_username, double, card_name))
+            print(f'attack in progress, queueing the attack queue len:{len(self.attack_queue)}')
+            return
         if self.get_player_named(target_username).get_banged(attacker=attacker, double=double, card_name=card_name):
+            self.attack_in_progress = True
             self.ready_count = 0
             self.waiting_for = 1
             attacker.pending_action = pl.PendingAction.WAIT
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
+        elif not attacker.is_my_turn:
+            self.players[self.turn].pending_action = pl.PendingAction.PLAY
 
     def rimbalzo(self, attacker: pl.Player, target_username:str, card_index:int):
         if self.get_player_named(target_username).get_banged(attacker=attacker, no_dmg=True, card_index=card_index):
@@ -502,6 +510,10 @@ class Game:
                     self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
                     self.players[self.turn].choose_text = f'choose_from_poker;{min(2, tmp)}'
                     self.players[self.turn].available_cards = self.deck.scrap_pile[-tmp:]
+                elif self.attack_queue:
+                    print('attack completed, next attack')
+                    atk = self.attack_queue.pop(0)
+                    self.attack(atk[0], atk[1], atk[2], atk[3], skip_queue=True)
                 else:
                     self.players[self.turn].pending_action = pl.PendingAction.PLAY
                 self.poker_on = False

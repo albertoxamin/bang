@@ -1258,7 +1258,7 @@ class Player:
         self.pending_action = PendingAction.WAIT
         if hand_index != -1 and hand_index < (len(self.hand)+len(self.equipment)) and (
             ((hand_index < len(self.hand) and self.hand[hand_index].name in self.expected_response) or self.character.check(self.game, chd.ElenaFuente)) or
-            (hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
+            (0 <= hand_index-len(self.hand) < len(self.equipment) and self.equipment[hand_index-len(self.hand)].name in self.expected_response)):
             card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
             #hand_index < len(self.hand) with the '<=' due to the hand.pop
             if self.character.check(self.game, chd.MollyStark) and hand_index <= len(self.hand) and not self.is_my_turn and self.event_type != 'duel':
@@ -1272,6 +1272,8 @@ class Player:
             self.game.deck.scrap(card, True)
             self.notify_self()
             self.mancato_needed -= 1
+            if isinstance(card, tvosc.RitornoDiFiamma):
+                self.game.attack(self, self.attacker.name, card_name=card.name)
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
                     self.game.duel(self, self.attacker.name)
@@ -1284,15 +1286,11 @@ class Player:
                         self.molly_discarded_cards = 0
                         self.notify_self()
                     self.game.responders_did_respond_resume_turn(did_lose=False)
-                    if isinstance(card, tvosc.RitornoDiFiamma):
-                        self.game.attack(self, self.attacker.name, card_name=card.name)
                 self.event_type = ''
             elif not any(((isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente) for c in self.hand)) and not any((c.can_be_used_now and isinstance(c, cs.Mancato) for c in self.equipment)):
                 self.on_failed_response_cb()
                 if self.game:
                     self.game.responders_did_respond_resume_turn(did_lose=True)
-                    if isinstance(card, tvosc.RitornoDiFiamma) and self.attacker:
-                        self.game.attack(self, self.attacker.name, card_name=card.name)
             else:
                 self.pending_action = PendingAction.RESPOND
                 self.notify_self()
