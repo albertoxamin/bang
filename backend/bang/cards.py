@@ -57,6 +57,8 @@ class Card(ABC):
     def reset_card(self):
         if self.usable_next_turn:
             self.can_be_used_now = False
+        else:
+            self.can_be_used_now = True
         if self.must_be_used:
             self.must_be_used = False
 

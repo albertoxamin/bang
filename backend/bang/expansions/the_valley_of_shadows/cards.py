@@ -67,7 +67,7 @@ class Taglia(Card):
         if (player.game.check_event(ce.IlGiudice)):
             return False
         if against != None:
-            self.reset_card()
+            self.can_be_used_now = False
             player.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
