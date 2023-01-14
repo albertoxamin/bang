@@ -43,7 +43,7 @@ class Bicchierino(ShopCard):
             'icon': p.role.icon if(player.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
             'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
             'is_character': True,
-            'noDesc': True
+            'is_player': True
         } for p in player.game.get_alive_players()]
         player.choose_text = 'choose_bicchierino'
         player.pending_action = pl.PendingAction.CHOOSE
@@ -168,7 +168,7 @@ class Ricercato(ShopCard):
             'icon': p.role.icon if(player.game.initial_players == 3) else '🤠',
             'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
             'is_character': True,
-            'noDesc': True
+            'is_player': True
         } for p in player.game.get_alive_players() if p != player and not isinstance(p.role, r.Sheriff)]
         player.available_cards.append({'name': player.name, 'number':0,'icon': 'you', 'is_character': True})
         player.choose_text = 'choose_ricercato'

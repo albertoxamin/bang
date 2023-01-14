@@ -468,7 +468,7 @@ class Player:
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
                 'avatar': p.avatar,
                 'is_character': True,
-                'noDesc': True
+                'is_player': True
             } for p in self.game.get_alive_players() if p != self and p.lives < p.max_lives]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_fratelli_di_sangue'
@@ -497,7 +497,7 @@ class Player:
                 'icon': p['role'].icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
                 'alt_text': ''.join(['❤️']*p['lives'])+''.join(['💀']*(p['max_lives']-p['lives'])),
                 'is_character': True,
-                'desc': p['name']
+                'is_player': True
             } for p in self.game.get_visible_players(self) if p['dist'] <= self.get_sight()]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_cecchino'
@@ -509,7 +509,7 @@ class Player:
                 'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if isinstance(p.role, r.Sheriff) else '🤠',
                 'is_character': True,
                 'avatar': p.avatar,
-                'noDesc': True
+                'is_player': True
             } for p in self.game.get_alive_players() if len(p.equipment) > 0 and p != self]
             self.available_cards.append({'icon': '❌', 'noDesc': True})
             self.choose_text = 'choose_rimbalzo_player'
@@ -1360,7 +1360,7 @@ class Player:
             'is_character': True,
             'avatar': p.avatar,
             'alt_text': ''.join(['🎴️'] * len(p.gold_rush_equipment)),
-            'noDesc': True
+            'is_player': True
         } for p in self.game.get_alive_players() if p != self and any((e.number + 1 <= self.gold_nuggets for e in p.gold_rush_equipment))]
         self.available_cards.append({'icon': '❌', 'noDesc': True})
         self.choose_text = 'gold_rush_discard'

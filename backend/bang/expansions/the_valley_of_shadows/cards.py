@@ -21,7 +21,7 @@ class Fantasma(Card):
                 'avatar': p.avatar,
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
                 'is_character': True,
-                'noDesc': True
+                'is_player': True
             } for p in player.game.get_dead_players(include_ghosts=False)] 
             player.game.deck.scrap(self, True)
             return True
