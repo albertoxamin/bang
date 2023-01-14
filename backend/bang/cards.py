@@ -66,7 +66,7 @@ class Card(ABC):
         if (player.game.check_event(ce.IlGiudice)) and self.usable_next_turn and not self.can_be_used_now:
             return False
         if self.is_equipment:
-            if (player.game.check_event(ce.IlGiudice)):
+            if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
                 return False
             if self.is_weapon:
                 has_weapon = False
@@ -89,7 +89,6 @@ class Card(ABC):
         else:
             player.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card|{player.name}|{self.name}')
-        self.reset_card()
         return True
 
     def use_card(self, player):
@@ -154,7 +153,7 @@ class Prigione(Card):
         if (player.game.check_event(ce.IlGiudice)):
                 return False
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
-            self.reset_card()
+            self.can_be_used_now = False
             player.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)

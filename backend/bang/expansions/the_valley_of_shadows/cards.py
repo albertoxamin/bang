@@ -10,7 +10,7 @@ class Fantasma(Card):
         self.icon = '👻️' #porta in vita i giocatori morti ma non
     
     def play_card(self, player, against, _with=None):
-        if (player.game.check_event(ce.IlGiudice)):
+        if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
             return False
         if len(player.game.get_dead_players(include_ghosts=False)) > 0:
             player.pending_action = pl.PendingAction.CHOOSE
@@ -22,7 +22,8 @@ class Fantasma(Card):
                 'alt_text': ''.join(['❤️']*p.lives)+''.join(['💀']*(p.max_lives-p.lives)),
                 'is_character': True,
                 'is_player': True
-            } for p in player.game.get_dead_players(include_ghosts=False)] 
+            } for p in player.game.get_dead_players(include_ghosts=False)]
+            self.can_be_used_now = False
             player.game.deck.scrap(self, True)
             return True
         return False
@@ -41,10 +42,10 @@ class SerpenteASonagli(Card):
         self.alt_text = "♠️ =💔"
 
     def play_card(self, player, against, _with=None):
-        if (player.game.check_event(ce.IlGiudice)):
+        if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
             return False
         if against != None:
-            self.reset_card()
+            self.can_be_used_now = False
             player.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
@@ -64,7 +65,7 @@ class Taglia(Card):
         self.icon = '💰' # chiunque colpisca il giocatore con la taglia pesca una carta dal mazzo, si toglie solo con panico, cat balou, dalton
 
     def play_card(self, player, against, _with=None):
-        if (player.game.check_event(ce.IlGiudice)):
+        if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
             return False
         if against != None:
             self.can_be_used_now = False
