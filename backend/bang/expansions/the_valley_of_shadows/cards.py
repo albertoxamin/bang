@@ -31,7 +31,7 @@ class Fantasma(Card):
 class Lemat(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Lemat', number, is_equipment=True, is_weapon=True, range=1)
-        self.icon = '🔫' # ogni carta può essere usata come bang
+        self.icon = '🔫' # ogni carta può essere usata come bang, conta per il conteggio dei bang per turno
         #TODO
 
 class SerpenteASonagli(Card):
@@ -114,7 +114,7 @@ class Tornado(Card):
         player.game.discard_others(player, card_name=self.name)
         return True
 
-class Sventagliata(Bang):
+class Sventagliata(Bang): # : conta come un normale BANG! del turno. Il BANG! secondario è obbligatorio ed è sparato anche se il primo viene annullato, se si può, tu sei escluso come target
     def __init__(self, suit, number):
         super().__init__(suit, number)
         self.name = 'Sventagliata'
@@ -130,7 +130,7 @@ class Sventagliata(Bang):
             return True
         return False
 
-class Salvo(Card):
+class Salvo(Card): # puoi anche prevenire un danno inferto da te, duello?
     def __init__(self, suit, number):
         super().__init__(suit, 'Salvo', number)
         self.icon = '😇️'
@@ -171,7 +171,7 @@ class Bandidos(Card):
         player.game.discard_others(player, card_name=self.name)
         return True
 
-class Fuga(Card):
+class Fuga(Card): #comprende indiani gatling etc, ma solo se carte marroni, le carte verdi valgono, attenzione alla classi ereditate
     def __init__(self, suit, number):
         super().__init__(suit, 'Fuga', number)
         self.icon = '🏃🏻'

@@ -658,7 +658,7 @@ class Player:
                             self.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
                             break
             if any((isinstance(c, cs.Prigione) for c in self.equipment)):
-                self.notify_self()
+                self.notify_self() #TODO perchè solo le prigioni? e multiple dinamiti come si comportano con veracuster?
                 return
             if isinstance(self.real_character, chd.VeraCuster):
                 self.set_available_character([p.character for p in self.game.get_alive_players() if p != self])
