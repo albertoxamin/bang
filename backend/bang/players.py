@@ -838,7 +838,17 @@ class Player:
                 player.equipment.append(self.game.deck.scrap_pile.pop(-1))
                 player.notify_self()
                 self.game.notify_all()
-                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|Fantasma|{player.name}')
+                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Fantasma|{player.name}')
+            self.pending_action = PendingAction.PLAY
+            self.notify_self()
+        elif 'choose_sventagliata' in self.choose_text:
+            if card_index <= len(self.available_cards):
+                og = self.available_cards[card_index]['original_target']
+                player = self.game.get_player_named(self.available_cards[card_index]['name'])
+                player.game.attack(self, og, card_name='Sventagliata')
+                player.game.attack(self, player.name, card_name='Sventagliata')
+                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{og}')
+                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:

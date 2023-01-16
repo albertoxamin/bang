@@ -125,9 +125,14 @@ class Sventagliata(Bang): # : conta come un normale BANG! del turno. Il BANG! se
 
     def play_card(self, player, against, _with=None):
         if against != None:
-            #TODO
-            # super().play_card(player, against=against)
-            # player.game.attack(player, against, card_name=self.name)
+            t = player.game.get_player_named(against)
+            player.available_cards = [dict(p, **{'original_target':against}) for p in player.game.get_visible_players(t) if p['name'] != player.name and p['name'] != t.name and p['dist']]
+            if len(player.available_cards) > 0:
+                player.pending_action = pl.PendingAction.CHOOSE
+                player.choose_text = 'choose_sventagliata'
+            else:
+                player.available_cards = []
+                super().play_card(player, against=against)
             return True
         return False
 
@@ -219,7 +224,7 @@ def get_starting_deck() -> List[Card]:
         Taglia(Suit.CLUBS, 9),
         UltimoGiro(Suit.DIAMONDS, 8),
         Tomahawk(Suit.DIAMONDS, 'A'),
-        # Sventagliata(Suit.SPADES, 2),
+        Sventagliata(Suit.SPADES, 2),
         # Salvo(Suit.HEARTS, 5),
         Bandidos(Suit.DIAMONDS,'Q'), # gli altri  giocatori scelgono se scartare 2 carte o perdere 1 punto vita
         # Fuga(Suit.HEARTS, 3), # evita l'effetto di carte marroni (tipo panico cat balou) di cui sei bersaglio
