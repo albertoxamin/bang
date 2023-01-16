@@ -111,6 +111,7 @@ class Tornado(Card):
         self.icon = '🌪️' 
 
     def play_card(self, player, against, _with=None):
+        super().play_card(player, against=against)
         player.game.discard_others(player, card_name=self.name)
         return True
 
@@ -168,6 +169,7 @@ class Bandidos(Card):
         self.alt_text = "👤🃏🃏/💔" 
     
     def play_card(self, player, against, _with=None):
+        super().play_card(player, against=against)
         player.game.discard_others(player, card_name=self.name)
         return True
 
@@ -190,6 +192,7 @@ class Poker(Card):
         self.alt_text = "👤🃏 🃏🃏"
     
     def play_card(self, player, against, _with=None):
+        super().play_card(player, against=against)
         player.game.discard_others(player, card_name=self.name)
         return True
 
