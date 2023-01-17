@@ -87,7 +87,7 @@ export default {
 		if (this.realCancelText == '') {
 			this.realCancelText = this.$t('cancel')
 		}
-		if (this.cards.length == 1) {
+		if (this.cards && this.cards.length == 1) {
 			this.showDesc(this.cards[0])
 		}
 		if (this.playAudio) {
