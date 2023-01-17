@@ -141,8 +141,11 @@ export default {
 			clientToken: 'pub1cc4d0d6ea0a7235aa1eab86e7a192d4',
 			site: 'datadoghq.com',
 			service:'bang-frontend',
-			sampleRate: 100,
-			trackInteractions: true,
+			sessionSampleRate: 100,
+			sessionReplaySampleRate: 100,
+			trackUserInteractions: true,
+			trackResources: true, //non so cosa faccia, proviamo
+			trackLongTasks: true, //non so cosa faccia, proviamo
 			defaultPrivacyLevel: 'allow',
 			proxyUrl: (Vue.config.devtools ? `http://${window.location.hostname}:5001` : window.location.origin) + '/ddproxy',
 		});
