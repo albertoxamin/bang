@@ -11,7 +11,8 @@
 			<transition-group name="message" tag="div" id="chatbox" :style="`${collapsed?'display:none':''}`">
 				<p style="margin:1pt;" class="chat-message" v-for="(msg, i) in messages" v-bind:key="`${i}-c`" :style="`color:${msg.color};background:${msg.bgcolor}${msg.bgcolor?';border-left: medium solid '+msg.color+';padding-left:2pt;':''}`">
 					<JsonViewer v-if="msg.type == 'json'" :value="msg.json"/>
-					<span v-else>{{msg.text}}</span>
+					<span v-else-if="msg.parts" v-for="(part, i) in msg.parts" v-bind:key="`${i}-p`" :style="`${i%2!=0?'font-weight: bold;':''}${part.desc?'text-decoration: dotted underline':''}`" class="msg-part" :title="part.desc">{{part.text}}</span>
+					<span v-else class="msg-text">{{msg.text}}</span>
 				</p>
 				<p class="end" key="end" style="color:#0000">.</p>
 			</transition-group>
@@ -75,10 +76,12 @@ export default {
 					bg_color = msg.bgcolor
 					msg = msg.text
 				}
+				let desc = undefined
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
 				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity", 'won'].indexOf(type) !== -1){
 					params[1] = this.$t(`cards.${params[1]}.name`)
+					desc = this.$t(`cards.${params[1]}.desc`)
 				} else if (type === "choose_character"){
 					params.push(this.$t(`cards.${params[1]}.desc`))
 				} else if (type === "allroles") {
@@ -94,9 +97,9 @@ export default {
 					}
 				}
 				if (t_color != null) {
-					this.messages.push({color:t_color, bgcolor: bg_color, text:this.$t(`chat.${type}`, params)});
+					this.messages.push({color:t_color, bgcolor: bg_color, text:false, parts:this.$t(`chat.${type}`, params).split(';').map(x=>({text:x}))});
 				} else {
-					this.messages.push({text:this.$t(`chat.${type}`, params)});
+					this.messages.push({text:false, parts: this.$t(`chat.${type}`, params).split(';').map((x, i)=>({text:x, desc:(i===3&&desc?desc:null)}))});
 				}
 				if (type == 'turn' && params[0] == this.username) {
 					(new Audio(turn_sfx)).play();
