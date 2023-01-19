@@ -150,7 +150,10 @@ def get_me(sid, room):
                 return
             log = response.text.splitlines()
             sid.game.spectators.append(sid)
-            sid.game.replay(log)
+            if 'ffw' not in room:
+                sid.game.replay(log)
+            else:
+                sid.game.replay(log, speed=0.1, fast_forward=int(room['ffw']))
             return
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
