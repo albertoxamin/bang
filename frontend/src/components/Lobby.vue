@@ -66,6 +66,7 @@
 										:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
 										:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
 						</div>
+						<button v-if="is_replay" style="position:absolute" @click="replayPlayer(p.name)">{{$t('spectate_player')}}</button>
 						<div v-if="p.is_bot" style="position:absolute;bottom:57%;width:20pt;" class="center-stuff">
 							<span>🤖</span>
 						</div>
@@ -144,6 +145,7 @@ export default {
 		showTurnFlow: false,
 		turnReversed: false,
 		displayAdminStatus: false,
+		is_replay: false,
 		turn: -1,
 	}),
 	sockets: {
@@ -161,6 +163,7 @@ export default {
 			this.disconnect_bot = data.disconnect_bot
 			this.togglable_expansions = data.available_expansions
 			this.expansions = data.expansions
+			this.is_replay = data.is_replay
 			this.players = data.players.map(x => {
 				return {
 					name: x.name,
@@ -284,6 +287,9 @@ export default {
 			if (Vue.config.devtools)
 				console.log(ex+' '+ this.expansions+ (this.expansions.indexOf(ex) !== -1))
 			return this.expansions.indexOf(ex) !== -1
+		},
+		replayPlayer(player) {
+			this.$socket.emit('chat_message', `/replaypov ${player}`)
 		},
 		leaveRoom() {
 			window.location.replace(window.location.origin)

@@ -445,7 +445,7 @@ def chat_message(sid, msg, pl=None):
                         ses.game.add_player(bot)
                         bot.bot_spin()
                     return
-                if '/replay' in msg and not '/replayspeed' in msg:
+                if '/replay' in msg and not '/replayspeed' in msg and not '/replaypov' in msg:
                     _cmd = msg.split()
                     if len(_cmd) >= 2:
                         replay_id = _cmd[1]
@@ -462,6 +462,21 @@ def chat_message(sid, msg, pl=None):
                     _cmd = msg.split()
                     if len(_cmd) == 2:
                         ses.game.replay_speed = float(_cmd[1])
+                    return
+                if '/replaypov' in msg:
+                    _cmd = msg.split()
+                    if len(_cmd) > 1:
+                        name = ' '.join(_cmd[1:])
+                        for p in ses.game.players:
+                            if p.sid == ses.sid:
+                                from tests.dummy_socket import DummySocket
+                                p.sio = DummySocket()
+                                p.sid = ''
+                        pl = ses.game.get_player_named(name)
+                        pl.sio = sio
+                        pl.sid = ses.sid
+                        pl.set_role(pl.role)
+                        pl.notify_self()
                     return
                 if '/startwithseed' in msg and not ses.game.started:
                     if len(msg.split()) > 1:

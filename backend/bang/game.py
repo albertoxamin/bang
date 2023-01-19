@@ -190,6 +190,7 @@ class Game:
                 'disconnect_bot': self.disconnect_bot,
                 'expansions': self.expansions,
                 'available_expansions': self.available_expansions,
+                'is_replay': self.is_replay,
             })
         self.sio.emit('debug', room=self.name, data=self.debug)
         if self.debug:
