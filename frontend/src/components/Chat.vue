@@ -102,20 +102,20 @@ export default {
 					this.messages.push({text:false, parts: this.$t(`chat.${type}`, params).split(';').map((x, i)=>({text:x, desc:(i===3&&desc?desc:null)}))});
 				}
 				if (type == 'turn' && params[0] == this.username) {
-					(new Audio(turn_sfx)).play();
+					this.playEffects(turn_sfx);
 				} else if (type == 'died_role') {
-					(new Audio(death_sfx)).play();
+					this.playEffects(death_sfx);
 				} else if (type == 'explode') {
-					(new Audio(dynamite_sfx)).play();
+					this.playEffects(dynamite_sfx);
 				} else if (type == 'prison_turn') {
-					(new Audio(prison_sfx)).play();
+					this.playEffects(prison_sfx);
 				} else if (type == 'purchase_card') {
-					(new Audio(cash_sfx)).play();
+					this.playEffects(cash_sfx);
 				} else {
-					(new Audio(notification_sfx)).play();
+					this.playEffects(notification_sfx);
 				}
 			} else { // a chat message
-				(new Audio(message_sfx)).play();
+				this.playEffects(message_sfx);
 				this.messages.push(msg);
 				if (msg.type && msg.type === 'json') {
 					msg.json = JSON.parse(msg.text);
@@ -153,6 +153,14 @@ export default {
 		fillCmd(cmd) {
 			this.text = cmd;
 			document.getElementById('my-msg').focus();
+		},
+		playEffects(path) {
+			const promise = (new Audio(path)).play();
+			if(promise !== undefined){
+        promise.catch(err => {
+          console.log(err)
+        });
+			}
 		}
 	},
 }
