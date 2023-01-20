@@ -1,15 +1,14 @@
 from random import randint
 from bang.characters import *
-from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 from bang.players import Player, PendingAction
 from bang.cards import *
 
 def test_bartcassidy():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -29,9 +28,9 @@ def test_bartcassidy():
     assert len(g.players[(g.turn+1)%2].hand) == 1
 
 def test_blackjack():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(1)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(1)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -62,9 +61,9 @@ def test_blackjack():
     g.players[g.turn].end_turn()
 
 def test_calamityjanet():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -89,9 +88,9 @@ def test_calamityjanet():
     assert g.players[(g.turn+1)%2].lives == 1
 
 def test_ElGringo():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -112,9 +111,9 @@ def test_ElGringo():
     assert len(g.players[g.turn].hand) == 0
 
 def test_JesseJones():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -133,9 +132,9 @@ def test_JesseJones():
     assert len(g.players[g.turn].hand) == 2
 
 def test_Jourdonnais():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -153,9 +152,9 @@ def test_Jourdonnais():
     assert g.players[(g.turn+1)%2].pending_action == PendingAction.PICK
 
 def test_KitCarlson():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -176,9 +175,9 @@ def test_KitCarlson():
     assert g.players[g.turn].pending_action == PendingAction.PLAY
 
 def test_LuckyDuke():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -198,9 +197,9 @@ def test_LuckyDuke():
     assert g.players[g.turn].pending_action == PendingAction.DRAW
 
 def test_PaulRegret():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -214,9 +213,9 @@ def test_PaulRegret():
     assert pls[0]['dist'] > g.players[0].get_sight()
 
 def test_PedroRamirez():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -237,9 +236,9 @@ def test_PedroRamirez():
     assert isinstance(g.players[g.turn].hand[0], Bang)
 
 def test_RoseDoolan():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -256,9 +255,9 @@ def test_RoseDoolan():
     assert pls[0]['dist'] <= g.players[1].get_sight()
 
 def test_SidKetchum():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -278,9 +277,9 @@ def test_SidKetchum():
     assert g.players[g.turn].lives == 2
 
 def test_SlabTheKiller():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -301,9 +300,9 @@ def test_SlabTheKiller():
     assert g.players[(g.turn+1)%2].lives == 3
 
 def test_SuzyLafayette():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -318,9 +317,9 @@ def test_SuzyLafayette():
     g.players[g.turn].end_turn()
 
 def test_VultureSam():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -341,9 +340,9 @@ def test_VultureSam():
         return
 
 def test_WillyTheKid():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()

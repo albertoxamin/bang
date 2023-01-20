@@ -3,6 +3,7 @@ import bang.roles as r
 import bang.players as pl
 from bang.cards import Card, Suit, Bang, Mancato
 import bang.expansions.fistful_of_cards.card_events as ce
+from globals import G
 
 class Fantasma(Card):
     def __init__(self, suit, number):
@@ -46,7 +47,7 @@ class SerpenteASonagli(Card):
             return False
         if against != None:
             self.can_be_used_now = False
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
             player.game.get_player_named(against).notify_self()
@@ -69,7 +70,7 @@ class Taglia(Card):
             return False
         if against != None:
             self.can_be_used_now = False
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
             player.game.get_player_named(against).notify_self()

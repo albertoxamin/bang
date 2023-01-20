@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from bang.expansions import *
 from typing import List
+from globals import G
 
 class Character(ABC):
     def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0, pick_mod: int = 0, desc: str = ''):
@@ -25,7 +26,7 @@ class Character(ABC):
         import bang.expansions.high_noon.card_events as ceh
         if player.game.check_event(ceh.Sbornia):
             return False
-        player.sio.emit('chat_message', room=player.game.name, data=f'_use_special|{player.name}|{self.name}')
+        G.sio.emit('chat_message', room=player.game.name, data=f'_use_special|{player.name}|{self.name}')
         return True
 
 class BartCassidy(Character):

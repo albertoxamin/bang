@@ -16,6 +16,7 @@ import bang.expansions.the_valley_of_shadows.cards as tvosc
 import eventlet
 from typing import List
 from metrics import Metrics
+from globals import G
 
 robot_pictures = [
     'https://i.imgur.com/40rAFIb.jpg',
@@ -63,25 +64,24 @@ class Player:
             else:
                 self.avatar = f'https://cdn.discordapp.com/avatars/{res["id"]}/{res["avatar"]}.png'
             if self.game:
-                self.sio.emit('chat_message', room=self.game.name, data=f'_change_username|{self.name}|{res["username"]}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_change_username|{self.name}|{res["username"]}')
             self.name = res['username']
             self.discord_id = res['id']
             if self.is_admin():
                 if self.game: self.game.feature_flags()
-                self.sio.emit('chat_message', room=self.sid, data={'color':'green', 'text':'(you are admin)'})
+                G.sio.emit('chat_message', room=self.sid, data={'color':'green', 'text':'(you are admin)'})
             if self.game:
                 self.game.notify_room()
-                self.sio.emit('me', data=self.name, room=self.sid)
+                G.sio.emit('me', data=self.name, room=self.sid)
         else:
             print('error getting avatar', r.status_code, r.text)
             print(r)
 
-    def __init__(self, name, sid, sio, bot=False, discord_token=None):
+    def __init__(self, name, sid, bot=False, discord_token=None):
         import bang.game as g
         super().__init__()
         self.name = name
         self.sid = sid
-        self.sio = sio
         self.is_bot = bot
         self.discord_token = discord_token
         self.discord_id = None
@@ -89,7 +89,7 @@ class Player:
         if self.is_bot:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
         if self.discord_token:
-            sio.start_background_task(self.get_avatar)
+            G.sio.start_background_task(self.get_avatar)
         self.game: g = None
         self.reset()
 
@@ -155,7 +155,7 @@ class Player:
     def set_role(self, role: r.Role):
         self.role = role
         print(f'{self.name}: I am a {role.name}, my goal is "{role.goal}"')
-        self.sio.emit('role', room=self.sid, data=json.dumps(
+        G.sio.emit('role', room=self.sid, data=json.dumps(
             role, default=lambda o: o.__dict__))
 
     def set_character(self, character: str):
@@ -174,14 +174,14 @@ class Player:
             self.real_character = self.character
             self.available_characters = []
             print(f'{self.name}: I chose character {self.character.name}')
-            self.sio.emit('chat_message', room=self.game.name,
+            G.sio.emit('chat_message', room=self.game.name,
                         data=f'_did_choose_character|{self.name}')
             self.game.notify_character_selection()
         elif self.real_character and isinstance(self.real_character, chd.VeraCuster):
             self.character = next(
                 x for x in self.available_characters if x.name == character)
             self.available_characters = []
-            self.sio.emit('chat_message', room=self.game.name,
+            G.sio.emit('chat_message', room=self.game.name,
                         data=f'_did_choose_character|{self.name}')
             self.pending_action = PendingAction.DRAW
             self.notify_self()
@@ -199,7 +199,7 @@ class Player:
         self.available_characters = available
         print(f'{self.name}: I have to choose between {available}')
         if not self.is_bot:
-            self.sio.emit('characters', room=self.sid, data=json.dumps(
+            G.sio.emit('characters', room=self.sid, data=json.dumps(
                 available, default=lambda o: o.__dict__))
         else:
             char_name = available[randrange(0, len(available))].name
@@ -217,7 +217,7 @@ class Player:
             'message':message
         }
         print('notifying card')
-        self.sio.emit('notify_card', room=self.sid, data=mess)
+        G.sio.emit('notify_card', room=self.sid, data=mess)
 
     def notify_self(self):
         if any((True for c in self.equipment if isinstance(c, tvosc.Fantasma))):
@@ -272,7 +272,6 @@ class Player:
         
         ser = self.__dict__.copy()
         ser.pop('game')
-        ser.pop('sio')
         ser.pop('sid')
         ser.pop('on_pick_cb')
         ser.pop('discord_token')
@@ -292,16 +291,16 @@ class Player:
             self.pending_action = PendingAction.WAIT
             ser['hand'] = []
             ser['equipment'] = []
-            self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
+            G.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
             self.game.player_death(self)
         if self.game and self.game.started: # falso quando un bot viene eliminato dalla partita
-            self.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
+            G.sio.emit('self_vis', room=self.sid, data=json.dumps(self.game.get_visible_players(self), default=lambda o: o.__dict__))
             self.game.notify_all()
-        self.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
+        G.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
 
     def bot_spin(self):
         while self.is_bot and self.game != None and not self.game.shutting_down:
-            eventlet.sleep(max(0.2, uniform(self.game.bot_speed/2-0.1, self.game.bot_speed)))
+            G.sio.sleep(max(0.2, uniform(self.game.bot_speed/2-0.1, self.game.bot_speed)))
             if self.lives > 0 or self.is_ghost:
                 self.bot_logic()
 
@@ -441,7 +440,7 @@ class Player:
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
         if not again:
-            self.sio.emit('chat_message', room=self.game.name,
+            G.sio.emit('chat_message', room=self.game.name,
                           data=f'_turn|{self.name}')
             print(f'{self.name}: I was notified that it is my turn')
         self.was_shot = False
@@ -461,7 +460,7 @@ class Player:
                 self.hand.append(self.game.deck.draw(True))
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                 self.hand.append(self.game.deck.draw(True))
-                self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
             self.heal_if_needed()
             if self.lives <= 0:
                 return self.notify_self()
@@ -557,11 +556,11 @@ class Player:
             for i in range(num):
                 if i == 0 and pile == 'scrap' and self.character.check(self.game, chars.PedroRamirez):
                     self.hand.append(self.game.deck.draw_from_scrap_pile())
-                    self.sio.emit('chat_message', room=self.game.name, data=f'_draw_from_scrap|{self.name}')
+                    G.sio.emit('chat_message', room=self.game.name, data=f'_draw_from_scrap|{self.name}')
                 elif i == 0 and type(pile) == str and pile != self.name and pile in self.game.players_map and self.character.check(self.game, chars.JesseJones) and len(self.game.get_player_named(pile).hand) > 0:
                     self.hand.append(self.game.get_player_named(pile).hand.pop( randrange(0, len(self.game.get_player_named(pile).hand))))
                     self.game.get_player_named(pile).notify_self()
-                    self.sio.emit('chat_message', room=self.game.name, data=f'_draw_from_player|{self.name}|{pile}')
+                    G.sio.emit('chat_message', room=self.game.name, data=f'_draw_from_player|{self.name}|{pile}')
                 elif i == 1:
                     card: cs.Card = self.game.deck.draw()
                     if (self.character.check(self.game, chars.BlackJack) or self.game.check_event(ce.LeggeDelWest)):
@@ -602,7 +601,7 @@ class Player:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
-                        self.sio.emit('chat_message', room=self.game.name,
+                        G.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if picked.check_suit(self.game, [cs.Suit.SPADES]) and 2 <= picked.number <= 9 and pickable_cards == 0:
                             self.lives -= 3
@@ -616,12 +615,12 @@ class Player:
                                 self.hand.append(self.game.deck.draw())
                             self.attacker = None
                             self.game.deck.scrap(self.equipment.pop(i), True)
-                            self.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
+                            G.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
                             self.heal_if_needed()
                             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                                 for i in range(3):
                                     self.hand.append(self.game.deck.draw(True))
-                                self.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
+                                G.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
                             print(f'{self.name} Boom, -3 hp')
                             break
                         else:
@@ -637,16 +636,16 @@ class Player:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
-                        self.sio.emit('chat_message', room=self.game.name,
+                        G.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if not picked.check_suit(self.game, [cs.Suit.HEARTS]) and pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
-                            self.sio.emit('chat_message', room=self.game.name, data=f'_prison_turn|{self.name}')
+                            G.sio.emit('chat_message', room=self.game.name, data=f'_prison_turn|{self.name}')
                             self.end_turn(forced=True)
                             return
                         elif pickable_cards == 0:
                             self.game.deck.scrap(self.equipment.pop(i), True)
-                            self.sio.emit('chat_message', room=self.game.name, data=f'_prison_free|{self.name}')
+                            G.sio.emit('chat_message', room=self.game.name, data=f'_prison_free|{self.name}')
                             break
                     break
             for i in range(len(self.equipment)):
@@ -655,13 +654,13 @@ class Player:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
                         print(f'Did pick {picked}')
-                        self.sio.emit('chat_message', room=self.game.name,
+                        G.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if not picked.check_suit(self.game, [cs.Suit.SPADES]):
                             break
                         elif pickable_cards == 0:
                             self.lives -= 1
-                            self.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
+                            G.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
                             break
             if any((isinstance(c, cs.Prigione) for c in self.equipment)):
                 self.notify_self() #TODO perchè solo le prigioni? e multiple dinamiti come si comportano con veracuster?
@@ -725,7 +724,7 @@ class Player:
                 self.hand.insert(hand_index, card)
                 if withCard:
                     self.hand.insert(_with, withCard)
-                self.sio.emit('cant_play_card', room=self.sid)
+                G.sio.emit('cant_play_card', room=self.sid)
         elif (card.usable_next_turn and card.can_be_used_now) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK):
             if did_play_card:
                 self.game.deck.scrap(card, True)
@@ -773,7 +772,7 @@ class Player:
             self.notify_self()
         elif self.choose_text == 'choose_ricercato':
             player = self.game.get_player_named(self.available_cards[card_index]['name'])
-            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Ricercato|{player.name}')
+            G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Ricercato|{player.name}')
             if any((isinstance(c, grc.Ricercato) for c in player.gold_rush_equipment)):
                 self.game.deck.shop_deck.append(grc.Ricercato())
             else:
@@ -793,20 +792,20 @@ class Player:
             self.notify_self()
         elif self.choose_text == 'choose_bicchierino':
             player = self.game.get_player_named(self.available_cards[card_index]['name'])
-            self.sio.emit('chat_message', room=self.game.name, data=f'_play_card_for|{self.name}|{"Bicchierino"}|{player.name}')
+            G.sio.emit('chat_message', room=self.game.name, data=f'_play_card_for|{self.name}|{"Bicchierino"}|{player.name}')
             player.lives = min(player.lives+1, player.max_lives)
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.choose_text == 'choose_birra_function':
             if card_index == 0:
                 self.gold_nuggets += 1
-                self.sio.emit('chat_message', room=self.game.name, data=f'_get_nugget|{self.name}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_get_nugget|{self.name}')
             else:
                 cs.Birra(1,1).play_card(self, skipChecks=True)
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.choose_text == 'choose_bottiglia':
-            self.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
+            G.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
             if isinstance(self.available_cards[card_index], cs.Birra):
                 self.lives = min(self.lives+1, self.max_lives)
             else:
@@ -814,7 +813,7 @@ class Player:
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.choose_text == 'choose_complice':
-            self.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
+            G.sio.emit('chat_message', room=self.game.name, data=f'_play_card|{self.name}|{"Bottiglia"}')
             self.hand.append(self.available_cards[card_index])
             self.pending_action = PendingAction.PLAY
             self.notify_self()
@@ -835,7 +834,7 @@ class Player:
                 player = self.game.get_player_named(self.choose_text.split('|')[1])
                 player.gold_rush_equipment.remove(self.available_cards[card_index])
                 self.game.deck.shop_deck.append(self.available_cards[card_index])
-                self.sio.emit('chat_message', room=self.game.name, data=f'_gold_rush_pay_discard|{self.name}|{player.name}|{self.available_cards[card_index].name}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_gold_rush_pay_discard|{self.name}|{player.name}|{self.available_cards[card_index].name}')
                 player.notify_self()
             self.pending_action = PendingAction.PLAY
             self.notify_self()
@@ -845,7 +844,7 @@ class Player:
                 player.equipment.append(self.game.deck.scrap_pile.pop(-1))
                 player.notify_self()
                 self.game.notify_all()
-                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Fantasma|{player.name}')
+                G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Fantasma|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif 'choose_sventagliata' in self.choose_text:
@@ -854,8 +853,8 @@ class Player:
                 player = self.game.get_player_named(self.available_cards[card_index]['name'])
                 player.game.attack(self, og, card_name='Sventagliata')
                 player.game.attack(self, player.name, card_name='Sventagliata')
-                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{og}')
-                self.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{player.name}')
+                G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{og}')
+                G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:
@@ -899,11 +898,11 @@ class Player:
                 self.real_character = self.character
                 self.max_lives = self.character.max_lives + self.role.health_mod
                 self.lives = 2
-                self.sio.emit('chat_message', room=self.game.name, data=f'_choose_character|{self.name}|{self.character.name}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_choose_character|{self.name}|{self.character.name}')
             self.play_turn(again = True)
         elif self.game.check_event(ceh.Manette) and self.choose_text == 'choose_manette':
             self.committed_suit_manette = cs.Suit(card_index)
-            self.sio.emit('chat_message', room=self.game.name, data=f'_choose_manette|{self.name}|{"♦♣♥♠"[card_index]}')
+            G.sio.emit('chat_message', room=self.game.name, data=f'_choose_manette|{self.name}|{"♦♣♥♠"[card_index]}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif self.is_giving_life and self.game.check_event(ce.FratelliDiSangue):
@@ -918,7 +917,7 @@ class Player:
                 if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
                     self.hand.append(self.game.deck.draw())
                 player.notify_self()
-                self.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
             except: pass
             self.play_turn(again = True)
         elif self.is_using_checchino and self.game.check_event(ce.Cecchino):
@@ -975,15 +974,15 @@ class Player:
         elif self.is_drawing and self.game.check_event(ce.Peyote):
             self.is_drawing = False
             card = self.game.deck.draw()
-            self.sio.emit('chat_message', room=self.game.name, data=f"_guess|{self.name}|{self.available_cards[card_index]['icon']}")
+            G.sio.emit('chat_message', room=self.game.name, data=f"_guess|{self.name}|{self.available_cards[card_index]['icon']}")
             self.available_cards = []
             if card_index == card.suit%2:
                 self.hand.append(card)
-                self.sio.emit('chat_message', room=self.game.name, data=f"_guess_right|{self.name}")
+                G.sio.emit('chat_message', room=self.game.name, data=f"_guess_right|{self.name}")
                 self.pending_action = PendingAction.DRAW
             else:
                 self.game.deck.scrap(card)
-                self.sio.emit('chat_message', room=self.game.name, data=f"_guess_wrong|{self.name}")
+                G.sio.emit('chat_message', room=self.game.name, data=f"_guess_wrong|{self.name}")
                 self.pending_action = PendingAction.PLAY
             self.notify_self()
         # specifico per personaggio
@@ -1051,7 +1050,7 @@ class Player:
             pickable_cards -= 1
             picked: cs.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
-            self.sio.emit('chat_message', room=self.game.name,
+            G.sio.emit('chat_message', room=self.game.name,
                             data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
             if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                 self.mancato_needed -= 1
@@ -1081,7 +1080,7 @@ class Player:
             pickable_cards -= 1
             picked: cs.Card = self.game.deck.pick_and_scrap()
             print(f'Did pick {picked}')
-            self.sio.emit('chat_message', room=self.game.name,
+            G.sio.emit('chat_message', room=self.game.name,
                             data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
             if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                 self.mancato_needed -= 1
@@ -1213,34 +1212,34 @@ class Player:
                     self.lives += 1 if not self.character.check(self.game, chd.TequilaJoe) else 2
                     self.lives = min(self.lives, self.max_lives)
                     self.game.deck.scrap(self.hand.pop(i), True)
-                    self.sio.emit('chat_message', room=self.game.name,
+                    G.sio.emit('chat_message', room=self.game.name,
                                   data=f'_beer_save|{self.name}')
                     break
 
     def take_damage_response(self):
         self.lives -= 1
-        self.sio.emit('hurt', room=self.sid, data=f'')
+        G.sio.emit('hurt', room=self.sid, data=f'')
         if self.lives > 0:
             if self.character.check(self.game, chars.BartCassidy):
-                self.sio.emit('chat_message', room=self.game.name,
+                G.sio.emit('chat_message', room=self.game.name,
                                 data=f'_special_bart_cassidy|{self.name}')
                 self.hand.append(self.game.deck.draw(True))
             elif self.character.check(self.game, chars.ElGringo) and self.attacker and self.attacker in self.game.get_alive_players() and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(randrange(0, len(self.attacker.hand))))
                 self.hand[-1].reset_card()
-                self.sio.emit('chat_message', room=self.game.name,
+                G.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
         if isinstance(self.attacker, Player) and not self.game.check_event(ce.Lazo):
             if any((isinstance(c, tvosc.Taglia) for c in self.equipment)):
                 self.attacker.hand.append(self.game.deck.draw(True))
-                self.sio.emit('chat_message', room=self.game.name,
+                G.sio.emit('chat_message', room=self.game.name,
                     data=f'_taglia_reward|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
             if len(self.hand) > 0 and any((isinstance(cd, tvosc.Shotgun) for cd in self.attacker.equipment)):
                 c = self.hand.pop(randrange(0, len(self.hand)))
                 self.game.deck.scrap(c, True)
-                self.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
         if self.attacker and 'gold_rush' in self.game.expansions:
             if (isinstance(self.attacker, Player)):
                 self.attacker.gold_nuggets += 1
@@ -1285,7 +1284,7 @@ class Player:
                     self.hand.append(self.game.deck.draw(True))
             card.use_card(self)
             print(f'{self.game.name}: {self.name} responded with {card.name}')
-            self.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
+            G.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
             self.game.deck.scrap(card, True)
             self.notify_self()
             self.mancato_needed -= 1
@@ -1448,14 +1447,14 @@ class Player:
         ##Vendetta##
             if not forced and self.game.check_event(ce.Vendetta) and self.can_play_vendetta:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
-                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                 if picked.check_suit(self.game, [cs.Suit.HEARTS]):
                     self.play_turn(can_play_vendetta=False)
                     return
         ##Don Bell##
             if not forced and self.character.check(self.game, grch.DonBell) and self.can_play_again_don_bell:
                 picked: cs.Card = self.game.deck.pick_and_scrap()
-                self.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                G.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                 self.can_play_again_don_bell = False
                 if picked.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
                     self.play_turn(can_play_vendetta=False)

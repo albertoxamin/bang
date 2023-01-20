@@ -1,5 +1,4 @@
 from bang.characters import Character
-from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 from bang.players import Player, PendingAction
@@ -8,10 +7,9 @@ from bang.cards import *
 
 # test that a game with 3 player the deputy kills renegade and wins
 def test_3p_deputy_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(3):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:
@@ -33,10 +31,9 @@ def test_3p_deputy_win():
 
 # test that a game with 3 player the renegade kills the outlaw and wins
 def test_3p_renegade_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(3):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:
@@ -60,10 +57,9 @@ def test_3p_renegade_win():
 
 # test that a game with 3 player the outlaw kills the deputy and wins
 def test_3p_outlaw_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(3):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:
@@ -87,10 +83,9 @@ def test_3p_outlaw_win():
 
 # test that a game with 4 player the outlaw kills the sheriff and win
 def test_4p_outlaw_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(4):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:
@@ -116,10 +111,9 @@ def test_4p_outlaw_win():
 
 # test that a game with 5 player the renegade kills all the other players and wins
 def test_5p_renegade_gatling_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(5):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:
@@ -148,10 +142,9 @@ def test_5p_renegade_gatling_win():
 
 # test that a game with 5 player the renegade kills all the other players and wins
 def test_5p_renegade_indiani_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(5):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:
@@ -180,10 +173,9 @@ def test_5p_renegade_indiani_win():
 
 # test that a game with 5 player the renegade kills the sheriff but it isn't the last alive player and the outlaws wins
 def test_5p_outlaw_death_win():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     for i in range(5):
-        p = Player(f'p{i}', f'p{i}', sio)
+        p = Player(f'p{i}', f'p{i}')
         g.add_player(p)
     g.start_game()
     for p in g.players:

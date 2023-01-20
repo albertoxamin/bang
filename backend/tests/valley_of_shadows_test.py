@@ -1,7 +1,6 @@
 from random import randint
 from bang.characters import Character
 from bang.expansions.the_valley_of_shadows.cards import *
-from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 from bang.players import Player, PendingAction
@@ -9,9 +8,8 @@ import bang.cards as cs
 
 # test UltimoGiro
 def test_ultimo_giro():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -28,9 +26,8 @@ def test_ultimo_giro():
 
 # test Tomahawk
 def test_tomahawk():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(6)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(6)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -48,9 +45,8 @@ def test_tomahawk():
 
 # test Fantasma
 def test_fantasma():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -73,9 +69,8 @@ def test_fantasma():
 
 # test SerpenteASonagli
 def test_serpente_a_sonagli():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -107,10 +102,9 @@ def test_serpente_a_sonagli():
 
 # test RitornoDiFiamma
 def test_ritorno_di_fiamma():
-    sio = DummySocket()
-    g = Game('test', sio)
+    g = Game('test')
     g.expansions = ['the_valley_of_shadows']
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -144,9 +138,8 @@ def test_ritorno_di_fiamma():
 
 # test RitornoDiFiamma with gatling
 def test_ritorno_di_fiamma_gatling():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     g.expansions = ['the_valley_of_shadows']
     for p in ps:
         g.add_player(p)
@@ -177,9 +170,8 @@ def test_ritorno_di_fiamma_gatling():
 
 # test Taglia
 def test_taglia():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -201,9 +193,8 @@ def test_taglia():
 
 # test Bandidos
 def test_bandidos():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -233,9 +224,8 @@ def test_bandidos():
 
 # test Poker
 def test_poker():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -265,9 +255,8 @@ def test_poker():
 
 # test Tornado
 def test_tornado():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
