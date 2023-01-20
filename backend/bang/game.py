@@ -118,7 +118,6 @@ class Game:
         self.notify_room()
 
     def replay(self, log, speed=1.0, fast_forward = -1):
-        from tests.dummy_socket import DummySocket
         self.players = []
         self.is_hidden = True
         self.is_replay = True
@@ -135,7 +134,7 @@ class Game:
                 self.expansions = json.loads(cmd[4].replace("'",'"'))
                 pnames = json.loads(cmd[3].replace("'",'"'))
                 for p in pnames:
-                    self.add_player(pl.Player(p, p, DummySocket(G.sio), bot=False))
+                    self.add_player(pl.Player(p, 'a', bot=False))
                 continue
             if cmd[1] == 'start_game':
                 self.start_game(int(cmd[2]))
