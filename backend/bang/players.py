@@ -222,8 +222,18 @@ class Player:
     def notify_self(self):
         if any((True for c in self.equipment if isinstance(c, tvosc.Fantasma))):
             self.is_ghost = True
-        elif self.is_ghost:
-            self.is_ghost = self.game.check_event(ceh.CittaFantasma) and self.is_my_turn
+        elif self.is_ghost and self.is_my_turn and not self.game.check_event(ceh.CittaFantasma):
+            self.end_turn(forced=True)
+        elif self.is_ghost and not self.game.check_event(ceh.CittaFantasma):
+            self.is_ghost = False
+        #mi assicuro che non i morti non abbiano carte
+        if self.is_dead and not self.is_ghost:
+            if len(self.hand):
+                for i in range(len(self.hand)):
+                    self.game.deck.scrap(self.hand.pop(), True)
+            if len(self.equipment):
+                for i in range(len(self.equipment)):
+                    self.game.deck.scrap(self.equipment.pop(), True)
         if self.is_ghost: self.lives = 0
         if self.pending_action == PendingAction.DRAW and self.game.check_event(ce.Peyote):
             self.available_cards = [{
@@ -1454,7 +1464,7 @@ class Player:
                     self.play_turn(can_play_vendetta=False)
                     return
         ##Ghost##
-            if self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma) and not any((True for c in self.equipment if isinstance(c, tvosc.Fantasma))):
+            if (self.is_dead and self.is_ghost and self.game.check_event(ceh.CittaFantasma) and not any((True for c in self.equipment if isinstance(c, tvosc.Fantasma)))) or (self.is_dead and forced and self.is_ghost and not any((True for c in self.equipment if isinstance(c, tvosc.Fantasma)))):
                 self.is_ghost = False
                 for i in range(len(self.hand)):
                     self.game.deck.scrap(self.hand.pop(), True)
