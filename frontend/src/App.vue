@@ -149,7 +149,7 @@ export default {
 			defaultPrivacyLevel: 'allow',
 			proxyUrl: (Vue.config.devtools ? `http://${window.location.hostname}:5001` : window.location.origin) + '/ddproxy',
 		});
-			
+		datadogRum.setUser({name: localStorage.getItem('username')})
 		datadogRum.startSessionReplayRecording();
 	},
 	created() {

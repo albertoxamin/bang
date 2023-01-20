@@ -54,6 +54,7 @@
 import Card from '@/components/Card.vue'
 import TinyHand from '@/components/TinyHand.vue'
 // import Lobby from './components/Lobby.vue'
+import { datadogRum } from '@datadog/browser-rum';
 
 export default {
 	name: 'App',
@@ -125,6 +126,7 @@ export default {
 				this.didSetUsername = true
 				localStorage.setItem('username', this.username)
 				this.$socket.emit('set_username', {name:this.username})
+				datadogRum.setUser({name: localStorage.getItem('username')})
 				e.preventDefault();
 			}
 		},
