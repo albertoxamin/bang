@@ -244,7 +244,11 @@ export default {
 			return ''
 		},
 		isRoomOwner() {
-			return this.players.length > 0 && this.players.filter(x => !x.is_bot)[0].name == this.username
+			if (this.players.length > 0){
+				let pls = this.players.filter(x => !x.is_bot)
+				return pls.length > 0 && pls[0].name == this.username
+			}
+			return false
 		},
 		startGameCard() {
 			if (!this.started && this.players.length > 2 && this.isRoomOwner) {
@@ -319,12 +323,13 @@ export default {
 		},
 		getPlayerCard(player) {
 			let icon = ''
-			let owner = this.players.filter(x => !x.is_bot)[0];
+			let nonBots = this.players.filter(x => !x.is_bot)
+			let isOwner = nonBots.length > 0 && nonBots[0].name == player.name;
 			if (!this.started) icon = '🤠'
 			else icon = player.ready !== undefined ? ((player.ready)?'👍': '🤔') : (player.is_sheriff ? '⭐' : player.icon)
 			return {
 				name: player.name,
-				number: ((this.username == player.name) ? this.$t('you') : (owner.name == player.name) ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
+				number: ((this.username == player.name) ? this.$t('you') : isOwner ? this.$t('owner') :'') + (player.dist ? `${player.dist}⛰` : ''),
 				icon: icon,
 				is_character: true,
 				avatar: player.avatar,
