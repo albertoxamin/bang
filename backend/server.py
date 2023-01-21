@@ -811,8 +811,8 @@ import pickle
 def save_games():
     global save_lock
     while True:
+        sio.sleep(2)
         if not save_lock:
-            sio.sleep(2)
             with open('games.pickle', 'wb') as f:
                 pickle.dump([g for g in games if g.started and not g.is_replay], f)
 
