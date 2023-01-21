@@ -810,20 +810,24 @@ import pickle
 def save_games():
     global save_lock
     if not save_lock:
+        sio.sleep(2)
         with open('games.pickle', 'wb') as f:
             pickle.dump([g for g in games if g.started], f)
     save_games()
 
 if __name__ == '__main__':
     if os.path.exists('games.pickle'):
-        with open('games.pickle', 'rb') as file:
-            games = pickle.load(file)
-            for g in games:
-                for p in g.players:
-                    if p.sid != 'bot':
-                        sio.start_background_task(p.disconnect)
-                    else:
-                        sio.start_background_task(p.bot_spin)
+        try:
+            with open('games.pickle', 'rb') as file:
+                games = pickle.load(file)
+                for g in games:
+                    for p in g.players:
+                        if p.sid != 'bot':
+                            sio.start_background_task(p.disconnect)
+                        else:
+                            sio.start_background_task(p.bot_spin)
+        except:
+            pass
     sio.start_background_task(save_games)
     sio.start_background_task(pool_metrics)
     eventlet.wsgi.server(eventlet.listen(('', 5001)), CustomProxyFix(app))
