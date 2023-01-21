@@ -807,7 +807,7 @@ if __name__ == '__main__':
             for g in games:
                 for p in g.players:
                     if p.sid != 'bot':
-                        p.sid = None
+                        sio.start_background_task(p.disconnect)
                     else:
                         sio.start_background_task(p.bot_spin)
     sio.start_background_task(save_games)
