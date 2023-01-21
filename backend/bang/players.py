@@ -319,7 +319,7 @@ class Player:
             self.game.rpc_log.append(f'{self.name};draw;')
             self.draw('')
         elif self.pending_action == PendingAction.PLAY:
-            non_blocked_cards = [card for card in self.hand if (not self.game.check_event(ceh.Manette) or card.suit == self.committed_suit_manette)]
+            non_blocked_cards = [card for card in self.hand if (not self.game.check_event(ceh.Manette) or card.suit == self.committed_suit_manette) and (not self.game.check_event(ce.IlGiudice) or not card.usable_next_turn) ]
             equippables = [c for c in non_blocked_cards if (c.is_equipment or c.usable_next_turn) and not isinstance(c, cs.Prigione) and not c.need_target and not any((type(c) == type(x) and not (c.is_weapon and c.must_be_used) for x in self.equipment))]
             misc = [c for c in non_blocked_cards if not c.need_target and (isinstance(c, cs.WellsFargo) or isinstance(c, cs.Indiani) or isinstance(c, cs.Gatling) or isinstance(c, cs.Diligenza) or isinstance(c, cs.Emporio) or ((isinstance(c, cs.Birra) and self.lives < self.max_lives or c.must_be_used) and not self.game.check_event(ceh.IlReverendo)) or (c.need_with and len(self.hand) > 1 and not (isinstance(c, csd.Whisky) and self.lives == self.max_lives)))
                     and not (not c.can_be_used_now and self.game.check_event(ce.IlGiudice)) and not c.is_equipment]
