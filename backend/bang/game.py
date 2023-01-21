@@ -678,7 +678,7 @@ class Game:
                 player.was_player = False
                 if len(player.available_characters) > 0:
                     player.set_available_character(player.available_characters)
-                player.bot_spin()
+                G.sio.start_background_task(player.bot_spin)
         else:
             self.player_death(player=player, disconnected=True)
         # else:

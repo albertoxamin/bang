@@ -678,7 +678,7 @@ def chat_message(sid, msg, pl=None):
                     ses.is_bot = not ses.is_bot
                     if (ses.is_bot):
                         ses.was_player = True
-                    ses.bot_spin()
+                    sio.start_background_task(ses.bot_spin)
                 elif '/arcadekick' in msg and ses.game.started:
                     if not any((p.pending_action != PendingAction.WAIT for p in ses.game.players)):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'','text':f'KICKING THE ARCADE CABINET'})
