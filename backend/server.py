@@ -159,7 +159,7 @@ def get_me(sid, room):
             if 'ffw' not in room:
                 sid.game.replay(log)
             else:
-                sid.game.replay(log, speed=0.1, fast_forward=int(room['ffw']))
+                sid.game.replay(log, speed=0, fast_forward=int(room['ffw']))
             return
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
@@ -471,7 +471,7 @@ def chat_message(sid, msg, pl=None):
                             ses.game.replay(log)
                         if len(_cmd) == 3:
                             line = int(_cmd[2])
-                            ses.game.replay(log, speed=0.1, fast_forward=line)
+                            ses.game.replay(log, speed=0, fast_forward=line)
                     return
                 if '/replayspeed' in msg:
                     _cmd = msg.split()
@@ -484,11 +484,8 @@ def chat_message(sid, msg, pl=None):
                         name = ' '.join(_cmd[1:])
                         for p in ses.game.players:
                             if p.sid == ses.sid:
-                                from tests.dummy_socket import DummySocket
-                                p.sio = DummySocket()
                                 p.sid = ''
                         pl = ses.game.get_player_named(name)
-                        pl.sio = sio
                         pl.sid = ses.sid
                         pl.set_role(pl.role)
                         pl.notify_self()
@@ -812,7 +809,7 @@ def save_games():
     if not save_lock:
         sio.sleep(2)
         with open('games.pickle', 'wb') as f:
-            pickle.dump([g for g in games if g.started], f)
+            pickle.dump([g for g in games if g.started and not g.is_replay], f)
     save_games()
 
 if __name__ == '__main__':

@@ -82,6 +82,7 @@ class Game:
         self.rng = random.Random()
         self.rpc_log = []
         self.is_replay = False
+        self.replay_speed = 1
 
     def shuffle_players(self):
         if not self.started:
@@ -173,7 +174,7 @@ class Game:
             if i == fast_forward:
                 self.replay_speed = 1.0
             self.notify_room()
-            eventlet.sleep(max(self.replay_speed, 0.1))
+            eventlet.sleep(max(self.replay_speed, 0.001))
         eventlet.sleep(6)
         if self.is_replay:
             self.reset()
@@ -835,7 +836,7 @@ class Game:
         return [p for p in self.players if p.is_dead and (include_ghosts or not p.is_ghost)]
 
     def notify_all(self):
-        if self.started:
+        if self.started and self.replay_speed > 0:
             data = [{
                 'name': p.name,
                 'ncards': len(p.hand),
