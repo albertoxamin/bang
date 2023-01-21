@@ -56,15 +56,19 @@ def send_to_debug(error):
         if g.debug or any((p.is_admin() for p in g.players)):
             sio.emit('chat_message', room=g.name, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
 
+save_lock = False
 def bang_handler(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
+        global save_lock
+        save_lock = True
         try:
             func(*args, **kwargs)
         except Exception as e:
             logging.exception(e)
             print(traceback.format_exc())
             send_to_debug(traceback.format_exc())
+        save_lock = False
     return wrapper_func
 
 def advertise_lobbies():
@@ -454,7 +458,7 @@ def chat_message(sid, msg, pl=None):
                         while any((p for p in ses.game.players if p.name == bot.name)):
                             bot = Player(f'AI_{random.randint(0,10)}', 'bot', bot=True)
                         ses.game.add_player(bot)
-                        bot.bot_spin()
+                        sio.start_background_task(bot.bot_spin)
                     return
                 if '/replay' in msg and not '/replayspeed' in msg and not '/replaypov' in msg:
                     _cmd = msg.split()
@@ -804,9 +808,10 @@ discord_ci = '1059452581027532880'
 discord_cs = 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu'
 import pickle
 def save_games():
-    sio.sleep(2)
-    with open('games.pickle', 'wb') as f:
-        pickle.dump([g for g in games if g.started], f)
+    global save_lock
+    if not save_lock:
+        with open('games.pickle', 'wb') as f:
+            pickle.dump([g for g in games if g.started], f)
     save_games()
 
 if __name__ == '__main__':
