@@ -27,6 +27,10 @@ Metrics.init()
 sio = socketio.Server(cors_allowed_origins="*")
 G.sio = sio
 
+import faulthandler
+
+faulthandler.enable()
+
 static_files={
         '/': {'content_type': 'text/html', 'filename': 'index.html'},
         '/game': {'content_type': 'text/html', 'filename': 'index.html'},
@@ -73,7 +77,7 @@ def bang_handler(func):
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
-    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden and len(g.players) > 0])
     Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
 
@@ -777,10 +781,10 @@ def discord_auth(sid, data):
 
 
 def pool_metrics():
-    sio.sleep(60)
-    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
-    Metrics.send_metric('online_players', points=[online_players])
-    pool_metrics()
+    while True:
+        sio.sleep(60)
+        Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
+        Metrics.send_metric('online_players', points=[online_players])
 
 import urllib.parse
 class CustomProxyFix(object):
@@ -806,11 +810,11 @@ discord_cs = 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu'
 import pickle
 def save_games():
     global save_lock
-    if not save_lock:
-        sio.sleep(2)
-        with open('games.pickle', 'wb') as f:
-            pickle.dump([g for g in games if g.started and not g.is_replay], f)
-    save_games()
+    while True:
+        if not save_lock:
+            sio.sleep(2)
+            with open('games.pickle', 'wb') as f:
+                pickle.dump([g for g in games if g.started and not g.is_replay], f)
 
 if __name__ == '__main__':
     if os.path.exists('games.pickle'):
