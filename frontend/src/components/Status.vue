@@ -3,6 +3,7 @@
 		<h1 id="status">PewPew! Server Status</h1>
 		<h2>Rooms {{rooms.length}}</h2>
 		<button @click="refresh">reload</button>
+		<button @click="reset">RESET</button>
 		<ul>
 			<li v-for="r in rooms" :key="r">
 				<p style="margin:0"><b>name:</b> {{r.name}}</p>
@@ -59,6 +60,10 @@ export default {
 	methods: {
 		refresh(){
 			this.$socket.emit('get_all_rooms', this.deploy_key)
+		},
+		reset(){
+			if (confirm('ARE YOU SURE? KICK EVERYONE AND RESET LOBBIES?'))
+				this.$socket.emit('reset', this.deploy_key)
 		},
 		hide(room_name){
 			this.$socket.emit('hide_toogle', {'key':this.deploy_key, 'room':room_name})

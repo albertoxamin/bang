@@ -313,6 +313,15 @@ def kick(sid, data):
 
 @sio.event
 @bang_handler
+def reset(sid, data):
+    global games
+    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
+        for g in games:
+            sio.emit('kicked', room=g.name)
+        games = []
+
+@sio.event
+@bang_handler
 def hide_toogle(sid, data):
     if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         game = [g for g in games if g.name==data['room']]
