@@ -125,6 +125,8 @@ class Game:
         self.replay_speed = speed
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
+            if len(self.spectators) == 0:
+                break
             if (log[i] == "@@@"):
                 eventlet.sleep(10)
                 if self.is_replay:

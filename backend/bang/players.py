@@ -150,7 +150,7 @@ class Player:
         print(f'I {self.name} joined {self.game}')
 
     def disconnect(self):
-        if self.is_admin() and self.game.debug: return False
+        if self.is_admin() and self.game.debug and self.game.started: return False
         return self.game.handle_disconnect(self)
 
     def set_role(self, role: r.Role):
