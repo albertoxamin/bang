@@ -813,13 +813,13 @@ def save_games():
     while True:
         sio.sleep(2)
         if not save_lock:
-            with open('games.pickle', 'wb') as f:
+            with open('./save/games.pickle', 'wb') as f:
                 pickle.dump([g for g in games if g.started and not g.is_replay and not g.is_hidden], f)
 
 if __name__ == '__main__':
-    if os.path.exists('games.pickle'):
+    if os.path.exists('./save/games.pickle'):
         try:
-            with open('games.pickle', 'rb') as file:
+            with open('./save/games.pickle', 'rb') as file:
                 games = pickle.load(file)
                 for g in games:
                     for p in g.players:

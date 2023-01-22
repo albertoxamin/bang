@@ -23,5 +23,6 @@ WORKDIR /dist
 EXPOSE 5001
 
 ENV PATH=/root/.local/bin:${PATH}
+VOLUME /code/save
 
 ENTRYPOINT ["python", "/dist/server.py"]
