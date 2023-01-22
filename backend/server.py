@@ -203,7 +203,7 @@ def get_me(sid, room):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players)):
+            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players if not ((dt != None and p.discord_token == dt) or p.sid == None))):
                 sio.emit('change_username', room=sid)
             else:
                 sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
