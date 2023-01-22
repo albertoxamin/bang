@@ -14,6 +14,7 @@ import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
+import bang.expansions.the_valley_of_shadows.cards as tvosc
 from metrics import Metrics
 from globals import G
 
@@ -566,6 +567,11 @@ class Game:
                 pl.lives = 2
                 pl.hand.append(self.deck.draw())
                 pl.hand.append(self.deck.draw())
+                if any((True for c in pl.equipment if isinstance(c, tvosc.Fantasma))):
+                    for c in pl.equipment:
+                        if isinstance(c, tvosc.Fantasma):                            
+                            self.deck.scrap(pl.equipment.pop(c))
+                            break
                 pl.notify_self()
             elif self.check_event(ceh.CittaFantasma) or self.players[self.turn].is_ghost:
                 print(f'{self.name}: {self.players[self.turn]} is dead, event ghost')
