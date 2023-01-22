@@ -3,7 +3,7 @@ from bang.deck import Deck
 from bang.game import Game
 
 def test_card_flip():
-    g = Game('test', DummySocket())
+    g = Game('test')
     g.deck = Deck(g)
     l = len(g.deck.cards)
     assert g.deck.pick_and_scrap() != None
@@ -11,7 +11,7 @@ def test_card_flip():
     assert len(g.deck.scrap_pile) == 1
 
 def test_draw():
-    g = Game('test', DummySocket())
+    g = Game('test')
     g.deck = Deck(g)
     l = len(g.deck.cards)
     assert g.deck.draw(True) != None
@@ -19,7 +19,7 @@ def test_draw():
     assert len(g.deck.scrap_pile) == 0
 
 def test_reshuffle():
-    g = Game('test', DummySocket())
+    g = Game('test')
     g.deck = Deck(g)
     l = len(g.deck.cards)
     for i in range(80):
@@ -28,7 +28,7 @@ def test_reshuffle():
     assert len(g.deck.scrap_pile) == 1
 
 def test_draw_from_scrap():
-    g = Game('test', DummySocket())
+    g = Game('test')
     g.deck = Deck(g)
     l = len(g.deck.cards)
     assert g.deck.pick_and_scrap() != None

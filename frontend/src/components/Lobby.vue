@@ -333,6 +333,7 @@ export default {
 				icon: icon,
 				is_character: true,
 				avatar: player.avatar,
+				is_player: true
 			}
 		},
 		startGame() {

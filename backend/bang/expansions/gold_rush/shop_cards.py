@@ -1,6 +1,7 @@
 from bang.cards import *
 import bang.roles as r
 import bang.players as pl
+from globals import G
 
 class ShopCardKind(IntEnum):
     BROWN = 0  # Se l’equipaggiamento ha il bordo marrone, applicane subito l’effetto e poi scartalo.
@@ -16,14 +17,14 @@ class ShopCard(Card):
 
     def play_card(self, player, against, _with=None):
         if self.kind == ShopCardKind.BROWN:
-            player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
+            G.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
             return True
         elif self.kind == ShopCardKind.BLACK: # equip it
             if not self.is_duplicate_card(player):
                 self.reset_card()
                 self.can_be_used_now = True
                 player.gold_rush_equipment.append(self)
-                player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
+                G.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
                 return True
             else:
                 return False
@@ -102,7 +103,7 @@ class Rum(ShopCard):
         num = 5 if player.character.check(player.game, c.LuckyDuke) else 4
         for i in range(num):
             c = player.game.deck.pick_and_scrap()
-            player.sio.emit('chat_message', room=player.game.name, data=f'_flipped|{player.name}|{c.name}|{c.num_suit()}')
+            G.sio.emit('chat_message', room=player.game.name, data=f'_flipped|{player.name}|{c.name}|{c.num_suit()}')
             suits.add(c.suit)
         player.lives = min(player.lives+len(suits), player.max_lives)
         return super().play_card(player, against, _with)
@@ -113,7 +114,7 @@ class UnionPacific(ShopCard):
         self.icon = '🚆️'
 
     def play_card(self, player, against=None, _with=None):
-        player.sio.emit('chat_message', room=player.game.name,
+        G.sio.emit('chat_message', room=player.game.name,
                         data=f'_UnionPacific|{player.name}|{self.name}')
         for i in range(4):
             player.hand.append(player.game.deck.draw(True))
@@ -162,7 +163,7 @@ class Ricercato(ShopCard):
         self.can_target_self = True
 
     def play_card(self, player, against=None, _with=None):
-        player.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
+        G.sio.emit('chat_message', room=player.game.name, data=f'_purchase_card|{player.name}|{self.name}')
         player.available_cards = [{
             'name': p.name,
             'icon': p.role.icon if(player.game.initial_players == 3) else '🤠',
@@ -187,7 +188,7 @@ class Setaccio(ShopCard):
             return super().play_card(player, against, _with)
         else:
             if player.gold_nuggets >= 1 and player.setaccio_count < 2:
-                player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
+                G.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 1
                 player.setaccio_count += 1
                 player.hand.append(player.game.deck.draw(True))
@@ -224,7 +225,7 @@ class Zaino(ShopCard):
             return super().play_card(player, against, _with)
         else:
             if player.gold_nuggets >= 2:
-                player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
+                G.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 2
                 player.lives = min(player.lives + 1, player.max_lives)
                 player.notify_self()

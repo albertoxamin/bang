@@ -4,6 +4,7 @@ import bang.expansions.high_noon.card_events as ceh
 from abc import ABC, abstractmethod
 from enum import IntEnum
 import bang.roles as r
+from globals import G
 
 class Suit(IntEnum):
     DIAMONDS = 0  # ♦
@@ -84,10 +85,10 @@ class Card(ABC):
                 player.equipment.append(self)
             self.can_be_used_now = False
         if against:
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card_against|{player.name}|{self.name}|{against}')
         else:
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card|{player.name}|{self.name}')
         return True
 
@@ -154,7 +155,7 @@ class Prigione(Card):
                 return False
         if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
             self.can_be_used_now = False
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
             player.game.get_player_named(against).equipment.append(self)
             player.game.get_player_named(against).notify_self()
@@ -268,7 +269,7 @@ class Birra(Card):
                 player.lives = min(player.lives+1, player.max_lives)
             return True
         elif len(player.game.get_alive_players()) == 2 or player.lives == player.max_lives:
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                             data=f'_spilled_beer|{player.name}|{self.name}')
             return True
         return False
@@ -305,7 +306,7 @@ class Diligenza(Card):
         # self.desc_eng = "Draw 2 cards from the deck."
 
     def play_card(self, player, against, _with=None):
-        player.sio.emit('chat_message', room=player.game.name,
+        G.sio.emit('chat_message', room=player.game.name,
                         data=f'_diligenza|{player.name}|{self.name}')
         for i in range(2):
             player.hand.append(player.game.deck.draw(True))
@@ -382,7 +383,7 @@ class Mancato(Card):
                 return False
             if player.game.check_event(ceh.Sermone):
                 return False
-            player.sio.emit('chat_message', room=player.game.name,
+            G.sio.emit('chat_message', room=player.game.name,
                             data=f'_special_calamity|{player.name}|{self.name}|{against}')
             player.bang_used += 1
             player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
@@ -421,7 +422,7 @@ class Saloon(Card):
         self.alt_text = "👥🍺"
 
     def play_card(self, player, against, _with=None):
-        player.sio.emit('chat_message', room=player.game.name,
+        G.sio.emit('chat_message', room=player.game.name,
                         data=f'_saloon|{player.name}|{self.name}')
         for p in player.game.get_alive_players():
             p.lives = min(p.lives+1, p.max_lives)
@@ -438,7 +439,7 @@ class WellsFargo(Card):
         self.alt_text = "🎴🎴🎴"
 
     def play_card(self, player, against, _with=None):
-        player.sio.emit('chat_message', room=player.game.name,
+        G.sio.emit('chat_message', room=player.game.name,
                         data=f'_wellsfargo|{player.name}|{self.name}')
         for i in range(3):
             player.hand.append(player.game.deck.draw(True))

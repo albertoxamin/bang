@@ -20,10 +20,16 @@ sys.setrecursionlimit(10**6) # this should prevents bots from stopping
 import logging
 logging.basicConfig(filename='out.log', level='ERROR')
 from functools import wraps
+from globals import G
 
 Metrics.init()
 
 sio = socketio.Server(cors_allowed_origins="*")
+G.sio = sio
+
+import faulthandler
+
+faulthandler.enable()
 
 static_files={
         '/': {'content_type': 'text/html', 'filename': 'index.html'},
@@ -54,20 +60,24 @@ def send_to_debug(error):
         if g.debug or any((p.is_admin() for p in g.players)):
             sio.emit('chat_message', room=g.name, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
 
+save_lock = False
 def bang_handler(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
+        global save_lock
+        save_lock = True
         try:
             func(*args, **kwargs)
         except Exception as e:
             logging.exception(e)
             print(traceback.format_exc())
             send_to_debug(traceback.format_exc())
+        save_lock = False
     return wrapper_func
 
 def advertise_lobbies():
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
-    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden and len(g.players) > 0])
     Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
 
@@ -114,7 +124,7 @@ def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
         dt = username["discord_token"] if 'discord_token' in username else None
-        sio.save_session(sid, Player(username["name"], sid, sio, discord_token=dt))
+        sio.save_session(sid, Player(username["name"], sid, discord_token=dt))
         print(f'{sid} is now {username}')
         advertise_lobbies()
     elif ses.game == None or not ses.game.started:
@@ -138,7 +148,7 @@ def get_me(sid, room):
             sio.get_session(sid).game.notify_room()
     else:
         dt = room["discord_token"] if 'discord_token' in room else None
-        sio.save_session(sid, Player('player', sid, sio, discord_token=dt))
+        sio.save_session(sid, Player('player', sid, discord_token=dt))
         if 'replay' in room and room['replay'] != None:
             create_room(sid, room['replay'])
             sid = sio.get_session(sid)
@@ -153,16 +163,16 @@ def get_me(sid, room):
             if 'ffw' not in room:
                 sid.game.replay(log)
             else:
-                sid.game.replay(log, speed=0.1, fast_forward=int(room['ffw']))
+                sid.game.replay(log, speed=0, fast_forward=int(room['ffw']))
             return
         de_games = [g for g in games if g.name == room['name']]
         if len(de_games) == 1 and not de_games[0].started:
             join_room(sid, room)
         elif len(de_games) == 1 and de_games[0].started:
             print('room exists')
-            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt)))):
+            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None))):
                 print('getting inside the bot')
-                bot = [p for p in de_games[0].players if p.is_bot and p.name == room['username'] ][0]
+                bot = [p for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None) and p.name == room['username']][0]
                 bot.sid = sid
                 bot.is_bot = False
                 sio.enter_room(sid, de_games[0].name)
@@ -193,7 +203,7 @@ def get_me(sid, room):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players)):
+            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players if not ((dt != None and p.discord_token == dt) or p.sid == None))):
                 sio.emit('change_username', room=sid)
             else:
                 sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
@@ -225,7 +235,7 @@ def create_room(sid, room_name):
             room_name += f'_{random.randint(0,100)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
-        g = Game(room_name, sio)
+        g = Game(room_name)
         g.add_player(sio.get_session(sid))
         if room_name in blacklist:
             g.is_hidden = True
@@ -308,6 +318,15 @@ def get_all_rooms(sid, deploy_key):
 def kick(sid, data):
     if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
         sio.emit('kicked', room=data['sid'])
+
+@sio.event
+@bang_handler
+def reset(sid, data):
+    global games
+    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
+        for g in games:
+            sio.emit('kicked', room=g.name)
+        games = []
 
 @sio.event
 @bang_handler
@@ -436,14 +455,14 @@ def chat_message(sid, msg, pl=None):
                 if '/addbot' in msg and not ses.game.started:
                     if len(msg.split()) > 1:
                         # for _ in range(int(msg.split()[1])):
-                        #     ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', sio, bot=True))
+                        #     ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', bot=True))
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                     else:
-                        bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
+                        bot = Player(f'AI_{random.randint(0,10)}', 'bot', bot=True)
                         while any((p for p in ses.game.players if p.name == bot.name)):
-                            bot = Player(f'AI_{random.randint(0,10)}', 'bot', sio, bot=True)
+                            bot = Player(f'AI_{random.randint(0,10)}', 'bot', bot=True)
                         ses.game.add_player(bot)
-                        bot.bot_spin()
+                        sio.start_background_task(bot.bot_spin)
                     return
                 if '/replay' in msg and not '/replayspeed' in msg and not '/replaypov' in msg:
                     _cmd = msg.split()
@@ -456,7 +475,7 @@ def chat_message(sid, msg, pl=None):
                             ses.game.replay(log)
                         if len(_cmd) == 3:
                             line = int(_cmd[2])
-                            ses.game.replay(log, speed=0.1, fast_forward=line)
+                            ses.game.replay(log, speed=0, fast_forward=line)
                     return
                 if '/replayspeed' in msg:
                     _cmd = msg.split()
@@ -469,11 +488,8 @@ def chat_message(sid, msg, pl=None):
                         name = ' '.join(_cmd[1:])
                         for p in ses.game.players:
                             if p.sid == ses.sid:
-                                from tests.dummy_socket import DummySocket
-                                p.sio = DummySocket()
                                 p.sid = ''
                         pl = ses.game.get_player_named(name)
-                        pl.sio = sio
                         pl.sid = ses.sid
                         pl.set_role(pl.role)
                         pl.notify_self()
@@ -666,7 +682,7 @@ def chat_message(sid, msg, pl=None):
                     ses.is_bot = not ses.is_bot
                     if (ses.is_bot):
                         ses.was_player = True
-                    ses.bot_spin()
+                    sio.start_background_task(ses.bot_spin)
                 elif '/arcadekick' in msg and ses.game.started:
                     if not any((p.pending_action != PendingAction.WAIT for p in ses.game.players)):
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'','text':f'KICKING THE ARCADE CABINET'})
@@ -763,11 +779,12 @@ def discord_auth(sid, data):
     if res.status_code == 200:
         sio.emit('discord_auth_succ', room=sid, data=res.json())
 
+
 def pool_metrics():
-    sio.sleep(60)
-    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
-    Metrics.send_metric('online_players', points=[online_players])
-    pool_metrics()
+    while True:
+        sio.sleep(60)
+        Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
+        Metrics.send_metric('online_players', points=[online_players])
 
 import urllib.parse
 class CustomProxyFix(object):
@@ -790,7 +807,28 @@ class CustomProxyFix(object):
 
 discord_ci = '1059452581027532880'
 discord_cs = 'Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu'
+import pickle
+def save_games():
+    global save_lock
+    while True:
+        sio.sleep(2)
+        if not save_lock:
+            with open('games.pickle', 'wb') as f:
+                pickle.dump([g for g in games if g.started and not g.is_replay and not g.is_hidden], f)
 
 if __name__ == '__main__':
+    if os.path.exists('games.pickle'):
+        try:
+            with open('games.pickle', 'rb') as file:
+                games = pickle.load(file)
+                for g in games:
+                    for p in g.players:
+                        if p.sid != 'bot':
+                            sio.start_background_task(p.disconnect)
+                        else:
+                            sio.start_background_task(p.bot_spin)
+        except:
+            pass
+    sio.start_background_task(save_games)
     sio.start_background_task(pool_metrics)
     eventlet.wsgi.server(eventlet.listen(('', 5001)), CustomProxyFix(app))

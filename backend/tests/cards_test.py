@@ -1,16 +1,15 @@
 from random import randint
 from bang.characters import Character
 from bang.cards import *
-from tests.dummy_socket import DummySocket
 from bang.deck import Deck
 from bang.game import Game
 from bang.players import Player, PendingAction
 
 # test card Barile
 def test_barile():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -43,9 +42,9 @@ def test_barile():
 
 #test card Volcanic
 def test_volcanic():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -67,9 +66,9 @@ def test_volcanic():
 
 # test card Dinamite
 def test_dinamite():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -103,9 +102,9 @@ def test_dinamite():
 
 # test mirino
 def test_mirino():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(4)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -121,9 +120,9 @@ def test_mirino():
 
 # test mustang
 def test_mustang():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -139,9 +138,9 @@ def test_mustang():
 
 # test Prigione
 def test_prigione():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(4)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -171,9 +170,9 @@ def test_prigione():
 
 # test all weapons ranges
 def test_all_weapons():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(4)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -195,9 +194,9 @@ def test_all_weapons():
 
 # test bang
 def test_bang():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -214,9 +213,9 @@ def test_bang():
 
 # test birra
 def test_birra_2p():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -231,9 +230,9 @@ def test_birra_2p():
 
 # test birra
 def test_birra_3p():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(3)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -262,9 +261,9 @@ def test_birra_3p():
 
 # test CatBalou
 def test_catbalou():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -282,9 +281,9 @@ def test_catbalou():
 
 # test Diligenza
 def test_diligenza():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(4)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -298,9 +297,9 @@ def test_diligenza():
 
 # test Duello
 def test_duello():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -326,9 +325,9 @@ def test_duello():
 
 # test Emporio
 def test_emporio():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(7)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(7)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -352,9 +351,9 @@ def test_emporio():
 
 # test Gatling
 def test_gatling():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(7)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(7)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -386,9 +385,9 @@ def test_gatling():
 
 # test Indiani
 def test_indiani():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(7)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(7)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -420,9 +419,9 @@ def test_indiani():
 
 # test Mancato
 def test_mancato():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -442,9 +441,9 @@ def test_mancato():
 
 # test Panico
 def test_panico():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(2)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -461,9 +460,9 @@ def test_panico():
 
 # test Saloon
 def test_saloon():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(8)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(8)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -480,9 +479,9 @@ def test_saloon():
 
 # test WellsFargo
 def test_wells_fargo():
-    sio = DummySocket()
-    g = Game('test', sio)
-    ps = [Player(f'p{i}', f'p{i}', sio) for i in range(4)]
+    
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
     for p in ps:
         g.add_player(p)
     g.start_game()
