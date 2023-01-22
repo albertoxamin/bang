@@ -93,6 +93,9 @@
 				<Status deploy_key="ok"/>
 			</div>
 		</transition>
+		<transition name="bounce">
+			<DeadRoleNotification v-if="deadRoleData" :playerCard="deadRoleData" :playerRole="deadRoleData.role"/>
+		</transition>
 	</div>
 </template>
 
@@ -107,6 +110,7 @@ import Deck from './Deck.vue'
 import TinyHand from './TinyHand.vue'
 import FullScreenInput from './FullScreenInput.vue'
 import Status from './Status.vue'
+import DeadRoleNotification from './DeadRoleNotification.vue'
 
 export default {
 	name: 'Lobby',
@@ -119,7 +123,8 @@ export default {
 		TinyHand,
 		PrettyCheck,
 		FullScreenInput,
-		Status
+		Status,
+		DeadRoleNotification
 	},
 	data: () => ({
 		username: '',
@@ -147,6 +152,7 @@ export default {
 		displayAdminStatus: false,
 		is_replay: false,
 		turn: -1,
+		deadRoleData: null,
 	}),
 	sockets: {
 		room(data) {
@@ -174,6 +180,12 @@ export default {
 				}
 			})
 		},
+		notify_dead_role(data) {
+			this.deadRoleData = data
+			setTimeout(() => {
+				this.deadRoleData = null
+			}, 4000);
+		},
 		debug(data) {
 			this.debug_mode = data;
 		},
@@ -191,28 +203,10 @@ export default {
 				this.$router.push('/')
 			}
 			this.username = username
-			// this.$socket.emit('get_cards', 'dodge_city')
 		},
 		mount_status() {
 			this.displayAdminStatus = true
 		},
-		// cards_info(data) {
-		// 	data = JSON.parse(data)
-		// 	let bigthing = {}
-		// 	let bigthing_eng = {}
-		// 	data.forEach(x => {
-		// 		bigthing[x.name] = {
-		// 			name:x.name,
-		// 			desc:x.desc,
-		// 		}
-		// 		bigthing_eng[x.name] = {
-		// 			name:x.name,
-		// 			desc:x.desc_eng,
-		// 		}
-		// 	})
-		// 	console.log(JSON.stringify(bigthing))
-		// 	console.log(JSON.stringify(bigthing_eng))
-		// },
 		change_username() {
 			this.hasToSetUsername = true
 		},

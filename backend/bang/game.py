@@ -747,6 +747,17 @@ class Game:
         G.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
         if self.started:
             G.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
+            if not isinstance(player.role, roles.Sheriff) and not self.initial_players == 3:
+                G.sio.emit('notify_dead_role', room=self.name, data={
+                    'name': player.name,
+                    'lives': 0,
+                    'max_lives': player.max_lives,
+                    'is_ghost': player.is_ghost,
+                    'is_bot': player.is_bot,
+                    'icon': '🤠',
+                    'avatar': player.avatar,
+                    'role': player.role.__dict__,
+                })
         for p in self.players:
             if not p.is_bot:
                 p.notify_self()
