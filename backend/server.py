@@ -814,7 +814,7 @@ def save_games():
         sio.sleep(2)
         if not save_lock:
             with open('games.pickle', 'wb') as f:
-                pickle.dump([g for g in games if g.started and not g.is_replay], f)
+                pickle.dump([g for g in games if g.started and not g.is_replay and not g.is_hidden], f)
 
 if __name__ == '__main__':
     if os.path.exists('games.pickle'):
