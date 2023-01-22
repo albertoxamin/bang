@@ -13,10 +13,10 @@ import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
-import eventlet
 from typing import List
 from metrics import Metrics
 from globals import G
+import sys
 
 robot_pictures = [
     'https://i.imgur.com/40rAFIb.jpg',
@@ -150,7 +150,7 @@ class Player:
         print(f'I {self.name} joined {self.game}')
 
     def disconnect(self):
-        if self.is_admin() and self.game.debug and self.game.started: return False
+        if self.is_admin() and self.game.debug and self.game.started and getattr(sys, 'gettrace', None)(): return False
         return self.game.handle_disconnect(self)
 
     def set_role(self, role: r.Role):
