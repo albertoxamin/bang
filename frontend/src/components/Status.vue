@@ -38,7 +38,7 @@ export default {
 	props: {
 		onpage: {
 			type: Boolean,
-			default: false
+			default: true
 		}
 	},
 	data:()=>({
@@ -63,7 +63,8 @@ export default {
 		},
 		reset(){
 			if (confirm('ARE YOU SURE? KICK EVERYONE AND RESET LOBBIES?'))
-				this.$socket.emit('reset', this.deploy_key)
+				this.$socket.emit('reset', {'key':this.deploy_key})
+				this.refresh();
 		},
 		hide(room_name){
 			this.$socket.emit('hide_toogle', {'key':this.deploy_key, 'room':room_name})

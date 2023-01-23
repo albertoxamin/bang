@@ -90,7 +90,7 @@
 		<transition name="bounce">
 			<div v-if="displayAdminStatus" id="admin-status">
 				<input type="button" @click="displayAdminStatus = false" value="close"/>
-				<Status deploy_key="ok"/>
+				<Status deploy_key="ok" :onpage="false"/>
 			</div>
 		</transition>
 		<transition name="bounce">

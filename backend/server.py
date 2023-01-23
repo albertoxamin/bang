@@ -299,7 +299,8 @@ Sockets for the status page
 @sio.event
 @bang_handler
 def get_all_rooms(sid, deploy_key):
-    if ('DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
+    ses = sio.get_session(sid)
+    if ('DEPLOY_KEY' in os.environ and deploy_key == os.environ['DEPLOY_KEY']) or (isinstance(ses, Player) and ses.is_admin()):
         sio.emit('all_rooms', room=sid, data=[{
             'name': g.name,
             'hidden': g.is_hidden,
@@ -316,14 +317,16 @@ def get_all_rooms(sid, deploy_key):
 @sio.event
 @bang_handler
 def kick(sid, data):
-    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
+    ses = sio.get_session(sid)
+    if ('DEPLOY_KEY' in os.environ and 'key' in data and data['key'] == os.environ['DEPLOY_KEY']) or (isinstance(ses, Player) and ses.is_admin()):
         sio.emit('kicked', room=data['sid'])
 
 @sio.event
 @bang_handler
 def reset(sid, data):
     global games
-    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
+    ses = sio.get_session(sid)
+    if ('DEPLOY_KEY' in os.environ and 'key' in data and data['key'] == os.environ['DEPLOY_KEY']) or (isinstance(ses, Player) and ses.is_admin()):
         for g in games:
             sio.emit('kicked', room=g.name)
         games = []
@@ -331,7 +334,8 @@ def reset(sid, data):
 @sio.event
 @bang_handler
 def hide_toogle(sid, data):
-    if ('DEPLOY_KEY' in os.environ and data['key'] == os.environ['DEPLOY_KEY']) or sio.get_session(sid).is_admin():
+    ses = sio.get_session(sid)
+    if ('DEPLOY_KEY' in os.environ and 'key' in data and data['key'] == os.environ['DEPLOY_KEY']) or (isinstance(ses, Player) and ses.is_admin()):
         game = [g for g in games if g.name==data['room']]
         if len(games) > 0:
             game[0].is_hidden = not game[0].is_hidden
