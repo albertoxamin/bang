@@ -20,8 +20,11 @@ COPY --from=pybuilder /code /dist
 # copy the frontend static files from the builder
 COPY --from=builder ./dist /dist/
 WORKDIR /dist
+# create dir for save
+RUN mkdir save
 EXPOSE 5001
 
 ENV PATH=/root/.local/bin:${PATH}
+VOLUME /dist/save
 
 ENTRYPOINT ["python", "/dist/server.py"]
