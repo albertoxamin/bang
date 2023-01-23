@@ -141,88 +141,87 @@ def set_username(sid, username):
 
 @sio.event
 @bang_handler
-def get_me(sid, room):
+def get_me(sid, data):
     if isinstance(sio.get_session(sid), Player):
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
         if sio.get_session(sid).game:
             sio.get_session(sid).game.notify_room()
     else:
-        dt = room["discord_token"] if 'discord_token' in room else None
+        dt = data["discord_token"] if 'discord_token' in data else None
         sio.save_session(sid, Player('player', sid, discord_token=dt))
-        if 'replay' in room and room['replay'] != None:
-            create_room(sid, room['replay'])
+        if 'replay' in data and data['replay'] != None:
+            create_room(sid, data['replay'])
             sid = sio.get_session(sid)
             sid.game.is_hidden = True
             eventlet.sleep(0.5)
-            response = requests.get(f"https://hastebin.com/raw/{room['replay']}")
+            response = requests.get(f"https://hastebin.com/raw/{data['replay']}")
             if response.status_code != 200:
                 sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Invalid replay code'})
                 return
             log = response.text.splitlines()
             sid.game.spectators.append(sid)
-            if 'ffw' not in room:
+            if 'ffw' not in data:
                 sid.game.replay(log)
             else:
-                sid.game.replay(log, speed=0, fast_forward=int(room['ffw']))
+                sid.game.replay(log, speed=0, fast_forward=int(data['ffw']))
             return
-        de_games = [g for g in games if g.name == room['name']]
-        if len(de_games) == 1 and not de_games[0].started:
-            join_room(sid, room)
-        elif len(de_games) == 1 and de_games[0].started:
-            print('room exists')
-            if room['username'] != None and any((p.name == room['username'] for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None))):
-                print('getting inside the bot')
-                bot = [p for p in de_games[0].players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None) and p.name == room['username']][0]
-                bot.sid = sid
-                bot.is_bot = False
-                sio.enter_room(sid, de_games[0].name)
-                sio.save_session(sid, bot)
-                de_games[0].notify_room(sid)
-                eventlet.sleep(0.1)
-                de_games[0].notify_all()
-                de_games[0].notify_scrap_pile(sid)
-                sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
-                bot.notify_self()
-                if len(bot.available_characters) > 0:
-                    bot.set_available_character(bot.available_characters)
-            else: #spectate
-                de_games[0].spectators.append(sio.get_session(sid))
-                sio.get_session(sid).game = de_games[0]
-                sio.enter_room(sid, de_games[0].name)
-                de_games[0].notify_room(sid)
-                eventlet.sleep(0.1)
-
-                de_games[0].notify_event_card(sid)
-                de_games[0].notify_scrap_pile(sid)
-                de_games[0].notify_all()
-            de_games[0].notify_gold_rush_shop()
-            de_games[0].notify_event_card()
+        if (room := next((g for g in games if g.name == data['name']), None)) is not None:
+            if not room.started:
+                join_room(sid, data)
+            elif room.started:
+                print('room exists')
+                if data['username'] != None and any((p.name == data['username'] for p in room.players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None))):
+                    print('getting inside the bot')
+                    bot = [p for p in room.players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None) and p.name == data['username']][0]
+                    bot.sid = sid
+                    bot.is_bot = False
+                    sio.enter_room(sid, room.name)
+                    sio.save_session(sid, bot)
+                    room.notify_room(sid)
+                    eventlet.sleep(0.1)
+                    room.notify_all()
+                    room.notify_scrap_pile(sid)
+                    sio.emit('role', room=sid, data=json.dumps(bot.role, default=lambda o: o.__dict__))
+                    bot.notify_self()
+                    if len(bot.available_characters) > 0:
+                        bot.set_available_character(bot.available_characters)
+                else: #spectate
+                    room.spectators.append(sio.get_session(sid))
+                    sio.get_session(sid).game = room
+                    sio.enter_room(sid, room.name)
+                    room.notify_room(sid)
+                    eventlet.sleep(0.1)
+                    room.notify_event_card(sid)
+                    room.notify_scrap_pile(sid)
+                    room.notify_all()
+                room.notify_gold_rush_shop()
+                room.notify_event_card()
         else:
-            create_room(sid, room['name'])
-        if sio.get_session(sid).game == None:
+            create_room(sid, data['name'])
+        if (p := sio.get_session(sid)).game is None:
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
-            sio.emit('me', data=sio.get_session(sid).name, room=sid)
-            if room['username'] == None or any((p.name == room['username'] for p in sio.get_session(sid).game.players if not ((dt != None and p.discord_token == dt) or p.sid == None))):
+            sio.emit('me', data=p.name, room=sid)
+            if data['username'] == None or any((pl.name == data['username'] for pl in p.game.players if not ((dt != None and pl.discord_token == dt) or pl.sid == None))):
                 sio.emit('change_username', room=sid)
             else:
-                sio.emit('chat_message', room=sio.get_session(sid).game.name, data=f"_change_username|{sio.get_session(sid).name}|{room['username']}")
-                sio.get_session(sid).name = room['username']
-                sio.emit('me', data=sio.get_session(sid).name, room=sid)
-                if not sio.get_session(sid).game.started:
-                    sio.get_session(sid).game.notify_room()
+                sio.emit('chat_message', room=p.game.name, data=f"_change_username|{p.name}|{data['username']}")
+                p.name = data['username']
+                sio.emit('me', data=p.name, room=sid)
+                if not p.game.started:
+                    p.game.notify_room()
 
 @sio.event
 @bang_handler
 def disconnect(sid):
     global online_players
     online_players -= 1
-    if sio.get_session(sid):
+    if (p := sio.get_session(sid)) is not None:
         sio.emit('players', room='lobby', data=online_players)
-        if sio.get_session(sid).game and sio.get_session(sid).disconnect():
-            sio.close_room(sio.get_session(sid).game.name)
-            if sio.get_session(sid).game in games:
-                games.pop(games.index(sio.get_session(sid).game))
+        if p.game and p.disconnect():
+            sio.close_room(p.game.name)
+            if p.game in games:
+                games.pop(games.index(p.game))
         print('disconnect ', sid)
         advertise_lobbies()
     Metrics.send_metric('online_players', points=[online_players])
@@ -230,13 +229,13 @@ def disconnect(sid):
 @sio.event
 @bang_handler
 def create_room(sid, room_name):
-    if sio.get_session(sid).game == None:
+    if (p := sio.get_session(sid)).game is None:
         while any((g.name == room_name for g in games)):
             room_name += f'_{random.randint(0,100)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
         g = Game(room_name)
-        g.add_player(sio.get_session(sid))
+        g.add_player(p)
         if room_name in blacklist:
             g.is_hidden = True
         games.append(g)
@@ -458,8 +457,6 @@ def chat_message(sid, msg, pl=None):
             for msg in commands:
                 if '/addbot' in msg and not ses.game.started:
                     if len(msg.split()) > 1:
-                        # for _ in range(int(msg.split()[1])):
-                        #     ses.game.add_player(Player(f'AI_{random.randint(0,1000)}', 'bot', bot=True))
                         sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'Only 1 bot at the time'})
                     else:
                         bot = Player(f'AI_{random.randint(0,10)}', 'bot', bot=True)
