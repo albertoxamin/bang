@@ -221,7 +221,7 @@ class Game:
         self.notify_room()
 
     def feature_flags(self):
-        if 'the_valley_of_shadows' not in self.expansions:
+        if 'the_valley_of_shadows' not in self.expansions and 'the_valley_of_shadows' not in self.available_expansions :
             self.available_expansions.append('the_valley_of_shadows')
         self.notify_room()
 
