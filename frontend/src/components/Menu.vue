@@ -92,6 +92,7 @@ export default {
 				icon: '🤠',
 				is_character: true,
 				avatar: this.discordPic,
+				is_player: true
 			}
 		},
 		version() {

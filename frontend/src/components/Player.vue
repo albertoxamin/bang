@@ -245,6 +245,7 @@ export default {
 					icon: this.noStar ? player.icon : player.is_sheriff ? '⭐' : '🤠',
 					avatar: player.avatar,
 					is_character: true,
+					is_player: true
 				}})
 			return vis
 		},
@@ -267,6 +268,7 @@ export default {
 					alt_text: Array(player.lives+1).join('❤️')+Array(player.max_lives-player.lives+1).join('💀'),
 					avatar: player.avatar,
 					is_character: true,
+					is_player: true
 				}})
 			if (this.card_against && this.card_against.can_target_self) {
 				vis.push({
@@ -274,6 +276,7 @@ export default {
 					number: 0,
 					icon: this.$t('you'),
 					is_character: true,
+					is_player: true
 				})
 			}
 			return vis

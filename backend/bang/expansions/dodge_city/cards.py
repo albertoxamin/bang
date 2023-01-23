@@ -1,5 +1,6 @@
 from bang.cards import *
 import bang.expansions.fistful_of_cards.card_events as ce
+from globals import G
 
 class Binocolo(Mirino):
     def __init__(self, suit, number):
@@ -88,7 +89,7 @@ class Rissa(CatBalou):
             player.event_type = 'rissa'
             print(f'rissa targets: {player.rissa_targets}')
             super().play_card(player, against=player.rissa_targets.pop(0).name)
-            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
+            G.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
             return True
         return False
 
@@ -123,7 +124,7 @@ class Tequila(Card):
 
     def play_card(self, player, against, _with=None):
         if against != None and _with != None:
-            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_for|{player.name}|{self.name}|{against}')
+            G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_for|{player.name}|{self.name}|{against}')
             player.game.deck.scrap(_with)
             player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
             player.game.get_player_named(against).notify_self()
@@ -322,7 +323,7 @@ class CanCan(CatBalou):
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
-            player.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|{self.name}|{against}')
+            G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{player.name}|{self.name}|{against}')
             return super().play_card(player, against)
         else:
             if not self.is_duplicate_card(player) and not player.game.check_event(ce.IlGiudice):

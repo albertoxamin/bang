@@ -14,7 +14,10 @@ import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
+import bang.expansions.the_valley_of_shadows.cards as tvosc
 from metrics import Metrics
+from globals import G
+
 
 debug_commands = [
     {'cmd':'/debug', 'help':'Toggles the debug mode'},
@@ -45,9 +48,8 @@ debug_commands = [
 ]
 
 class Game:
-    def __init__(self, name, sio:socketio):
+    def __init__(self, name):
         super().__init__()
-        self.sio = sio
         self.name = name
         self.players: List[pl.Player] = []
         self.spectators: List[pl.Player] = []
@@ -81,6 +83,7 @@ class Game:
         self.rng = random.Random()
         self.rpc_log = []
         self.is_replay = False
+        self.replay_speed = 1
 
     def shuffle_players(self):
         if not self.started:
@@ -117,13 +120,14 @@ class Game:
         self.notify_room()
 
     def replay(self, log, speed=1.0, fast_forward = -1):
-        from tests.dummy_socket import DummySocket
         self.players = []
         self.is_hidden = True
         self.is_replay = True
         self.replay_speed = speed
         for i in range(len(log)-1):
             print('replay:', i, 'of', len(log)-3, '->', log[i])
+            if len(self.spectators) == 0:
+                break
             if (log[i] == "@@@"):
                 eventlet.sleep(10)
                 if self.is_replay:
@@ -134,7 +138,7 @@ class Game:
                 self.expansions = json.loads(cmd[4].replace("'",'"'))
                 pnames = json.loads(cmd[3].replace("'",'"'))
                 for p in pnames:
-                    self.add_player(pl.Player(p, p, DummySocket(self.sio), bot=False))
+                    self.add_player(pl.Player(p, 'a', bot=False))
                 continue
             if cmd[1] == 'start_game':
                 self.start_game(int(cmd[2]))
@@ -173,7 +177,7 @@ class Game:
             if i == fast_forward:
                 self.replay_speed = 1.0
             self.notify_room()
-            eventlet.sleep(max(self.replay_speed, 0.1))
+            eventlet.sleep(max(self.replay_speed, 0.001))
         eventlet.sleep(6)
         if self.is_replay:
             self.reset()
@@ -181,7 +185,7 @@ class Game:
 
     def notify_room(self, sid=None):
         if any((p.character == None for p in self.players)) or sid:
-            self.sio.emit('room', room=self.name if not sid else sid, data={
+            G.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
                 'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot, 'avatar': p.avatar} for p in self.players],
@@ -192,12 +196,12 @@ class Game:
                 'available_expansions': self.available_expansions,
                 'is_replay': self.is_replay,
             })
-        self.sio.emit('debug', room=self.name, data=self.debug)
+        G.sio.emit('debug', room=self.name, data=self.debug)
         if self.debug:
-            self.sio.emit('commands', room=self.name, data=[x for x in debug_commands if 'admin' not in x])
+            G.sio.emit('commands', room=self.name, data=[x for x in debug_commands if 'admin' not in x])
         else:
-            self.sio.emit('commands', room=self.name, data=[{'cmd':'/debug', 'help':'Toggles the debug mode'}])
-        self.sio.emit('spectators', room=self.name, data=len(self.spectators))
+            G.sio.emit('commands', room=self.name, data=[{'cmd':'/debug', 'help':'Toggles the debug mode'}])
+        G.sio.emit('spectators', room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):
         if not self.started:
@@ -217,7 +221,7 @@ class Game:
         self.notify_room()
 
     def feature_flags(self):
-        if 'the_valley_of_shadows' not in self.expansions:
+        if 'the_valley_of_shadows' not in self.expansions and 'the_valley_of_shadows' not in self.available_expansions :
             self.available_expansions.append('the_valley_of_shadows')
         self.notify_room()
 
@@ -235,7 +239,7 @@ class Game:
         self.players.append(player)
         print(f'{self.name}: Added player {player.name} to game')
         self.notify_room()
-        self.sio.emit('chat_message', room=self.name, data=f'_joined|{player.name}')
+        G.sio.emit('chat_message', room=self.name, data=f'_joined|{player.name}')
 
     def set_private(self):
         if not self.is_changing_pwd:
@@ -254,7 +258,7 @@ class Game:
         if not any((p.character == None for p in self.players)):
             for i in range(len(self.players)):
                 print(self.name, self.players[i].name, self.players[i].character)
-                self.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
+                G.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
                     self.players[i].hand.append(self.deck.draw())
@@ -265,7 +269,7 @@ class Game:
             for x in current_roles:
                 if (x not in cr):
                     cr += '|' +x + '|' + str(current_roles.count(x))
-            self.sio.emit('chat_message', room=self.name, data=f'_allroles{cr}')
+            G.sio.emit('chat_message', room=self.name, data=f'_allroles{cr}')
             self.play_turn()
 
     def choose_characters(self):
@@ -286,8 +290,8 @@ class Game:
         self.rpc_log = [f';players;{len(self.players)};{[p.name for p in self.players]};{self.expansions}', f';start_game;{SEED}']
         self.rng = random.Random(SEED)
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
-        self.sio.emit('chat_message', room=self.name, data=f'_starting')
-        self.sio.emit('start', room=self.name)
+        G.sio.emit('chat_message', room=self.name, data=f'_starting')
+        G.sio.emit('start', room=self.name)
         self.started = True
         self.someone_won = False
         self.attack_in_progress = False
@@ -319,7 +323,7 @@ class Game:
             self.players[i].set_role(available_roles[i])
             if isinstance(available_roles[i], roles.Sheriff) or (len(available_roles) == 3 and isinstance(available_roles[i], roles.Vice)):
                 if isinstance(available_roles[i], roles.Sheriff):
-                    self.sio.emit('chat_message', room=self.name, data=f'_sheriff|{self.players[i].name}')
+                    G.sio.emit('chat_message', room=self.name, data=f'_sheriff|{self.players[i].name}')
                 self.turn = i
             self.players[i].notify_self()
         self.notify_event_card()
@@ -420,13 +424,13 @@ class Game:
         self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
         self.players[self.turn].choose_text = 'choose_card_to_get'
         self.players[self.turn].available_cards = self.available_cards
-        self.sio.emit('emporio', room=self.name, data=json.dumps(
+        G.sio.emit('emporio', room=self.name, data=json.dumps(
             {'name':self.players[self.turn].name,'cards': self.available_cards}, default=lambda o: o.__dict__))
         self.players[self.turn].notify_self()
 
     def respond_emporio(self, player, i):
         card = self.available_cards.pop(i)
-        player.sio.emit('chat_message', room=self.name, data=f'_choose_emporio|{player.name}|{card.name}')
+        G.sio.emit('chat_message', room=self.name, data=f'_choose_emporio|{player.name}|{card.name}')
         player.hand.append(card)
         player.available_cards = []
         player.pending_action = pl.PendingAction.WAIT
@@ -436,18 +440,18 @@ class Game:
         if len(self.available_cards) == 1:
             nextPlayer.hand.append(self.available_cards.pop())
             nextPlayer.notify_self()
-            self.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
+            G.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
         elif nextPlayer == self.players[self.turn]:
-            self.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
+            G.sio.emit('emporio', room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
         else:
             nextPlayer.pending_action = pl.PendingAction.CHOOSE
             nextPlayer.choose_text = 'choose_card_to_get'
             nextPlayer.available_cards = self.available_cards
-            self.sio.emit('emporio', room=self.name, data=json.dumps(
+            G.sio.emit('emporio', room=self.name, data=json.dumps(
             {'name':nextPlayer.name,'cards': self.available_cards}, default=lambda o: o.__dict__))
             nextPlayer.notify_self()
 
@@ -533,15 +537,15 @@ class Game:
             if p.win_status and not (isinstance(p.role, roles.Renegade) and p.is_dead):
                 if not self.someone_won:
                     self.someone_won = True
-                self.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}|{p.role.name}')
+                G.sio.emit('chat_message', room=self.name,  data=f'_won|{p.name}|{p.role.name}')
                 if not self.is_replay:
                     Metrics.send_metric('player_win', points=[1], tags=[f"char:{p.character.name}", f"role:{p.role.name}"])
             p.notify_self()
-        if hasattr(self.sio, 'is_fake'):
+        if hasattr(G.sio, 'is_fake'):
             print('announces_winners(): Running for tests, you will have to call reset manually!')
             return
         for i in range(5):
-            self.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
+            G.sio.emit('chat_message', room=self.name, data=f'_lobby_reset|{5-i}')
             eventlet.sleep(1)
         return self.reset()
 
@@ -563,6 +567,11 @@ class Game:
                 pl.lives = 2
                 pl.hand.append(self.deck.draw())
                 pl.hand.append(self.deck.draw())
+                if any((True for c in pl.equipment if isinstance(c, tvosc.Fantasma))):
+                    for c in pl.equipment:
+                        if isinstance(c, tvosc.Fantasma):                            
+                            self.deck.scrap(pl.equipment.pop(c))
+                            break
                 pl.notify_self()
             elif self.check_event(ceh.CittaFantasma) or self.players[self.turn].is_ghost:
                 print(f'{self.name}: {self.players[self.turn]} is dead, event ghost')
@@ -575,7 +584,7 @@ class Game:
             self.deck.flip_event()
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
                 print(f'{self.name}: flip new event {self.deck.event_cards[0].name}')
-                self.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
+                G.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):
@@ -592,7 +601,7 @@ class Game:
                     for p in hurt_players:
                         if p.lives != p.max_lives:
                             p.lives += 1
-                            self.sio.emit('chat_message', room=self.name, data=f'_doctor_heal|{p.name}')
+                            G.sio.emit('chat_message', room=self.name, data=f'_doctor_heal|{p.name}')
                             p.notify_self()
             elif self.check_event(ceh.IDalton):
                 self.waiting_for = 0
@@ -633,29 +642,29 @@ class Game:
         if len(self.deck.event_cards) > 0:
             room = self.name if sid == None else sid
             if self.deck.event_cards[0] != None:
-                self.sio.emit('event_card', room=room, data=self.deck.event_cards[0].__dict__)
+                G.sio.emit('event_card', room=room, data=self.deck.event_cards[0].__dict__)
             else:
-                self.sio.emit('event_card', room=room, data=None)
+                G.sio.emit('event_card', room=room, data=None)
 
     def notify_gold_rush_shop(self, sid=None):
         if 'gold_rush' in self.expansions and self.deck and self.deck.shop_cards and len(self.deck.shop_cards) > 0:
             room = self.name if sid == None else sid
             print(f'{self.name}: gold_rush_shop room={room}, data={self.deck.shop_cards}')
-            self.sio.emit('gold_rush_shop', room=room, data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__))
+            G.sio.emit('gold_rush_shop', room=room, data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__))
 
     def notify_scrap_pile(self, sid=None):
         print(f'{self.name}: scrap')
         room = self.name if sid == None else sid
         if self.deck.peek_scrap_pile():
-            self.sio.emit('scrap', room=room, data=self.deck.peek_scrap_pile().__dict__)
+            G.sio.emit('scrap', room=room, data=self.deck.peek_scrap_pile().__dict__)
         else:
-            self.sio.emit('scrap', room=room, data=None)
+            G.sio.emit('scrap', room=room, data=None)
 
     def handle_disconnect(self, player: pl.Player):
         print(f'{self.name}: player {player.name} left the game')
         if player in self.spectators:
             self.spectators.remove(player)
-            self.sio.emit('spectators', room=self.name, data=len(self.spectators))
+            G.sio.emit('spectators', room=self.name, data=len(self.spectators))
             return False
         if player.is_bot and not self.started:
             player.game = None
@@ -675,7 +684,7 @@ class Game:
                 player.was_player = False
                 if len(player.available_characters) > 0:
                     player.set_available_character(player.available_characters)
-                player.bot_spin()
+                G.sio.start_background_task(player.bot_spin)
         else:
             self.player_death(player=player, disconnected=True)
         # else:
@@ -735,9 +744,20 @@ class Game:
         # if not disconnected:
         #     self.dead_players.append(corpse)
         self.notify_room()
-        self.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
+        G.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
         if self.started:
-            self.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
+            G.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
+            if not isinstance(player.role, roles.Sheriff) and not self.initial_players == 3:
+                G.sio.emit('notify_dead_role', room=self.name, data={
+                    'name': player.name,
+                    'lives': 0,
+                    'max_lives': player.max_lives,
+                    'is_ghost': player.is_ghost,
+                    'is_bot': player.is_bot,
+                    'icon': '🤠',
+                    'avatar': player.avatar,
+                    'role': player.role.__dict__,
+                })
         for p in self.players:
             if not p.is_bot:
                 p.notify_self()
@@ -835,7 +855,7 @@ class Game:
         return [p for p in self.players if p.is_dead and (include_ghosts or not p.is_ghost)]
 
     def notify_all(self):
-        if self.started:
+        if self.started and self.replay_speed > 0:
             data = [{
                 'name': p.name,
                 'ncards': len(p.hand),
@@ -854,4 +874,4 @@ class Game:
                 'is_ghost': p.is_ghost,
                 'is_bot': p.is_bot,
             } for p in self.get_alive_players()]
-            self.sio.emit('players_update', room=self.name, data=data)
+            G.sio.emit('players_update', room=self.name, data=data)
