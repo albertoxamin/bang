@@ -616,7 +616,7 @@ def chat_message(sid, msg, pl=None):
                         chs.append(ce.get_endgame_card())
                         chs.extend(ceh.get_all_events())
                         chs.append(ceh.get_endgame_card())
-                        ses.game.deck.event_cards.insert(int(cmd[1]), [c for c in chs if c!=None and c.name == ' '.join(cmd[2:])][0])
+                        ses.game.deck.event_cards.insert(int(cmd[1]), [c for c in chs if c is not None and c.name == ' '.join(cmd[2:])][0])
                         ses.game.notify_event_card()
                 elif '/removecard' in msg:
                     sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'🚨 {ses.name} is in debug mode and removed a card'})
