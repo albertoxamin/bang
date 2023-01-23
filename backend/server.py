@@ -825,6 +825,7 @@ if __name__ == '__main__':
             with open('./save/games.pickle', 'rb') as file:
                 games = pickle.load(file)
                 for g in games:
+                    g.spectators = []
                     for p in g.players:
                         if p.sid != 'bot':
                             sio.start_background_task(p.disconnect)
