@@ -24,7 +24,7 @@ class Pugno(Card):
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
-        if against != None:
+        if against is not None:
             super().play_card(player, against=against)
             player.game.attack(player, against, card_name=self.name)
             return True
@@ -57,7 +57,7 @@ class RagTime(Panico):
         self.alt_text = '2🃏 | 👤😱'
 
     def play_card(self, player, against, _with):
-        if against != None and _with != None:
+        if against is not None and _with is not None:
             player.game.deck.scrap(_with)
             super().play_card(player, against=against)
             return True
@@ -75,7 +75,7 @@ class Rissa(CatBalou):
         self.alt_text = '2🃏 | 👤💃'
 
     def play_card(self, player, against, _with):
-        if _with != None:
+        if _with is not None:
             if not any((p != player and (len(p.hand)+len(p.equipment)) > 0 for p in player.game.players)):
                 return False
             #se sono qui vuol dire che ci sono giocatori con carte in mano oltre a me
@@ -104,7 +104,7 @@ class SpringField(Card):
         self.alt_text = '2🃏 | 👤💥'
 
     def play_card(self, player, against, _with=None):
-        if against != None and _with != None:
+        if against is not None and _with is not None:
             player.game.deck.scrap(_with)
             super().play_card(player, against=against)
             player.game.attack(player, against, card_name=self.name)
@@ -123,7 +123,7 @@ class Tequila(Card):
         self.alt_text = "2🃏 | 👤🍺"
 
     def play_card(self, player, against, _with=None):
-        if against != None and _with != None:
+        if against is not None and _with is not None:
             G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_for|{player.name}|{self.name}|{against}')
             player.game.deck.scrap(_with)
             player.game.get_player_named(against).lives = min(player.game.get_player_named(against).lives+1, player.game.get_player_named(against).max_lives)
@@ -141,7 +141,7 @@ class Whisky(Card):
         self.alt_text = '2🃏 | 🍺🍺'
 
     def play_card(self, player, against, _with=None):
-        if _with != None:
+        if _with is not None:
             super().play_card(player, against=against)
             player.game.deck.scrap(_with)
             player.lives = min(player.lives+2, player.max_lives)
@@ -366,7 +366,7 @@ class Pepperbox(Bang):
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
-            if against != None:
+            if against is not None:
                 Card.play_card(self, player, against=against)
                 player.game.attack(player, against, card_name=self.name)
                 return True
@@ -391,7 +391,7 @@ class FucileDaCaccia(Card):
 
     def play_card(self, player, against, _with=None):
         if self.can_be_used_now:
-            if against != None:
+            if against is not None:
                 super().play_card(player, against=against)
                 player.game.attack(player, against, card_name=self.name)
                 return True

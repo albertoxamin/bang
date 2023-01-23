@@ -59,7 +59,7 @@ class Player:
         if r.status_code == 200:
             res = r.json()
             print(res)
-            if res["avatar"] == None:
+            if res["avatar"] is None:
                 self.avatar = robot_pictures[randrange(len(robot_pictures))]
             else:
                 self.avatar = f'https://cdn.discordapp.com/avatars/{res["id"]}/{res["avatar"]}.png'
@@ -161,7 +161,7 @@ class Player:
 
     def set_character(self, character: str):
         print(self.available_characters, character)
-        if self.character == None:
+        if self.character is None:
             try:
                 self.character = next(x for x in self.available_characters if x.name == character)
             except:
@@ -300,14 +300,14 @@ class Player:
         G.sio.emit('self', room=self.sid, data=json.dumps(ser, default=lambda o: o.__dict__))
 
     def bot_spin(self):
-        while self.is_bot and self.game != None and not self.game.shutting_down:
+        while self.is_bot and self.game is not None and not self.game.shutting_down:
             G.sio.sleep(max(0.2, uniform(self.game.bot_speed/2-0.1, self.game.bot_speed)))
             if self.lives > 0 or self.is_ghost:
                 self.bot_logic()
 
     def bot_logic(self):
-        if self.game == None or self.game.shutting_down: return
-        if self.pending_action != None and self.pending_action != PendingAction.WAIT:
+        if self.game is None or self.game.shutting_down: return
+        if self.pending_action is not None and self.pending_action != PendingAction.WAIT:
             # eventlet.sleep(uniform(self.game.bot_speed/2-0.1, self.game.bot_speed))
             pass
         else:
@@ -480,7 +480,7 @@ class Player:
             self.choose_text = 'choose_fratelli_di_sangue'
             self.pending_action = PendingAction.CHOOSE
             self.is_giving_life = True
-        elif self.game.check_event(ceh.NuovaIdentita) and self.not_chosen_character != None and not again:
+        elif self.game.check_event(ceh.NuovaIdentita) and self.not_chosen_character is not None and not again:
             self.available_cards = [self.character, self.not_chosen_character]
             self.choose_text = 'choose_nuova_identita'
             self.pending_action = PendingAction.CHOOSE
@@ -595,7 +595,7 @@ class Player:
         pickable_cards = 1 + self.character.pick_mod
         if any((isinstance(c, grc.FerroDiCavallo) for c in self.gold_rush_equipment)):
             pickable_cards += 1
-        if self.is_my_turn and self.attacker == None:
+        if self.is_my_turn and self.attacker is None:
             for i in range(len(self.equipment)):
                 if i < len(self.equipment) and isinstance(self.equipment[i], cs.Dinamite):
                     while pickable_cards > 0:
@@ -708,12 +708,12 @@ class Player:
             return card.play_card(self)
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
-        if _with != None:
+        if _with is not None:
             withCard = self.hand.pop(_with) if hand_index > _with else self.hand.pop(_with - 1)
         print(self.name, 'is playing ', card, ' against:', against, ' with:', _with)
         did_play_card = False
         event_blocks_card = (self.game.check_event(ce.IlGiudice) and (card.is_equipment or (card.usable_next_turn and not card.can_be_used_now))) or (self.game.check_event(ce.Lazo) and card.usable_next_turn and card.can_be_used_now) or ((self.game.check_event(ceh.Manette) and card.suit != self.committed_suit_manette) and not (card.usable_next_turn and card.can_be_used_now))
-        if not(against != None and (self.game.get_player_named(against).character.check(self.game, chd.ApacheKid) or any((isinstance(c, grc.Calumet) for c in self.game.get_player_named(against).gold_rush_equipment))) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK) and not event_blocks_card:
+        if not(against is not None and (self.game.get_player_named(against).character.check(self.game, chd.ApacheKid) or any((isinstance(c, grc.Calumet) for c in self.game.get_player_named(against).gold_rush_equipment))) and card.check_suit(self.game, [cs.Suit.DIAMONDS])) or (isinstance(card, grc.ShopCard) and card.kind == grc.ShopCardKind.BLACK) and not event_blocks_card:
             if (against == self.name and not isinstance(card, csd.Tequila) and not isinstance(card, cs.Panico) and not isinstance(card, cs.CatBalou)) or event_blocks_card:
                 did_play_card = False
             else:
@@ -1119,7 +1119,7 @@ class Player:
         self.attacking_card = card_name
         print(f'attacker -> {attacker}')
         self.mancato_needed = 1 if not double else 2
-        if card_index != None:
+        if card_index is not None:
             self.dmg_card_index = card_index
         else:
             self.dmg_card_index = -1
@@ -1260,7 +1260,7 @@ class Player:
         self.attacker = None
 
     def take_no_damage_response(self):
-        if self.dmg_card_index != None and self.dmg_card_index != -1 and self.game.check_event(ce.Rimbalzo):
+        if self.dmg_card_index is not None and self.dmg_card_index != -1 and self.game.check_event(ce.Rimbalzo):
             self.game.deck.scrap(self.equipment.pop(self.dmg_card_index))
         self.dmg_card_index = -1
         self.mancato_needed = 0

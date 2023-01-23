@@ -45,7 +45,7 @@ class SerpenteASonagli(Card):
     def play_card(self, player, against, _with=None):
         if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
             return False
-        if against != None:
+        if against is not None:
             self.can_be_used_now = False
             G.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
@@ -68,7 +68,7 @@ class Taglia(Card):
     def play_card(self, player, against, _with=None):
         if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
             return False
-        if against != None:
+        if against is not None:
             self.can_be_used_now = False
             G.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
@@ -100,7 +100,7 @@ class Tomahawk(Card):
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
-        if against != None and player.game.can_card_reach(self, player, against):
+        if against is not None and player.game.can_card_reach(self, player, against):
             super().play_card(player, against=against)
             player.game.attack(player, against, card_name=self.name)
             return True
@@ -125,7 +125,7 @@ class Sventagliata(Bang): # : conta come un normale BANG! del turno. Il BANG! se
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
-        if against != None:
+        if against is not None:
             t = player.game.get_player_named(against)
             player.available_cards = [dict(p, **{'original_target':against}) for p in player.game.get_visible_players(t) if p['name'] != player.name and p['name'] != t.name and p['dist']]
             if len(player.available_cards) > 0:
@@ -145,7 +145,7 @@ class Salvo(Card): # puoi anche prevenire un danno inferto da te, duello?
         self.need_target = True
 
     def play_card(self, player, against, _with=None):
-        if against != None:
+        if against is not None:
             #TODO
             # super().play_card(player, against=against)
             # player.game.attack(player, against, card_name=self.name)
@@ -161,7 +161,7 @@ class Mira(Card):
         self.need_with = True
 
     def play_card(self, player, against, _with=None):
-        if against != None:
+        if against is not None:
             #TODO
             # super().play_card(player, against=against)
             # player.game.attack(player, against, card_name=self.name)

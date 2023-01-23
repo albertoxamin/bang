@@ -52,10 +52,10 @@ class Deck:
         self.game.notify_event_card()
 
     def fill_gold_rush_shop(self):
-        if not any((c == None for c in self.shop_cards)):
+        if not any((c is None for c in self.shop_cards)):
             return
         for i in range(3):
-            if self.shop_cards[i] == None:
+            if self.shop_cards[i] is None:
                 print(f'replacing gr-card {i}')
                 self.shop_cards[i] = self.shop_deck.pop(0)
                 self.shop_cards[i].reset_card()

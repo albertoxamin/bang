@@ -153,7 +153,7 @@ class Prigione(Card):
     def play_card(self, player, against, _with=None):
         if (player.game.check_event(ce.IlGiudice)):
                 return False
-        if against != None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
+        if against is not None and not isinstance(player.game.get_player_named(against).role, r.Sheriff):
             self.can_be_used_now = False
             G.sio.emit('chat_message', room=player.game.name,
                           data=f'_play_card_against|{player.name}|{self.name}|{against}')
@@ -218,9 +218,9 @@ class Bang(Card):
     def play_card(self, player, against, _with=None):
         if player.game.check_event(ceh.Sermone) and not self.number == 42: # 42 gold rush
             return False
-        if ((player.has_played_bang and not self.number == 42) and (not any((isinstance(c, Volcanic) for c in player.equipment)) or player.game.check_event(ce.Lazo)) and against != None): # 42 gold rush:
+        if ((player.has_played_bang and not self.number == 42) and (not any((isinstance(c, Volcanic) for c in player.equipment)) or player.game.check_event(ce.Lazo)) and against is not None): # 42 gold rush:
             return False
-        elif against != None:
+        elif against is not None:
             import bang.characters as chars
             super().play_card(player, against=against)
             if not self.number == 42: # 42 gold rush
@@ -285,7 +285,7 @@ class CatBalou(Card):
         self.can_target_self = True
 
     def play_card(self, player, against, _with=None):
-        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
+        if against is not None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             if self.name == 'Cat Balou':
                 super().play_card(player, against=against)
             from bang.players import PendingAction
@@ -322,7 +322,7 @@ class Duello(Card):
         # self.desc_eng = "Play this card against any player. In turn, starting with your opponent, you can discard a Bang! Card, the first player who does not do so loses 1 life."
 
     def play_card(self, player, against, _with=None):
-        if against != None:
+        if against is not None:
             super().play_card(player, against=against)
             player.game.duel(player, against)
             return True
@@ -378,7 +378,7 @@ class Mancato(Card):
 
     def play_card(self, player, against, _with=None):
         import bang.characters as chars
-        if against != None and player.character.check(player.game, chars.CalamityJanet):
+        if against is not None and player.character.check(player.game, chars.CalamityJanet):
             if player.has_played_bang and (not any((isinstance(c, Volcanic) for c in player.equipment)) or player.game.check_event(ce.Lazo)):
                 return False
             if player.game.check_event(ceh.Sermone):
@@ -402,7 +402,7 @@ class Panico(Card):
         # self.desc_eng = "Steal a card from a player at distance 1"
 
     def play_card(self, player, against, _with=None):
-        if against != None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
+        if against is not None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             super().play_card(player, against=against)
             from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE

@@ -14,24 +14,24 @@ def test_game_start():
     g.add_player(p2)
     p3 = Player('p3', 'p3')
     g.add_player(p3)
-    assert p1.role == None
-    assert p2.role == None
-    assert p3.role == None
+    assert p1.role is None
+    assert p2.role is None
+    assert p3.role is None
     assert not g.started
     g.start_game()
     assert g.started
-    assert p1.role != None
-    assert p2.role != None
-    assert p3.role != None
+    assert p1.role is not None
+    assert p2.role is not None
+    assert p3.role is not None
     assert len(p1.available_characters) == g.characters_to_distribute
     assert len(p2.available_characters) == g.characters_to_distribute
     assert len(p3.available_characters) == g.characters_to_distribute
     p1.set_character(p1.available_characters[0].name)
-    assert p1.character != None
+    assert p1.character is not None
     p2.set_character(p2.available_characters[0].name)
-    assert p2.character != None
+    assert p2.character is not None
     p3.set_character(p3.available_characters[0].name)
-    assert p3.character != None
+    assert p3.character is not None
     assert g.players[g.turn].pending_action == PendingAction.DRAW
 
 # test that dodge_city is added to games with more than 8 players

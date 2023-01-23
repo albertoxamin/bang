@@ -40,7 +40,7 @@ class Vice(Role):
     def on_player_death(self, alive_players: list, initial_players: int, dead_role=None, attacker_role=None):
         if initial_players == 3 and len(alive_players) == 1:
             return True
-        elif initial_players == 3 and attacker_role != None:
+        elif initial_players == 3 and attacker_role is not None:
             return isinstance(dead_role, Renegade) and isinstance(attacker_role, Vice)
         elif initial_players != 3 and not any((isinstance(p.role, Outlaw) or isinstance(p.role, Renegade) for p in alive_players)):
             print("The Vice won!")
@@ -60,7 +60,7 @@ class Outlaw(Role):
     def on_player_death(self, alive_players: list, initial_players: int, dead_role=None, attacker_role=None):
         if initial_players == 3 and len(alive_players) == 1:
             return True
-        elif initial_players == 3 and attacker_role != None:
+        elif initial_players == 3 and attacker_role is not None:
             return isinstance(dead_role, Vice) and isinstance(attacker_role, Outlaw)
         elif (initial_players != 3 and (not any((isinstance(p.role, Sheriff) for p in alive_players)))
             and (any((isinstance(p.role, Outlaw) for p in alive_players))
@@ -82,7 +82,7 @@ class Renegade(Role):
     def on_player_death(self, alive_players: list, initial_players: int, dead_role=None, attacker_role=None):
         if initial_players == 3 and len(alive_players) == 1:
             return True
-        elif initial_players == 3 and attacker_role != None:
+        elif initial_players == 3 and attacker_role is not None:
             return isinstance(dead_role, Outlaw) and isinstance(attacker_role, Renegade)
         elif initial_players != 3 and len(alive_players) == 1 and isinstance(alive_players[0].role, Renegade):
             print("The Renegade won!")

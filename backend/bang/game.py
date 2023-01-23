@@ -145,7 +145,7 @@ class Game:
                 continue
             player = [p for p in self.players if p.name == cmd[0]][0]
             if cmd[1] == 'set_character':
-                if player.character != None and isinstance(player.real_character, chd.VeraCuster):
+                if player.character is not None and isinstance(player.real_character, chd.VeraCuster):
                     player.set_available_character([p.character for p in self.get_alive_players() if p != player])
                 player.set_character(cmd[2])
             if cmd[1] == 'draw':
@@ -184,11 +184,11 @@ class Game:
             
 
     def notify_room(self, sid=None):
-        if any((p.character == None for p in self.players)) or sid:
+        if any((p.character is None for p in self.players)) or sid:
             G.sio.emit('room', room=self.name if not sid else sid, data={
                 'name': self.name,
                 'started': self.started,
-                'players': [{'name':p.name, 'ready': p.character != None, 'is_bot': p.is_bot, 'avatar': p.avatar} for p in self.players],
+                'players': [{'name':p.name, 'ready': p.character is not None, 'is_bot': p.is_bot, 'avatar': p.avatar} for p in self.players],
                 'password': self.password,
                 'is_competitive': self.is_competitive,
                 'disconnect_bot': self.disconnect_bot,
@@ -255,7 +255,7 @@ class Game:
 
     def notify_character_selection(self):
         self.notify_room()
-        if not any((p.character == None for p in self.players)):
+        if not any((p.character is None for p in self.players)):
             for i in range(len(self.players)):
                 print(self.name, self.players[i].name, self.players[i].character)
                 G.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
@@ -282,7 +282,7 @@ class Game:
         if self.started:
             return
         print(f'{self.name}: GAME IS STARING')
-        if SEED == None:
+        if SEED is None:
             import time
             SEED = int(time.time())
         print(f'{self.name}: SEED IS {SEED}')
@@ -582,7 +582,7 @@ class Game:
         self.player_bangs = 0
         if isinstance(self.players[self.turn].role, roles.Sheriff) or ((self.initial_players == 3 and isinstance(self.players[self.turn].role, roles.Vice) and not self.players[self.turn].is_ghost)  or (self.initial_players == 3 and any((p for p in self.players if p.is_dead and p.role.name == 'Vice')) and isinstance(self.players[self.turn].role, roles.Renegade))):
             self.deck.flip_event()
-            if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] != None:
+            if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] is not None:
                 print(f'{self.name}: flip new event {self.deck.event_cards[0].name}')
                 G.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
             if self.check_event(ce.DeadMan):
@@ -640,21 +640,21 @@ class Game:
 
     def notify_event_card(self, sid=None):
         if len(self.deck.event_cards) > 0:
-            room = self.name if sid == None else sid
-            if self.deck.event_cards[0] != None:
+            room = self.name if sid is None else sid
+            if self.deck.event_cards[0] is not None:
                 G.sio.emit('event_card', room=room, data=self.deck.event_cards[0].__dict__)
             else:
                 G.sio.emit('event_card', room=room, data=None)
 
     def notify_gold_rush_shop(self, sid=None):
         if 'gold_rush' in self.expansions and self.deck and self.deck.shop_cards and len(self.deck.shop_cards) > 0:
-            room = self.name if sid == None else sid
+            room = self.name if sid is None else sid
             print(f'{self.name}: gold_rush_shop room={room}, data={self.deck.shop_cards}')
             G.sio.emit('gold_rush_shop', room=room, data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__))
 
     def notify_scrap_pile(self, sid=None):
         print(f'{self.name}: scrap')
-        room = self.name if sid == None else sid
+        room = self.name if sid is None else sid
         if self.deck.peek_scrap_pile():
             G.sio.emit('scrap', room=room, data=self.deck.peek_scrap_pile().__dict__)
         else:
@@ -767,7 +767,7 @@ class Game:
             attacker_role = None
             if player.attacker and player.attacker in self.players:
                 attacker_role = player.attacker.role
-            winners = [p for p in self.players if p.role != None and p.role.on_player_death([p for p in self.get_alive_players() if not p.is_ghost], initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
+            winners = [p for p in self.players if p.role is not None and p.role.on_player_death([p for p in self.get_alive_players() if not p.is_ghost], initial_players=self.initial_players, dead_role=player.role, attacker_role=attacker_role)]
             if not self.attack_in_progress and len(winners) > 0 and not self.someone_won:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
@@ -826,7 +826,7 @@ class Game:
             self.next_turn()
 
     def check_event(self, ev):
-        if self.deck == None or len(self.deck.event_cards) == 0: return False
+        if self.deck is None or len(self.deck.event_cards) == 0: return False
         return isinstance(self.deck.event_cards[0], ev)
 
     def get_visible_players(self, player: pl.Player): # returns a dictionary because we need to add the distance

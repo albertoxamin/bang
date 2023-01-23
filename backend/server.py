@@ -127,7 +127,7 @@ def set_username(sid, username):
         sio.save_session(sid, Player(username["name"], sid, discord_token=dt))
         print(f'{sid} is now {username}')
         advertise_lobbies()
-    elif ses.game == None or not ses.game.started:
+    elif ses.game is None or not ses.game.started:
         username = username["name"]
         print(f'{sid} changed username to {username}')
         prev = ses.name
@@ -149,7 +149,7 @@ def get_me(sid, data):
     else:
         dt = data["discord_token"] if 'discord_token' in data else None
         sio.save_session(sid, Player('player', sid, discord_token=dt))
-        if 'replay' in data and data['replay'] != None:
+        if 'replay' in data and data['replay'] is not None:
             create_room(sid, data['replay'])
             sid = sio.get_session(sid)
             sid.game.is_hidden = True
@@ -170,9 +170,9 @@ def get_me(sid, data):
                 join_room(sid, data)
             elif room.started:
                 print('room exists')
-                if data['username'] != None and any((p.name == data['username'] for p in room.players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None))):
+                if data['username'] is not None and any((p.name == data['username'] for p in room.players if (p.is_bot or (dt is not None and p.discord_token == dt) or p.sid is None))):
                     print('getting inside the bot')
-                    bot = [p for p in room.players if (p.is_bot or (dt != None and p.discord_token == dt) or p.sid == None) and p.name == data['username']][0]
+                    bot = [p for p in room.players if (p.is_bot or (dt is not None and p.discord_token == dt) or p.sid is None) and p.name == data['username']][0]
                     bot.sid = sid
                     bot.is_bot = False
                     sio.enter_room(sid, room.name)
@@ -202,7 +202,7 @@ def get_me(sid, data):
             sio.emit('me', data={'error':'Wrong password/Cannot connect'}, room=sid)
         else:
             sio.emit('me', data=p.name, room=sid)
-            if data['username'] == None or any((pl.name == data['username'] for pl in p.game.players if not ((dt != None and pl.discord_token == dt) or pl.sid == None))):
+            if data['username'] is None or any((pl.name == data['username'] for pl in p.game.players if not ((dt is not None and pl.discord_token == dt) or pl.sid is None))):
                 sio.emit('change_username', room=sid)
             else:
                 sio.emit('chat_message', room=p.game.name, data=f"_change_username|{p.name}|{data['username']}")
