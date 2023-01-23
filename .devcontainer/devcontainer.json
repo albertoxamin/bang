@@ -6,7 +6,7 @@
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-16",
 	"features": {
 		"ghcr.io/devcontainers/features/python:1": {
-			"version": "3.7.10"
+			"version": "3.11.1"
 		}
 	},
 
