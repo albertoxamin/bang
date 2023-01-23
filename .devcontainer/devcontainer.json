@@ -4,23 +4,41 @@
 	"name": "BangCodespace",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-16",
+	
+	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/python:1": {
 			"version": "3.11.1"
 		}
 	},
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	// Use 'settings' to set *default* container specific settings.json values on container create.
+  // You can edit these settings after create using File > Preferences > Settings > Remote.
+	"settings": {
+		"python.testing.pytestArgs": [
+			"--rootdir=backend",
+			"backend/tests/"
+		],
+		"python.testing.unittestEnabled": false,
+		"python.testing.pytestEnabled": true,
+		"python.linting.enabled": true
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [5001, 8080],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cd frontend;npm i;cd ../backend;pip install -r requirements.txt"
+	"postCreateCommand": "cd frontend;npm i;cd ../backend;pip install -r requirements.txt",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
+
+	// Add the IDs of extensions you want installed when the container is created in the array below.
+	"extensions": [
+		"Vue.volar",
+		"ms-python.python",
+		"Gruntfuggly.todo-tree"
+		]
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
