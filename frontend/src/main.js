@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 
 Vue.config.productionTip = false
-import VueSocketIO from 'vue-socket.io'
+import VueSocketIO from 'bang-vue-socket.io'
 Vue.use(new VueSocketIO({
 	debug: Vue.config.devtools,
 	connection: Vue.config.devtools ? `http://${window.location.hostname}:5001` : window.location.origin,
