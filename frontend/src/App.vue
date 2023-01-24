@@ -140,6 +140,7 @@ export default {
 			applicationId: '076b1a5e-16a9-44eb-b320-27afd32c57a5',
 			clientToken: 'pub1cc4d0d6ea0a7235aa1eab86e7a192d4',
 			site: 'datadoghq.com',
+			version: document.getElementsByTagName("html")[0].getAttribute("data-build-timestamp-utc").replace(/[-|:|T]/g,'.').substring(0,16),
 			service:'bang-frontend',
 			sessionSampleRate: 100,
 			sessionReplaySampleRate: 100,
