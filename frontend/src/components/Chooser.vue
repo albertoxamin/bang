@@ -69,7 +69,8 @@ export default {
 			if (this.remainingTime > 0) {
 				this.remainingTime--;
 			} else {
-				this.select(this.cards[0]);
+				if (this.select) this.select(this.cards[0]);
+				else if (this.cancel) this.cancel();
 				window.clearInterval(this.intervalID);
 			}
 		},
