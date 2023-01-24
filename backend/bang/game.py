@@ -567,11 +567,9 @@ class Game:
                 pl.lives = 2
                 pl.hand.append(self.deck.draw())
                 pl.hand.append(self.deck.draw())
-                if any((True for c in pl.equipment if isinstance(c, tvosc.Fantasma))):
-                    for c in pl.equipment:
-                        if isinstance(c, tvosc.Fantasma):                            
-                            self.deck.scrap(pl.equipment.pop(c))
-                            break
+                if (ghost := next((c for c in pl.equipment if isinstance(c, tvosc.Fantasma)), None)) is not None:
+                    self.deck.scrap(ghost)
+                    pl.equipment.remove(ghost)
                 pl.notify_self()
             elif self.check_event(ceh.CittaFantasma) or self.players[self.turn].is_ghost:
                 print(f'{self.name}: {self.players[self.turn]} is dead, event ghost')
