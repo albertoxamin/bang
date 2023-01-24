@@ -188,7 +188,7 @@ export default {
 			this.$socket.emit('discord_auth', {code:this.$route.query.code, origin:window.location.origin})
 			this.$router.replace({query: []})
 		}
-		this.randomTip = `tip_${1+Math.floor(Math.random() * 8)}`
+		this.randomTip = `tip_${1+Math.floor(Math.random() * 10)}`
 		if (localStorage.getItem('username'))
 			this.username = localStorage.getItem('username')
 		else {

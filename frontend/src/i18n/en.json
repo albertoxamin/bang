@@ -8,6 +8,8 @@
   "tip_6": "Now with a discord server!",
   "tip_7": "If you want to help us translate the game in your language, ping us on discord!",
   "tip_8": "If you disconnect during in an ongoing game you will be replaced by a bot (while you are gone)!",
+  "tip_9": "If you are on mobile hold on a card to read the description!",
+  "tip_10": "If in doubt shoot all the other players!",
   "online_players": "Online players: ",
   "shuffle_players": "Shuffle Players",
   "choose_username": "Pick an username:",
@@ -201,7 +203,7 @@
     },
     "Bang!": {
       "name": "Bang!",
-      "desc": "Shoot a player in sight. If you do not have weapons, your is sight is 1"
+      "desc": "Shoot a player in sight. If you do not have weapons, your sight is 1"
     },
     "Birra": {
       "name": "Beer",
@@ -329,7 +331,7 @@
     },
     "Pepperbox": {
       "name": "Pepperbox",
-      "desc": "Shoot a player in sight. If you do not have weapons, your is sight is 1"
+      "desc": "Shoot a player in sight. If you do not have weapons, your sight is 1"
     },
     "Howitzer": {
       "name": "Howitzer",
@@ -477,7 +479,7 @@
     },
     "Il Giudice": {
       "name": "The Judge",
-      "desc": "You can't equip cards on your or other players"
+      "desc": "You can't equip cards on yourself or other players"
     },
     "Agguato": {
       "name": "Ambush",
