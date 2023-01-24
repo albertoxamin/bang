@@ -216,7 +216,7 @@ def get_me(sid, data):
 def disconnect(sid):
     global online_players
     online_players -= 1
-    if (p := sio.get_session(sid)) is not None:
+    if (p := sio.get_session(sid)) is not None and isinstance(p, Player):
         sio.emit('players', room='lobby', data=online_players)
         if p.game and p.disconnect():
             sio.close_room(p.game.name)
