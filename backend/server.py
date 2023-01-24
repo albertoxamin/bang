@@ -110,9 +110,14 @@ def report(sid, text):
     response = requests.post("https://hastebin.com/documents", data.encode('utf-8'))
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug report, replay at https://bang.xamin.it/game?replay={key} \n Info: {text}')
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug reported by {ses.name}, replay at https://bang.xamin.it/game?replay={key}\nTotal actions:{len(ses.game.rpc_log)}\nExpansions:{ses.game.expansions}\nInfo: {text}')
         response = webhook.execute()
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
+        if not any((p.pending_action != PendingAction.WAIT for p in ses.game.players)):
+            sio.emit('chat_message', room=ses.game.name, data={'color': f'red','text':f'TRYING AUTO FIX BY KICKING THE ARCADE CABINET'})
+            ses.game.next_turn()
+            if any((p.pending_action == PendingAction.WAIT for p in ses.game.players)):
+                sio.emit('chat_message', room=ses.game.name, data={'color': f'green','text':f'IT WORKED!11!!!, we will still fix the bug (for real) though'})
     else:
         print("WARNING: DISCORD_WEBHOOK not found")
     Metrics.send_event('BUG_REPORT', event_data=text)
