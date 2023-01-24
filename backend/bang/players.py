@@ -662,6 +662,15 @@ class Player:
                         elif pickable_cards == 0:
                             self.lives -= 1
                             G.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
+                            if self.character.check(self.game, chars.BartCassidy):
+                                G.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
+                                self.hand.append(self.game.deck.draw(True))
+                            if any((isinstance(c, grc.Talismano) for c in self.gold_rush_equipment)):
+                                self.gold_nuggets += 1
+                            if self.character.check(self.game, grch.SimeonPicos):
+                                self.gold_nuggets += 1
+                            if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
+                                self.hand.append(self.game.deck.draw(True))
                             break
             if any((isinstance(c, cs.Prigione) for c in self.equipment)):
                 self.notify_self() #TODO perchè solo le prigioni? e multiple dinamiti come si comportano con veracuster?
@@ -911,12 +920,6 @@ class Player:
                 player = self.game.get_player_named(self.available_cards[card_index]['name'])
                 player.lives += 1
                 self.lives -= 1
-                if any((isinstance(c, grc.Talismano) for c in self.gold_rush_equipment)):
-                    self.gold_nuggets += 1
-                if self.character.check(self.game, grch.SimeonPicos):
-                    self.gold_nuggets += 1
-                if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
-                    self.hand.append(self.game.deck.draw())
                 player.notify_self()
                 G.sio.emit('chat_message', room=self.game.name, data=f'_fratelli_sangue|{self.name}|{player.name}')
             except: pass
