@@ -275,7 +275,7 @@ def toggle_replace_with_bot(sid):
 def join_room(sid, room):
     room_name = room['name']
     i = [g.name for g in games].index(room_name)
-    if games[i].password != '' and games[i].password != room['password'].upper():
+    if games[i].password != '' and games[i].password != room.get('password', '').upper():
         return
     if not games[i].started:
         print(f'{sid} joined a room named {room_name}')
