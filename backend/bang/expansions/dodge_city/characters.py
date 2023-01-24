@@ -88,12 +88,7 @@ class ChuckWengam(Character):
     def special(self, player, data):
         if super().special(player, data):
             if player.lives > 1 and player.is_my_turn:
-                import bang.expansions.gold_rush.shop_cards as grc
                 player.lives -= 1
-                if any((isinstance(c, grc.Talismano) for c in player.gold_rush_equipment)):
-                    player.gold_nuggets += 1
-                if any((isinstance(c, grc.Stivali) for c in player.gold_rush_equipment)):
-                    player.hand.append(player.game.deck.draw(True))
                 player.hand.append(player.game.deck.draw(True))
                 player.hand.append(player.game.deck.draw(True))
                 player.notify_self()
