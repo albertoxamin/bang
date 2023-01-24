@@ -743,24 +743,12 @@ class Game:
         #     self.dead_players.append(corpse)
         self.notify_room()
         G.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
-        if self.started:
-            G.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
-            if not isinstance(player.role, roles.Sheriff) and not self.initial_players == 3:
-                G.sio.emit('notify_dead_role', room=self.name, data={
-                    'name': player.name,
-                    'lives': 0,
-                    'max_lives': player.max_lives,
-                    'is_ghost': player.is_ghost,
-                    'is_bot': player.is_bot,
-                    'icon': '🤠',
-                    'avatar': player.avatar,
-                    'role': player.role.__dict__,
-                })
         for p in self.players:
             if not p.is_bot:
                 p.notify_self()
         # self.players_map = {c.name: i for i, c in enumerate(self.players)}
         if self.started:
+            G.sio.emit('chat_message', room=self.name, data=f'_died_role|{player.name}|{player.role.name}')
             print(f'{self.name}: Check win status')
             attacker_role = None
             if player.attacker and player.attacker in self.players:
@@ -770,7 +758,19 @@ class Game:
                 return self.announces_winners(winners)
             elif len(winners) > 0 and not self.someone_won: # non tutti hanno risposto, ma ci sono vincitori.
                 self.pending_winners = winners
-
+            else:
+                if not isinstance(player.role, roles.Sheriff) and not self.initial_players == 3:
+                    G.sio.emit('notify_dead_role', room=self.name, data={
+                        'name': player.name,
+                        'lives': 0,
+                        'max_lives': player.max_lives,
+                        'is_ghost': player.is_ghost,
+                        'is_bot': player.is_bot,
+                        'icon': '🤠',
+                        'avatar': player.avatar,
+                        'role': player.role.__dict__,
+                    })
+            
             for i in range(len(player.gold_rush_equipment)):
                 self.deck.shop_deck.append(player.gold_rush_equipment.pop()) # vulture sam doesnt get these cards
 
