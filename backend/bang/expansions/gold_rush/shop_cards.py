@@ -117,7 +117,7 @@ class UnionPacific(ShopCard):
         G.sio.emit('chat_message', room=player.game.name,
                         data=f'_UnionPacific|{player.name}|{self.name}')
         for i in range(4):
-            player.hand.append(player.game.deck.draw(True))
+            player.game.deck.draw(True, player=player)
         return super().play_card(player, against, _with)
 
 class Calumet(ShopCard):
@@ -191,7 +191,7 @@ class Setaccio(ShopCard):
                 G.sio.emit('chat_message', room=player.game.name, data=f'_play_card|{player.name}|{self.name}')
                 player.gold_nuggets -= 1
                 player.setaccio_count += 1
-                player.hand.append(player.game.deck.draw(True))
+                player.game.deck.draw(True, player=player)
                 player.notify_self()
                 return True
             return False

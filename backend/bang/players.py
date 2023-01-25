@@ -252,7 +252,7 @@ class Player:
             self.choose_text = 'choose_ranch'
             self.pending_action = PendingAction.CHOOSE
         elif self.character and self.character.check(self.game, chars.SuzyLafayette) and self.lives > 0 and len(self.hand) == 0 and ( not self.is_my_turn or self.pending_action == PendingAction.PLAY):
-            self.hand.append(self.game.deck.draw(True))
+            self.game.deck.draw(True, player=self)
         if self.lives <= 0 and self.max_lives > 0 and not self.is_dead:
             print('dying, attacker', self.attacker)
             if self.gold_nuggets >= 2 and any((isinstance(c, grc.Zaino) for c in self.gold_rush_equipment)):
@@ -458,9 +458,9 @@ class Player:
             if self.character.check(self.game, grch.SimeonPicos):
                 self.gold_nuggets += 1
             if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
-                self.hand.append(self.game.deck.draw(True))
+                self.game.deck.draw(True, player=self)
             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
-                self.hand.append(self.game.deck.draw(True))
+                self.game.deck.draw(True, player=self)
                 G.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
             self.heal_if_needed()
             if self.lives <= 0:
@@ -571,10 +571,11 @@ class Player:
                         if self.game.check_event(ce.LeggeDelWest):
                             card.must_be_used = True
                         if self.character.check(self.game, chars.BlackJack) and card.check_suit(self.game, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
-                            self.hand.append(self.game.deck.draw())
+                            self.game.deck.draw(player=self)
                     self.hand.append(card)
+                    G.sio.emit('card_drawn', room=self.game.name, data={'player': self.name, 'pile': pile})
                 else:
-                    self.hand.append(self.game.deck.draw())
+                    self.game.deck.draw(player=self)
             self.manette()
             self.notify_self()
 
@@ -611,16 +612,16 @@ class Player:
                             if self.character.check(self.game, grch.SimeonPicos):
                                 self.gold_nuggets += 3
                             if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
-                                self.hand.append(self.game.deck.draw())
-                                self.hand.append(self.game.deck.draw())
-                                self.hand.append(self.game.deck.draw())
+                                self.game.deck.draw(player=self)
+                                self.game.deck.draw(player=self)
+                                self.game.deck.draw(player=self)
                             self.attacker = None
                             self.game.deck.scrap(self.equipment.pop(i), True)
                             G.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
                             self.heal_if_needed()
                             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
                                 for i in range(3):
-                                    self.hand.append(self.game.deck.draw(True))
+                                    self.game.deck.draw(True, player=self)
                                 G.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
                             print(f'{self.name} Boom, -3 hp')
                             break
@@ -664,13 +665,13 @@ class Player:
                             G.sio.emit('chat_message', room=self.game.name, data=f'_snake_bit|{self.name}')
                             if self.character.check(self.game, chars.BartCassidy):
                                 G.sio.emit('chat_message', room=self.game.name, data=f'_special_bart_cassidy|{self.name}')
-                                self.hand.append(self.game.deck.draw(True))
+                                self.game.deck.draw(True, player=self)
                             if any((isinstance(c, grc.Talismano) for c in self.gold_rush_equipment)):
                                 self.gold_nuggets += 1
                             if self.character.check(self.game, grch.SimeonPicos):
                                 self.gold_nuggets += 1
                             if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
-                                self.hand.append(self.game.deck.draw(True))
+                                self.game.deck.draw(True, player=self)
                             break
             if any((isinstance(c, cs.Prigione) for c in self.equipment)):
                 self.notify_self() #TODO perchè solo le prigioni? e multiple dinamiti come si comportano con veracuster?
@@ -870,8 +871,8 @@ class Player:
         elif 'choose_tornado' in self.choose_text:
             if card_index <= len(self.available_cards):
                 self.game.deck.scrap(self.hand.pop(card_index))
-                self.hand.append(self.game.deck.draw())
-                self.hand.append(self.game.deck.draw())
+                self.game.deck.draw(player=self)
+                self.game.deck.draw(player=self)
             self.pending_action = PendingAction.WAIT
             self.game.responders_did_respond_resume_turn()
             self.notify_self()
@@ -961,7 +962,7 @@ class Player:
                 self.hand = [c for c in self.hand if c not in self.discarded_cards]
                 for i in range(len(self.discarded_cards)):
                     self.game.deck.scrap(self.discarded_cards[i], True)
-                    self.hand.append(self.game.deck.draw())
+                    self.game.deck.draw(player=self)
                 self.discarded_cards = []
                 self.is_playing_ranch = False
                 self.pending_action = PendingAction.PLAY
@@ -1007,7 +1008,7 @@ class Player:
                     self.game.deck.scrap(self.available_cards.pop())
                 #se c'è sia treno che piccone pesco un'altra carta
                 if self.game.check_event(ceh.IlTreno) and any((isinstance(c, grc.Piccone) for c in self.gold_rush_equipment)):
-                    self.hand.append(self.game.deck.draw())
+                    self.game.deck.draw(player=self)
                 self.is_drawing = False
                 self.pending_action = PendingAction.PLAY
                 self.manette()
@@ -1021,9 +1022,9 @@ class Player:
             self.game.deck.scrap(self.available_cards.pop(0), True) #scarto l'altra
             #legge del west non si applica perchè la seconda carta viene scartata
             if self.game.check_event(ceh.IlTreno):
-                self.hand.append(self.game.deck.draw())
+                self.game.deck.draw(player=self)
             if any((isinstance(c, grc.Piccone) for c in self.gold_rush_equipment)):
-                self.hand.append(self.game.deck.draw())
+                self.game.deck.draw(player=self)
             self.gold_nuggets += 1
             self.is_drawing = False
             self.pending_action = PendingAction.PLAY
@@ -1212,7 +1213,7 @@ class Player:
             for i in range(len(self.hand)):
                 if isinstance(self.hand[i], cs.Birra):
                     if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
-                        self.hand.append(self.game.deck.draw(True))
+                        self.game.deck.draw(True, player=self)
                     self.lives += 1 if not self.character.check(self.game, chd.TequilaJoe) else 2
                     self.lives = min(self.lives, self.max_lives)
                     self.game.deck.scrap(self.hand.pop(i), True)
@@ -1227,7 +1228,7 @@ class Player:
             if self.character.check(self.game, chars.BartCassidy):
                 G.sio.emit('chat_message', room=self.game.name,
                                 data=f'_special_bart_cassidy|{self.name}')
-                self.hand.append(self.game.deck.draw(True))
+                self.game.deck.draw(True, player=self)
             elif self.character.check(self.game, chars.ElGringo) and self.attacker and self.attacker in self.game.get_alive_players() and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(randrange(0, len(self.attacker.hand))))
                 self.hand[-1].reset_card()
@@ -1236,7 +1237,7 @@ class Player:
                 self.attacker.notify_self()
         if isinstance(self.attacker, Player) and not self.game.check_event(ce.Lazo):
             if any((isinstance(c, tvosc.Taglia) for c in self.equipment)):
-                self.attacker.hand.append(self.game.deck.draw(True))
+                self.game.deck.draw(True, player=self.attacker)
                 G.sio.emit('chat_message', room=self.game.name,
                     data=f'_taglia_reward|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()
@@ -1253,7 +1254,7 @@ class Player:
             if self.character.check(self.game, grch.SimeonPicos):
                 self.gold_nuggets += 1
             if any((isinstance(c, grc.Stivali) for c in self.gold_rush_equipment)):
-                self.hand.append(self.game.deck.draw(True))
+                self.game.deck.draw(True, player=self)
         self.heal_if_needed()
         self.mancato_needed = 0
         self.expected_response = []
@@ -1285,7 +1286,7 @@ class Player:
                 if hasattr(self.attacker,'character') and self.attacker.character.check(self.game, chars.SlabTheKiller) and isinstance(card, cs.Mancato):
                     self.molly_discarded_cards += 1
                 else:
-                    self.hand.append(self.game.deck.draw(True))
+                    self.game.deck.draw(True, player=self)
             card.use_card(self)
             print(f'{self.game.name}: {self.name} responded with {card.name}')
             G.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
@@ -1302,7 +1303,7 @@ class Player:
                 else:
                     if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
                         for i in range(self.molly_discarded_cards):
-                            self.hand.append(self.game.deck.draw(True))
+                            self.game.deck.draw(True, player=self)
                         self.molly_discarded_cards = 0
                         self.notify_self()
                     self.game.responders_did_respond_resume_turn(did_lose=False)
@@ -1317,12 +1318,12 @@ class Player:
         else:
             if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
                 for i in range(self.molly_discarded_cards):
-                    self.hand.append(self.game.deck.draw(True))
+                    self.game.deck.draw(True, player=self)
                 self.molly_discarded_cards = 0
                 self.notify_self()
             elif self.attacker and self.attacker in self.game.get_alive_players() and self.attacker.character.check(self.game, chd.MollyStark) and self.is_my_turn:
                 for i in range(self.attacker.molly_discarded_cards):
-                    self.attacker.hand.append(self.attacker.game.deck.draw(True))
+                    self.attacker.game.deck.draw(True, player=self.attacker)
                 self.attacker.molly_discarded_cards = 0
                 self.attacker.notify_self()
             self.on_failed_response_cb()
@@ -1364,8 +1365,8 @@ class Player:
                 self.scrapped_cards = 0
                 self.lives = min(self.lives+1, self.max_lives)
             elif self.character.check(self.game, chd.JoseDelgado) and card.is_equipment and self.special_use_count < 2:
-                self.hand.append(self.game.deck.draw(True))
-                self.hand.append(self.game.deck.draw(True))
+                self.game.deck.draw(True, player=self)
+                self.game.deck.draw(True, player=self)
                 self.special_use_count += 1
             self.game.deck.scrap(card)
             self.notify_self()

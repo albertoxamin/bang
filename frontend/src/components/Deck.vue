@@ -17,7 +17,7 @@
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
 				<card :card="eventCard" :key="eventCard.name" :class="eventClasses" @click.native="event"/>
 			</div>
-			<div style="position:relative">
+			<div style="position:relative" id="actual-deck">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
 				<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
 				<card :card="card" :donotlocalize="true" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>

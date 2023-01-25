@@ -89,8 +89,8 @@ class ChuckWengam(Character):
         if super().special(player, data):
             if player.lives > 1 and player.is_my_turn:
                 player.lives -= 1
-                player.hand.append(player.game.deck.draw(True))
-                player.hand.append(player.game.deck.draw(True))
+                player.game.deck.draw(True, player=player)
+                player.game.deck.draw(True, player=player)
                 player.notify_self()
                 return True
         return False

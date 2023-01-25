@@ -70,7 +70,7 @@ class RaddieSnake(Character):
             if player.gold_nuggets >= 1 and player.is_my_turn and player.special_use_count < 2:
                 player.gold_nuggets -= 1
                 player.special_use_count += 1
-                player.hand.append(player.game.deck.draw(True))
+                player.game.deck.draw(True, player=player)
                 player.notify_self()
                 return True
         return False

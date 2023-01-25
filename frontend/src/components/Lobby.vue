@@ -56,7 +56,7 @@
 						<Card :card="p.card" @click.native="drawFromPlayer(p.name)"  :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
 						<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 						<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
-						<tiny-hand :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
+						<tiny-hand :id="p.name+'-hand'" :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
 						<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 						<div class="tiny-equipment">
 							<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
@@ -74,6 +74,7 @@
 					<Card v-if="startGameCard" key="_shuffle_players_" :donotlocalize="true" :card="shufflePlayersCard" @click.native="shufflePlayers" class="fistful-of-cards"/>
 				</transition-group>
 			</div>
+			<AnimatedCard v-for="c in cardsToAnimate" v-bind:key="c.card.name + c.startPosition" :card="c.card" :startPosition="c.startPosition" :endPosition="c.endPosition"/>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
 				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose" :cancelChooseCardFromPlayer="()=>{hasToChoose=false}"/>
@@ -111,6 +112,20 @@ import TinyHand from './TinyHand.vue'
 import FullScreenInput from './FullScreenInput.vue'
 import Status from './Status.vue'
 import DeadRoleNotification from './DeadRoleNotification.vue'
+import AnimatedCard from './AnimatedCard.vue'
+
+const cumulativeOffset = function(element) {
+	var top = 0, left = 0;
+	do {
+		top += element.offsetTop  || 0;
+		left += element.offsetLeft || 0;
+		element = element.offsetParent;
+	} while(element);
+	return {
+			top: top,
+			left: left-Math.floor(Math.random() * 20)+10
+	};
+};
 
 export default {
 	name: 'Lobby',
@@ -124,7 +139,8 @@ export default {
 		PrettyCheck,
 		FullScreenInput,
 		Status,
-		DeadRoleNotification
+		DeadRoleNotification,
+		AnimatedCard
 	},
 	data: () => ({
 		username: '',
@@ -153,6 +169,7 @@ export default {
 		is_replay: false,
 		turn: -1,
 		deadRoleData: null,
+		cardsToAnimate: [],
 	}),
 	sockets: {
 		room(data) {
@@ -203,6 +220,29 @@ export default {
 				this.$router.push('/')
 			}
 			this.username = username
+		},
+		card_drawn(data) {
+			console.log('card_drawn'+data)
+			let decel = document.getElementById('actual-deck')
+			if (!decel)
+				return
+			let decelOffset = cumulativeOffset(decel)
+			let phand = document.getElementById(`${data.player}-hand`)
+			if (!phand)
+				return
+			let playerOffset = cumulativeOffset(phand)
+			playerOffset.top -= 30
+			playerOffset.left += 10
+			this.cardsToAnimate.push({
+				card: {
+					name: 'PewPew!',
+					icon: '💥',
+					back: true,
+				}, startPosition: decelOffset, endPosition: playerOffset
+			})
+			setTimeout(() => {
+				this.cardsToAnimate.shift()
+			}, 900);
 		},
 		mount_status() {
 			this.displayAdminStatus = true

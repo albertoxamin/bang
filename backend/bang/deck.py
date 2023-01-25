@@ -4,6 +4,7 @@ import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
+from globals import G
 
 class Deck:
     def __init__(self, game):
@@ -81,12 +82,15 @@ class Deck:
     def put_on_top(self, card: cs.Card):
         self.cards.insert(0, card)
 
-    def draw(self, ignore_event = False) -> cs.Card:
+    def draw(self, ignore_event = False, player=None) -> cs.Card:
         if self.game.check_event(ce.MinieraAbbandonata) and len(self.scrap_pile) > 0 and not ignore_event:
             return self.draw_from_scrap_pile()
         card = self.cards.pop(0)
         if len(self.cards) == 0:
             self.reshuffle()
+        if player is not None:
+            G.sio.emit('card_drawn', room=self.game.name, data={'player': player.name, 'pile': 'deck'})
+            player.hand.append(card)
         return card
 
     def reshuffle(self):

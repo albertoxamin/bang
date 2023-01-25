@@ -261,7 +261,7 @@ class Game:
                 G.sio.emit('chat_message', room=self.name, data=f'_choose_character|{self.players[i].name}|{self.players[i].character.name}')
                 self.players[i].prepare()
                 for k in range(self.players[i].max_lives):
-                    self.players[i].hand.append(self.deck.draw())
+                    self.deck.draw(player=self.players[i])
                 self.players[i].notify_self()
             current_roles = [x.role.name for x in self.players]
             self.rng.shuffle(current_roles)
@@ -486,7 +486,7 @@ class Game:
                 if target_pl.character.check(self, grch.SimeonPicos):
                     target_pl.gold_nuggets += 1
                 if any((isinstance(c, grc.Stivali) for c in target_pl.gold_rush_equipment)):
-                    target_pl.hand.append(self.deck.draw(True))
+                    self.deck.draw(True, player=target_pl)
                 target_pl.notify_self()
                 self.is_russian_roulette_on = False
                 self.players[self.turn].play_turn()
@@ -565,8 +565,8 @@ class Game:
                 pl.is_dead = False
                 pl.is_ghost = False
                 pl.lives = 2
-                pl.hand.append(self.deck.draw())
-                pl.hand.append(self.deck.draw())
+                self.deck.draw(player=pl)
+                self.deck.draw(player=pl)
                 if (ghost := next((c for c in pl.equipment if isinstance(c, tvosc.Fantasma)), None)) is not None:
                     self.deck.scrap(ghost)
                     pl.equipment.remove(ghost)
@@ -707,8 +707,8 @@ class Game:
                 Metrics.send_metric('player_death', points=[1], tags=[f"char:{player.character.name}", f"role:{player.role.name}"])
         if any((isinstance(c, grc.Ricercato) for c in player.gold_rush_equipment)) and player.attacker and player.attacker in self.players:
             player.attacker.gold_nuggets += 1
-            player.attacker.hand.append(self.deck.draw(True))
-            player.attacker.hand.append(self.deck.draw(True))
+            self.deck.draw(True, player=player.attacker)
+            self.deck.draw(True, player=player.attacker)
             player.attacker.notify_self()
         # se lo sceriffo uccide il proprio vice
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
@@ -721,7 +721,7 @@ class Game:
             player.attacker.notify_self()
         elif player.attacker and player.attacker in self.players and (isinstance(player.role, roles.Outlaw) or self.initial_players == 3):
             for i in range(3):
-                player.attacker.hand.append(self.deck.draw(True))
+                self.deck.draw(True, player=player.attacker)
             player.attacker.notify_self()
         print(f'{self.name}: player {player.name} died')
         if self.waiting_for > 0 and player.pending_action == pl.PendingAction.RESPOND:
@@ -806,8 +806,8 @@ class Game:
                 greg[i].lives = min(greg[i].lives+2, greg[i].max_lives)
             herb = [p for p in self.get_alive_players() if p.character.check(self, chd.HerbHunter)]
             for i in range(len(herb)):
-                herb[i].hand.append(self.deck.draw(True))
-                herb[i].hand.append(self.deck.draw(True))
+                self.deck.draw(True, player=herb[i])
+                self.deck.draw(True, player=herb[i])
                 herb[i].notify_self()
 
             #se Vulture Sam o Herb Hounter è uno sceriffo e ha appena ucciso il suo Vice, deve scartare le carte che ha pescato con la sua abilità
