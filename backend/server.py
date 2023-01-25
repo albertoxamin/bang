@@ -114,7 +114,7 @@ def report(sid, text):
     response = requests.post("https://hastebin.com/documents", data.encode('utf-8'))
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
-        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug reported by {ses.name}, replay at https://bang.xamin.it/game?replay={key}\nTotal actions:{len(ses.game.rpc_log)}\nExpansions:{ses.game.expansions}\nInfo: {text}')
+        webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug reported by {ses.name}, replay at https://bang.xamin.it/game?replay={key}\nRaw: https://hastebin.com/{key}\nTotal actions:{len(ses.game.rpc_log)}\nExpansions:{ses.game.expansions}\nInfo: {text}')
         response = webhook.execute()
         sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Report OK'})
         if not any((p.pending_action != PendingAction.WAIT for p in ses.game.players)):
