@@ -8,4 +8,7 @@ class DummySocket():
         if self.true_sio and event == 'chat_message':
             self.true_sio.emit(event, data, to, room, skip_sid, namespace, callback, **kwargs)
         return True
+    
+    def sleep(self, seconds):
+        return seconds
     is_fake = True
