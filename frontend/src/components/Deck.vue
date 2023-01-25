@@ -22,7 +22,7 @@
 				<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
 				<card :card="card" :donotlocalize="true" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
 			</div>
-			<div style="position:relative;">
+			<div style="position:relative;" id="actual-scrap">
 				<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
 				<card v-else :card="card" class="back" style="opacity:0"/>
 				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap.name+lastScrap.number" class="last-scrap" @click.native="action('scrap')"

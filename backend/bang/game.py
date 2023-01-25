@@ -714,9 +714,9 @@ class Game:
         # se lo sceriffo uccide il proprio vice
         if player.attacker and player.attacker in self.players and isinstance(player.attacker.role, roles.Sheriff) and isinstance(player.role, roles.Vice):
             for i in range(len(player.attacker.hand)):
-                self.deck.scrap(player.attacker.hand.pop(), True)
+                self.deck.scrap(player.attacker.hand.pop(), True, player=player.attacker)
             for i in range(len(player.attacker.equipment)):
-                self.deck.scrap(player.attacker.equipment.pop(), True)
+                self.deck.scrap(player.attacker.equipment.pop(), True, player=player.attacker)
             for i in range(len(player.attacker.gold_rush_equipment)):
                 self.deck.shop_deck.append(player.attacker.gold_rush_equipment.pop())
             player.attacker.notify_self()

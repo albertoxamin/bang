@@ -616,7 +616,7 @@ class Player:
                                 self.game.deck.draw(player=self)
                                 self.game.deck.draw(player=self)
                             self.attacker = None
-                            self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.game.deck.scrap(self.equipment.pop(i), True, player=self)
                             G.sio.emit('chat_message', room=self.game.name, data=f'_explode|{self.name}')
                             self.heal_if_needed()
                             if self.character.check(self.game, chars.BartCassidy) and self.lives > 0:
@@ -641,12 +641,12 @@ class Player:
                         G.sio.emit('chat_message', room=self.game.name,
                                       data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
                         if not picked.check_suit(self.game, [cs.Suit.HEARTS]) and pickable_cards == 0:
-                            self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.game.deck.scrap(self.equipment.pop(i), True, player=self)
                             G.sio.emit('chat_message', room=self.game.name, data=f'_prison_turn|{self.name}')
                             self.end_turn(forced=True)
                             return
                         elif pickable_cards == 0:
-                            self.game.deck.scrap(self.equipment.pop(i), True)
+                            self.game.deck.scrap(self.equipment.pop(i), True, player=self)
                             G.sio.emit('chat_message', room=self.game.name, data=f'_prison_free|{self.name}')
                             break
                     break
@@ -771,7 +771,7 @@ class Player:
                 if card.name != "Fantasma" or self.name != target.name: #se si uccide facendo panico su fantasma la carta non gli viene messa in mano
                     self.hand.append(card)
             else:
-                self.game.deck.scrap(card, True)
+                self.game.deck.scrap(card, True, player=target)
             if self.event_type != 'rissa' or len(self.rissa_targets) == 0:
                 self.event_type = ''
                 self.target_p = ''
@@ -793,7 +793,7 @@ class Player:
             self.notify_self()
         elif self.choose_text == 'choose_sid_scrap':
             self.scrapped_cards += 1
-            self.game.deck.scrap(self.hand.pop(card_index), True)
+            self.game.deck.scrap(self.hand.pop(card_index), True, player=self)
             if self.scrapped_cards == 2:
                 self.available_cards = []
                 self.pending_action = self.previous_pending_action
@@ -870,7 +870,7 @@ class Player:
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:
             if card_index <= len(self.available_cards):
-                self.game.deck.scrap(self.hand.pop(card_index))
+                self.game.deck.scrap(self.hand.pop(card_index), player=self)
                 self.game.deck.draw(player=self)
                 self.game.deck.draw(player=self)
             self.pending_action = PendingAction.WAIT
@@ -878,7 +878,7 @@ class Player:
             self.notify_self()
         elif 'choose_poker' in self.choose_text:
             if card_index <= len(self.available_cards):
-                self.game.deck.scrap(self.hand.pop(card_index))
+                self.game.deck.scrap(self.hand.pop(card_index), player=self)
             self.pending_action = PendingAction.WAIT
             self.game.responders_did_respond_resume_turn()
             self.notify_self()
@@ -894,7 +894,7 @@ class Player:
         elif 'choose_bandidos' in self.choose_text:
             if card_index < len(self.hand):
                 self.available_cards.pop(card_index)
-                self.game.deck.scrap(self.hand.pop(card_index))
+                self.game.deck.scrap(self.hand.pop(card_index), player=self)
                 self.mancato_needed -= 1
             else:
                 self.lives -= 1
@@ -961,7 +961,7 @@ class Player:
             if card_index == len(self.available_cards) - 1:
                 self.hand = [c for c in self.hand if c not in self.discarded_cards]
                 for i in range(len(self.discarded_cards)):
-                    self.game.deck.scrap(self.discarded_cards[i], True)
+                    self.game.deck.scrap(self.discarded_cards[i], True, player=self)
                     self.game.deck.draw(player=self)
                 self.discarded_cards = []
                 self.is_playing_ranch = False
@@ -972,7 +972,7 @@ class Player:
         elif self.game.dalton_on and self.game.check_event(ceh.IDalton):
             card = next(c for c in self.equipment if c == self.available_cards[card_index])
             self.equipment.remove(card)
-            self.game.deck.scrap(card, True)
+            self.game.deck.scrap(card, True, player=self)
             self.pending_action = PendingAction.WAIT
             self.notify_self()
             self.game.responders_did_respond_resume_turn()
@@ -1216,7 +1216,7 @@ class Player:
                         self.game.deck.draw(True, player=self)
                     self.lives += 1 if not self.character.check(self.game, chd.TequilaJoe) else 2
                     self.lives = min(self.lives, self.max_lives)
-                    self.game.deck.scrap(self.hand.pop(i), True)
+                    self.game.deck.scrap(self.hand.pop(i), True, player=self)
                     G.sio.emit('chat_message', room=self.game.name,
                                   data=f'_beer_save|{self.name}')
                     break
@@ -1243,7 +1243,7 @@ class Player:
                 self.attacker.notify_self()
             if len(self.hand) > 0 and any((isinstance(cd, tvosc.Shotgun) for cd in self.attacker.equipment)):
                 c = self.hand.pop(randrange(0, len(self.hand)))
-                self.game.deck.scrap(c, True)
+                self.game.deck.scrap(c, True, player=self)
                 G.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
         if self.attacker and 'gold_rush' in self.game.expansions:
             if (isinstance(self.attacker, Player)):
@@ -1265,7 +1265,7 @@ class Player:
 
     def take_no_damage_response(self):
         if self.dmg_card_index is not None and self.dmg_card_index != -1 and self.game.check_event(ce.Rimbalzo):
-            self.game.deck.scrap(self.equipment.pop(self.dmg_card_index))
+            self.game.deck.scrap(self.equipment.pop(self.dmg_card_index), player=self)
         self.dmg_card_index = -1
         self.mancato_needed = 0
         self.expected_response = []
@@ -1290,7 +1290,7 @@ class Player:
             card.use_card(self)
             print(f'{self.game.name}: {self.name} responded with {card.name}')
             G.sio.emit('chat_message', room=self.game.name, data=f'_respond|{self.name}|{card.name}')
-            self.game.deck.scrap(card, True)
+            self.game.deck.scrap(card, True, player=self)
             self.notify_self()
             self.mancato_needed -= 1
             if isinstance(card, tvosc.RitornoDiFiamma):
@@ -1368,7 +1368,7 @@ class Player:
                 self.game.deck.draw(True, player=self)
                 self.game.deck.draw(True, player=self)
                 self.special_use_count += 1
-            self.game.deck.scrap(card)
+            self.game.deck.scrap(card, player=self)
             self.notify_self()
 
     def special(self, data):

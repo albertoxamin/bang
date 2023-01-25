@@ -88,7 +88,7 @@ class Deck:
         card = self.cards.pop(0)
         if len(self.cards) == 0:
             self.reshuffle()
-        if player is not None:
+        if player is not None and self.game.replay_speed > 0:
             G.sio.emit('card_drawn', room=self.game.name, data={'player': player.name, 'pile': 'deck'})
             player.hand.append(card)
         return card
@@ -107,11 +107,13 @@ class Deck:
         else:
             return self.draw()
 
-    def scrap(self, card: cs.Card, ignore_event = False):
+    def scrap(self, card: cs.Card, ignore_event = False, player=None):
         if card.number == 42: return
         card.reset_card()
         if self.game.check_event(ce.MinieraAbbandonata) and not ignore_event:
             self.put_on_top(card)
         else:
+            if player is not None and self.game.replay_speed > 0:
+                G.sio.emit('card_scrapped', room=self.game.name, data={'player': player.name, 'card':card.__dict__, 'pile': 'scrap'})
             self.scrap_pile.append(card)
             self.game.notify_scrap_pile()

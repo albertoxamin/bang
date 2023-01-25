@@ -74,7 +74,7 @@
 					<Card v-if="startGameCard" key="_shuffle_players_" :donotlocalize="true" :card="shufflePlayersCard" @click.native="shufflePlayers" class="fistful-of-cards"/>
 				</transition-group>
 			</div>
-			<AnimatedCard v-for="c in cardsToAnimate" v-bind:key="c.card.name + c.startPosition" :card="c.card" :startPosition="c.startPosition" :endPosition="c.endPosition"/>
+			<AnimatedCard v-for="c in cardsToAnimate" v-bind:key="c.key" :card="c.card" :startPosition="c.startPosition" :endPosition="c.endPosition"/>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
 				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose" :cancelChooseCardFromPlayer="()=>{hasToChoose=false}"/>
@@ -222,7 +222,6 @@ export default {
 			this.username = username
 		},
 		card_drawn(data) {
-			console.log('card_drawn'+data)
 			let decel = document.getElementById('actual-deck')
 			if (!decel)
 				return
@@ -234,11 +233,36 @@ export default {
 			playerOffset.top -= 30
 			playerOffset.left += 10
 			this.cardsToAnimate.push({
+				key: Math.random(),
 				card: {
 					name: 'PewPew!',
 					icon: '💥',
 					back: true,
 				}, startPosition: decelOffset, endPosition: playerOffset
+			})
+			setTimeout(() => {
+				this.cardsToAnimate.shift()
+			}, 900);
+		},
+		card_scrapped(data) {
+			let decel = document.getElementById('actual-scrap')
+			if (!decel) {
+				console.log('card_scrapped no deck')
+				return
+			}
+			let decelOffset = cumulativeOffset(decel)
+			let phand = document.getElementById(`${data.player}-hand`)
+			if (!phand) {
+				console.log('card_scrapped no phand')
+				return
+			}
+			let playerOffset = cumulativeOffset(phand)
+			playerOffset.top -= 30
+			playerOffset.left += 10
+			console.log('card_scrapped'+decelOffset + ' '+ playerOffset)
+			this.cardsToAnimate.push({
+				key: data.card.name+data.card.number+data.player,
+				card: data.card, startPosition: playerOffset, endPosition: decelOffset
 			})
 			setTimeout(() => {
 				this.cardsToAnimate.shift()
