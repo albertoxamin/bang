@@ -286,8 +286,7 @@ class CatBalou(Card):
 
     def play_card(self, player, against, _with=None):
         if against is not None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
-            if self.name == 'Cat Balou':
-                super().play_card(player, against=against)
+            super().play_card(player, against=against)
             from bang.players import PendingAction
             player.pending_action = PendingAction.CHOOSE
             player.choose_action = 'discard'
