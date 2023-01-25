@@ -767,6 +767,7 @@ class Player:
                 card = target.hand.pop(card_index)
             target.notify_self()
             if self.choose_action == 'steal':
+                G.sio.emit('card_drawn', room=self.game.name, data={'player': self.name, 'pile': target.name})
                 card.reset_card()
                 if card.name != "Fantasma" or self.name != target.name: #se si uccide facendo panico su fantasma la carta non gli viene messa in mano
                     self.hand.append(card)
@@ -1038,6 +1039,7 @@ class Player:
             card.reset_card()
             self.hand.append(card)
             self.available_cards = []
+            G.sio.emit('card_drawn', room=self.game.name, data={'player': self.name, 'pile': self.pat_target})
             self.game.get_player_named(self.pat_target).notify_self()
             self.pending_action = PendingAction.PLAY
             self.manette()
@@ -1232,6 +1234,7 @@ class Player:
             elif self.character.check(self.game, chars.ElGringo) and self.attacker and self.attacker in self.game.get_alive_players() and len(self.attacker.hand) > 0:
                 self.hand.append(self.attacker.hand.pop(randrange(0, len(self.attacker.hand))))
                 self.hand[-1].reset_card()
+                G.sio.emit('card_drawn', room=self.game.name, data={'player': self.name, 'pile': self.attacker.name})
                 G.sio.emit('chat_message', room=self.game.name,
                               data=f'_special_el_gringo|{self.name}|{self.attacker.name}')
                 self.attacker.notify_self()

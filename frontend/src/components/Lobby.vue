@@ -222,7 +222,8 @@ export default {
 			this.username = username
 		},
 		card_drawn(data) {
-			let decel = document.getElementById('actual-deck')
+			let from = data.pile === 'deck' ? 'actual-deck' : `${data.pile}-hand`;
+			let decel = document.getElementById(from)
 			if (!decel)
 				return
 			let decelOffset = cumulativeOffset(decel)

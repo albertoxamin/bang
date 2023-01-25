@@ -113,7 +113,10 @@ class Deck:
         if self.game.check_event(ce.MinieraAbbandonata) and not ignore_event:
             self.put_on_top(card)
         else:
+            self.scrap_pile.append(card)
             if player is not None and self.game.replay_speed > 0:
                 G.sio.emit('card_scrapped', room=self.game.name, data={'player': player.name, 'card':card.__dict__, 'pile': 'scrap'})
-            self.scrap_pile.append(card)
-            self.game.notify_scrap_pile()
+                G.sio.sleep(0.6)
+                self.game.notify_scrap_pile()
+            else:
+                self.game.notify_scrap_pile()
