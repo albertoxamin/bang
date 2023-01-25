@@ -57,8 +57,12 @@ blacklist: List[str] = []
 
 def send_to_debug(error):
     for g in games:
-        if g.debug or any((p.is_admin() for p in g.players)):
+        if g.debug:
             sio.emit('chat_message', room=g.name, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
+        elif any((p.is_admin() for p in g.players)):
+            for p in g.players:
+                if p.is_admin():
+                    sio.emit('chat_message', room=p.sid, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
 
 save_lock = False
 def bang_handler(func):
