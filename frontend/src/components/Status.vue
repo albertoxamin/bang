@@ -77,7 +77,7 @@ export default {
 			this.$socket.emit('kick', {'key':this.deploy_key, 'sid':sid})
 			setTimeout((()=>{
 				this.refresh()
-			}).bind(this), 1500)
+			}).bind(this), 500)
 		}
 	}
 }
