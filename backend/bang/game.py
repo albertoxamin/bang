@@ -105,7 +105,7 @@ class Game:
                 bot.is_bot = False
             else:
                 bot.game = None
-        self.players = [p for p in self.players if not p.is_bot]
+        self.players = [p for p in self.players if not p.is_bot and p.sid != 'a_replay']
         print(f'{self.name}: players: {self.players}')
         self.started = False
         self.is_handling_death = False
@@ -138,7 +138,7 @@ class Game:
                 self.expansions = json.loads(cmd[4].replace("'",'"'))
                 pnames = json.loads(cmd[3].replace("'",'"'))
                 for p in pnames:
-                    self.add_player(pl.Player(p, 'a', bot=False))
+                    self.add_player(pl.Player(p, 'a_replay', bot=False))
                 continue
             if cmd[1] == 'start_game':
                 self.start_game(int(cmd[2]))
