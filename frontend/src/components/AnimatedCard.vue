@@ -13,6 +13,7 @@ export default {
 	props: {
 		card: Object,
 		startPosition: Object,
+		midPosition: Object,
 		endPosition: Object,
 	},
 	data: () => ({
@@ -24,12 +25,22 @@ export default {
 	},
 	mounted() {
 		this.style = `position: absolute;top:${this.startPosition.top}px;left: ${this.startPosition.left}px`
-		setTimeout(() => {
-			this.style = `position: absolute;top:${this.endPosition.top}px;left: ${this.endPosition.left}px;transform: scale(0.5);`
-		}, 200)
+		if (this.midPosition) {
+			setTimeout(() => {
+				this.style = `position: absolute;top:${this.midPosition.top}px;left: ${this.midPosition.left}px;transform: scale(0.5);`
+			}, 200)
+			setTimeout(() => {
+				this.style = `position: absolute;top:${this.endPosition.top}px;left: ${this.endPosition.left}px;transform: scale(0.5);`
+			}, 800)
+		}
+		else {
+			setTimeout(() => {
+				this.style = `position: absolute;top:${this.endPosition.top}px;left: ${this.endPosition.left}px;transform: scale(0.5);`
+			}, 200)
+		}
 		setTimeout(() => {
 			this.style = `display:none;`
-		}, 800)
+		}, this.midPosition ? 1600 : 800)
 	}
 }
 </script>

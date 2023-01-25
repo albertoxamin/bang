@@ -74,7 +74,7 @@
 					<Card v-if="startGameCard" key="_shuffle_players_" :donotlocalize="true" :card="shufflePlayersCard" @click.native="shufflePlayers" class="fistful-of-cards"/>
 				</transition-group>
 			</div>
-			<AnimatedCard v-for="c in cardsToAnimate" v-bind:key="c.key" :card="c.card" :startPosition="c.startPosition" :endPosition="c.endPosition"/>
+			<AnimatedCard v-for="c in cardsToAnimate" v-bind:key="c.key" :card="c.card" :startPosition="c.startPosition" :midPosition="c.midPosition" :endPosition="c.endPosition"/>
 			<div v-if="started">
 				<deck :endTurnAction="()=>{wantsToEndTurn = true}"/>
 				<player :isEndingTurn="wantsToEndTurn" :cancelEndingTurn="()=>{wantsToEndTurn = false}" :chooseCardFromPlayer="choose" :cancelChooseCardFromPlayer="()=>{hasToChoose=false}"/>
@@ -233,8 +233,9 @@ export default {
 			let playerOffset = cumulativeOffset(phand)
 			playerOffset.top -= 30
 			playerOffset.left += 10
+			let key = Math.random()
 			this.cardsToAnimate.push({
-				key: Math.random(),
+				key: key,
 				card: {
 					name: 'PewPew!',
 					icon: '💥',
@@ -242,8 +243,26 @@ export default {
 				}, startPosition: decelOffset, endPosition: playerOffset
 			})
 			setTimeout(() => {
-				this.cardsToAnimate.shift()
+				this.cardsToAnimate = this.cardsToAnimate.filter(x => x.key !== key)
 			}, 900);
+		},
+		card_against(data) {
+			let target = document.getElementById(`${data.target}-hand`)
+			let targetOffset = cumulativeOffset(target.parentElement)
+			let decel = document.getElementById('actual-scrap')
+			let decelOffset = cumulativeOffset(decel)
+			let phand = document.getElementById(`${data.player}-hand`)
+			let playerOffset = cumulativeOffset(phand)
+			playerOffset.top -= 30
+			playerOffset.left += 10
+			let key = data.card.name+data.card.number+data.player
+			this.cardsToAnimate.push({
+				key: key,
+				card: data.card, startPosition: playerOffset, midPosition: targetOffset, endPosition: decelOffset
+			})
+			setTimeout(() => {
+				this.cardsToAnimate = this.cardsToAnimate.filter(x => x.key !== key)
+			}, 1800);
 		},
 		card_scrapped(data) {
 			let decel = document.getElementById('actual-scrap')
@@ -260,13 +279,14 @@ export default {
 			let playerOffset = cumulativeOffset(phand)
 			playerOffset.top -= 30
 			playerOffset.left += 10
-			console.log('card_scrapped'+decelOffset + ' '+ playerOffset)
+			console.log('card_scrapped' + decelOffset + ' ' + playerOffset)
+			let key = data.card.name+data.card.number+data.player
 			this.cardsToAnimate.push({
-				key: data.card.name+data.card.number+data.player,
+				key: key,
 				card: data.card, startPosition: playerOffset, endPosition: decelOffset
 			})
 			setTimeout(() => {
-				this.cardsToAnimate.shift()
+				this.cardsToAnimate = this.cardsToAnimate.filter(x => x.key !== key)
 			}, 900);
 		},
 		mount_status() {

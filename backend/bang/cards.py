@@ -85,6 +85,7 @@ class Card(ABC):
                 player.equipment.append(self)
             self.can_be_used_now = False
         if against:
+            G.sio.emit('card_against', room=player.game.name, data={'player': player.name, 'target': against, 'card': self.__dict__})
             G.sio.emit('chat_message', room=player.game.name,
                         data=f'_play_card_against|{player.name}|{self.name}|{against}')
         else:
