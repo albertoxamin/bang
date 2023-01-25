@@ -135,7 +135,8 @@ class Game:
                 return
             cmd = log[i].split(';')
             if cmd[1] == 'players':
-                self.expansions = json.loads(cmd[4].replace("'",'"'))
+                self.expansions = json.loads(cmd[4].replace("'",'"'))                
+                self.is_competitive = bool(cmd[5])
                 pnames = json.loads(cmd[3].replace("'",'"'))
                 for p in pnames:
                     self.add_player(pl.Player(p, 'a_replay', bot=False))
@@ -287,7 +288,7 @@ class Game:
             SEED = int(time.time())
         print(f'{self.name}: SEED IS {SEED}')
         self.SEED = SEED
-        self.rpc_log = [f';players;{len(self.players)};{[p.name for p in self.players]};{self.expansions}', f';start_game;{SEED}']
+        self.rpc_log = [f';players;{len(self.players)};{[p.name for p in self.players]};{self.expansions};{self.is_competitive}', f';start_game;{SEED}']
         self.rng = random.Random(SEED)
         self.players_map = {c.name: i for i, c in enumerate(self.players)}
         G.sio.emit('chat_message', room=self.name, data=f'_starting')
