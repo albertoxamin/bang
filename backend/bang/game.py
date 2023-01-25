@@ -179,9 +179,9 @@ class Game:
             self.notify_room()
             eventlet.sleep(max(self.replay_speed, 0.001))
         eventlet.sleep(6)
+        self.players = []
         if self.is_replay:
             self.reset()
-            
 
     def notify_room(self, sid=None):
         if any((p.character is None for p in self.players)) or sid:
