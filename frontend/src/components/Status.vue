@@ -22,6 +22,7 @@
 						<p style="margin:0"><b>name:</b> {{p.name}}</p>
 						<p style="margin:0"><b>is_bot:</b> {{p.bot}}</p>
 						<p style="margin:0"><b>health:</b> {{p.health}}</p>
+						<p style="margin:0"><b>sid:</b> {{p.sid}}</p>
 						<button v-if="!p.bot" @click="kick(p.sid)">Kick</button>
 					</li>
 				</ul>
@@ -76,7 +77,7 @@ export default {
 			this.$socket.emit('kick', {'key':this.deploy_key, 'sid':sid})
 			setTimeout((()=>{
 				this.refresh()
-			}).bind(this), 500)
+			}).bind(this), 1500)
 		}
 	}
 }
