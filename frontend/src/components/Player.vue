@@ -136,6 +136,7 @@ export default {
 		committed_suit_manette: null,
 		gold_nuggets: 0,
 		cantplaycard: false,
+		avatar: '',
 		hurt: false,
 	}),
 	sockets: {
@@ -153,6 +154,7 @@ export default {
 		self(self) {
 			self = JSON.parse(self)
 			this.name = self.name
+			this.avatar = self.avatar
 			this.pending_action = self.pending_action
 			this.character = self.character
 			if (this.character != null) {
@@ -270,11 +272,13 @@ export default {
 					is_character: true,
 					is_player: true
 				}})
-			if (this.card_against && this.card_against.can_target_self) {
+			if (this.card_against && this.card_against.can_target_self && this.equipment.length > 0) {
 				vis.push({
 					name: this.name,
-					number: 0,
-					icon: this.$t('you'),
+					number: '0⛰',
+					alt_text: this.$t('you'),
+					avatar: this.avatar,
+					icon: '🤳',
 					is_character: true,
 					is_player: true
 				})
