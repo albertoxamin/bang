@@ -731,7 +731,7 @@ def get_cards(sid):
 @bang_handler
 def get_characters(sid):
     import bang.characters as ch
-    cards = ch.all_characters(['dodge_city', 'gold_rush'])
+    cards = ch.all_characters(['dodge_city', 'gold_rush', 'the_valley_of_shadows'])
     sio.emit('characters_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
