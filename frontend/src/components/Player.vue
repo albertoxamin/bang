@@ -519,6 +519,7 @@ export default {
 	color: var(--muted-color);
 	position: absolute;
 	font-size: xxx-large;
+	font-size: -webkit-xxx-large;
 	font-weight: 300;
 	bottom: 0;
 	right: 10pt;
