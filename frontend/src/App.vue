@@ -10,7 +10,7 @@
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;z-index:10">
 			<input type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="()=>{sending_report = true}" :value=" $t('report') " />
-			<input type="button" class="btn" value="" style="min-width:28pt;cursor:pointer;background-image: url('https://img.icons8.com/color/48/discord-logo.png');background-size:2em;background-repeat: no-repeat;" @click="joinDiscord"/>
+			<input type="button" class="btn" value="" style="min-width:28pt;cursor:pointer;background-position:center;background-image:url('https://img.icons8.com/color/48/discord-logo.png');background-size:1.5em;background-repeat: no-repeat;" @click="joinDiscord"/>
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
 			<select id="theme" class="btn" v-model="theme">
 				<option

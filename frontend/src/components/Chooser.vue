@@ -9,7 +9,7 @@
 		<p v-if="hintText">{{hintText}}</p>
 		<h2 v-if="timer > 0 && remainingTime > 0 && !showCancelBtn">{{remainingTime}}</h2>
 		<div style="margin-top:6pt;" class="button center-stuff" v-if="showCancelBtn" @click="internalCancel"><span>{{realCancelText}}</span> <span v-if="timer > 0 && remainingTime > 0"> ({{remainingTime}})</span></div>
-		<p v-if="desc" style="bottom:10pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
+		<p v-if="desc" style="bottom:28pt;right:0;left:0;position:absolute;margin:16pt;font-size:18pt">{{desc}}</p>
 	</div>
 </template>
 

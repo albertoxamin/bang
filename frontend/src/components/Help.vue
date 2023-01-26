@@ -23,7 +23,7 @@
 			<li><p>{{$t('help.turndiscard')}}</p></li>
 		</ol>
 		<h3>{{$t('help.drawthecards')}}</h3>
-		<p>{{$t('help.drawinstructions')}}<p>
+		<p>{{$t('help.drawinstructions')}}</p>
 		<div style="display:flex" class="center-stuff">
 			<div style="position:relative">
 				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
