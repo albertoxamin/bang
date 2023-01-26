@@ -808,6 +808,7 @@
     "sepia": "Seppia",
     "light": "Chiaro",
     "dark": "Scuro",
-    "grayscale": "Scala di Grigi"
+    "grayscale": "Scala di Grigi",
+    "black": "Nero Puro"
   }
 }

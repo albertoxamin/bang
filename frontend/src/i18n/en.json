@@ -808,6 +808,7 @@
     "sepia": "Sepia",
     "light": "Light",
     "dark": "Dark",
-    "grayscale": "Grayscale"
+    "grayscale": "Grayscale",
+		"black": "True Black"
   }
 }

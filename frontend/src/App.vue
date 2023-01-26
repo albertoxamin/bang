@@ -10,11 +10,11 @@
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;z-index:10">
 			<input type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="()=>{sending_report = true}" :value=" $t('report') " />
-			<input type="button" class="btn" value="" style="min-width:28pt;cursor:pointer;background-image: url('https://img.icons8.com/color/48/discord-logo.png');background-size:2em;" @click="joinDiscord"/>
+			<input type="button" class="btn" value="" style="min-width:28pt;cursor:pointer;background-image: url('https://img.icons8.com/color/48/discord-logo.png');background-size:2em;background-repeat: no-repeat;" @click="joinDiscord"/>
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
 			<select id="theme" class="btn" v-model="theme">
 				<option
-					v-for="(theme, i) in ['light.☀️', 'dark.🌙️', 'sepia.🌇️', 'grayscale.📰️']"
+					v-for="(theme, i) in ['light.☀️', 'dark.🌙️', 'sepia.🌇️', 'grayscale.📰️', 'black.⬛']"
 					:key="`theme-${i}`"
 					:value="theme.split('.')[0]">
 						{{theme.split('.')[1]}} {{$t(`theme.${theme.split('.')[0]}`)}}
@@ -104,6 +104,8 @@ export default {
 				console.log("Prefers dark mode")
 				this.theme = "dark";
 			}
+			var style = getComputedStyle(document.body);
+			document.querySelector("meta[name='theme-color']").setAttribute("content", style.getPropertyValue('--bg-color'));
 		},
 		joinDiscord() {
 			window.open('https://discord.gg/Dr58dZ2na8', '_blank');
@@ -121,7 +123,9 @@ export default {
 	watch: {
 		theme() {
 			document.documentElement.setAttribute("data-theme", this.theme);
-			localStorage.setItem('theme', this.theme)
+			localStorage.setItem('theme', this.theme);
+			var style = getComputedStyle(document.body);
+			document.querySelector("meta[name='theme-color']").setAttribute("content", style.getPropertyValue('--bg-color'));
 		}
 	},
 	mounted() {
@@ -276,6 +280,10 @@ input:disabled {
 [data-theme="dark"] {
 	--font-color: rgb(174, 194, 211);
 	--bg-color: #181a1b;
+}
+[data-theme="black"] {
+	--font-color: rgb(174, 194, 211);
+	--bg-color: #000000;
 }
 [data-theme="sepia"] {
 	--font-color: rgb(54, 43, 33);
