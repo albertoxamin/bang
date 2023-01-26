@@ -46,6 +46,9 @@
 		</div>
 		<label for="username" style="opacity:0">Username</label>
 		<label for="lobbyname" style="opacity:0">Lobby Name</label>
+		<div>
+			Still new to the game? Read the rules <a href="./help">here</a> or press the question mark in the bottom right corner anytime during your matches.
+		</div>
 	</div>
 </template>
 
