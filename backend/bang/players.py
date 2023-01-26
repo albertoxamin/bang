@@ -13,6 +13,7 @@ import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
+import bang.expansions.the_valley_of_shadows.characters as tvosch
 from typing import List
 from metrics import Metrics
 from globals import G
@@ -551,6 +552,7 @@ class Player:
             self.pending_action = PendingAction.PLAY
             num = 2 if not self.character.check(self.game, chd.BillNoface) else self.max_lives-self.lives+1
             if self.character.check(self.game, chd.PixiePete): num += 1
+            if self.character.check(self.game, tvosch.TucoFranziskaner) and not any((True for c in self.equipment if not c.usable_next_turn)): num += 2
             if (any((isinstance(c, grc.Piccone) for c in self.gold_rush_equipment))): num += 1
             if self.game.check_event(ceh.IlTreno) or (self.is_ghost and self.game.check_event(ceh.CittaFantasma)): num += 1
             elif self.game.check_event(ceh.Sete): num -= 1

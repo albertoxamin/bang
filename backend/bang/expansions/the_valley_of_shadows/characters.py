@@ -58,7 +58,7 @@ def all_characters() -> List[Character]:
         # HenryBlock(),
         # LemonadeJim(),
         # MickDefender(),
-        # TucoFranziskaner(),
+        TucoFranziskaner(),
     ]
     for c in cards:
         c.expansion_icon = '👻️'
