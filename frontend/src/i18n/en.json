@@ -747,6 +747,10 @@
     "Tornado": {
       "name": "Tornado",
       "desc": "Everyone discards a card from their hand (if possible), then draws 2 cards from the deck."
+    },
+    "Tuco Franziskaner": {
+      "name": "Tuco Franziskaner",
+      "desc": "If you don't have blue cards equipped you draw 2 extra cards."
     }
   },
   "help": {

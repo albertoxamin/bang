@@ -747,6 +747,10 @@
     "Tornado": {
       "name": "Tornado",
       "desc": "Tutti scartano una carta dalla mano (se possibile), poi ottengono 2 carte dal mazzo."
+    },
+    "Tuco Franziskaner": {
+      "name": "Tuco Franziskaner",
+      "desc": "Durante la tua fase di pesca, se non hai carte blu in gioco, pesca 2 carte extra."
     }
   },
   "help": {
