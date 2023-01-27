@@ -142,3 +142,4 @@ bang-workspace.code-workspace
 
 .vscode/
 backend/save/*
+save/
