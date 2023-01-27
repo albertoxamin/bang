@@ -52,7 +52,7 @@ class TucoFranziskaner(Character):
 def all_characters() -> List[Character]:
     cards = [
         # BlackFlower(),
-        # ColoradoBill(),
+        ColoradoBill(),
         # DerSpotBurstRinger(),
         # EvelynShebang(),
         # HenryBlock(),

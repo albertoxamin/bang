@@ -1122,10 +1122,16 @@ class Player:
             self.available_cards.append({'name': '-1hp', 'icon': '💔', 'noDesc': True})
         return True
 
-    def get_banged(self, attacker, double=False, no_dmg=False, card_index=None, card_name=None):
+    def get_banged(self, attacker, double:bool=False, no_dmg:bool=False, card_index:int|None=None, card_name:str|None=None):
         self.attacker = attacker
         self.attacking_card = card_name
         print(f'attacker -> {attacker}')
+        if isinstance(attacker, Player) and attacker.character.check(self.game, tvosch.ColoradoBill) and card_name == 'Bang!':
+            picked: cs.Card = self.game.deck.pick_and_scrap()
+            G.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{attacker.name}|{picked.name}|{picked.num_suit()}')
+            if picked.check_suit(self.game, [cs.Suit.SPADES]):
+                self.take_damage_response()
+                return False
         self.mancato_needed = 1 if not double else 2
         if card_index is not None:
             self.dmg_card_index = card_index
