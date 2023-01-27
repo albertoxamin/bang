@@ -83,6 +83,7 @@ class Card(ABC):
                 return False
             else:
                 player.equipment.append(self)
+            self.must_be_used = False
             self.can_be_used_now = False
         if against:
             G.sio.emit('card_against', room=player.game.name, data={'player': player.name, 'target': against, 'card': self.__dict__})
