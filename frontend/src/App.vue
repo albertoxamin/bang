@@ -57,6 +57,7 @@ export default {
 	data: () => ({
 		isConnected: false,
 		c: false,
+		registration: null,
 		showUpdateUI: false,
 		showHelp:false,
 		theme: 'light',
@@ -90,9 +91,12 @@ export default {
 			localStorage.setItem('lang', this.$i18n.locale);
 			document.documentElement.lang = this.$i18n.locale;
 		},
-		async update() {
+		update() {
 			this.showUpdateUI = false;
-			await this.$workbox.messageSW({ type: "SKIP_WAITING" });
+			// Make sure we only send a 'skip waiting' message if the SW is waiting
+			if (!this.registration || !this.registration.waiting) return
+			// Send message to SW to skip the waiting and activate the new SW
+			this.registration.waiting.postMessage({ type: 'SKIP_WAITING' })
 		},
 		detectColorScheme() {
 			if(localStorage.getItem("theme")){
@@ -119,6 +123,10 @@ export default {
 				this.$socket.emit('report', text)
 			}
 		},
+		updateAvailable(event) {
+			this.registration = event.detail
+			this.showUpdateUI = true
+		}
 	},
 	watch: {
 		theme() {
@@ -158,6 +166,7 @@ export default {
 		datadogRum.startSessionReplayRecording();
 	},
 	created() {
+		document.addEventListener('swUpdated', this.updateAvailable, { once: true })
 		if (this.$workbox) {
 			this.$workbox.addEventListener("waiting", () => {
 				this.showUpdateUI = true;

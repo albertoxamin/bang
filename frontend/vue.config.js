@@ -6,6 +6,11 @@ module.exports = {
 		manifestOptions: {
 			display: 'standalone',
 		},
+		workboxPluginMode: 'GenerateSW',
+		workboxOptions: {
+			navigateFallback: '/index.html',
+			cleanupOutdatedCaches: true,
+		}
 	},
 	configureWebpack: {
 		output: {
