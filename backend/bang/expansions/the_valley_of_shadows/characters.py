@@ -1,5 +1,6 @@
 from typing import List
 from bang.characters import Character
+import bang.cards as cs
 
 class BlackFlower(Character):
     def __init__(self):
@@ -18,6 +19,17 @@ class DerSpotBurstRinger(Character):
         super().__init__("Der Spot Burst Ringer", max_lives=4)
         # Una volta nel tuo turno, puoi usare una carta BANG! come Gatling.
         self.icon = '🫧'
+
+    def special(self, player, data):
+        if player.special_use_count == 0 and \
+              any((c.name == 'Bang!' for c in player.hand)) and super().special(player, data):
+            player.special_use_count += 1
+            #get cards from hand of type Bang and sort them by suit
+            cards = sorted([c for c in player.hand if c.name == 'Bang!'], key=lambda c: c.suit)
+            player.hand.remove(cards[0])
+            player.game.deck.scrap(cards[0], True, player=player)
+            player.notify_self()
+            player.game.attack_others(player, cs.Gatling(0,0).name)
 
 class EvelynShebang(Character):
     def __init__(self):
@@ -53,7 +65,7 @@ def all_characters() -> List[Character]:
     cards = [
         # BlackFlower(),
         ColoradoBill(),
-        # DerSpotBurstRinger(),
+        DerSpotBurstRinger(),
         # EvelynShebang(),
         # HenryBlock(),
         # LemonadeJim(),

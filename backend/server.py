@@ -826,7 +826,7 @@ def save_games():
             if not os.path.exists("save"):
                 os.mkdir("save")
             with open('./save/games.pickle', 'wb') as f:
-                pickle.dump([g for g in games if g.started and not g.is_replay and not g.is_hidden], f)
+                pickle.dump([g for g in games if g.started and not g.is_replay and not g.is_hidden and len(g.players) > 0], f)
 
 if __name__ == '__main__':
     if os.path.exists('./save/games.pickle'):

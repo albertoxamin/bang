@@ -34,6 +34,7 @@
 			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Jacky Murieta' && gold_nuggets >=2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Josh McCloud' && gold_nuggets >=2" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Raddie Snake' && special_use_count < 2 && gold_nuggets >=1" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
+			<button :class="{'btn': true, 'cant-play':(pending_action != 2)}" :disabled="pending_action != 2" v-if="!(eventCard && eventCard.name == 'Sbornia') && is_my_turn && character.name === 'Der Spot Burst Ringer' && special_use_count < 1" @click="()=>{$socket.emit('special', {})}">{{$t('special_ability')}}</button>
 		</div>
 		<div v-if="lives > 0 || is_ghost" style="position:relative">
 			<span id="hand_text">{{$t('hand')}}</span>
