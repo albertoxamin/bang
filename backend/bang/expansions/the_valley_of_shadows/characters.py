@@ -1,12 +1,22 @@
 from typing import List
 from bang.characters import Character
 import bang.cards as cs
-
 class BlackFlower(Character):
     def __init__(self):
         super().__init__("Black Flower", max_lives=4)
         # Una volta nel tuo turno, puoi usare una carta di fiori per sparare un BANG! extra.
         self.icon = '🥀'
+
+    def special(self, player, data): #fiori = suit.Clubs
+        if player.special_use_count > 0 and not any((c.suit == cs.Suit.CLUBS for c in player.hand)):
+            return False
+        if super().special(player, data):
+            from bang.players import PendingAction
+            player.special_use_count += 1
+            player.available_cards = [c for c in player.hand if c.suit == cs.Suit.CLUBS]
+            player.pending_action = PendingAction.CHOOSE
+            player.choose_text = 'blackflower_special'
+            player.notify_self()
 
 class ColoradoBill(Character):
     def __init__(self):
@@ -63,7 +73,7 @@ class TucoFranziskaner(Character):
 
 def all_characters() -> List[Character]:
     cards = [
-        # BlackFlower(),
+        BlackFlower(),
         ColoradoBill(),
         DerSpotBurstRinger(),
         # EvelynShebang(),
