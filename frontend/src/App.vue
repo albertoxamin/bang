@@ -22,7 +22,7 @@
 			</select>
 			<select id="lang" class="btn" v-model="$i18n.locale" @change="storeLangPref">
 				<option
-					v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English']"
+					v-for="(lang, i) in ['it.🇮🇹.Italiano', 'en.🇬🇧.English', 'cs.🇨🇿.Čeština']"
 					:key="`lang-${i}`"
 					:value="lang.split('.')[0]">
 						{{lang.split('.')[1]}} {{lang.split('.')[2]}}
