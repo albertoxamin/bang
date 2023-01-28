@@ -748,7 +748,35 @@
       "name": "Tornado",
       "desc": "Tutti scartano una carta dalla mano (se possibile), poi ottengono 2 carte dal mazzo."
     },
-    "Tuco Franziskaner": {
+    "Black Flower": {
+      "name": "Black Flower",
+      "desc": "Una volta nel tuo turno, puoi usare una carta di fiori per sparare un BANG! extra."
+    },
+    "Colorado Bill": {
+      "name": "Colorado Bill",
+      "desc": "Ogni volta che giochi una carta BANG!, estrai, se è Picche, il colpo non può essere evitato."
+    },
+    "Der Spot Burst Ringer": {
+      "name": "Der Spot Burst Ringer",
+      "desc": "Una volta nel tuo turno, puoi usare una carta BANG! come Gatling."
+    },
+    "Evelyn Shebang": {
+      "name": "Evelyn Shebang",
+      "desc": "Puoi rinunciare a pescare carte nella tua fase di pesca. Per ogni carta non pescata, spari un BANG! a distanza raggiungibile, a un diverso bersaglio."
+    },
+    "Henry Block": {
+      "name": "Henry Block",
+      "desc": "hiunque peschi o scarti una tua cartain gioco o in mano è bersaglio di un BANG!."
+    },
+    "Lemonade Jim": {
+      "name": "Lemonade Jim",
+      "desc": "Ogni volta che un altro giocatore gioca una Birra, puoi scartare una carta dalla mano per riguadagnare anche tu 1 punto vita."
+    },
+    "Mick Defender": {
+      "name": "Mick Defender",
+      "desc": "Se sei bersaglio di una carta marrone (non BANG!), puoi usare una carta Mancato! evitarne 1 gli effetti."
+    },
+    "Tuco Franziskaner":{
       "name": "Tuco Franziskaner",
       "desc": "Durante la tua fase di pesca, se non hai carte blu in gioco, pesca 2 carte extra."
     }

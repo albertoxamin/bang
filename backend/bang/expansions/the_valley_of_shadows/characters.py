@@ -1,6 +1,7 @@
 from typing import List
 from bang.characters import Character
 import bang.cards as cs
+
 class BlackFlower(Character):
     def __init__(self):
         super().__init__("Black Flower", max_lives=4)

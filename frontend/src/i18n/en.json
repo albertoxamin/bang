@@ -63,7 +63,7 @@
   "choose_sventagliata": "Choose another target to hit with Fanning",
   "choose_tornado": "Choose a card to discard for the tornado",
   "choose_bandidos": "Choose between discarding 2 cards or losing a life (1 card if you only have 1)",
-	"choose_poker": "Everyone discards 1 card (if there's no Ace, the player who played poker chooses 2 cards)",
+  "choose_poker": "Everyone discards 1 card (if there's no Ace, the player who played poker chooses 2 cards)",
   "choose_from_poker;2": "Choose which cards to get (max 2)",
   "choose_from_poker;1": "Choose which card to get",
   "choose_cecchino": "Choose who to shoot",
@@ -748,6 +748,34 @@
       "name": "Tornado",
       "desc": "Everyone discards a card from their hand (if possible), then draws 2 cards from the deck."
     },
+    "Black Flower": {
+      "name": "Black Flower",
+      "desc": "Once per turn, you can use a Clubs card to shoot an extra BANG!"
+    },
+    "Colorado Bill": {
+      "name": "Colorado Bill",
+      "desc": "Whenever you play a BANG! card, if you draw a Spades, the shot cannot be avoided."
+    },
+    "Der Spot Burst Ringer": {
+      "name": "Der Spot Burst Ringer",
+      "desc": "Once per turn, you can use a BANG! card as a Gatling."
+    },
+    "Evelyn Shebang": {
+      "name": "Evelyn Shebang",
+      "desc": "You can choose not to draw cards during your draw phase. For each card not drawn, you shoot a BANG! at a reachable target, to a different target."
+    },
+    "Henry Block": {
+      "name": "Henry Block",
+      "desc": "Anyone who draws or discards one of your cards in play or in hand is a target of a BANG!."
+    },
+    "Lemonade Jim": {
+      "name": "Lemonade Jim",
+      "desc": "Whenever another player plays a Beer, you can discard a card from your hand to regain 1 life point as well."
+    },
+    "Mick Defender": {
+      "name": "Mick Defender",
+      "desc": "If you are targeted by a brown card (not BANG!), you can use a Missed! card to avoid 1 effect."
+    },
     "Tuco Franziskaner": {
       "name": "Tuco Franziskaner",
       "desc": "If you don't have blue cards equipped you draw 2 extra cards."
@@ -809,6 +837,6 @@
     "light": "Light",
     "dark": "Dark",
     "grayscale": "Grayscale",
-		"black": "True Black"
+    "black": "True Black"
   }
 }
