@@ -36,13 +36,13 @@ class Card(ABC):
         self.range = range
         if self.range != 0 and self.range != 99:
             self.alt_text = f'{self.range} 🔍'
-        self.desc = desc
-        self.need_target = False
-        self.can_target_self = False
-        self.can_be_used_now = True
-        self.usable_next_turn = False
-        self.need_with = False
-        self.must_be_used = False
+        self.desc = desc # deprecated, has been replaced by the card's description in the localization files (see i18n folder)
+        self.need_target = False # Cards that need a target like Bang
+        self.can_target_self = False # for example Panico and CatBalou
+        self.can_be_used_now = True # to check wether the green card can be used now
+        self.usable_next_turn = False # it will be True for Green Cards
+        self.need_with = False # it will be true for cards that require a card to be discarded with
+        self.must_be_used = False # used by LeggeDelWest
 
     def __str__(self):
         if str(self.suit).isnumeric():
