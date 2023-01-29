@@ -80,7 +80,7 @@ def all_characters() -> List[Character]:
         # EvelynShebang(),
         # HenryBlock(),
         # LemonadeJim(),
-        # MickDefender(),
+        MickDefender(),
         TucoFranziskaner(),
     ]
     for c in cards:

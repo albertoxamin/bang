@@ -403,6 +403,23 @@ class Game:
         elif not attacker.is_my_turn:
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
 
+    def steal_discard(self, attacker: pl.Player, target_username:str, card:cs.Card):
+        p = self.get_player_named(target_username)
+        if p != attacker and p.get_discarded(attacker, card_name=card.name, action='steal' if isinstance(card, cs.Panico) else 'discard'):
+            self.ready_count = 0
+            self.waiting_for = 1
+            attacker.pending_action = pl.PendingAction.WAIT
+            attacker.notify_self()
+            self.get_player_named(target_username).notify_self()
+        else:
+            attacker.pending_action = pl.PendingAction.CHOOSE
+            attacker.target_p = target_username
+            if isinstance(card, cs.CatBalou):
+                attacker.choose_action = 'discard'
+            elif isinstance(card, cs.Panico):
+                attacker.choose_action = 'steal'
+            attacker.notify_self()
+
     def rimbalzo(self, attacker: pl.Player, target_username:str, card_index:int):
         if self.get_player_named(target_username).get_banged(attacker=attacker, no_dmg=True, card_index=card_index):
             self.ready_count = 0
@@ -456,7 +473,7 @@ class Game:
             {'name':nextPlayer.name,'cards': self.available_cards}, default=lambda o: o.__dict__))
             nextPlayer.notify_self()
 
-    def get_player_named(self, name:str, next=False):
+    def get_player_named(self, name:str, next=False) -> pl.Player:
         if next:
             return self.players[(self.players_map[name]+1) % len(self.players)]
         return self.players[self.players_map[name]]
@@ -520,6 +537,8 @@ class Game:
                     print('attack completed, next attack')
                     atk = self.attack_queue.pop(0)
                     self.attack(atk[0], atk[1], atk[2], atk[3], skip_queue=True)
+                elif self.players[self.turn].pending_action == pl.PendingAction.CHOOSE:
+                    self.players[self.turn].notify_self()
                 else:
                     self.players[self.turn].pending_action = pl.PendingAction.PLAY
                 self.poker_on = False

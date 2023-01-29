@@ -47,7 +47,6 @@ class PendingAction(IntEnum):
     CHOOSE = 5
 
 class Player:
-
     def is_admin(self):
         return self.discord_id in {'244893980960096266', '539795574019457034'}
 
@@ -1116,18 +1115,53 @@ class Player:
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
-    def get_discarded(self, attacker=None, card_name=None):
-        self.pending_action = PendingAction.CHOOSE
-        self.available_cards = self.hand.copy()
-        if card_name == 'Tornado':
-            self.choose_text = 'choose_tornado'
-        if card_name == 'Poker':
-            self.choose_text = 'choose_poker'
-        if card_name == 'Bandidos':
-            self.choose_text = 'choose_bandidos'
-            self.mancato_needed = min(2, len(self.hand))
-            self.available_cards.append({'name': '-1hp', 'icon': '💔', 'noDesc': True})
-        return True
+    def get_discarded(self, attacker=None, card_name=None, action=None):
+        if card_name in {'Tornado', 'Poker', 'Bandidos'}:
+            self.pending_action = PendingAction.CHOOSE
+            self.available_cards = self.hand.copy()
+            if card_name == 'Tornado':
+                self.choose_text = 'choose_tornado'
+            if card_name == 'Poker':
+                self.choose_text = 'choose_poker'
+            if card_name == 'Bandidos':
+                self.choose_text = 'choose_bandidos'
+                self.mancato_needed = min(2, len(self.hand))
+                self.available_cards.append({'name': '-1hp', 'icon': '💔', 'noDesc': True})
+            return True
+        else:
+            if self.can_escape(card_name) or self.character.check(self.game, tvosch.MickDefender):
+                self.pending_action = PendingAction.RESPOND
+                self.mancato_needed = 1
+                self.attacker = attacker
+                self.attacking_card = card_name
+                self.expected_response = ['Fuga']
+                if self.can_escape(with_mancato=True):
+                    self.expected_response.append(cs.Mancato(0, 0).name)
+                if action == 'steal':
+                    self.on_failed_response_cb = self.take_steal_response
+                else:
+                    self.on_failed_response_cb = self.take_discard_response
+                self.notify_self()
+                return True
+
+    def take_steal_response(self):
+        self.attacker.pending_action = PendingAction.CHOOSE
+        self.attacker.target_p = self.name
+        self.attacker.choose_text = 'steal'
+        self.take_no_damage_response()
+
+    def take_discard_response(self):
+        self.attacker.pending_action = PendingAction.CHOOSE
+        self.attacker.target_p = self.name
+        self.attacker.choose_text = 'discard'
+        self.take_no_damage_response()
+    
+    def can_escape(self, card_name:str=None, with_mancato:bool=False):
+        if card_name == 'Bang!' or card_name in self.game.deck.green_cards:
+            return False
+        if any((isinstance(c, tvosc.Fuga) for c in self.hand)) and not with_mancato:
+            return True
+        return with_mancato and self.character.check(self.game, tvosch.MickDefender)
 
     def get_banged(self, attacker, double:bool=False, no_dmg:bool=False, card_index:int|None=None, card_name:str|None=None):
         self.attacker = attacker
@@ -1149,7 +1183,7 @@ class Player:
                 print('usable', self.equipment[i])
         if not self.game.is_competitive and not any((isinstance(c, cs.Barile) for c in self.equipment)) and not self.character.check(self.game, chars.Jourdonnais)\
              and not any(((isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente) for c in self.hand))\
-             and not any((c.can_be_used_now and isinstance(c, cs.Mancato) for c in self.equipment)):
+             and not any((c.can_be_used_now and isinstance(c, cs.Mancato) for c in self.equipment)) and not self.can_escape(card_name):
             print('Cant defend')
             if not no_dmg:
                 self.take_damage_response()
@@ -1174,6 +1208,8 @@ class Player:
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
                 if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
+                if self.can_escape(card_name, with_mancato=False):
+                    self.expected_response.append(tvosc.Fuga(0, 0).name)
                 if not no_dmg:
                     self.on_failed_response_cb = self.take_damage_response
                 else:
@@ -1194,15 +1230,15 @@ class Player:
         self.attacker = attacker
         self.attacking_card = "Indiani!"
         if self.character.check(self.game, chd.ApacheKid) or any((isinstance(c, grc.Calumet) for c in self.gold_rush_equipment)): return False
-        if not self.game.is_competitive and not any((isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato)) for c in self.hand)):
+        if not self.game.is_competitive and not any((isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato)) for c in self.hand)) and not self.can_escape():
             print('Cant defend')
             self.take_damage_response()
             return False
         else:
             print('has bang')
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = [cs.Bang(0, 0).name]
-            if self.character.check(self.game, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
+            self.expected_response = [cs.Bang(0, 0).name, tvosc.Fuga(0, 0).name]
+            if (self.character.check(self.game, chars.CalamityJanet) or self.can_escape(with_mancato=True)) and cs.Mancato(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Mancato(0, 0).name)
             self.event_type = 'indians'
             self.on_failed_response_cb = self.take_damage_response
@@ -1211,15 +1247,15 @@ class Player:
     def get_dueled(self, attacker):
         self.attacker = attacker
         self.attacking_card = "Duello"
-        if (self.game.check_event(ceh.Sermone) and self.is_my_turn) or (not self.game.is_competitive and not any((isinstance(c, cs.Bang) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato)) for c in self.hand))):
+        if (self.game.check_event(ceh.Sermone) and self.is_my_turn) or (not self.game.is_competitive and not any((isinstance(c, cs.Bang) or isinstance(c, tvosc.Fuga) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Mancato)) for c in self.hand))):
             print('Cant defend')
             self.take_damage_response()
             self.game.responders_did_respond_resume_turn(did_lose=True)
             return False
         else:
             self.pending_action = PendingAction.RESPOND
-            self.expected_response = [cs.Bang(0, 0).name]
-            if self.character.check(self.game, chars.CalamityJanet) and cs.Mancato(0, 0).name not in self.expected_response:
+            self.expected_response = [cs.Bang(0, 0).name, tvosc.Fuga(0, 0).name]
+            if (self.character.check(self.game, chars.CalamityJanet) or self.can_escape(with_mancato=True)) and cs.Mancato(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Mancato(0, 0).name)
             self.event_type = 'duel'
             self.on_failed_response_cb = self.take_damage_response
@@ -1315,9 +1351,12 @@ class Player:
                 self.game.attack(self, self.attacker.name, card_name=card.name)
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
-                    self.game.duel(self, self.attacker.name)
-                    if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn:
-                        self.molly_discarded_cards += 1
+                    if isinstance(card, tvosc.Fuga) or (isinstance(card, cs.Mancato) and self.can_escape(with_mancato=True)):
+                        self.game.responders_did_respond_resume_turn(did_lose=False)
+                    else:
+                        self.game.duel(self, self.attacker.name)
+                        if self.character.check(self.game, chd.MollyStark) and hand_index < len(self.hand) and not self.is_my_turn:
+                            self.molly_discarded_cards += 1
                 else:
                     if self.character.check(self.game, chd.MollyStark) and not self.is_my_turn:
                         for i in range(self.molly_discarded_cards):

@@ -289,11 +289,7 @@ class CatBalou(Card):
     def play_card(self, player, against, _with=None):
         if against is not None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             super().play_card(player, against=against)
-            from bang.players import PendingAction
-            player.pending_action = PendingAction.CHOOSE
-            player.choose_action = 'discard'
-            player.target_p = against
-            print('choose now')
+            player.game.steal_discard(player, against, self)
             return True
         return False
 
@@ -405,11 +401,7 @@ class Panico(Card):
     def play_card(self, player, against, _with=None):
         if against is not None and (len(player.game.get_player_named(against).hand) + len(player.game.get_player_named(against).equipment)) > 0 and (player.name != against or len(player.equipment) > 0):
             super().play_card(player, against=against)
-            from bang.players import PendingAction
-            player.pending_action = PendingAction.CHOOSE
-            player.choose_action = 'steal'
-            player.target_p = against
-            print('choose now')
+            player.game.steal_discard(player, against, self)
             return True
         return False
 
