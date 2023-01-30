@@ -1351,7 +1351,7 @@ class Player:
                 self.game.attack(self, self.attacker.name, card_name=card.name)
             if self.mancato_needed <= 0:
                 if self.event_type == 'duel':
-                    if isinstance(card, tvosc.Fuga) or (isinstance(card, cs.Mancato) and self.can_escape(with_mancato=True)):
+                    if isinstance(card, tvosc.Fuga) or (isinstance(card, cs.Mancato) and self.character.check(self.game, tvosch.MickDefender)):
                         self.game.responders_did_respond_resume_turn(did_lose=False)
                     else:
                         self.game.duel(self, self.attacker.name)
