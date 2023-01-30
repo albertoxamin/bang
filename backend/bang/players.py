@@ -1181,9 +1181,9 @@ class Player:
         for i in range(len(self.equipment)):
             if self.equipment[i].can_be_used_now:
                 print('usable', self.equipment[i])
-        if not self.game.is_competitive and not any((isinstance(c, cs.Barile) for c in self.equipment)) and not self.character.check(self.game, chars.Jourdonnais)\
+        if (not self.game.is_competitive and not any((isinstance(c, cs.Barile) for c in self.equipment)) and not self.character.check(self.game, chars.Jourdonnais)\
              and not any(((isinstance(c, cs.Mancato) and c.can_be_used_now) or (self.character.check(self.game, chars.CalamityJanet) and isinstance(c, cs.Bang)) or self.character.check(self.game, chd.ElenaFuente) for c in self.hand))\
-             and not any((c.can_be_used_now and isinstance(c, cs.Mancato) for c in self.equipment)) and not self.can_escape(card_name):
+             and not any((c.can_be_used_now and isinstance(c, cs.Mancato) for c in self.equipment)) and not self.can_escape(card_name)) or card_name=='Mira':
             print('Cant defend')
             if not no_dmg:
                 self.take_damage_response()

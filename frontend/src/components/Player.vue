@@ -62,7 +62,7 @@
 		<Chooser v-if="!show_role && is_my_turn && pending_action < 2" :text="$t('play_your_turn')" :key="is_my_turn" class="turn-notify" />
 		<Chooser v-if="!show_role && availableCharacters.length > 0" :text="$t('choose_character')" :cards="availableCharacters" :select="setCharacter" :timer="45"/>
 		<Chooser v-if="hasToPickResponse" :playAudio="true" :text="`${$t('pick_a_card')} ${attacker?($t('to_defend_from')+' '+attacker):''}`" :key="hasToPickResponse" class="turn-notify" />
-		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="handComputed.filter(x => x !== card_with)" :select="selectWith" :cancel="()=>{card_with = null}"/>
+		<Chooser v-if="!card_against && card_with" :text="`${$t('choose_scarp_card_to')} ${card_with.name.toUpperCase()}`" :cards="handComputed.filter(x => x !== card_with && (x.name.indexOf(card_with.need_with_only) > -1))" :select="selectWith" :cancel="()=>{card_with = null}"/>
 		<Chooser v-if="showScrapScreen" :text="`${$t('discard')} ${hand.length}/${maxHandLength()}`" :cards="hand" :select="scrap"  :cancel="cancelEndingTurn"/>
 		<Chooser v-if="sidWantsScrapForHealth && scrapHand.length < 2" :text="`${$t('discard')} ${2 - scrapHand.length} ${$t('to_regain_1_hp')}`"
 							:cards="notScrappedHand" :select="sidScrap" :cancel="() => {sidWantsScrapForHealth = false;scrapHand=[]}"/>
@@ -327,7 +327,7 @@ export default {
 				let cantBePlayed = false
 				let calamity_special = (x.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 				let cant_play_bang = (this.has_played_bang && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
-				if ((x.name == 'Bang!' || (calamity_special && x.name=='Mancato!')) && (cant_play_bang || (this.eventCard && this.eventCard.name == "Sermone"))) cantBePlayed = true;
+				if ((x.name == 'Bang!' || x.name == 'Sventagliata' || (calamity_special && x.name=='Mancato!')) && (cant_play_bang || (this.eventCard && this.eventCard.name == "Sermone"))) cantBePlayed = true;
 				else if (this.eventCard && this.eventCard.name == "Il Giudice" && (x.is_equipment || !x.can_be_used_now)) cantBePlayed = true;
 				else if (this.eventCard && this.eventCard.name == "Il Reverendo" && (x.name == "Birra")) cantBePlayed = true;
 				else if (this.need_with && this.hand.length === 1) cantBePlayed = true;

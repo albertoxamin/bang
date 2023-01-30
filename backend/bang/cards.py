@@ -42,6 +42,7 @@ class Card(ABC):
         self.can_be_used_now = True # to check wether the green card can be used now
         self.usable_next_turn = False # it will be True for Green Cards
         self.need_with = False # it will be true for cards that require a card to be discarded with
+        self.need_with_only = '' # names of the cards allowed to be discarded with
         self.must_be_used = False # used by LeggeDelWest
 
     def __str__(self):

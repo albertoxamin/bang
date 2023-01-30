@@ -126,6 +126,8 @@ class Sventagliata(Bang): # : conta come un normale BANG! del turno. Il BANG! se
 
     def play_card(self, player, against, _with=None):
         if against is not None:
+            if player.has_played_bang:
+                return False
             t = player.game.get_player_named(against)
             player.available_cards = [dict(p, **{'original_target':against}) for p in player.game.get_visible_players(t) if p['name'] != player.name and p['name'] != t.name and p['dist']]
             if len(player.available_cards) > 0:
@@ -156,15 +158,15 @@ class Mira(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Mira', number)
         self.icon = '👌🏻'
+        self.need_with_only = 'Bang'
         self.alt_text = "💥🃏💔💔" 
         self.need_target = True
         self.need_with = True
 
     def play_card(self, player, against, _with=None):
-        if against is not None:
-            #TODO
-            # super().play_card(player, against=against)
-            # player.game.attack(player, against, card_name=self.name)
+        if against is not None and _with is not None:
+            super().play_card(player, against=against)
+            player.game.attack(player, against, card_name=self.name)
             return True
         return False
 
@@ -226,7 +228,7 @@ def get_starting_deck() -> List[Card]:
         # Salvo(Suit.HEARTS, 5),
         Bandidos(Suit.DIAMONDS,'Q'), # gli altri  giocatori scelgono se scartare 2 carte o perdere 1 punto vita
         Fuga(Suit.HEARTS, 3), # evita l'effetto di carte marroni (tipo panico cat balou) di cui sei bersaglio
-        # Mira(Suit.CLUBS, 6),
+        Mira(Suit.CLUBS, 6),
         Poker(Suit.HEARTS, 'J'), # tutti gli altri scartano 1 carta a scelta, se non ci sono assi allora pesca 2
         RitornoDiFiamma(Suit.CLUBS, 'Q'), # un mancato che fa bang
         Tornado(Suit.CLUBS, "A"),
