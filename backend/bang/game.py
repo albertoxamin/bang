@@ -861,7 +861,7 @@ class Game:
             'cards': len(pls[j].hand)+len(pls[j].equipment),
             'is_ghost': pls[j].is_ghost,
             'is_bot': pls[j].is_bot,
-            'icon': pls[j].role.icon if (pls[j].role is not None) else '🤠',
+            'icon': pls[j].role.icon if (pls[j].role is not None and (self.initial_players == 3 or isinstance(pls[j].role, roles.Sheriff))) else '🤠',
             'avatar': pls[j].avatar,
             'role': pls[j].role,
         } for j in range(len(pls)) if i != j]
