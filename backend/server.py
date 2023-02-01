@@ -50,6 +50,11 @@ if "UseRobots" in os.environ and os.environ['UseRobots'].upper() == "TRUE":
 for file in [f for f in os.listdir('.') if '.js' in f or '.map' in f or '.html' in f]:
     static_files[f'/{file}'] = f'./{file}'
 
+HASTEBIN_HEADERS = {
+    'Authorization': 'Bearer 2cf615e88992970f3396663c5bfb2f599151192bcef5fa99f5569c2e29617ba7cdcfa5df14f90afc61bcf0fe6e475ae49cba98ebded3e0b7b3fdf0c648c76496',
+    'content-type': 'text/plain'
+}
+
 app = socketio.WSGIApp(sio, static_files=static_files)
 games: List[Game] = []
 online_players = 0
@@ -110,8 +115,7 @@ def report(sid, text):
     if hasattr(ses, 'game'):
         data = "\n".join(ses.game.rpc_log[:-1]).strip()
     data = data +"\n@@@\n" +text
-    #print(data)
-    response = requests.post("https://hastebin.com/documents", data.encode('utf-8'))
+    response = requests.post("https://hastebin.com/documents", data.encode('utf-8'), headers=HASTEBIN_HEADERS)
     key = json.loads(response.text).get('key')
     if "DISCORD_WEBHOOK" in os.environ and len(os.environ['DISCORD_WEBHOOK']) > 0:
         webhook = DiscordWebhook(url=os.environ['DISCORD_WEBHOOK'], content=f'New bug reported by {ses.name}, replay at https://bang.xamin.it/game?replay={key}\nRaw: https://hastebin.com/{key}\nTotal actions:{len(ses.game.rpc_log)}\nExpansions:{ses.game.expansions}\nInfo: {text}')
@@ -163,7 +167,7 @@ def get_me(sid, data):
             sid = sio.get_session(sid)
             sid.game.is_hidden = True
             eventlet.sleep(0.5)
-            response = requests.get(f"https://hastebin.com/raw/{data['replay']}")
+            response = requests.get(f"https://hastebin.com/raw/{data['replay']}", headers=HASTEBIN_HEADERS)
             if response.status_code != 200:
                 sio.emit('chat_message', room=sid, data={'color': f'green','text':f'Invalid replay code'})
                 return
@@ -478,7 +482,7 @@ def chat_message(sid, msg, pl=None):
                     _cmd = msg.split()
                     if len(_cmd) >= 2:
                         replay_id = _cmd[1]
-                        response = requests.get(f"https://hastebin.com/raw/{replay_id}")
+                        response = requests.get(f"https://hastebin.com/raw/{replay_id}", headers=HASTEBIN_HEADERS)
                         log = response.text.splitlines()
                         ses.game.spectators.append(ses)
                         if len(_cmd) == 2:
