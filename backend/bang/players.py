@@ -1415,6 +1415,7 @@ class Player:
         return ch_vis_mod + covers
 
     def scrap(self, card_index):
+        if len(self.hand) == 0 or len(self.hand) <= card_index: return self.notify_self()
         if self.is_my_turn or self.character.check(self.game, chars.SidKetchum):
             self.scrapped_cards += 1
             card = self.hand.pop(card_index)
