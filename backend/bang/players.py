@@ -1299,7 +1299,7 @@ class Player:
                 c = self.hand.pop(randrange(0, len(self.hand)))
                 self.game.deck.scrap(c, True, player=self)
                 G.sio.emit('chat_message', room=self.game.name, data=f'_shotgun_scrap|{self.name}|{c.name}')
-        if self.attacker and 'gold_rush' in self.game.expansions:
+        if self.attacker and 'gold_rush' in self.game.expansions and not self.is_ghost:
             if (isinstance(self.attacker, Player)):
                 self.attacker.gold_nuggets += 1
                 self.attacker.notify_self()
