@@ -2,7 +2,8 @@
 	<div id="overlay" class="center-stuff">
 		<h1>{{text}}</h1>
 		<form @submit="submit">
-			<input v-model="val" class="chooserInput"/>
+			<input v-if="val.length < 20" v-model="val" class="chooserInput" v-focus/>
+			<textarea v-else v-model="val" class="chooserInput" cols="38" rows="15" v-focus/>
 		</form>
 		<p v-if="hintText">{{hintText}}</p>
 		<div class="center-stuff">
