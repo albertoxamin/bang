@@ -85,7 +85,7 @@ def bang_handler(func):
     return wrapper_func
 
 def advertise_lobbies():
-    open_lobbies = [g for g in games if and 0 < len(g.players) < 10 and not g.is_hidden][-10:]
+    open_lobbies = [g for g in games if 0 < len(g.players) < 10 and not g.is_hidden][-10:]
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if not g.started])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if g.started])
     Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
