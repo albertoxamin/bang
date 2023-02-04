@@ -1,7 +1,7 @@
 from __future__ import annotations
 from enum import IntEnum
 import json
-from random import random, randrange, sample, uniform
+from random import random, randrange, sample, uniform, randint
 import socketio
 import bang.deck as deck
 import bang.roles as r
@@ -918,6 +918,27 @@ class Player:
                 self.pending_action = PendingAction.WAIT
                 self.game.responders_did_respond_resume_turn()
             self.notify_self()
+        elif 'choose_flint_special' == self.choose_text:
+            if card_index < len(self.hand):
+                self.available_cards = [{
+                    'name': p.name,
+                    'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                    'avatar': p.avatar,
+                    'is_character': True,
+                    'is_player': True
+                } for p in self.game.get_alive_players() if p.name != self.name and len(p.hand) > 0]
+                self.choose_text = f'choose_flint_special;{card_index}'
+            self.notify_self()
+        elif 'choose_flint_special' in self.choose_text:
+            if card_index < len(self.available_cards):
+                my_card = self.hand.pop(int(self.choose_text.split(';')[1]))
+                other_player = self.game.get_player_named(self.available_cards[card_index]['name'])
+                for i in range(min(2, len(other_player.hand))):
+                    self.hand.append(other_player.hand.pop(randint(0, len(other_player.hand)-1)))
+                other_player.hand.append(my_card)
+                other_player.notify_self()
+                self.pending_action = PendingAction.PLAY
+                self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character
                 self.character = self.not_chosen_character

@@ -11,7 +11,18 @@ class FlintWestwood(Character):
     def __init__(self):
         super().__init__("Flint Westwood", max_lives=4)
         # Nel suo turno può scambiare una carta dalla mano con 2 carte a caso dalla mano di un altro giocatore.
+        # NOTE: La carta dalla tua mano è a scelta, non a caso. Se il giocatore bersaglio ha una sola carta, ne ricevi solo una.
         self.icon = '🔫'
+
+    def special(self, player, data):
+        if not player.is_my_turn or not any((len(p.hand) > 0 for p in player.game.get_alive_players())) or not super().special(player, data):
+            return False
+        from bang.players import PendingAction
+        player.available_cards = player.hand.copy()
+        player.choose_text = 'choose_flint_special'
+        player.pending_action = PendingAction.CHOOSE
+        player.special_use_count += 1
+        player.notify_self()
 
 class GaryLooter(Character):
     def __init__(self):
@@ -51,14 +62,14 @@ class YoulGrinner(Character):
 
 def all_characters() -> List[Character]:
     cards = [
-        BigSpencer(),
+        # BigSpencer(),
         FlintWestwood(),
-        GaryLooter(),
-        GreygoryDeckard(),
-        JohnPain(),
-        LeeVanKliff(),
-        TerenKill(),
-        YoulGrinner(),
+        # GaryLooter(),
+        # GreygoryDeckard(),
+        # JohnPain(),
+        # LeeVanKliff(),
+        # TerenKill(),
+        # YoulGrinner(),
     ]
     for c in cards:
         c.expansion_icon = '🎪'
