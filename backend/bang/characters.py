@@ -177,4 +177,6 @@ def all_characters(expansions: List[str]):
         base_chars.extend(GoldRush.get_characters())
     if 'the_valley_of_shadows' in expansions:
         base_chars.extend(TheValleyOfShadows.get_characters())
+    if 'wild_west_show' in expansions:
+        base_chars.extend(WildWestShow.get_characters())
     return base_chars
