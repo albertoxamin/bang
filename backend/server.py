@@ -85,8 +85,9 @@ def bang_handler(func):
     return wrapper_func
 
 def advertise_lobbies():
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if not g.started and len(g.players) < 10 and not g.is_hidden])
-    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in games if g.started and not g.is_hidden and len(g.players) > 0])
+    open_lobbies = [g for g in games if and 0 < len(g.players) < 10 and not g.is_hidden][-10:]
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if not g.started])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if g.started])
     Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
     Metrics.send_metric('online_players', points=[online_players])
 
@@ -244,7 +245,7 @@ def disconnect(sid):
 def create_room(sid, room_name):
     if (p := sio.get_session(sid)).game is None:
         while any((g.name == room_name for g in games)):
-            room_name += f'_{random.randint(0,100)}'
+            room_name += f'_{random.randint(0, 10000)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
         g = Game(room_name)
