@@ -56,12 +56,12 @@ HASTEBIN_HEADERS = {
 }
 
 app = socketio.WSGIApp(sio, static_files=static_files)
-games: List[Game] = []
+games: dict[str, Game] = {}
 online_players = 0
 blacklist: List[str] = []
 
 def send_to_debug(error):
-    for g in games:
+    for g in games.values():
         if g.debug:
             sio.emit('chat_message', room=g.name, data={'color': f'red','text':json.dumps({'ERROR':error}), 'type':'json'})
         elif any((p.is_admin() for p in g.players)):
@@ -85,10 +85,10 @@ def bang_handler(func):
     return wrapper_func
 
 def advertise_lobbies():
-    open_lobbies = [g for g in games if 0 < len(g.players) < 10 and not g.is_hidden][-10:]
+    open_lobbies = [g for g in games.values() if 0 < len(g.players) < 10 and not g.is_hidden][-10:]
     sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if not g.started])
     sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if g.started])
-    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
+    Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games.values())])
     Metrics.send_metric('online_players', points=[online_players])
 
 @sio.event
@@ -179,7 +179,7 @@ def get_me(sid, data):
             else:
                 sid.game.replay(log, speed=0, fast_forward=int(data['ffw']))
             return
-        if (room := next((g for g in games if g.name == data['name']), None)) is not None:
+        if data['name'] in games and (room := games[data['name']]) is not None:
             if not room.started:
                 join_room(sid, data)
             elif room.started:
@@ -234,8 +234,7 @@ def disconnect(sid):
         sio.emit('players', room='lobby', data=online_players)
         if p.game and p.disconnect():
             sio.close_room(p.game.name)
-            if p.game in games:
-                games.pop(games.index(p.game))
+            games.pop(p.game.name)
         print('disconnect ', sid)
         advertise_lobbies()
     Metrics.send_metric('online_players', points=[online_players])
@@ -244,7 +243,7 @@ def disconnect(sid):
 @bang_handler
 def create_room(sid, room_name):
     if (p := sio.get_session(sid)).game is None:
-        while any((g.name == room_name for g in games)):
+        while room_name in games:
             room_name += f'_{random.randint(0, 10000)}'
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
@@ -252,7 +251,7 @@ def create_room(sid, room_name):
         g.add_player(p)
         if room_name in blacklist:
             g.is_hidden = True
-        games.append(g)
+        games[room_name] = g
         print(f'{sid} created a room named {room_name}')
         advertise_lobbies()
 
@@ -283,27 +282,26 @@ def toggle_replace_with_bot(sid):
 @bang_handler
 def join_room(sid, room):
     room_name = room['name']
-    i = [g.name for g in games].index(room_name)
-    if games[i].password != '' and games[i].password != room.get('password', '').upper():
+    if games[room_name].password != '' and games[room_name].password != room.get('password', '').upper():
         return
-    if not games[i].started:
+    if not games[room_name].started:
         print(f'{sid} joined a room named {room_name}')
         sio.leave_room(sid, 'lobby')
         sio.enter_room(sid, room_name)
-        while any((p.name == sio.get_session(sid).name and not p.is_bot for p in games[i].players)):
+        while any((p.name == sio.get_session(sid).name and not p.is_bot for p in games[room_name].players)):
             sio.get_session(sid).name += f'_{random.randint(0,100)}'
         sio.emit('me', data=sio.get_session(sid).name, room=sid)
-        games[i].add_player(sio.get_session(sid))
+        games[room_name].add_player(sio.get_session(sid))
         advertise_lobbies()
     else:
-        games[i].spectators.append(sio.get_session(sid))
-        sio.get_session(sid).game = games[i]
+        games[room_name].spectators.append(sio.get_session(sid))
+        sio.get_session(sid).game = games[room_name]
         sio.get_session(sid).pending_action = PendingAction.WAIT
-        sio.enter_room(sid, games[0].name)
-        games[i].notify_room(sid)
+        sio.enter_room(sid, games[room_name].name)
+        games[room_name].notify_room(sid)
         eventlet.sleep(0.5)
-        games[i].notify_room(sid)
-        games[i].notify_all()
+        games[room_name].notify_room(sid)
+        games[room_name].notify_all()
 
 """
 Sockets for the status page
@@ -325,7 +323,7 @@ def get_all_rooms(sid, deploy_key):
             'incremental_turn': g.incremental_turn,
             'debug': g.debug,
             'spectators': len(g.spectators)
-        } for g in games])
+        } for g in games.values()])
 
 @sio.event
 @bang_handler
@@ -340,16 +338,16 @@ def reset(sid, data):
     global games
     ses = sio.get_session(sid)
     if ('DEPLOY_KEY' in os.environ and 'key' in data and data['key'] == os.environ['DEPLOY_KEY']) or (isinstance(ses, Player) and ses.is_admin()):
-        for g in games:
+        for g in games.values():
             sio.emit('kicked', room=g.name)
-        games = []
+        games = {}
 
 @sio.event
 @bang_handler
 def hide_toogle(sid, data):
     ses = sio.get_session(sid)
     if ('DEPLOY_KEY' in os.environ and 'key' in data and data['key'] == os.environ['DEPLOY_KEY']) or (isinstance(ses, Player) and ses.is_admin()):
-        game = [g for g in games if g.name==data['room']]
+        game = games['room']
         if len(games) > 0:
             game[0].is_hidden = not game[0].is_hidden
             if game[0].is_hidden:
@@ -798,7 +796,7 @@ def discord_auth(sid, data):
 def pool_metrics():
     while True:
         sio.sleep(60)
-        Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games)])
+        Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games.values())])
         Metrics.send_metric('online_players', points=[online_players])
 
 import urllib.parse
@@ -831,14 +829,15 @@ def save_games():
             if not os.path.exists("save"):
                 os.mkdir("save")
             with open('./save/games.pickle', 'wb') as f:
-                pickle.dump([g for g in games if g.started and not g.is_replay and not g.is_hidden and len(g.players) > 0], f)
+                pickle.dump([g for g in games.values() if g.started and not g.is_replay and not g.is_hidden and len(g.players) > 0], f)
 
 if __name__ == '__main__':
     if os.path.exists('./save/games.pickle'):
         try:
             with open('./save/games.pickle', 'rb') as file:
-                games = pickle.load(file)
-                for g in games:
+                temp_g = pickle.load(file)
+                games = {g.name: g for g in temp_g}
+                for g in games.values():
                     g.spectators = []
                     for p in g.players:
                         if p.sid != 'bot':
