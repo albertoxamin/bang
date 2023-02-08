@@ -50,7 +50,7 @@ class Player:
     def is_admin(self):
         return self.discord_id in {'244893980960096266', '539795574019457034'}
 
-    def get_avatar(self):
+    def _get_avatar(self):
         import requests
         headers = {
             'Authorization': 'Bearer ' + self.discord_token,
@@ -89,7 +89,7 @@ class Player:
         if self.is_bot:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
         if self.discord_token:
-            G.sio.start_background_task(self.get_avatar)
+            G.sio.start_background_task(self._get_avatar)
         self.game: g = None
         self.reset()
 
@@ -186,7 +186,6 @@ class Player:
                         data=f'_did_choose_character|{self.name}')
             self.pending_action = PendingAction.DRAW
             self.notify_self()
-
 
     def prepare(self):
         self.max_lives = self.character.max_lives + self.role.health_mod
@@ -874,7 +873,7 @@ class Player:
             if card_index <= len(self.available_cards):
                 self.hand.remove(self.available_cards[card_index])
                 self.game.deck.scrap(self.available_cards[card_index], player=self)
-                self.hand.append(cs.Bang(cs.Suit.CLUBS,42))
+                self.hand.append(cs.Bang(cs.Suit.CLUBS, 42))
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:
