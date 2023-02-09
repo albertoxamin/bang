@@ -390,7 +390,7 @@ export default {
 		},
 		play_card(card, from_equipment) {
 			console.log('play ' + card.name)
-			if (from_equipment && (!card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
+			if (from_equipment && ((!card.can_be_used_now && !card.name == 'Lemat') || (this.eventCard && this.eventCard.name == "Lazo"))) return;
 			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && card.number !==42 && this.equipment.filter(x => x.name == 'Volcanic').length == 0)

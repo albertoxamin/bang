@@ -58,7 +58,7 @@ class Bottiglia(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         # bang, birra, panico
-        player.available_cards = [Bang(1,42), Birra(1,42), Panico(1,42)]
+        player.available_cards = [Bang(4,42), Birra(4,42), Panico(4,42)]
         for i in range(len(player.available_cards)):
             player.available_cards[i].must_be_used = True
         player.choose_text = 'choose_bottiglia'
@@ -73,7 +73,7 @@ class Complice(ShopCard):
 
     def play_card(self, player, against=None, _with=None):
         # emporio, duello, Cat balou
-        player.available_cards = [Emporio(1,42), Duello(1,42), CatBalou(1,42)]
+        player.available_cards = [Emporio(4,42), Duello(4,42), CatBalou(4,42)]
         for i in range(len(player.available_cards)):
             player.available_cards[i].must_be_used = True
         player.choose_text = 'choose_complice'

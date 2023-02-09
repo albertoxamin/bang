@@ -33,7 +33,24 @@ class Lemat(Card):
     def __init__(self, suit, number):
         super().__init__(suit, 'Lemat', number, is_equipment=True, is_weapon=True, range=1)
         self.icon = '🔫' # ogni carta può essere usata come bang, conta per il conteggio dei bang per turno
-        #TODO
+    
+    def play_card(self, player, against, _with=None):
+        if (player.game.check_event(ce.IlGiudice) and self.can_be_used_now) or (not self.can_be_used_now and player.game.check_event(ce.Lazo)):
+            return False
+        if self.can_be_used_now:
+            self.can_be_used_now = False
+            G.sio.emit('chat_message', room=player.game.name,
+                          data=f'_play_card|{player.name}|{self.name}')
+            player.equipment.append(self)
+            player.notify_self()
+            return True
+        elif not player.has_played_bang:
+            from bang.players import PendingAction
+            player.available_cards = player.hand.copy()
+            player.pending_action = PendingAction.CHOOSE
+            player.choose_text = 'choose_play_as_bang'
+            player.notify_self()
+        return False
 
 class SerpenteASonagli(Card):
     def __init__(self, suit, number):
@@ -165,7 +182,7 @@ class Mira(Card):
 
     def play_card(self, player, against, _with=None):
         if against is not None and _with is not None:
-            super().play_card(player, against=against)
+            super().play_card(player, against=against, _with=_with)
             player.game.attack(player, against, card_name=self.name)
             return True
         return False
@@ -218,7 +235,7 @@ def get_starting_deck() -> List[Card]:
     cards = [
         Fantasma(Suit.SPADES, 9),
         Fantasma(Suit.SPADES, 10),
-        # Lemat(Suit.DIAMONDS, 4),
+        Lemat(Suit.DIAMONDS, 4),
         SerpenteASonagli(Suit.HEARTS, 7),
         Shotgun(Suit.SPADES, 'K'),
         Taglia(Suit.CLUBS, 9),

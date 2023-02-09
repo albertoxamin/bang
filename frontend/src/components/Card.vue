@@ -32,7 +32,7 @@ export default {
 		},
 		suit() {
 			if (this.card && !isNaN(this.card.suit)) {
-				let x = ['♦️','♣️','♥️','♠️']
+				let x = ['♦️','♣️','♥️','♠️','🤑']
 				return x[this.card.suit];
 			} else if (this.card.suit) {
 				return this.card.suit;

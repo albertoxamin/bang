@@ -716,6 +716,7 @@ class Player:
             print('which is a gold rush black card')
             card: grc.ShopCard = self.gold_rush_equipment[hand_index - len(self.hand) - len(self.equipment)]
             return card.play_card(self)
+        from_hand = hand_index < len(self.hand)
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
         if _with is not None:
@@ -743,7 +744,10 @@ class Player:
                 self.equipment.insert(hand_index-len(self.hand), card)
         elif card.is_equipment or (card.usable_next_turn and not card.can_be_used_now):
             if not did_play_card:
-                self.hand.insert(hand_index, card)
+                if from_hand:
+                    self.hand.insert(hand_index, card)
+                else:
+                    self.equipment.insert(hand_index-len(self.hand), card)
             else:
                 did_play_card = True
         if not self.game.is_replay:
@@ -873,7 +877,7 @@ class Player:
             if card_index <= len(self.available_cards):
                 self.hand.remove(self.available_cards[card_index])
                 self.game.deck.scrap(self.available_cards[card_index], player=self)
-                self.hand.append(cs.Bang(cs.Suit.CLUBS, 42))
+                self.hand.append(cs.Bang(self.available_cards[card_index].suit, 42))
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:

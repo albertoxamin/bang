@@ -16,6 +16,7 @@ class Suit(IntEnum):
     CLUBS = 1  # ♣
     HEARTS = 2  # ♥
     SPADES = 3  # ♠
+    GOLD = 4  # 🤑
 
 
 class Card(ABC):
@@ -52,14 +53,14 @@ class Card(ABC):
 
     def __str__(self):
         if str(self.suit).isnumeric():
-            char = ['♦️', '♣️', '♥️', '♠️'][int(self.suit)]
+            char = ['♦️', '♣️', '♥️', '♠️', '🤑'][int(self.suit)]
         else:
             char = self.suit
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
     def num_suit(self):
-        return f"{['♦️', '♣️', '♥️', '♠️'][int(self.suit)]}{self.number}"
+        return f"{['♦️', '♣️', '♥️', '♠️', '🤑'][int(self.suit)]}{self.number}"
 
     def reset_card(self):
         if self.usable_next_turn:
@@ -231,7 +232,7 @@ class Bang(Card):
         elif against is not None:
             import bang.characters as chars
             super().play_card(player, against=against)
-            if not self.number == 42: # 42 gold rush
+            if not (self.number == 42 and self.suit == Suit.GOLD): # 42 gold rush
                 player.bang_used += 1
                 player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             if player.character.check(player.game, chars.WillyTheKid):
