@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import IntEnum
 import json
 from random import random, randrange, sample, uniform
@@ -14,10 +15,13 @@ import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
 import bang.expansions.the_valley_of_shadows.characters as tvosch
-from typing import List
+from typing import List, TYPE_CHECKING
 from metrics import Metrics
 from globals import G
 import sys
+
+if TYPE_CHECKING:
+    from bang.game import Game
 
 robot_pictures = [
     'https://i.imgur.com/40rAFIb.jpg',
@@ -50,7 +54,7 @@ class Player:
     def is_admin(self):
         return self.discord_id in {'244893980960096266', '539795574019457034'}
 
-    def get_avatar(self):
+    def _get_avatar(self):
         import requests
         headers = {
             'Authorization': 'Bearer ' + self.discord_token,
@@ -78,7 +82,6 @@ class Player:
             print(r)
 
     def __init__(self, name, sid, bot=False, discord_token=None):
-        import bang.game as g
         super().__init__()
         self.name = name
         self.sid = sid
@@ -89,8 +92,8 @@ class Player:
         if self.is_bot:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
         if self.discord_token:
-            G.sio.start_background_task(self.get_avatar)
-        self.game: g = None
+            G.sio.start_background_task(self._get_avatar)
+        self.game: Game = None
         self.reset()
 
     def reset(self):
@@ -186,7 +189,6 @@ class Player:
                         data=f'_did_choose_character|{self.name}')
             self.pending_action = PendingAction.DRAW
             self.notify_self()
-
 
     def prepare(self):
         self.max_lives = self.character.max_lives + self.role.health_mod
@@ -717,6 +719,7 @@ class Player:
             print('which is a gold rush black card')
             card: grc.ShopCard = self.gold_rush_equipment[hand_index - len(self.hand) - len(self.equipment)]
             return card.play_card(self)
+        from_hand = hand_index < len(self.hand)
         card: cs.Card = self.hand.pop(hand_index) if hand_index < len(self.hand) else self.equipment.pop(hand_index-len(self.hand))
         withCard: cs.Card = None
         if _with is not None:
@@ -744,7 +747,10 @@ class Player:
                 self.equipment.insert(hand_index-len(self.hand), card)
         elif card.is_equipment or (card.usable_next_turn and not card.can_be_used_now):
             if not did_play_card:
-                self.hand.insert(hand_index, card)
+                if from_hand:
+                    self.hand.insert(hand_index, card)
+                else:
+                    self.equipment.insert(hand_index-len(self.hand), card)
             else:
                 did_play_card = True
         if not self.game.is_replay:
@@ -870,11 +876,11 @@ class Player:
                 G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
-        elif 'blackflower_special' in self.choose_text:
+        elif 'choose_play_as_bang' in self.choose_text:
             if card_index <= len(self.available_cards):
                 self.hand.remove(self.available_cards[card_index])
                 self.game.deck.scrap(self.available_cards[card_index], player=self)
-                self.hand.append(cs.Bang(cs.Suit.CLUBS,42))
+                self.hand.append(cs.Bang(self.available_cards[card_index].suit, 42))
             self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif 'choose_tornado' in self.choose_text:

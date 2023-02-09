@@ -1,7 +1,12 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from bang.expansions import *
-from typing import List
+from typing import List, TYPE_CHECKING
 from globals import G
+
+if TYPE_CHECKING:
+    from bang.players import Player
+    from bang.game import Game
 
 class Character(ABC):
     def __init__(self, name: str, max_lives: int, sight_mod: int = 0, visibility_mod: int = 0, pick_mod: int = 0, desc: str = ''):
@@ -16,13 +21,13 @@ class Character(ABC):
         self.icon = '🤷‍♂️'
         self.number = ''.join(['❤️']*self.max_lives)
 
-    def check(self, game, character):
+    def check(self, game:Game, character:Character):
         import bang.expansions.high_noon.card_events as ceh
         if game.check_event(ceh.Sbornia):
             return False
         return isinstance(self, character)
 
-    def special(self, player, data):
+    def special(self, player:Player, data):
         import bang.expansions.high_noon.card_events as ceh
         if player.game.check_event(ceh.Sbornia):
             return False

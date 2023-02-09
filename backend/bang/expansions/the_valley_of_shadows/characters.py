@@ -9,14 +9,14 @@ class BlackFlower(Character):
         self.icon = '🥀'
 
     def special(self, player, data): #fiori = suit.Clubs
-        if player.special_use_count > 0 and not any((c.suit == cs.Suit.CLUBS for c in player.hand)):
+        if player.special_use_count > 0 or not any((c.suit == cs.Suit.CLUBS for c in player.hand)):
             return False
-        if super().special(player, data):
+        if any((player.get_sight() >= p['dist'] for p in player.game.get_visible_players(player))) and super().special(player, data):
             from bang.players import PendingAction
-            player.special_use_count += 1
             player.available_cards = [c for c in player.hand if c.suit == cs.Suit.CLUBS]
+            player.special_use_count += 1
             player.pending_action = PendingAction.CHOOSE
-            player.choose_text = 'blackflower_special'
+            player.choose_text = 'choose_play_as_bang'
             player.notify_self()
 
 class ColoradoBill(Character):

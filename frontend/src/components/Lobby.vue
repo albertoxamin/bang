@@ -61,7 +61,7 @@
 						<div class="tiny-equipment">
 							<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
 										:card="card" @click.native="selectedInfo = p.equipment"
-										:style="`margin-top: ${i<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
+										:style="`margin-top: ${i < 1 ? 10 : -(Math.min((p.equipment.length + p.gold_rush_equipment.length + 1) * 12, 80))}pt;`"/>
 							<Card v-for="(card, i) in p.gold_rush_equipment" v-bind:key="card.name+card.number"
 										:card="card" @click.native="selectedInfo = p.gold_rush_equipment"
 										:style="`margin-top: ${i+p.equipment.length<1?10:-(Math.min((p.equipment.length+p.gold_rush_equipment.length+1)*12,80))}pt`"/>
@@ -531,8 +531,14 @@ export default {
 	transform: scale(0.8);
 	margin-bottom: -4pt;
 }
+.tiny-equipment .card {
+	transform: rotate(2deg);
+}
+.tiny-equipment .card:nth-child(odd) {
+	transform: rotate(-2deg);
+}
 .tiny-equipment .card:hover {
-	transform: translateY(10px) scale(1.1);
+	transform: translateY(10px) scale(1.2);
 	z-index: 1;
 }
 .tiny-character {

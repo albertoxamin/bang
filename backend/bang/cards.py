@@ -1,4 +1,5 @@
-from typing import List, Set, Dict, Tuple, Optional
+from __future__ import annotations
+from typing import List, Set, Dict, Tuple, Optional, TYPE_CHECKING
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 from abc import ABC, abstractmethod
@@ -6,11 +7,16 @@ from enum import IntEnum
 import bang.roles as r
 from globals import G
 
+if TYPE_CHECKING:
+    from bang.players import Player
+    from bang.game import Game
+
 class Suit(IntEnum):
     DIAMONDS = 0  # ♦
     CLUBS = 1  # ♣
     HEARTS = 2  # ♥
     SPADES = 3  # ♠
+    GOLD = 4  # 🤑
 
 
 class Card(ABC):
@@ -47,14 +53,14 @@ class Card(ABC):
 
     def __str__(self):
         if str(self.suit).isnumeric():
-            char = ['♦️', '♣️', '♥️', '♠️'][int(self.suit)]
+            char = ['♦️', '♣️', '♥️', '♠️', '🤑'][int(self.suit)]
         else:
             char = self.suit
         return f'{self.name} {char}{self.number}'
         return super().__str__()
 
     def num_suit(self):
-        return f"{['♦️', '♣️', '♥️', '♠️'][int(self.suit)]}{self.number}"
+        return f"{['♦️', '♣️', '♥️', '♠️', '🤑'][int(self.suit)]}{self.number}"
 
     def reset_card(self):
         if self.usable_next_turn:
@@ -64,7 +70,7 @@ class Card(ABC):
         if self.must_be_used:
             self.must_be_used = False
 
-    def play_card(self, player, against=None, _with=None):#self --> carta
+    def play_card(self, player:Player, against:str=None, _with:int=None):#self --> carta
         if (player.game.check_event(ce.IlGiudice)) and self.usable_next_turn and not self.can_be_used_now:
             return False
         if self.is_equipment:
@@ -98,10 +104,10 @@ class Card(ABC):
     def use_card(self, player):
         pass
 
-    def is_duplicate_card(self, player):
-        return self.name in [c.name for c in player.equipment] or self.name in [c.name for c in player.gold_rush_equipment]
+    def is_duplicate_card(self, player:Player):
+        return any(c.name==self.name for c in player.equipment) or any(c.name==self.name for c in player.gold_rush_equipment)
 
-    def check_suit(self, game, accepted):
+    def check_suit(self, game:Game, accepted:List[Suit]):
         if game.check_event(ceh.Benedizione):
             return Suit.HEARTS in accepted
         elif game.check_event(ceh.Maledizione):
@@ -226,7 +232,7 @@ class Bang(Card):
         elif against is not None:
             import bang.characters as chars
             super().play_card(player, against=against)
-            if not self.number == 42: # 42 gold rush
+            if not (self.number == 42 and self.suit == Suit.GOLD): # 42 gold rush
                 player.bang_used += 1
                 player.has_played_bang = True if not player.game.check_event(ceh.Sparatoria) else player.bang_used > 1
             if player.character.check(player.game, chars.WillyTheKid):

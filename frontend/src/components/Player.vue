@@ -3,13 +3,13 @@
 		<p v-if="instruction && (lives > 0 || is_ghost)" class="center-stuff">{{instruction}}</p>
 		<!-- <button v-if="canEndTurn" @click="end_turn">Termina Turno</button> -->
 		<div class="equipment-slot">
-			<Card v-if="my_role" :card="my_role" class="back"
+			<Card v-if="my_role" :card="my_role" class="back" style="transform:rotate(-2deg)"
 					@pointerenter.native="desc=($i18n.locale=='it'?my_role.goal:my_role.goal_eng)" @pointerleave.native="desc=''"/>
 			<Card v-if="character" :card="character" style="margin-left: -30pt;margin-right: 0pt;"
 					@pointerenter.native="setDesc(character)" @pointerleave.native="desc=''"/>
 			<transition-group name="list" tag="div" style="display: flex;flex-direction:column; justify-content: space-evenly; margin-left: 12pt;margin-right:-10pt;">
-				<span v-for="(n, i) in lives" v-bind:key="i" :alt="i">❤️</span>
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
+				<span v-for="(n, i) in lives" v-bind:key="i" :alt="i">❤️</span>
 			</transition-group>
 			<div v-if="gold_nuggets > 0" style="display: flex;align-items: center;margin-left: 12pt;margin-right: -10pt;justify-content: space-evenly;width: 25pt;">
 				<transition name="list">
@@ -17,7 +17,7 @@
 				</transition>
 				<span>💵️</span>
 			</div>
-			<transition-group v-if="lives > 0 || is_ghost" name="list" tag="div" style="margin: 0 0 0 10pt; display:flex;">
+			<transition-group v-if="lives > 0 || is_ghost" name="list" id="equipment" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipmentComputed" v-bind:key="card.name+card.number" :card="card" 
 					@pointerenter.native="setDesc(card)" @pointerleave.native="desc=''"
 					@click.native="play_card(card, true)" :class="{'cant-play':((eventCard && eventCard.name == 'Lazo') || (!card.can_be_used_now && !card.is_equipment))}"/>
@@ -390,7 +390,7 @@ export default {
 		},
 		play_card(card, from_equipment) {
 			console.log('play ' + card.name)
-			if (from_equipment && (!card.can_be_used_now || (this.eventCard && this.eventCard.name == "Lazo"))) return;
+			if (from_equipment && ((!card.can_be_used_now && !card.name == 'Lemat') || (this.eventCard && this.eventCard.name == "Lazo"))) return;
 			else if (card.usable_next_turn && !card.can_be_used_now) return this.really_play_card(card, null);
 			let calamity_special = (card.name === 'Mancato!' && this.character.name === 'Calamity Janet')
 			let cant_play_bang = (this.has_played_bang && card.number !==42 && this.equipment.filter(x => x.name == 'Volcanic').length == 0)
@@ -514,8 +514,12 @@ export default {
 	margin-left: -30pt;
 }
 .hand>.card:hover {
-	margin-right:35pt;
-	transform: translateY(-15px);
+	transform: translateY(-15px) translateX(-15px) rotate(-2deg);
+	z-index: 1;
+}
+.hand>.card:nth-child(1):hover, .hand>.card:last-child:hover {
+	transform: translateY(-15px) translateX(0) rotate(2deg);
+	z-index: 1;
 }
 #hand_text{
 	color: var(--muted-color);
@@ -530,6 +534,12 @@ export default {
 	display:flex;
 	margin: 10pt 0pt;
 	overflow:auto;
+}
+#equipment .card:nth-child(even) {
+	transform: rotate(1deg);
+}
+#equipment .card:nth-child(odd) {
+	transform: rotate(-1deg);
 }
 .hurt-notify {
 	pointer-events: none;

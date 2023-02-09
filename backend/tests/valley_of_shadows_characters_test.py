@@ -50,3 +50,22 @@ def test_ColoradoBill():
     assert p1.lives == 3
     p.play_card(0, p1.name)
     assert p1.pending_action == PendingAction.RESPOND
+
+# test BlackFlower
+def test_BlackFlower():
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(2)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [BlackFlower()]
+        p.set_character(p.available_characters[0].name)
+    p = g.players[g.turn]
+    p.draw('')
+    p.hand = [cs.Volcanic(cs.Suit.DIAMONDS,0)]
+    p.special('')
+    assert p.pending_action == PendingAction.PLAY
+    p.hand = [cs.Volcanic(cs.Suit.CLUBS,0)]
+    p.special('')
+    assert p.pending_action == PendingAction.CHOOSE

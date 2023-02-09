@@ -75,6 +75,7 @@
   "choose_complice": "Scegli come giocare Complice!",
   "choose_ricercato": "Scegli il giocatore su cui vuoi giocare Ricercato",
   "choose_birra_function": "Scegli tra ottenere 1 pepita scartando la birra oppure giocare la birra.",
+  "choose_play_as_bang": "Scegli che carta giocare come Bang!",
   "emporio_others": "{0} sta scegliendo che carta prendere dall'emporio",
   "you_died": "SEI MORTO",
   "spectate": "SPETTATORE",
@@ -694,7 +695,7 @@
     },
     "Lemat": {
       "name": "Lemat",
-      "desc": "Puoi usare ogni carta in mano come BANG!."
+      "desc": "Puoi usare ogni carta in mano come BANG! (Clicca la carta una volta equipaggiata)."
     },
     "SerpenteASonagli": {
       "name": "Serpente a Sonagli",

@@ -6,9 +6,16 @@
 		<div v-else class="center-stuff">
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
+			<ul v-if="shouldShowBackendSuggestions">
+				Connect to one of these backends:
+				<li v-for="suggestion in backendSuggestions" :key="suggestion.name" @click="changeBackend(suggestion)">
+					{{suggestion.name}}
+				</li>
+			</ul>
 		</div>
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;z-index:10">
+			<input v-if="connect_dev" type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="resetConnection" :value="'💚'+connect_dev" />
 			<input type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="()=>{sending_report = true}" :value=" $t('report') " />
 			<input type="button" class="btn" value="" style="min-width:28pt;cursor:pointer;background-position:center;background-image:url('https://img.icons8.com/color/48/discord-logo.png');background-size:1.5em;background-repeat: no-repeat;" @click="joinDiscord"/>
 			<input type="button" class="btn" :value="(showHelp?'X':'?')" style="min-width:28pt;border-radius:100%;cursor:pointer;" @click="getHelp"/>
@@ -63,8 +70,17 @@ export default {
 		theme: 'light',
 		report: '',
 		sending_report: false,
+		connect_dev: undefined,
+		backendSuggestions: [
+			{ name: 'Bang Xamin', url: 'https://bang.xamin.it' },
+			{ name: 'Bang Miga', url: 'https://bang.migani.synology.me/' },
+			{ name: 'Localhost', url: 'http://localhost:5001' },
+		],
 	}),
 	computed: {
+		shouldShowBackendSuggestions() {
+			return window.location.origin.indexOf('vercel') !== -1 || window.location.origin.indexOf('localhost') !== -1
+		},
 	},
 	sockets: {
 		connect() {
@@ -97,6 +113,16 @@ export default {
 			if (!this.registration || !this.registration.waiting) return
 			// Send message to SW to skip the waiting and activate the new SW
 			this.registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+		},
+		changeBackend(suggestion) {
+			this.$socket.disconnect();
+			window.localStorage.setItem('connect-dev', suggestion.url);
+			window.location.reload();
+		},
+		resetConnection() {
+			this.$socket.disconnect();
+			window.localStorage.removeItem('connect-dev');
+			window.navigation.reload();
 		},
 		detectColorScheme() {
 			if(localStorage.getItem("theme")){
@@ -145,6 +171,9 @@ export default {
 			if (['it', 'en'].indexOf(userLang) == -1)
 				userLang = 'en';
 			this.$i18n.locale = userLang.split('-')[0]
+		}
+		if (window.localStorage.getItem('connect-dev')) {
+			this.connect_dev = window.localStorage.getItem('connect-dev')
 		}
 		this.detectColorScheme()
 		if (window.location.origin.indexOf('localhost') !== -1) return;

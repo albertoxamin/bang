@@ -32,7 +32,7 @@ export default {
 		},
 		suit() {
 			if (this.card && !isNaN(this.card.suit)) {
-				let x = ['♦️','♣️','♥️','♠️']
+				let x = ['♦️','♣️','♥️','♠️','🤑']
 				return x[this.card.suit];
 			} else if (this.card.suit) {
 				return this.card.suit;
@@ -88,6 +88,19 @@ export default {
 		#816b45 5px,
 		#816b45 10px
 	);
+}
+.card:not(.back,.fistful-of-cards,.high-noon,.gold-rush):before{
+	content: "";
+	background-image: radial-gradient(var(--bg-color) 13%, #0000 5%),
+				radial-gradient(var(--bg-color) 14%, transparent 5%),
+				radial-gradient(var(--bg-color) 8%, transparent 5%);
+	background-position: -12px 0, 12px 14px, 0 -12pt;
+	background-size: 50px 50px;
+	position: absolute;
+	top: -10px;
+	left: -10px;
+	bottom: -4px;
+	right: -4px;
 }
 .card.equipment {
 	box-shadow: 
