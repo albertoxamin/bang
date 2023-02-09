@@ -6,6 +6,12 @@
 		<div v-else class="center-stuff">
 			<h2>{{$t("warning")}}</h2>
 			<p>{{$t("connection_error")}}</p>
+			<ul v-if="shouldShowBackendSuggestions">
+				Connect to one of these backends:
+				<li v-for="suggestion in backendSuggestions" :key="suggestion.name" @click="changeBackend(suggestion)">
+					{{suggestion.name}}
+				</li>
+			</ul>
 		</div>
 		<help v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;z-index:10">
@@ -65,8 +71,16 @@ export default {
 		report: '',
 		sending_report: false,
 		connect_dev: undefined,
+		backendSuggestions: [
+			{ name: 'Bang Xamin', url: 'https://bang.xamin.it' },
+			{ name: 'Bang Miga', url: 'https://bang.migani.synology.me/' },
+			{ name: 'Localhost', url: 'http://localhost:5001' },
+		],
 	}),
 	computed: {
+		shouldShowBackendSuggestions() {
+			return window.location.origin.indexOf('vercel') !== -1 || window.location.origin.indexOf('localhost') !== -1
+		},
 	},
 	sockets: {
 		connect() {
@@ -99,6 +113,11 @@ export default {
 			if (!this.registration || !this.registration.waiting) return
 			// Send message to SW to skip the waiting and activate the new SW
 			this.registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+		},
+		changeBackend(suggestion) {
+			this.$socket.disconnect();
+			window.localStorage.setItem('connect-dev', suggestion.url);
+			window.location.reload();
 		},
 		resetConnection() {
 			this.$socket.disconnect();
