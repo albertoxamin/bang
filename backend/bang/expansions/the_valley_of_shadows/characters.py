@@ -16,7 +16,7 @@ class BlackFlower(Character):
             player.available_cards = [c for c in player.hand if c.suit == cs.Suit.CLUBS]
             player.special_use_count += 1
             player.pending_action = PendingAction.CHOOSE
-            player.choose_text = 'blackflower_special'
+            player.choose_text = 'choose_play_as_bang'
             player.notify_self()
 
 class ColoradoBill(Character):

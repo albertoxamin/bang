@@ -869,7 +869,7 @@ class Player:
                 G.sio.emit('chat_message', room=player.game.name, data=f'_play_card_against|{self.name}|Sventagliata|{player.name}')
             self.pending_action = PendingAction.PLAY
             self.notify_self()
-        elif 'blackflower_special' in self.choose_text:
+        elif 'choose_play_as_bang' in self.choose_text:
             if card_index <= len(self.available_cards):
                 self.hand.remove(self.available_cards[card_index])
                 self.game.deck.scrap(self.available_cards[card_index], player=self)

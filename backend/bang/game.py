@@ -446,7 +446,7 @@ class Game:
             {'name':self.players[self.turn].name,'cards': self.available_cards}, default=lambda o: o.__dict__))
         self.players[self.turn].notify_self()
 
-    def respond_emporio(self, player, i):
+    def respond_emporio(self, player:pl.Player, i:int):
         card = self.available_cards.pop(i)
         G.sio.emit('chat_message', room=self.name, data=f'_choose_emporio|{player.name}|{card.name}')
         player.hand.append(card)
