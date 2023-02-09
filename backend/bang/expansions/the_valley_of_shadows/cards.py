@@ -44,7 +44,7 @@ class Lemat(Card):
             player.equipment.append(self)
             player.notify_self()
             return True
-        elif not player.has_played_bang:
+        elif not player.has_played_bang and any((player.get_sight() >= p['dist'] for p in player.game.get_visible_players(player))):
             from bang.players import PendingAction
             player.available_cards = player.hand.copy()
             player.pending_action = PendingAction.CHOOSE

@@ -11,7 +11,7 @@ class BlackFlower(Character):
     def special(self, player, data): #fiori = suit.Clubs
         if player.special_use_count > 0 or not any((c.suit == cs.Suit.CLUBS for c in player.hand)):
             return False
-        if super().special(player, data):
+        if any((player.get_sight() >= p['dist'] for p in player.game.get_visible_players(player))) and super().special(player, data):
             from bang.players import PendingAction
             player.available_cards = [c for c in player.hand if c.suit == cs.Suit.CLUBS]
             player.special_use_count += 1

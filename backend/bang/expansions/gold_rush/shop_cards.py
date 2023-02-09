@@ -59,6 +59,8 @@ class Bottiglia(ShopCard):
     def play_card(self, player, against=None, _with=None):
         # bang, birra, panico
         player.available_cards = [Bang(4,42), Birra(4,42), Panico(4,42)]
+        if not any((player.get_sight() >= p['dist'] for p in player.game.get_visible_players(player))):
+            player.available_cards.pop(0)
         for i in range(len(player.available_cards)):
             player.available_cards[i].must_be_used = True
         player.choose_text = 'choose_bottiglia'

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import IntEnum
 import json
 from random import random, randrange, sample, uniform
@@ -14,10 +15,13 @@ import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
 import bang.expansions.the_valley_of_shadows.characters as tvosch
-from typing import List
+from typing import List, TYPE_CHECKING
 from metrics import Metrics
 from globals import G
 import sys
+
+if TYPE_CHECKING:
+    from bang.game import Game
 
 robot_pictures = [
     'https://i.imgur.com/40rAFIb.jpg',
@@ -78,7 +82,6 @@ class Player:
             print(r)
 
     def __init__(self, name, sid, bot=False, discord_token=None):
-        import bang.game as g
         super().__init__()
         self.name = name
         self.sid = sid
@@ -90,7 +93,7 @@ class Player:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
         if self.discord_token:
             G.sio.start_background_task(self._get_avatar)
-        self.game: g = None
+        self.game: Game = None
         self.reset()
 
     def reset(self):
