@@ -3,10 +3,17 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 import VueSocketIO from 'bang-vue-socket.io'
-Vue.use(new VueSocketIO({
-	debug: Vue.config.devtools,
-	connection: Vue.config.devtools ? `http://${window.location.hostname}:5001` : window.location.origin,
-}))
+if (window.localStorage.getItem('connect-dev')) {
+	Vue.use(new VueSocketIO({
+		debug: true,
+		connection: window.localStorage.getItem('connect-dev'),
+	}))
+}	else {
+	Vue.use(new VueSocketIO({
+		debug: Vue.config.devtools,
+		connection: (Vue.config.devtools) ? `http://${window.location.hostname}:5001` : window.location.origin,
+	}))
+}
 
 import PrettyCheckbox from 'pretty-checkbox-vue';
 Vue.use(PrettyCheckbox)
