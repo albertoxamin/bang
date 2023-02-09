@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@datadog/browser-rum": "^4.32.0",
+    "@datadog/browser-rum": "^4.33.0",
     "caniuse-lite": "^1.0.30001450",
     "core-js": "^3.16.2",
     "pretty-checkbox-vue": "^1.1.9",
