@@ -138,7 +138,7 @@ def set_username(sid, username):
     ses = sio.get_session(sid)
     if not isinstance(ses, Player):
         dt = username["discord_token"] if 'discord_token' in username else None
-        sio.save_session(sid, Player(username["name"], sid, discord_token=dt))
+        sio.save_session(sid, Player(username.get('name', 'player'), sid, discord_token=dt))
         print(f'{sid} is now {username}')
         advertise_lobbies()
     elif ses.game is None or not ses.game.started:

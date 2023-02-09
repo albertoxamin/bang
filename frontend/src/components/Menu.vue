@@ -169,6 +169,10 @@ export default {
 					'Authorization': 'Bearer ' + localStorage.getItem('discord_token')
 				}
 			})
+			.then((res) => {
+				if (res.status !== 200) throw new Error(res.status)
+				return res
+			})
 			.then(response => response.json())
 			.then(data => {
 				console.log(data)
