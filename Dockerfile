@@ -1,5 +1,5 @@
 # build Vue frontend
-FROM node:19-alpine as builder
+FROM node:18 as builder
 COPY ./frontend .
 RUN npm install
 RUN npm run build
