@@ -39,8 +39,6 @@ const i18n = new VueI18n({
 	fallbackLocale: fallbackLocale
 })
 
-import './registerServiceWorker'
-
 new Vue({
   i18n,
   router,

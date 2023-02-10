@@ -120,7 +120,8 @@
 	</div>
 </template>
 <script>
-import Card from './Card'
+import Card from '@/components/Card.vue'
+
 export default {
 	name: 'Help',
 	components: {
