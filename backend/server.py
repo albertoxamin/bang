@@ -39,10 +39,11 @@ static_files={
         # '/robots.txt': {'content_type': 'text/html', 'filename': 'robots.txt'},
         '/favicon.ico': {'filename': 'favicon.ico'},
         '/img/icons': './img/icons',
-        '/manifest.json': {'filename': 'manifest.json'},
-        '/css': './css',
-        '/media': './media',
-        '/js': './js',
+        '/manifest.webmanifest': {'filename': 'manifest.webmanifest'},
+        '/assets':'./assets',
+        #'/css': './css',
+        #'/media': './media',
+        #'/js': './js',
     }
 if "UseRobots" in os.environ and os.environ['UseRobots'].upper() == "TRUE":
     static_files['/robots.txt'] = {'content_type': 'text/html', 'filename': 'robots.txt'}
