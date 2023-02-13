@@ -1,4 +1,4 @@
-certifi==2021.10.8
+certifi==2022.12.7
 dnspython==2.3.0
 eventlet==0.33.3
 python-engineio==4.3.4
