@@ -952,25 +952,25 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@datadog/browser-core@4.34.0":
-  version "4.34.0"
-  resolved "https://registry.npmjs.org/@datadog/browser-core/-/browser-core-4.34.0.tgz"
-  integrity sha512-15ensaCOfB3hQjoIBca401wP9N817W0zBFp6Pmu2uMLtn+TUiYJqu0AhW4G2w1snCHk2peBzJnfXtZLTl/PX5Q==
+"@datadog/browser-core@4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.34.1.tgz#495b44d97703cf1c8bcca7a98cce8d0dbe090898"
+  integrity sha512-xZUMxSEUlzXVGU8fvIG5J4xGGBShrxgTTmCd9p7Ju/rUPnWV0hTqhPIXwSgbMvHgmX1vNwoNvydmlzhNVpKr3g==
 
-"@datadog/browser-rum-core@4.34.0":
-  version "4.34.0"
-  resolved "https://registry.npmjs.org/@datadog/browser-rum-core/-/browser-rum-core-4.34.0.tgz"
-  integrity sha512-EBlhtK10VEG85Yv7gGIhLwnd8wnh6jGWhvObAYEJf+wr4QDS6oXiVrSSaswJcGUn8Kq4fE9Gvyo4+uT05vLLJA==
+"@datadog/browser-rum-core@4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.34.1.tgz#ff863a16b68d2ed48b3e88ccfaa38c8eb2b6dde2"
+  integrity sha512-s1nHAXREKRlTl2EOn+J/786D7pvQ2lg9MunhmC5Juh9DeNrYrmAooxbrXCaCy0gKRBHbm68HM4h59FXuA5iNGg==
   dependencies:
-    "@datadog/browser-core" "4.34.0"
+    "@datadog/browser-core" "4.34.1"
 
-"@datadog/browser-rum@^4.33.0":
-  version "4.34.0"
-  resolved "https://registry.npmjs.org/@datadog/browser-rum/-/browser-rum-4.34.0.tgz"
-  integrity sha512-nItk5/359i//hIJfRV9al3gwV0dEgHTfjyZLNeWNdyoyc22vhcUjfKEAsUKZ7I7pCYRqflppHgV7sTwLZb7lcA==
+"@datadog/browser-rum@^4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.34.1.tgz#67f3f40288185c2b72a056a0612737c63d216165"
+  integrity sha512-fKw1EUwlPNliUJnOftsIgNGbW70+pZGwt2BbiUsWxp+CBHsw+MRFENUJybAK2l4PqNm+AZKVkvultiCDGvo3gg==
   dependencies:
-    "@datadog/browser-core" "4.34.0"
-    "@datadog/browser-rum-core" "4.34.0"
+    "@datadog/browser-core" "4.34.1"
+    "@datadog/browser-rum-core" "4.34.1"
 
 "@esbuild/android-arm64@0.16.17":
   version "0.16.17"
