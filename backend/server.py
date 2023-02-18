@@ -82,13 +82,17 @@ def bang_handler(func):
             logging.exception(e)
             print(traceback.format_exc())
             send_to_debug(traceback.format_exc())
-        save_lock = False
+        finally:
+            save_lock = False
     return wrapper_func
+
+def count_bots_in_game(game):
+    return sum(1 for p in game.players if p.is_bot)
 
 def advertise_lobbies():
     open_lobbies = [g for g in games.values() if 0 < len(g.players) < 10 and not g.is_hidden][-10:]
-    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if not g.started])
-    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'locked': g.password != ''} for g in open_lobbies if g.started])
+    sio.emit('lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'bots': count_bots_in_game(g), 'locked': g.password != '', 'expansions': g.expansions} for g in open_lobbies if not g.started])
+    sio.emit('spectate_lobbies', room='lobby', data=[{'name': g.name, 'players': len(g.players), 'bots': count_bots_in_game(g), 'locked': g.password != '', 'expansions': g.expansions} for g in open_lobbies if g.started])
     Metrics.send_metric('lobbies', points=[sum(not g.is_replay for g in games.values())])
     Metrics.send_metric('online_players', points=[online_players])
 
@@ -268,6 +272,7 @@ def private(sid):
 def toggle_expansion(sid, expansion_name):
     g = sio.get_session(sid).game
     g.toggle_expansion(expansion_name)
+    advertise_lobbies()
 
 @sio.event
 @bang_handler
@@ -476,6 +481,7 @@ def chat_message(sid, msg, pl=None):
                         while any((p for p in ses.game.players if p.name == bot.name)):
                             bot = Player(f'AI_{random.randint(0,10)}', 'bot', bot=True)
                         ses.game.add_player(bot)
+                        advertise_lobbies()
                         sio.start_background_task(bot.bot_spin)
                     return
                 if '/replay' in msg and not '/replayspeed' in msg and not '/replaypov' in msg:
@@ -515,6 +521,7 @@ def chat_message(sid, msg, pl=None):
                 elif '/removebot' in msg and not ses.game.started:
                     if any((p.is_bot for p in ses.game.players)):
                         [p for p in ses.game.players if p.is_bot][-1].disconnect()
+                    advertise_lobbies()
                     return
                 elif '/togglecomp' in msg and ses.game:
                     ses.game.toggle_competitive()
