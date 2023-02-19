@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
+import { registerSW } from 'virtual:pwa-register'
+
+registerSW({ immediate: true })
 
 Vue.config.productionTip = false
 import VueSocketIO from 'bang-vue-socket.io'
