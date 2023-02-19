@@ -137,6 +137,53 @@ export default {
 	);
 	border: 2pt solid rgb(50 122 172);
 }
+.card.back.high-noon{
+	color:var(--bg-color);
+	background: repeating-linear-gradient(
+		45deg,
+		rgb(198 78 45),
+		rgb(198 78 45) 5px,
+		rgb(178 58 25) 5px,
+		rgb(178 58 25) 10px
+	);
+	border: 2pt solid rgb(198 78 45);
+}
+.card.back.the-valley-of-shadows{
+	color:var(--bg-color);
+	background: repeating-linear-gradient(
+		45deg,
+		rgb(98 88 85),
+		rgb(98 88 85) 5px,
+		rgb(78 68 65) 5px,
+		rgb(78 68 65) 10px
+	);
+	box-shadow: 
+		0 0 0 3pt rgb(98 88 85),
+		0 0 0 6pt var(--bg-color),
+		0 0 5pt 6pt #aaa;
+}
+.card.back.cant-play {
+	transform: scale(0.9);
+	filter: grayscale(1);
+	opacity: 0.5;
+}
+.card.back.cant-play:hover {
+	transform: scale(0.95);
+	filter: grayscale(0.6);
+	opacity: 0.8;
+}
+.beta::after {
+	content: "Beta";
+	position: absolute;
+	bottom: -12pt;
+	right: -12pt;
+	background: red;
+	font-size: 10pt;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: bold;
+	padding: 4pt;
+	border-radius: 12pt;
+}
 .avatar {
 	position: absolute;
 	width: 36pt;
@@ -166,6 +213,9 @@ export default {
 	top: -10pt;
 	font-size: 11pt;
 }
+.card.back h4{
+	font-size: 12pt;
+}
 .card .emoji {
 	position: absolute;
 	text-align: center;
@@ -180,7 +230,7 @@ export default {
 .card.must-be-used {
 	filter: drop-shadow(0 0 5px red);
 }
-.fistful-of-cards .emoji, .high-noon .emoji{
+.fistful-of-cards .emoji, .high-noon .emoji, .exp-pack .emoji{
 	top:auto !important;
 	bottom:15% !important;
 }

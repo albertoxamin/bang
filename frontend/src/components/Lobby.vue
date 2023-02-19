@@ -60,12 +60,10 @@
 				<p v-if="players.length < 3" class="center-stuff" style="min-height: 19px;">{{$t('minimum_players')}}</p>
 				<p v-else style="min-height: 19px;"> </p>
 				<h3>{{$t("expansions")}}</h3>
-				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
-					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}} {{ex.emoji}}
-						<p v-if="ex.is_beta"  style="padding: 0px 10px;color: red;border-radius: 12pt;position: absolute;right: -50pt;top: -12pt;">BETA</p>
-					</PrettyCheck>
-					<br>
+				<div class="players-table" style="justify-content: flex-start;">
+					<card v-for="ex in expansionsStatus"  v-bind:key="ex.id" :card="ex.card" :class="{'cant-play':!ex.enabled, 'beta':ex.is_beta, ...ex.card.classes}" :donotlocalize="true" @click.native="toggleExpansions(ex.id)"/>
 				</div>
+				<p v-if="isRoomOwner">{{$t('click_to_toggle')}}</p>
 				<h3>{{$t('mods')}}</h3>
 				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
 				<h3>{{$t('bots')}}</h3>
@@ -114,6 +112,7 @@ import Status from './Status.vue'
 import DeadRoleNotification from './DeadRoleNotification.vue'
 import AnimatedCard from './AnimatedCard.vue'
 import { emojiMap } from '@/utils/emoji-map.js'
+import { expansionsMap } from '@/utils/expansions-map.js'
 
 const cumulativeOffset = function(element) {
 	var top = 0, left = 0;
@@ -141,7 +140,8 @@ export default {
 		FullScreenInput,
 		Status,
 		DeadRoleNotification,
-		AnimatedCard
+		AnimatedCard,
+Card
 	},
 	data: () => ({
 		username: '',
@@ -316,6 +316,7 @@ export default {
 					is_beta: this.beta_expansions.indexOf(x) !== -1,
 					enabled: this.expansions.indexOf(x) !== -1,
 					emoji: emojiMap[x],
+					card: this.getExpansionCard(x),
 				}
 			})
 		},
@@ -368,6 +369,15 @@ export default {
 		}
 	},
 	methods: {
+		getExpansionCard(id) {
+			let ex = expansionsMap[id]
+			ex.classes = {
+				back: true,
+				'exp-pack': true
+			}
+			ex.classes[ex.expansion] = true
+			return ex
+		},
 		is_toggled_expansion(ex) {
 			if (Vue.config.devtools)
 				console.log(ex+' '+ this.expansions+ (this.expansions.indexOf(ex) !== -1))
