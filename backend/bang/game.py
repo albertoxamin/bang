@@ -610,6 +610,15 @@ class Game:
             if len(self.deck.event_cards) > 0 and self.deck.event_cards[0] is not None:
                 print(f'{self.name}: flip new event {self.deck.event_cards[0].name}')
                 G.sio.emit('chat_message', room=self.name, data={'color': f'orange','text':f'_flip_event|{self.deck.event_cards[0].name}'})
+            if self.check_event(cew.HelenaZontero):
+                c = self.deck.pick_and_scrap()
+                G.sio.emit('chat_message', room=self.name, data=f'_flipped|Helena Zontero|{c.name}|{c.num_suit()}')
+                if c.check_suit(self, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
+                    pls = (p for p in self.players if not isinstance(p.role, roles.Sheriff))
+                    newroles = [p.role for p in pls]
+                    random.shuffle(newroles)
+                    for p in pls:
+                        p.set_role(newroles.pop())
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):
