@@ -159,7 +159,7 @@ Card
 		password: '',
 		togglable_expansions: [],
 		expansions: [],
-		beta_expansions: ['the_valley_of_shadows'],
+		beta_expansions: ['the_valley_of_shadows', 'wild_west_show'],
 		hasToSetUsername: false,
 		is_competitive: false,
 		disconnect_bot: false,

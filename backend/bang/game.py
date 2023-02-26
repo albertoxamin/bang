@@ -12,6 +12,7 @@ from bang.deck import Deck
 import bang.roles as roles
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
@@ -61,7 +62,7 @@ class Game:
         self.initial_players = 0
         self.password = ''
         self.expansions: List[str] = []
-        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon', 'gold_rush', 'the_valley_of_shadows']
+        self.available_expansions = ['dodge_city', 'fistful_of_cards', 'high_noon', 'gold_rush', 'the_valley_of_shadows', 'wild_west_show']
         self.shutting_down = False
         self.is_competitive = False
         self.disconnect_bot = True
@@ -78,6 +79,7 @@ class Game:
         self.attack_in_progress = False
         self.characters_to_distribute = 2 # personaggi da dare a inizio partita
         self.debug = self.name == 'debug'
+        self.dead_roles: List[roles.Role] = []
         self.is_changing_pwd = False
         self.is_hidden = False
         self.rng = random.Random()
@@ -113,6 +115,7 @@ class Game:
         self.incremental_turn = 0
         self.turn = 0
         self.pending_winners = []
+        self.dead_roles: List[roles.Role] = []
         for p in self.players:
             p.reset()
             p.notify_self()
@@ -579,12 +582,16 @@ class Game:
             Metrics.send_metric('incremental_turn', points=[self.incremental_turn], tags=[f'game:{self.SEED}'])
         if self.players[self.turn].is_dead:
             pl = sorted(self.get_dead_players(), key=lambda x:x.death_turn)[0]
-            if self.check_event(ce.DeadMan) and not self.did_resuscitate_deadman and pl == self.players[self.turn]:
+            if self.check_event([ce.DeadMan, cew.Camposanto]) and not self.did_resuscitate_deadman and pl == self.players[self.turn]:
                 print(f'{self.name}: {self.players[self.turn]} is dead, revive')
-                self.did_resuscitate_deadman = True
+                if self.check_event(ce.DeadMan):
+                    self.did_resuscitate_deadman = True
+                    pl.lives = 2
+                elif self.check_event(cew.Camposanto):
+                    pl.lives = 1
+                    pl.set_role = self.dead_roles.pop(random.randint(0, len(self.dead_roles)-1))
                 pl.is_dead = False
                 pl.is_ghost = False
-                pl.lives = 2
                 self.deck.draw(player=pl)
                 self.deck.draw(player=pl)
                 if (ghost := next((c for c in pl.equipment if isinstance(c, tvosc.Fantasma)), None)) is not None:
@@ -762,6 +769,7 @@ class Game:
         # if not disconnected:
         #     self.dead_players.append(corpse)
         self.notify_room()
+        self.dead_roles.append(player.role)
         G.sio.emit('chat_message', room=self.name, data=f'_died|{player.name}')
         for p in self.players:
             if not p.is_bot:
@@ -845,7 +853,10 @@ class Game:
 
     def check_event(self, ev):
         if self.deck is None or len(self.deck.event_cards) == 0: return False
-        return isinstance(self.deck.event_cards[0], ev)
+        if isinstance(ev, type):
+            return isinstance(self.deck.event_cards[0], ev)
+        else:
+            return any(isinstance(self.deck.event_cards[0], evc) for evc in ev)
 
     def get_visible_players(self, player: pl.Player): # returns a dictionary because we need to add the distance
         pls = self.get_alive_players()

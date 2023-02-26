@@ -3,6 +3,7 @@ import random
 import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.gold_rush.shop_cards as grc
 from globals import G
 
@@ -33,6 +34,9 @@ class Deck:
         if 'high_noon' in game.expansions:
             self.event_cards.extend(ceh.get_all_events(game.rng))
             endgame_cards.append(ceh.get_endgame_card())
+        if 'wild_west_show' in game.expansions:
+            self.event_cards.extend(cew.get_all_events(game.rng))
+            endgame_cards.append(cew.get_endgame_card())
         if len(self.event_cards) > 0:
             game.rng.shuffle(self.event_cards)
             self.event_cards = self.event_cards[:12]

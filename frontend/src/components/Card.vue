@@ -118,6 +118,10 @@ export default {
 	box-shadow: 
 		0 0 0 3pt  #6aa16e, 0 0 0 6pt var(--bg-color), 0 0 5pt 6pt #aaa
 }
+.card.wild-west-show{
+	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
+	border: 2pt dotted #987e51;
+}
 .card.high-noon{
 	box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
 	border: 2pt dotted rgb(198 78 45);
@@ -230,7 +234,7 @@ export default {
 .card.must-be-used {
 	filter: drop-shadow(0 0 5px red);
 }
-.fistful-of-cards .emoji, .high-noon .emoji, .exp-pack .emoji{
+.fistful-of-cards .emoji, .high-noon .emoji, .card.wild-west-show .emoji, .exp-pack .emoji{
 	top:auto !important;
 	bottom:15% !important;
 }

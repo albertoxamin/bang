@@ -28,5 +28,11 @@ export const expansionsMap = {
 		icon: '👻',
 		back: true,
 		expansion: 'the-valley-of-shadows',
+	},
+	'wild_west_show': {
+		name: 'Wild West Show',
+		icon: '🎪',
+		back: true,
+		expansion: 'wild-west-show'
 	}
 }

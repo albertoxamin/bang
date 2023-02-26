@@ -61,7 +61,6 @@ def get_endgame_card():
 
 def get_all_events(rng=random):
     cards = [
-        Bavaglio(),
         Camposanto(),
         DarlingValentine(),
         DorothyRage(),

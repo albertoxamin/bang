@@ -11,6 +11,7 @@ import bang.characters as chars
 import bang.expansions.dodge_city.characters as chd
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
@@ -453,6 +454,11 @@ class Player:
         self.has_played_bang = False
         self.special_use_count = 0
         self.bang_used = 0
+        if self.game.check_event(cew.DarlingValentine):
+            hand = len(self.hand)
+            for _ in range(hand):
+                self.game.deck.scrap(self.hand.pop(0), True, player=self)
+                self.game.deck.draw(True, player=self)
         if self.game.check_event(ceh.MezzogiornoDiFuoco):
             self.lives -= 1
             if any((isinstance(c, grc.Talismano) for c in self.gold_rush_equipment)):

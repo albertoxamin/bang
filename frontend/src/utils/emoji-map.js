@@ -4,4 +4,5 @@ export const emojiMap = {
 	'high_noon': '🔥',
 	'fistful_of_cards': '🎴',
 	'the_valley_of_shadows': '👻',
+	'wild_west_show': '🎪',
 }
