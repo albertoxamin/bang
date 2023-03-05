@@ -895,9 +895,11 @@ class Game:
 
     def notify_all(self):
         if self.started and self.replay_speed > 0:
+            show_cards = self.check_event(cew.Sacagaway)
             data = [{
                 'name': p.name,
                 'ncards': len(p.hand),
+                'hand_cards': [c.__dict__ for c in p.hand] if show_cards else [],
                 'equipment': [e.__dict__ for e in p.equipment],
                 'gold_rush_equipment': [e.__dict__ for e in p.gold_rush_equipment],
                 'lives': p.lives,

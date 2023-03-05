@@ -81,11 +81,11 @@ def get_all_events(rng=random):
     cards = [
         Camposanto(),
         DarlingValentine(),
-        DorothyRage(),
+        # DorothyRage(),
         HelenaZontero(),
-        LadyRosaDelTexas(),
-        MissSusanna(),
-        RegolamentoDiConti(),
+        # LadyRosaDelTexas(),
+        # MissSusanna(),
+        # RegolamentoDiConti(),
         Sacagaway(),
     ]
     rng.shuffle(cards)

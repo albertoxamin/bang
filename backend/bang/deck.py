@@ -1,4 +1,4 @@
-from typing import List, Set, Dict, Tuple, Optional
+from typing import List, Set, Dict, Tuple, Optional, TYPE_CHECKING
 import random
 import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
@@ -7,8 +7,10 @@ import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.gold_rush.shop_cards as grc
 from globals import G
 
+if TYPE_CHECKING:
+    from bang.game import Game
 class Deck:
-    def __init__(self, game):
+    def __init__(self, game: 'Game'):
         super().__init__()
         self.cards: List[cs.Card] = cs.get_starting_deck(game.expansions)
         self.mancato_cards: List[str] = []
@@ -58,6 +60,7 @@ class Deck:
         if len(self.event_cards) > 0 and not (isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte) or isinstance(self.event_cards[0], ceh.MezzogiornoDiFuoco)):
             self.event_cards.append(self.event_cards.pop(0))
         self.game.notify_event_card()
+        self.game.notify_all()
 
     def fill_gold_rush_shop(self):
         if not any((c is None for c in self.shop_cards)):

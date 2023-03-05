@@ -38,7 +38,7 @@
 						<Card :card="p.card" @click.native="drawFromPlayer(p.name)"  :donotlocalize="true" :class="{is_my_turn:p.is_my_turn}"/>
 						<Card v-if="p.character" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
 						<Card v-if="p.character && p.character.name !== p.real_character.name" style="transform:scale(0.5) translate(-90px, -50px);" :card="p.character" class="character tiny-character" @click.native="selectedInfo = [p.character]"/>
-						<tiny-hand :id="p.name+'-hand'" :ncards="p.ncards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
+						<tiny-hand :id="p.name+'-hand'" :ncards="p.ncards" :cards="p.hand_cards" @click.native="drawFromPlayer(p.name)" :ismyturn="p.pending_action === 2"/>
 						<span style="position:absolute;top:10pt;" class="center-stuff">{{getActionEmoji(p)}}</span>
 						<div class="tiny-equipment">
 							<Card v-for="(card, i) in p.equipment" v-bind:key="card.name+card.number"
@@ -141,7 +141,7 @@ export default {
 		Status,
 		DeadRoleNotification,
 		AnimatedCard,
-Card
+		Card
 	},
 	data: () => ({
 		username: '',
