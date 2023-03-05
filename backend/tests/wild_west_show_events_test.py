@@ -52,7 +52,13 @@ def test_helena_zontero():
     assert roles != roles2
 
 # test LadyRosaDelTexas
-
+def test_miss_suzanna():
+    g = started_game(['wild_west_show'], 4)
+    set_events(g, [None, LadyRosaDelTexas()])
+    p = current_player_with_cards(g, [Card(0,'card',0)]*4)
+    t = g.turn
+    p.draw('event')
+    assert g.turn == t+1
 
 # test MissSusanna
 def test_miss_suzanna():

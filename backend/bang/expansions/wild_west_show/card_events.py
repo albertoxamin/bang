@@ -83,7 +83,7 @@ def get_all_events(rng=random):
         DarlingValentine(),
         # DorothyRage(),
         HelenaZontero(),
-        # LadyRosaDelTexas(),
+        LadyRosaDelTexas(),
         MissSusanna(),
         RegolamentoDiConti(),
         Sacagaway(),

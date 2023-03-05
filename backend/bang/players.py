@@ -525,6 +525,13 @@ class Player:
                 self.pending_action = PendingAction.CHOOSE
                 self.choose_text = 'choose_play_as_bang'
                 self.notify_self()
+        elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(cew.LadyRosaDelTexas):
+            nextp = self.game.next_player()
+            i, j = self.game.players_map[self.name], self.game.players_map[nextp.name]
+            self.game.players[i], self.game.players[j] = nextp, self
+            self.game.players_map[self.name], self.game.players_map[nextp.name] = j, i
+            self.game.turn = j
+            self.game.notify_all()
         elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and any((c.name == cs.Bang(0,0).name for c in self.hand)):
             self.available_cards = [{
                 'name': p.name,
