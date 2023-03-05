@@ -89,6 +89,7 @@ class Player:
         self.is_bot = bot
         self.discord_token = discord_token
         self.discord_id = None
+        self.played_cards = 0
         self.avatar = ''
         if self.is_bot:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
@@ -440,6 +441,7 @@ class Player:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.setaccio_count = 0
+        self.played_cards = 0
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
@@ -762,6 +764,8 @@ class Player:
         if not self.game.is_replay:
             Metrics.send_metric('play_card', points=[1], tags=[f'success:{did_play_card}', f'card:{card.name}', f'bot:{self.is_bot}', f'exp:{card.expansion if "expansion" in card.__dict__ else "vanilla"}'])
         print("did play card:", did_play_card)
+        if did_play_card:
+            self.played_cards += 1
         self.notify_self()
         if self.is_bot:
             return did_play_card or card.is_equipment or (card.usable_next_turn and not card.can_be_used_now)
@@ -1563,6 +1567,9 @@ class Player:
                 for i in range(len(self.equipment)):
                     self.game.deck.scrap(self.equipment.pop(), True)
             self.is_my_turn = False
+            if self.played_cards < 3 and self.game.check_event(cew.MissSusanna):
+                self.lives -= 1
+            self.played_cards = 0
             self.can_play_again_don_bell = True
             self.committed_suit_manette = None
             self.pending_action = PendingAction.WAIT

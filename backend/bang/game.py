@@ -619,7 +619,7 @@ class Game:
                     newroles = [p.role for p in pls]
                     random.shuffle(newroles)
                     for p in pls:
-                        p.set_role(newroles.pop())
+                        p.set_role(newroles.pop(random.randint(0, len(newroles)-1)))
             if self.check_event(ce.DeadMan):
                 self.did_resuscitate_deadman = False
             elif self.check_event(ce.RouletteRussa):

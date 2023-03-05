@@ -39,10 +39,10 @@ def test_darling_valentine():
 
 # test HelenaZontero
 def test_helena_zontero():
-    g = started_game(['wild_west_show'], 6)
+    g = started_game(['wild_west_show'], 8)
     set_events(g, [None, HelenaZontero()])
     roles = [p.role.name for p in g.players]
-    for i in range(5):
+    for i in range(len(g.players)-1):
         current_player_with_cards(g, []).end_turn()
     g.deck.cards = [Card(Suit.HEARTS, 'card', 0)]*5
     current_player_with_cards(g, []).end_turn()
@@ -52,6 +52,22 @@ def test_helena_zontero():
 # test LadyRosaDelTexas
 
 # test MissSusanna
+def test_miss_suzanna():
+    g = started_game(['wild_west_show'], 4)
+    set_events(g, [MissSusanna()])
+    p = current_player_with_cards(g, [])
+    p.end_turn()
+    assert p.lives == 4 # sceriffo 5-1
+    p = current_player_with_cards(g, [Card(0,'card',0)]*4)
+    p.play_card(0)
+    p.play_card(0)
+    p.play_card(0)
+    p.end_turn()
+    assert p.lives == 4
+    p = current_player_with_cards(g, [])
+    p.end_turn()
+    assert p.lives == 3
+
 
 # test RegolamentoDiConti
 
