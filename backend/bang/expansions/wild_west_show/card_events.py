@@ -56,7 +56,7 @@ class RegolamentoDiConti(CardEvent):
     Tutte le carte possono essere giocate come se fossero BANG!. Le carte BANG! come se fossero Mancato!
     """
     def __init__(self):
-        super().__init__("Regolamento di conti", "🤠")
+        super().__init__("Regolamento di Conti", "🤠")
 
 class Sacagaway(CardEvent):
     """
@@ -84,8 +84,8 @@ def get_all_events(rng=random):
         # DorothyRage(),
         HelenaZontero(),
         # LadyRosaDelTexas(),
-        # MissSusanna(),
-        # RegolamentoDiConti(),
+        MissSusanna(),
+        RegolamentoDiConti(),
         Sacagaway(),
     ]
     rng.shuffle(cards)

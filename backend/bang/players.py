@@ -519,6 +519,12 @@ class Player:
             self.choose_text = 'choose_cecchino'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
+        if self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(cew.RegolamentoDiConti) and len(self.hand) > 0:
+            if not self.has_played_bang and any((self.get_sight() >= p['dist'] for p in self.game.get_visible_players(self))):
+                self.available_cards = self.hand.copy()
+                self.pending_action = PendingAction.CHOOSE
+                self.choose_text = 'choose_play_as_bang'
+                self.notify_self()
         elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and any((c.name == cs.Bang(0,0).name for c in self.hand)):
             self.available_cards = [{
                 'name': p.name,

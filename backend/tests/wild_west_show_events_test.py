@@ -4,6 +4,7 @@ from tests import started_game, set_events, current_player, next_player, current
 from bang.expansions.wild_west_show.card_events import *
 from bang.cards import Card, Suit
 import bang.roles as roles
+from bang.players import PendingAction
 
 
 # test Camposanto
@@ -52,6 +53,7 @@ def test_helena_zontero():
 
 # test LadyRosaDelTexas
 
+
 # test MissSusanna
 def test_miss_suzanna():
     g = started_game(['wild_west_show'], 4)
@@ -71,8 +73,14 @@ def test_miss_suzanna():
 
 
 # test RegolamentoDiConti
+def test_miss_suzanna():
+    g = started_game(['wild_west_show'], 4)
+    set_events(g, [None, RegolamentoDiConti()])
+    p = current_player_with_cards(g, [Card(0,'card',0)]*4)
+    p.draw('event')
+    assert p.pending_action == PendingAction.CHOOSE
+    p.choose(0)
 
-# test Sacagaway
 
 # test WildWestShow
 def test_miss_suzanna():
