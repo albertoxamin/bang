@@ -4,6 +4,7 @@ import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.wild_west_show.card_events as cew
+import bang.expansions.wild_west_show.characters as chw
 import bang.expansions.gold_rush.shop_cards as grc
 from globals import G
 
@@ -83,7 +84,16 @@ class Deck:
 
     def pick_and_scrap(self) -> cs.Card:
         card = self.cards.pop(0)
-        self.scrap_pile.append(card)
+        jpain = None
+        for p in self.game.players:
+            if isinstance(p, chw.JohnPain) and len(p.hand) < 6:
+                jpain = p
+                break
+        if jpain:
+            jpain.hand.append(card)
+            jpain.notify_self()
+        else:
+            self.scrap_pile.append(card)
         if len(self.cards) == 0:
             self.reshuffle()
         self.game.notify_scrap_pile()

@@ -82,7 +82,7 @@ def all_characters() -> List[Character]:
         FlintWestwood(),
         # GaryLooter(),
         # GreygoryDeckard(),
-        # JohnPain(),
+        JohnPain(),
         # LeeVanKliff(),
         # TerenKill(),
         # YoulGrinner(),
