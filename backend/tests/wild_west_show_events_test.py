@@ -3,6 +3,7 @@ from tests import started_game, set_events, current_player, next_player, current
 
 from bang.expansions.wild_west_show.card_events import *
 from bang.cards import Card, Suit
+import bang.roles as roles
 
 
 # test Camposanto
@@ -74,3 +75,10 @@ def test_miss_suzanna():
 # test Sacagaway
 
 # test WildWestShow
+def test_miss_suzanna():
+    g = started_game(['wild_west_show'], 8)
+    set_events(g, [None, WildWestShow()])
+    for i in range(len(g.players)):
+        current_player_with_cards(g, []).end_turn()
+    for p in g.players:
+        assert isinstance(p.role, roles.Renegade)

@@ -649,6 +649,9 @@ class Game:
                 if self.waiting_for != 0:
                     return
                 self.dalton_on = False
+            elif self.check_event(cew.WildWestShow):
+                for p in self.players:
+                    p.set_role(roles.Renegade())
 
         if self.check_event(ce.PerUnPugnoDiCarte) and len(self.players[self.turn].hand) > 0:
             self.player_bangs = len(self.players[self.turn].hand)

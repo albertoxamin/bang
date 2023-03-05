@@ -57,7 +57,7 @@ class Deck:
         print(f'Deck initialized with {len(self.cards)} cards')
 
     def flip_event(self):
-        if len(self.event_cards) > 0 and not (isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte) or isinstance(self.event_cards[0], ceh.MezzogiornoDiFuoco)):
+        if len(self.event_cards) > 0 and not (isinstance(self.event_cards[0], ce.PerUnPugnoDiCarte) or isinstance(self.event_cards[0], ceh.MezzogiornoDiFuoco) or isinstance(self.event_cards[0], cew.WildWestShow)):
             self.event_cards.append(self.event_cards.pop(0))
         self.game.notify_event_card()
         self.game.notify_all()
