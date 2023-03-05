@@ -63,7 +63,7 @@ class Sacagaway(CardEvent):
     Tutti i giocatori giocano a carte scoperte (tranne il ruolo!).
     """
     def __init__(self):
-        super().__init__("Sacagaway", "🏇")
+        super().__init__("Sacagaway", "🌄")
 
 class WildWestShow(CardEvent):
     """

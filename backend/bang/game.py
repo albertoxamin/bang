@@ -614,7 +614,8 @@ class Game:
                 c = self.deck.pick_and_scrap()
                 G.sio.emit('chat_message', room=self.name, data=f'_flipped|Helena Zontero|{c.name}|{c.num_suit()}')
                 if c.check_suit(self, [cs.Suit.HEARTS, cs.Suit.DIAMONDS]):
-                    pls = (p for p in self.players if not isinstance(p.role, roles.Sheriff))
+                    G.sio.emit('chat_message', room=self.name, data=f'_swapped_roles|Helena Zontero|{c.name}|{c.num_suit()}')
+                    pls = [p for p in self.players if not isinstance(p.role, roles.Sheriff)]
                     newroles = [p.role for p in pls]
                     random.shuffle(newroles)
                     for p in pls:
