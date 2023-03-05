@@ -12,6 +12,7 @@ import bang.expansions.dodge_city.characters as chd
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.wild_west_show.card_events as cew
+import bang.expansions.wild_west_show.characters as chw
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
@@ -1132,6 +1133,8 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
+            if self.character.check(chw.BigSpencer):
+                self.expected_response = []
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -1162,6 +1165,8 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
+            if self.character.check(chw.BigSpencer):
+                self.expected_response = []
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
@@ -1258,6 +1263,8 @@ class Player:
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
                 if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
+                if self.character.check(chw.BigSpencer):
+                    self.expected_response = []
                 if self.can_escape(card_name, with_mancato=False):
                     self.expected_response.append(tvosc.Fuga(0, 0).name)
                 if not no_dmg:
