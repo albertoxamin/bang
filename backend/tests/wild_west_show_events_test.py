@@ -52,9 +52,9 @@ def test_helena_zontero():
     assert roles != roles2
 
 # test LadyRosaDelTexas
-def test_miss_suzanna():
+def test_LadyRosaDelTexas():
     g = started_game(['wild_west_show'], 4)
-    set_events(g, [None, LadyRosaDelTexas()])
+    set_events(g, [LadyRosaDelTexas()])
     p = current_player_with_cards(g, [Card(0,'card',0)]*4)
     t = g.turn
     p.draw('event')
@@ -79,9 +79,9 @@ def test_miss_suzanna():
 
 
 # test RegolamentoDiConti
-def test_miss_suzanna():
+def test_RegolamentoDiConti():
     g = started_game(['wild_west_show'], 4)
-    set_events(g, [None, RegolamentoDiConti()])
+    set_events(g, [RegolamentoDiConti()])
     p = current_player_with_cards(g, [Card(0,'card',0)]*4)
     p.draw('event')
     assert p.pending_action == PendingAction.CHOOSE
@@ -89,7 +89,7 @@ def test_miss_suzanna():
 
 
 # test WildWestShow
-def test_miss_suzanna():
+def test_WildWestShow():
     g = started_game(['wild_west_show'], 8)
     set_events(g, [None, WildWestShow()])
     for i in range(len(g.players)):

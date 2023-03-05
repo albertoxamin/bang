@@ -86,7 +86,7 @@ class Deck:
         card = self.cards.pop(0)
         jpain = None
         for p in self.game.players:
-            if isinstance(p, chw.JohnPain) and len(p.hand) < 6:
+            if p.character.check(self.game, chw.JohnPain) and len(p.hand) < 6:
                 jpain = p
                 break
         if jpain:

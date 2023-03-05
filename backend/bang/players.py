@@ -1133,7 +1133,7 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
-            if self.character.check(chw.BigSpencer):
+            if self.character.check(self.game, chw.BigSpencer):
                 self.expected_response = []
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
@@ -1165,7 +1165,7 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
-            if self.character.check(chw.BigSpencer):
+            if self.character.check(self.game, chw.BigSpencer):
                 self.expected_response = []
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
@@ -1263,7 +1263,7 @@ class Player:
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
                 if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
-                if self.character.check(chw.BigSpencer):
+                if self.character.check(self.game, chw.BigSpencer):
                     self.expected_response = []
                 if self.can_escape(card_name, with_mancato=False):
                     self.expected_response.append(tvosc.Fuga(0, 0).name)
