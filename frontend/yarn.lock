@@ -952,25 +952,25 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@datadog/browser-core@4.34.2":
-  version "4.34.2"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.34.2.tgz#e61aa00555992ced14464d5543dd39c567ce2088"
-  integrity sha512-zF0+edsreuaKXLupHeBIkK0QNo5GdX8dK9s1Yq3dhm2JHKTy/SE/IGHh3iL7cC+LJaXRYMNPlGZlAr5Ti/3z4g==
+"@datadog/browser-core@4.34.3":
+  version "4.34.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.34.3.tgz#268feeade2dcaef43b419b5319d5e2643280e237"
+  integrity sha512-unwHpZJpCBddAlw4UC3P1OHaczoQw97GNqT2r8SjZzUgUI6JoEfWXzPhjbK4ywpWTkLCU1Nxg3QQiz8MqoXWtw==
 
-"@datadog/browser-rum-core@4.34.2":
-  version "4.34.2"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.34.2.tgz#9f9f3d7968df914f6890d508bb37972496a757e7"
-  integrity sha512-egtmSmARw+T6wAfoW3DwtABX6Yp34sLt4L4XZRVe/XKqjZCjuhAIEIWxUZZ1635TUVnpyJUbxvqvDlimT5Yung==
+"@datadog/browser-rum-core@4.34.3":
+  version "4.34.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.34.3.tgz#52a4a2bc25dbeab4480b4ec7c8ea41f5e3280a3f"
+  integrity sha512-gtFZ9gKSCmO8U17f6yH0wnQc81dd1K2H6OEQMTs1ms1YPvBw+O7/EFlfOne+fqJeq6K+PmurV7yryLn/jyvJLw==
   dependencies:
-    "@datadog/browser-core" "4.34.2"
+    "@datadog/browser-core" "4.34.3"
 
-"@datadog/browser-rum@^4.34.2":
-  version "4.34.2"
-  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.34.2.tgz#5e44de2fe3fd39ac90afefa31c4bedd161f45c83"
-  integrity sha512-W9KdGiug1u/XACCSmDQhKNpHBmX2y3tNgxgBYD850wl8bJjLtFyO2cMrCd0QMAWN42iZ/yr5Xmp+7DtQv9+Vqg==
+"@datadog/browser-rum@^4.34.3":
+  version "4.34.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.34.3.tgz#8fe314b73f84897a799ad742e90ae7c37a40ea45"
+  integrity sha512-R5K7XDx60xhjNP2CNxQgqqStKh4Gf/8dBF6NKqTtW9G+4B+zpefIuFb0E4xrxZ1hMi3aKdRYqJpcZO9XoeVgAA==
   dependencies:
-    "@datadog/browser-core" "4.34.2"
-    "@datadog/browser-rum-core" "4.34.2"
+    "@datadog/browser-core" "4.34.3"
+    "@datadog/browser-rum-core" "4.34.3"
 
 "@esbuild/android-arm64@0.16.17":
   version "0.16.17"
