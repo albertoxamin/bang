@@ -13,7 +13,7 @@
 				</li>
 			</ul>
 		</div>
-		<help v-if="showHelp"/>
+		<help :inGame="true" v-if="showHelp"/>
 		<div style="position:fixed;bottom:4pt;right:4pt;display:flex;z-index:10">
 			<input v-if="connect_dev" type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="resetConnection" :value="'💚'+connect_dev" />
 			<input type=button class="btn" style="min-width:28pt;cursor:pointer;" @click="()=>{sending_report = true}" :value=" $t('report') " />

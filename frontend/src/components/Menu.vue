@@ -15,10 +15,10 @@
 			<div v-if="!didSetUsername">
 				<p id="choose_username">{{$t("choose_username")}}</p>
 				<form @submit="setUsername" class="form" style="display:flex">
-					<input id="username" v-model="username" />
+					<input id="_username" v-model="username" />
 					<input type="submit" class="btn" :value="$t('submit')"/>
+					<input type="button" class="btn" @click="discordLogin" value="Login with Discord"/>
 				</form>
-				<a class="btn" :href="redirectUrl">Login with Discord</a>
 				<p v-if="onlinePlayers > 0">{{$t("online_players")}}{{onlinePlayers}}</p>
 			</div>
 			<div v-else>
@@ -44,7 +44,7 @@
 				</div>
 			</div>
 		</div>
-		<label for="username" style="opacity:0">Username</label>
+		<label for="_username" style="opacity:0">Username</label>
 		<label for="lobbyname" style="opacity:0">Lobby Name</label>
 		<div>
 			Still new to the game? Read the rules <a href="./help">here</a> or press the question mark in the bottom right corner anytime during your matches.
@@ -58,6 +58,7 @@ import Card from '@/components/Card.vue'
 import TinyHand from '@/components/TinyHand.vue'
 // import Lobby from './components/Lobby.vue'
 import { datadogRum } from '@datadog/browser-rum';
+import { emojiMap } from '@/utils/emoji-map.js'
 
 export default {
 	name: 'App',
@@ -134,11 +135,15 @@ export default {
 				e.preventDefault();
 			}
 		},
+		discordLogin() {
+			window.location = this.redirectUrl;
+		},
 		getLobbyCard(lobby) {
 			return {
 				name: lobby.name,
 				icon: "💥",
-				number: `${lobby.players}🤠 ${lobby.locked?'🔐':''}`,
+				number: `${lobby.players-lobby.bots}🤠${lobby.bots > 0 ? ' '+lobby.bots+'🤖':''} ${lobby.locked?'🔐':''}`,
+				alt_text: lobby.expansions?.map(e => emojiMap[e]).join(''),
 				is_equipment: true,
 			}
 		},
@@ -146,7 +151,8 @@ export default {
 			return {
 				name: lobby.name,
 				icon: "👁️",
-				number: `${lobby.players}🤠 ${lobby.locked?'🔐':''}`,
+				number: `${lobby.players-lobby.bots}🤠${lobby.bots > 0 ? ' '+lobby.bots+'🤖':''} ${lobby.locked?'🔐':''}`,
+				alt_text: lobby.expansions?.map(e => emojiMap[e]).join(''),
 				usable_next_turn: true,
 			}
 		},

@@ -1,11 +1,10 @@
 <template>
 	<div >
 		<div class="deck">
-			<card v-if="endTurnAction && isPlaying" :donotlocalize="true" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
-			<div class="deck" style="position:relative" v-if="goldRushCards.length > 0" >
-				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[0])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(-15deg) translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(0)}"/>
-				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[1])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(+0deg)  translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(1)}"/>
-				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[2])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(+15deg) translate(0, -50px) scale(0.6)`" v-if="goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(2)}"/>
+			<div class="deck" :style="`position:relative;${goldRushShopOpen?'border: 2px dashed #6a6a6a42;border-radius:8pt':''}`" v-if="goldRushCards.length > 0" >
+				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[0])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(95deg) translate(30px, -40px) scale(0.6)`" v-if="goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(0)}"/>
+				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[1])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(90deg)  translate(0, -40px) scale(0.6)`" v-if="goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(1)}"/>
+				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[2])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(85deg) translate(-30px, -40px) scale(0.6)`" v-if="goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(2)}"/>
 				<div style="position:relative">
 					<div class="card gold-rush back" style="position:relative; bottom:-3pt;right:-3pt;"/>
 					<div class="card gold-rush back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -17,16 +16,19 @@
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
 				<card :card="eventCard" :key="eventCard.name" :class="eventClasses" @click.native="event"/>
 			</div>
-			<div style="position:relative" id="actual-deck">
-				<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
-				<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="card" :donotlocalize="true" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
-			</div>
-			<div style="position:relative;" id="actual-scrap">
-				<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
-				<card v-else :card="card" class="back" style="opacity:0"/>
-				<card v-if="lastScrap" :card="lastScrap" :key="lastScrap.name+lastScrap.number" class="last-scrap" @click.native="action('scrap')"
-							@pointerenter.native="setdesc" @pointerleave.native="desc=''" />
+			<div style="position:relative" class="deck">
+				<div style="position:relative" id="actual-deck">
+					<div class="card back" style="position:absolute; bottom:-3pt;right:-3pt;"/>
+					<div class="card back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
+					<card :card="card" :donotlocalize="true" :class="{back:true, pick:pending_action === 0, draw:pending_action === 1}" @click.native="action"/>
+				</div>
+				<div style="position:relative;" id="actual-scrap">
+					<card v-if="previousScrap" :card="previousScrap" style="top: 1.5pt;right: -1.5pt;"/>
+					<card v-else :card="card" class="back" style="opacity:0"/>
+					<card v-if="lastScrap" :card="lastScrap" :key="lastScrap.name+lastScrap.number" class="last-scrap" @click.native="action('scrap')"
+								@pointerenter.native="setdesc" @pointerleave.native="desc=''" />
+				</div>
+				<card v-if="endTurnAction && isPlaying" :donotlocalize="true" v-show="pending_action == 2" :card="endTurnCard" class="end-turn" @click.native="endTurnAction"/>
 			</div>
 		</div>
 		<transition name="list">

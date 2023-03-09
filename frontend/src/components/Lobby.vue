@@ -20,24 +20,6 @@
 					<!-- :style="p.style"/> -->
 				<!-- </div> -->
 			<!-- </div> -->
-			<div v-if="!started">
-				<h3>{{$t("expansions")}}</h3>
-				<div v-for="ex in expansionsStatus" v-bind:key="ex.id">
-					<PrettyCheck @click.native="toggleExpansions(ex.id)" :disabled="!isRoomOwner" :checked="ex.enabled" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{ex.name}}
-						<p v-if="ex.is_beta"  style="padding: 0px 10px;color: red;border-radius: 12pt;position: absolute;right: -50pt;top: -12pt;">BETA</p>
-					</PrettyCheck>
-					<br>
-				</div>
-				<h3>{{$t('mods')}}</h3>
-				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
-				<h3>{{$t('bots')}}</h3>
-				<input type="button" class="btn" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="(e)=>{this.$socket.emit('chat_message', '/addbot'); e.preventDefault()}"/>
-				<input type="button" class="btn" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="(e)=>{this.$socket.emit('chat_message', '/removebot'); e.preventDefault()}"/>
-				<!-- <br> -->
-				<!-- <PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck> -->
-				<p v-if="players.length < 3" class="center-stuff" style="min-height: 19px;">{{$t('minimum_players')}}</p>
-				<p v-else style="min-height: 19px;"> </p>
-			</div>
 			<div style="position:relative;">
 				<div v-if="showTurnFlow" id="turn-indicator" :class="{reversed:turnReversed}"/>
 				<transition-group name="list" tag="div" class="players-table">
@@ -73,6 +55,22 @@
 					</div>
 					<Card v-if="startGameCard" key="_shuffle_players_" :donotlocalize="true" :card="shufflePlayersCard" @click.native="shufflePlayers" class="fistful-of-cards"/>
 				</transition-group>
+			</div>
+			<div v-if="!started">
+				<p v-if="players.length < 3" class="center-stuff" style="min-height: 19px;">{{$t('minimum_players')}}</p>
+				<p v-else style="min-height: 19px;"> </p>
+				<h3>{{$t("expansions")}}</h3>
+				<div class="players-table" style="justify-content: flex-start;">
+					<card v-for="ex in expansionsStatus"  v-bind:key="ex.id" :card="ex.card" :class="{'cant-play':!ex.enabled, 'beta':ex.is_beta, ...ex.card.classes}" :donotlocalize="true" @click.native="toggleExpansions(ex.id)"/>
+				</div>
+				<p v-if="isRoomOwner">{{$t('click_to_toggle')}}</p>
+				<h3>{{$t('mods')}}</h3>
+				<PrettyCheck @click.native="toggleCompetitive" :disabled="!isRoomOwner" v-model="is_competitive" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('mod_comp')}}</PrettyCheck>
+				<h3>{{$t('bots')}}</h3>
+				<input type="button" class="btn" :value="$t('add_bot')" :disabled="!isRoomOwner || players.length > 7" @click="(e)=>{this.$socket.emit('chat_message', '/addbot'); e.preventDefault()}"/>
+				<input type="button" class="btn" style="margin-left: 10pt;" :value="$t('remove_bot')" :disabled="!isRoomOwner || !isThereAnyBot" @click="(e)=>{this.$socket.emit('chat_message', '/removebot'); e.preventDefault()}"/>
+				<!-- <br> -->
+				<!-- <PrettyCheck @click.native="toggleReplaceWithBot" :disabled="!isRoomOwner" v-model="disconnect_bot" class="p-switch p-fill" style="margin-top:5px; margin-bottom:3px;">{{$t('disconnect_bot')}}</PrettyCheck> -->
 			</div>
 			<AnimatedCard v-for="c in cardsToAnimate" v-bind:key="c.key" :card="c.card" :startPosition="c.startPosition" :midPosition="c.midPosition" :endPosition="c.endPosition"/>
 			<div v-if="started">
@@ -113,6 +111,8 @@ import FullScreenInput from './FullScreenInput.vue'
 import Status from './Status.vue'
 import DeadRoleNotification from './DeadRoleNotification.vue'
 import AnimatedCard from './AnimatedCard.vue'
+import { emojiMap } from '@/utils/emoji-map.js'
+import { expansionsMap } from '@/utils/expansions-map.js'
 
 const cumulativeOffset = function(element) {
 	var top = 0, left = 0;
@@ -140,7 +140,8 @@ export default {
 		FullScreenInput,
 		Status,
 		DeadRoleNotification,
-		AnimatedCard
+		AnimatedCard,
+Card
 	},
 	data: () => ({
 		username: '',
@@ -313,7 +314,9 @@ export default {
 					id: x,
 					name: x.replace(/(^|_)([a-z])/g, function($0,$1,$2) {return ' ' + $2.toUpperCase()}),
 					is_beta: this.beta_expansions.indexOf(x) !== -1,
-					enabled: this.expansions.indexOf(x) !== -1
+					enabled: this.expansions.indexOf(x) !== -1,
+					emoji: emojiMap[x],
+					card: this.getExpansionCard(x),
 				}
 			})
 		},
@@ -366,6 +369,15 @@ export default {
 		}
 	},
 	methods: {
+		getExpansionCard(id) {
+			let ex = expansionsMap[id]
+			ex.classes = {
+				back: true,
+				'exp-pack': true
+			}
+			ex.classes[ex.expansion] = true
+			return ex
+		},
 		is_toggled_expansion(ex) {
 			if (Vue.config.devtools)
 				console.log(ex+' '+ this.expansions+ (this.expansions.indexOf(ex) !== -1))

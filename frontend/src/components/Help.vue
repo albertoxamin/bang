@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<a v-if="!inGame" href=".."><p>Home</p></a>
 		<h1 id="help">{{$t('help.title')}}</h1>
 		<a href="#thecards"><p>{{$t('help.gotocards')}}</p></a>
 		<a href="#highnooncards"><p>{{$t('help.gotohighnoon')}}</p></a>
@@ -126,6 +127,9 @@ export default {
 	name: 'Help',
 	components: {
 		Card,
+	},
+	props: {
+		inGame: Boolean
 	},
 	data:()=>({
 		cardBack: {
