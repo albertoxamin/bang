@@ -84,8 +84,8 @@ def all_characters() -> List[Character]:
         # GreygoryDeckard(),
         JohnPain(),
         # LeeVanKliff(),
-        # TerenKill(),
-        # YoulGrinner(),
+        TerenKill(),
+        YoulGrinner(),
     ]
     for c in cards:
         c.expansion_icon = '🎪'

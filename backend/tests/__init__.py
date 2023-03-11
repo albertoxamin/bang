@@ -7,7 +7,7 @@ from globals import G
 G.sio = DummySocket()
 
 
-def started_game(expansions, players=4):
+def started_game(expansions, players=4, character=Character('test_char', 4)):
     g = Game('test')
     g.expansions = expansions
     ps = [Player(f'p{i}', f'p{i}') for i in range(players)]
@@ -15,7 +15,7 @@ def started_game(expansions, players=4):
         g.add_player(p)
     g.start_game()
     for p in ps:
-        p.available_characters = [Character('test_char', 4)]
+        p.available_characters = [character]
         p.set_character(p.available_characters[0].name)
     return g
 

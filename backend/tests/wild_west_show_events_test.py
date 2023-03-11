@@ -58,7 +58,7 @@ def test_LadyRosaDelTexas():
     p = current_player_with_cards(g, [Card(0,'card',0)]*4)
     t = g.turn
     p.draw('event')
-    assert g.turn == t+1
+    assert g.turn == (t+1)%len(g.players)
 
 # test MissSusanna
 def test_miss_suzanna():

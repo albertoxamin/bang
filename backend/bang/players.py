@@ -265,6 +265,12 @@ class Player:
                     if isinstance(self.gold_rush_equipment[i], grc.Zaino):
                         self.gold_rush_equipment[i].play_card(self, None)
                         return # play card will notify the player
+            if self.character.check(self.game, chw.TerenKill):
+                picked: cs.Card = self.game.deck.pick_and_scrap()
+                G.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                if not picked.check_suit(self.game, [cs.Suit.SPADES]):
+                    self.lives = 1
+                    self.game.deck.draw(True, player=self)
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1 and self.lives == 0:
                 if self.game.players[self.game.turn] != self:
                     self.game.players[self.game.turn].pending_action = PendingAction.WAIT
@@ -573,6 +579,12 @@ class Player:
             self.notify_self()
         else:
             self.pending_action = PendingAction.PLAY
+            if self.character.check(self.game, chw.YoulGrinner):
+                hsize = len(self.hand)
+                for p in self.game.get_alive_players():
+                    if p != self and len(p.hand) > hsize:
+                        G.sio.emit('card_drawn', room=self.game.name, data={'player': self.name, 'pile': p.name})
+                        self.hand.append(p.hand.pop(randint(0, len(p.hand)-1)))
             num = 2 if not self.character.check(self.game, chd.BillNoface) else self.max_lives-self.lives+1
             if self.character.check(self.game, chd.PixiePete): num += 1
             if self.character.check(self.game, tvosch.TucoFranziskaner) and not any((True for c in self.equipment if not c.usable_next_turn)): num += 2
