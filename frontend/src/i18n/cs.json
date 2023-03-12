@@ -161,6 +161,308 @@
 	"your_turn": "Hraj svůj tah!",
 	"your_response": "Odpověz!",
 	"your_choose": "Vyber kartu!",
+	"cards": {
+		"Barile": {
+			"name": "Barile",
+			"desc": "Když na tebe někdo vystřelí Bang, můžeš vybrat první kartu z vrchní části balíčku. Pokud vybraná karta je srdcová, má stejný efekt jako karta Mancato."
+		},
+		"Dinamite": {
+			"name": "Dinamit",
+			"desc": "Když zahraješ Dinamit, polož ji před sebe. Zůstane neaktivní po celé kolo. Na začátku dalšího kola, před tím, než si vezmeš kartu a před tím, než se vyloží nějaká karta (např. Vězení), vyber kartu z vrchní části balíčku. Pokud vyjde karta 2-9 pik, dynamit exploduje: ztratíš 3 životy a kartu odhodíš. Jinak předej dynamit dalšímu hráči, který si kartu vezme až po tvém tahu."
+		},
+		"Mirino": {
+			"name": "Zaměřovač",
+			"desc": "Vidíš ostatní hráče o vzdálenost o 1 menší."
+		},
+		"Mustang": {
+			"name": "Mustang",
+			"desc": "Ostatní hráči tě vidí o vzdálenost o 1 větší."
+		},
+		"Prigione": {
+			"name": "Vězení",
+			"desc": "Přidej tuto kartu k jinému hráči, kromě šerifa. Hráč, kterého jsi vybral, si na začátku svého tahu musí vybrat kartu z vrchní části balíčku. Pokud vyjde srdcová karta, odhodí tuto kartu a hraje normálně. Jinak odhodí tuto kartu a ztratí svůj tah."
+		},
+		"Remington": {
+			"name": "Remington",
+			"desc": "Můžeš střílet na hráče, kteří jsou vzdáleni 3 nebo méně."
+		},
+		"Rev Carabine": {
+			"name": "Rev. Karabina",
+			"desc": "Můžeš střílet na hráče, kteří jsou vzdáleni 4 nebo méně."
+		},
+		"Schofield": {
+			"name": "Schofield",
+			"desc": "Můžeš střílet na hráče, kteří jsou vzdáleni 2 nebo méně."
+		},
+		"Volcanic": {
+			"name": "Vulkanická",
+			"desc": "Můžeš střílet na hráče, kteří jsou vzdáleni 1 nebo méně. Můžeš však hrát libovolný počet karet Bang!."
+		},
+		"Winchester": {
+			"name": "Winchester",
+			"desc": "Můžeš střílet na hráče, kteří jsou vzdáleni 5 nebo méně."
+		},
+		"Bang!": {
+			"name": "Bang!",
+			"desc": "Vystřel na hráče, který je v dosahu. Pokud nemáš zbraň, dosah je 1."
+		},
+		"Birra": {
+			"name": "Pivo",
+			"desc": "Zahraj tuto kartu, abys získal jeden život. Nemůžeš překročit maximální počet životů své postavy. Pokud máš jen jeden život, můžeš tuto kartu zahrát i v tahu soupeře. Pivo již nemá efekt, pokud zůstanou pouze dva hráči."
+		},
+		"Cat Balou": {
+			"name": "Cat Balou",
+			"desc": "Vyhoď jednu kartu z ruky nebo z karet, které má hráč v hře, které si vybereš náhodně."
+		},
+		"Diligenza": {
+			"name": "Diligence",
+			"desc": "Vezmi 2 karty z vrchní části balíčku."
+		},
+		"Duello": {
+			"name": "Duel",
+			"desc": "Hraj tuto kartu proti jakémukoli hráči. Postupně, začínaje od tvého soupeře, můžete vyhodit kartu Bang!. První hráč, který to neudělá, ztratí 1 život."
+		},
+		"Emporio": {
+			"name": "Emporium",
+			"desc": "Z vrchní části balíčku si vezmi tolik karet, kolik je hráčů, kteří jsou stále naživu. Postupně, začínaje u tebe, si hráči vybírají jednu kartu a přidávají ji do své ruky."
+		},
+		"Gatling": {
+			"name": "Gatling",
+			"desc": "Vystřel na všechny ostatní hráče."
+		},
+		"Indiani!": {
+			"name": "Indiáni!",
+			"desc": "Všichni ostatní hráči musí vyhodit kartu Bang! nebo ztratit 1 život."
+		},
+		"Mancato!": {
+			"name": "Mancato!",
+			"desc": "Použij tuto kartu k zrušení bang"
+		},
+		"Panico!": {
+			"name": "Panico!",
+			"desc": "Vyber kartu od hráče na vzdálenost 1, vyber náhodně z jeho ruky nebo zahrátých karet"
+		},
+		"Saloon": {
+			"name": "Saloon",
+			"desc": "Všichni hráči získají jeden životní bod, včetně hráče, který tuto kartu zahrál"
+		},
+		"WellsFargo": {
+			"name": "WellsFargo",
+			"desc": "Vyber 3 karty z vrcholu balíčku"
+		},
+		"Binocolo": {
+			"name": "Binokl",
+			"desc": "Vidíš ostatní hráče na vzdálenost -1"
+		},
+		"Riparo": {
+			"name": "Úkryt",
+			"desc": "Ostatní hráči tě vidí na vzdálenost +1"
+		},
+		"Pugno!": {
+			"name": "Pěst!",
+			"desc": "Vystřel na hráče na vzdálenost 1"
+		},
+		"Rag Time": {
+			"name": "Rag Time",
+			"desc": "Ukradni 1 kartu od hráče, bez ohledu na vzdálenost"
+		},
+		"Rissa": {
+			"name": "Rvačka",
+			"desc": "Vynutí všem ostatním hráčům, aby zahodili kartu, vyber náhodně z jejich ruky nebo zahrátých karet"
+		},
+		"Schivata": {
+			"name": "Úhyb",
+			"desc": "Použij tuto kartu k zrušení bang a poté si vezmi kartu"
+		},
+		"Springfield": {
+			"name": "Springfield",
+			"desc": "Vystřel na hráče, bez ohledu na vzdálenost"
+		},
+		"Tequila": {
+			"name": "Tequila",
+			"desc": "Obnov 1 životní bod hráči podle tvého výběru, včetně tebe samotného"
+		},
+		"Whisky": {
+			"name": "Whisky",
+			"desc": "Zahraj tuto kartu k obnovení až 2 životních bodů"
+		},
+		"Bibbia": {
+			"name": "Bible",
+			"desc": "Použij tuto kartu k zrušení bang a poté si vezmi kartu"
+		},
+		"Cappello": {
+			"name": "Klobouk",
+			"desc": "Použij tuto kartu k zrušení bang"
+		},
+		"Placca Di Ferro": {
+			"name": "Železná plátová zbroj",
+			"desc": "Použij tuto kartu k zrušení bang"
+		},
+		"Sombrero": {
+			"name": "Sombrero",
+			"desc": "Použij tuto kartu k zrušení bang"
+		},
+		"Pugnale": {
+			"name": "Dýka",
+			"desc": "Vystřel na hráče na vzdálenost 1"
+		},
+		"Derringer": {
+			"name": "Derringer",
+			"desc": "Vystřel na hráče na vzdálenost 1 a poté si vezmi kartu"
+		},
+		"Borraccia": {
+			"name": "Láhev na vodu",
+			"desc": "Obnov 1 životní bod"
+		},
+		"Can Can": {
+			"name": "Can Can",
+			"desc": "Vynutí hráče, aby zahodil kartu, vyber náhodně z jeho ruky nebo zahrátých karet"
+		},
+		"Conestoga": {
+			"name": "Conestoga",
+			"desc": "Ukradni 1 kartu od hráče, bez ohledu na vzdálenost"
+		},
+		"Fucile Da Caccia": {
+			"name": "Lovecká puška",
+			"desc": "Vystřel na hráče, bez ohledu na vzdálenost"
+		},
+		"Pony Express": {
+			"name": "Pony Express",
+			"desc": "Vyber 3 karty z vrcholu balíčku"
+		},
+		"Pepperbox": {
+			"name": "Pepperbox",
+			"desc": "Vystřel na hráče na dosah. Pokud nemáš žádnou zbraň, dosah je výchozí 1"
+		},
+		"Howitzer": {
+			"name": "Houfnice",
+			"desc": "Vystřel na všechny ostatní hráče"
+		},
+		"Bart Cassidy": {
+			"name": "Bart Cassidy",
+			"desc": "Každýkrát, když je zraněn, vezmi si kartu."
+		},
+		"Black Jack": {
+			"name": "Black Jack",
+			"desc": "Na začátku svého tahu, když musíš dobírat, ukáž všem druhou kartu. Pokud je srdcová nebo kárová, dobereš třetí kartu, aniž bys ji ukázal."
+		},
+		"Calamity Janet": {
+			"name": "Calamity Janet",
+			"desc": "Může použít Mancato! jako Bang! a naopak."
+		},
+		"El Gringo": {
+			"name": "El Gringo",
+			"desc": "Každýkrát, když ztratí život, vezme si kartu z ruky hráče, který je zodpovědný, ale pouze tehdy, když hráč v dotyku má karty v ruce. (1 karta na 1 život)"
+		},
+		"Jesse Jones": {
+			"name": "Jesse Jones",
+			"desc": "Na začátku svého kola, když bude tahat, může vzít první kartu z ruky jiného hráče a druhou z balíčku. (klikněte na karty jiného hráče, pokud chcete použít schopnost)"
+		},
+		"Jourdonnais": {
+			"name": "Jourdonnais",
+			"desc": "Hraje jako by měl vždy aktivní sár, pokud vloží v reálné hře sár, může vybrat dvakrát."
+		},
+		"Kit Carlson": {
+			"name": "Kit Carlson",
+			"desc": "Na začátku svého kola, když musí tahat, vezme si tři karty, vybere si dvě, které si drží v ruce, a třetí vrátí na vrchol balíčku."
+		},
+		"Lucky Duke": {
+			"name": "Lucky Duke",
+			"desc": "Když tahá, vezme si dvě karty z balíčku, vybere si jednu z nich a obě vyhodí."
+		},
+		"Paul Regret": {
+			"name": "Paul Regret",
+			"desc": "Vezme si jako kdyby měl Mustang aktivní, při hraní Mustang 'Reálný' efekt se připojí."
+		},
+		"Pedro Ramirez": {
+			"name": "Pedro Ramirez",
+			"desc": "Na začátku svého kola když musí dobírat, může vezmout první kartu z vrcholu koše a druhou z balíčku. (Klikněte na koš, abyste použili schopnost)"
+		},
+		"Rose Doolan": {
+			"name": "Rose Doolan",
+			"desc": "Začínáš s aktivním Laserovým cílem a kdykoliv použiješ Laserový cíl, získáš ještě jeden."
+		},
+		"Sid Ketchum": {
+			"name": "Sid Ketchum",
+			"desc": "Může vyhodit 2 karty, aby získal 1 život, to lze opakovat, pokud má karty, které může vyhodit. Může to udělat i na řadě soupeře, pokud bude mít méně než 1 život."
+		},
+		"Slab The Killer": {
+			"name": "Slab The Killer",
+			"desc": "Výstřel zbraně vede k úderu do cíle, pokud se nepodaří odolat. Výstřel se provádí dvojitým stisknutím klávesy a potvrzením výstřelu klávesou Enter."
+		},
+		"Suzy Lafayette": {
+			"name": "Suzy Lafayette",
+			"desc": "Jak ztratí všechny karty v ruce, okamžitě si vezme kartu z balíčku."
+		},
+		"Vulture Sam": {
+			"name": "Vulture Sam",
+			"desc": "Když je postava zničena, vezmi všechny karty toho hráče a přidej je do své ruky, jak karty v ruce, tak karty na hřišti."
+		},
+		"Willy The Kid": {
+			"name": "Willy The Kid",
+			"desc": "Tento postřehového hráče si může hrát v jeho kole tolik zásahů, kolik chce."
+		},
+		"Pixie Pete": {
+			"name": "Pixie Pete",
+			"desc": "Na začátku svého kola vezme 3 karty namísto 2."
+		},
+		"Tequila Joe": {
+			"name": "Tequila Joe",
+			"desc": "Pokud hraješ kartu Pivo, obnovíš 2 životy namísto jednoho."
+		},
+		"Greg Digger": {
+			"name": "Greg Digger",
+			"desc": "Když hráč umře, obnoví až 2 životy."
+		},
+		"Herb Hunter": {
+			"name": "Herb Hunter",
+			"desc": "Když hráč zemře, získá 2 karty."
+		},
+		"Elena Fuente": {
+			"name": "Elena Fuente",
+			"desc": "Může použít jakoukoli kartu z ruky jako zásah."
+		},
+		"Bill Noface": {
+			"name": "Bill Noface",
+			"desc": "Na začátku kola vezmeš 1 kartu, navíc 1 kartu za každou zranění, které máš."
+		},
+		"Molly Stark": {
+			"name": "Molly Stark",
+			"desc": "Když si do ruky vezme kartu vlastním zvolením, mimo svůj tah, vezme si z balíčku další kartu."
+		},
+		"Apache Kid": {
+			"name": "Apache Kid",
+			"desc": "Karty srdce ♥️ hráči proti němu neberou efekt. (neplatí během duellů)"
+		},
+		"Sean Mallory": {
+			"name": "Sean Mallory",
+			"desc": "V konci svého kola může držet v ruce až 10 karet."
+		},
+		"Belle Star": {
+			"name": "Belle Star",
+			"desc": "V jeho tahu nemají karty zelené a modré jiných hráčů žádný účinek."
+		},
+		"Vera Custer": {
+			"name": "Vera Custer",
+			"desc": "Zanim pociągnie kartę, może wybrać specjalną zdolność innego gracza do końca swojego ruchu."
+		},
+		"Chuck Wengam": {
+			"name": "Chuck Wengam",
+			"desc": "Podczas swojego ruchu może stracić jedno życie, aby pociągnąć z talii 2 karty."
+		},
+		"Pat Brennan": {
+			"name": "Pat Brennan",
+			"desc": "Zamiast pociągnąć kartę, może wziąć kartę z innej karty gracza. (kliknij na przeciwnikową kartę, aby użyć zdolności)"
+		},
+		"José Delgado": {
+			"name": "José Delgado",
+			"desc": "Podczas swojego ruchu może odrzucić 1 kartę niebieską, aby pociągnąć z talii 2 karty, do dwóch razy na rundę."
+		},
+		"Doc Holyday": {
+			"name": "Doc Holyday",
+			"desc": "Podczas swojego ruchu może odrzucić 2 karty, aby zagrać bang."
+		}
+	},
 	"help": {
 		"character": "Postavy",
 		"characters_special": "Každá postava má speciální schopnosti a počet životů, které ji dělají jedinečnou. \nŽivoty jsou počtem životních bodů, které můžete ztratit před smrtí a také ukazují maximální počet karet, které můžete držet v ruce.",
