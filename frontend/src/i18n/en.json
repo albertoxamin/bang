@@ -782,6 +782,74 @@
     "Tuco Franziskaner": {
       "name": "Tuco Franziskaner",
       "desc": "If you don't have blue cards equipped you draw 2 extra cards."
+    },
+    "Big Spencer": {
+      "name": "Big Spencer",
+      "desc": "Starts with 5 cards. Cannot play Missed!"
+    },
+    "Flint Westwood": {
+      "name": "Flint Westwood",
+      "desc": "Can swap a card from their hand with 2 random cards from another player's hand during their turn."
+    },
+    "Gary Looter": {
+      "name": "Gary Looter",
+      "desc": "Draws all excess cards discarded by other players at the end of each turn."
+    },
+    "Greygory Deckard": {
+      "name": "Greygory Deckard",
+      "desc": "At the beginning of their turn, can draw 2 random characters and gains all of their abilities."
+    },
+    "John Pain": {
+      "name": "John Pain",
+      "desc": "If they have less than 6 cards in their hand, when a player \"draws!\", John adds the drawn card to their hand."
+    },
+    "Lee Van Kliff": {
+      "name": "Lee Van Kliff",
+      "desc": "During their turn, can discard a BANG! card to repeat the effect of a brown-bordered card they just played."
+    },
+    "Teren Kill": {
+      "name": "Teren Kill",
+      "desc": "Every time they would be eliminated, \"draw!\": if it's not a Spades card, Teren remains at 1 health and draws 1 card."
+    },
+    "Youl Grinner": {
+      "name": "Youl Grinner",
+      "desc": "Before drawing, players with more cards in their hand than Youl must give him a card of their choice."
+    },
+    "Camposanto": {
+      "name": "Camposanto",
+      "desc": "At the beginning of their turn, each eliminated player comes back to the game with 1 health point. Draw a role card at random from the eliminated players."
+    },
+    "Darling Valentine": {
+      "name": "Darling Valentine",
+      "desc": "At the beginning of their turn, each player discards their hand and draws the same number of cards from the deck."
+    },
+    "Dorothy Rage": {
+      "name": "Dorothy Rage",
+      "desc": "During their turn, each player can force another player to play a card."
+    },
+    "Helena Zontero": {
+      "name": "Helena Zontero",
+      "desc": "When Helena enters the game, \"draw!\": if Hearts or Diamonds are drawn, shuffle the active role cards except for the Sheriff, and redistribute them at random."
+    },
+    "Lady Rosa del Texas": {
+      "name": "Lady Rosa del Texas",
+      "desc": "During their turn, each player can switch places with the player on their right, who skips their next turn."
+    },
+    "Miss Susanna": {
+      "name": "Miss Susanna",
+      "desc": "During their turn, each player must play at least 3 cards. If they don't, they lose 1 health point."
+    },
+    "Regolamento di Conti": {
+      "name": "Regolamento di Conti",
+      "desc": "All cards can be played as if they were BANG!. BANG! cards can be played as if they were Missed!"
+    },
+    "Sacagaway": {
+      "name": "Sacagaway",
+      "desc": "All players play with their cards face up (except for their role card!)."
+    },
+    "Wild West Show": {
+      "name": "Wild West Show",
+      "desc": "The goal for each player becomes: \"Be the last one standing!\""
     }
   },
   "help": {

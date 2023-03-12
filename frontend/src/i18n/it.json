@@ -13,8 +13,8 @@
   "online_players": "Giocatori online: ",
   "shuffle_players": "Riordina Giocatori",
   "choose_username": "Scegli un username:",
-  "report_bug":"Scrivi in cosa consiste il bug",
-  "report":"Segnala un bug",
+  "report_bug": "Scrivi in cosa consiste il bug",
+  "report": "Segnala un bug",
   "available_lobbies": "Stanze disponibili:",
   "spectate_lobbies": "Osserva le partite in corso:",
   "no_lobby_available": "Nessuna stanza disponibile",
@@ -116,7 +116,7 @@
     "flipped": ";{0}; ha estratto ;{1}; ;{2};.",
     "explode": ";{0}; ha fatto esplodere la dinamite.",
     "beer_save": ";{0}; ha usato una birra per recuperare una vita.",
-    "get_nugget":";{0}; ha ottenuto una pepita d'oro usando una Birra.",
+    "get_nugget": ";{0}; ha ottenuto una pepita d'oro usando una Birra.",
     "play_card": ";{0}; ha giocato ;{1};.",
     "purchase_card": ";{0}; ha comprato ;{1};.",
     "play_card_against": ";{0}; ha giocato ;{1}; contro ;{2};.",
@@ -779,9 +779,77 @@
       "name": "Mick Defender",
       "desc": "Se sei bersaglio di una carta marrone (non BANG!), puoi usare una carta Mancato! evitarne 1 gli effetti."
     },
-    "Tuco Franziskaner":{
+    "Tuco Franziskaner": {
       "name": "Tuco Franziskaner",
       "desc": "Durante la tua fase di pesca, se non hai carte blu in gioco, pesca 2 carte extra."
+    },
+    "Big Spencer": {
+      "name": "Big Spencer",
+      "desc": "Inizia con 5 carte. Non può giocare Mancato!"
+    },
+    "Flint Westwood": {
+      "name": "Flint Westwood",
+      "desc": "Nel suo turno può scambiare una carta dalla mano con 2 carte a caso dalla mano di un altro giocatore."
+    },
+    "Gary Looter": {
+      "name": "Gary Looter",
+      "desc": "Pesca tutte le carte in eccesso scartate dagli altri giocatori a fine turno."
+    },
+    "Greygory Deckard": {
+      "name": "Greygory Deckard",
+      "desc": "All'inizio del suo turno può pescare 2 personaggi a caso. Ha tutte le abilità dei personaggi pescati."
+    },
+    "John Pain": {
+      "name": "John Pain",
+      "desc": "Se ha meno di 6 carte in mano, quando un giocatore \"estrae!\" John aggiunge alla mano la carta appena estratta."
+    },
+    "Lee Van Kliff": {
+      "name": "Lee Van Kliff",
+      "desc": "Nel suo turno, può scartare un BANG! per ripetere l'effetto di una carta a bordo marrone che ha appena giocato."
+    },
+    "Teren Kill": {
+      "name": "Teren Kill",
+      "desc": "Ogni volta che sarebbe eliminato \"estrai!\": se non è Picche, Teren resta a 1 punto vita e pesca 1 carta."
+    },
+    "Youl Grinner": {
+      "name": "Youl Grinner",
+      "desc": "Prima di pescare, i giocatori con più carte in mano di lui devono dargli una carta a scelta."
+    },
+    "Camposanto": {
+      "name": "Camposanto",
+      "desc": "All'inizio del proprio turno, ogni giocatore eliminato torna in gioco con 1 punto vita. Pesca il ruolo a caso fra quelli dei giocatori eliminati."
+    },
+    "Darling Valentine": {
+      "name": "Darling Valentine",
+      "desc": "All'inizio del proprio turno, ogni giocatore scarta le carte in mano e ne pesca dal mazzo altrettante."
+    },
+    "Dorothy Rage": {
+      "name": "Dorothy Rage",
+      "desc": "Nel proprio turno, ogni giocatore può obbligarne un altro a giocare una carta."
+    },
+    "Helena Zontero": {
+      "name": "Helena Zontero",
+      "desc": "Quando Helena entra in gioco, \"estrai!\": se esce Cuori o Quadri, rimescola i ruoli attivi tranne lo Sceriffo, e ridistribuiscili a caso."
+    },
+    "Lady Rosa del Texas": {
+      "name": "Lady Rosa del Texas",
+      "desc": "Nel proprio turno, ogni giocatore può scambiarsi di posto con quello alla sua destra, il quale salta il prossimo turno."
+    },
+    "Miss Susanna": {
+      "name": "Miss Susanna",
+      "desc": "Nel proprio turno ogni giocatore deve giocare almeno 3 carte. Se non lo fa, perde 1 punto vita."
+    },
+    "Regolamento di Conti": {
+      "name": "Regolamento di Conti",
+      "desc": "Tutte le carte possono essere giocate come se fossero BANG!. Le carte BANG! come se fossero Mancato!"
+    },
+    "Sacagaway": {
+      "name": "Sacagaway",
+      "desc": "Tutti i giocatori giocano a carte scoperte (tranne il ruolo!)."
+    },
+    "Wild West Show": {
+      "name": "Wild West Show",
+      "desc": "L'obiettivo di ogni giocatore diventa: \"Rimani l'ultimo in gioco!\""
     }
   },
   "help": {
