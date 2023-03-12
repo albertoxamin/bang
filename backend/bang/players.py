@@ -1,7 +1,7 @@
 from __future__ import annotations
 from enum import IntEnum
 import json
-from random import random, randrange, sample, uniform
+from random import random, randrange, sample, uniform, randint
 import socketio
 import bang.deck as deck
 import bang.roles as r
@@ -11,6 +11,8 @@ import bang.characters as chars
 import bang.expansions.dodge_city.characters as chd
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
+import bang.expansions.wild_west_show.card_events as cew
+import bang.expansions.wild_west_show.characters as chw
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
@@ -88,6 +90,7 @@ class Player:
         self.is_bot = bot
         self.discord_token = discord_token
         self.discord_id = None
+        self.played_cards = 0
         self.avatar = ''
         if self.is_bot:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
@@ -262,6 +265,12 @@ class Player:
                     if isinstance(self.gold_rush_equipment[i], grc.Zaino):
                         self.gold_rush_equipment[i].play_card(self, None)
                         return # play card will notify the player
+            if self.character.check(self.game, chw.TerenKill):
+                picked: cs.Card = self.game.deck.pick_and_scrap()
+                G.sio.emit('chat_message', room=self.game.name, data=f'_flipped|{self.name}|{picked.name}|{picked.num_suit()}')
+                if not picked.check_suit(self.game, [cs.Suit.SPADES]):
+                    self.lives = 1
+                    self.game.deck.draw(True, player=self)
             if self.character.check(self.game, chars.SidKetchum) and len(self.hand) > 1 and self.lives == 0:
                 if self.game.players[self.game.turn] != self:
                     self.game.players[self.game.turn].pending_action = PendingAction.WAIT
@@ -439,6 +448,7 @@ class Player:
             return self.end_turn(forced=True)
         self.scrapped_cards = 0
         self.setaccio_count = 0
+        self.played_cards = 0
         self.can_play_ranch = True
         self.is_playing_ranch = False
         self.can_play_vendetta = can_play_vendetta
@@ -453,6 +463,11 @@ class Player:
         self.has_played_bang = False
         self.special_use_count = 0
         self.bang_used = 0
+        if self.game.check_event(cew.DarlingValentine):
+            hand = len(self.hand)
+            for _ in range(hand):
+                self.game.deck.scrap(self.hand.pop(0), True, player=self)
+                self.game.deck.draw(True, player=self)
         if self.game.check_event(ceh.MezzogiornoDiFuoco):
             self.lives -= 1
             if any((isinstance(c, grc.Talismano) for c in self.gold_rush_equipment)):
@@ -511,6 +526,19 @@ class Player:
             self.choose_text = 'choose_cecchino'
             self.pending_action = PendingAction.CHOOSE
             self.notify_self()
+        if self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(cew.RegolamentoDiConti) and len(self.hand) > 0:
+            if not self.has_played_bang and any((self.get_sight() >= p['dist'] for p in self.game.get_visible_players(self))):
+                self.available_cards = self.hand.copy()
+                self.pending_action = PendingAction.CHOOSE
+                self.choose_text = 'choose_play_as_bang'
+                self.notify_self()
+        elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(cew.LadyRosaDelTexas):
+            nextp = self.game.next_player()
+            i, j = self.game.players_map[self.name], self.game.players_map[nextp.name]
+            self.game.players[i], self.game.players[j] = nextp, self
+            self.game.players_map[self.name], self.game.players_map[nextp.name] = j, i
+            self.game.turn = j
+            self.game.notify_all()
         elif self.is_my_turn and self.pending_action == PendingAction.PLAY and pile == 'event' and self.game.check_event(ce.Rimbalzo) and any((c.name == cs.Bang(0,0).name for c in self.hand)):
             self.available_cards = [{
                 'name': p.name,
@@ -551,6 +579,12 @@ class Player:
             self.notify_self()
         else:
             self.pending_action = PendingAction.PLAY
+            if self.character.check(self.game, chw.YoulGrinner):
+                hsize = len(self.hand)
+                for p in self.game.get_alive_players():
+                    if p != self and len(p.hand) > hsize:
+                        G.sio.emit('card_drawn', room=self.game.name, data={'player': self.name, 'pile': p.name})
+                        self.hand.append(p.hand.pop(randint(0, len(p.hand)-1)))
             num = 2 if not self.character.check(self.game, chd.BillNoface) else self.max_lives-self.lives+1
             if self.character.check(self.game, chd.PixiePete): num += 1
             if self.character.check(self.game, tvosch.TucoFranziskaner) and not any((True for c in self.equipment if not c.usable_next_turn)): num += 2
@@ -756,6 +790,8 @@ class Player:
         if not self.game.is_replay:
             Metrics.send_metric('play_card', points=[1], tags=[f'success:{did_play_card}', f'card:{card.name}', f'bot:{self.is_bot}', f'exp:{card.expansion if "expansion" in card.__dict__ else "vanilla"}'])
         print("did play card:", did_play_card)
+        if did_play_card:
+            self.played_cards += 1
         self.notify_self()
         if self.is_bot:
             return did_play_card or card.is_equipment or (card.usable_next_turn and not card.can_be_used_now)
@@ -918,6 +954,27 @@ class Player:
                 self.pending_action = PendingAction.WAIT
                 self.game.responders_did_respond_resume_turn()
             self.notify_self()
+        elif 'choose_flint_special' == self.choose_text:
+            if card_index < len(self.hand):
+                self.available_cards = [{
+                    'name': p.name,
+                    'icon': p.role.icon if(self.game.initial_players == 3) else '⭐️' if p['is_sheriff'] else '🤠',
+                    'avatar': p.avatar,
+                    'is_character': True,
+                    'is_player': True
+                } for p in self.game.get_alive_players() if p.name != self.name and len(p.hand) > 0]
+                self.choose_text = f'choose_flint_special;{card_index}'
+            self.notify_self()
+        elif 'choose_flint_special' in self.choose_text:
+            if card_index < len(self.available_cards):
+                my_card = self.hand.pop(int(self.choose_text.split(';')[1]))
+                other_player = self.game.get_player_named(self.available_cards[card_index]['name'])
+                for i in range(min(2, len(other_player.hand))):
+                    self.hand.append(other_player.hand.pop(randint(0, len(other_player.hand)-1)))
+                other_player.hand.append(my_card)
+                other_player.notify_self()
+                self.pending_action = PendingAction.PLAY
+                self.notify_self()
         elif self.game.check_event(ceh.NuovaIdentita) and self.choose_text == 'choose_nuova_identita':
             if card_index == 1: # the other character
                 self.character = self.not_chosen_character
@@ -1088,6 +1145,8 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
+            if self.character.check(self.game, chw.BigSpencer):
+                self.expected_response = []
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -1118,6 +1177,8 @@ class Player:
             self.expected_response = self.game.deck.mancato_cards.copy()
             if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                 self.expected_response.append(cs.Bang(0, 0).name)
+            if self.character.check(self.game, chw.BigSpencer):
+                self.expected_response = []
             self.on_failed_response_cb = self.take_no_damage_response
             self.notify_self()
 
@@ -1214,6 +1275,8 @@ class Player:
                     self.expected_response = self.game.deck.mancato_cards_not_green_or_blue.copy()
                 if self.character.check(self.game, chars.CalamityJanet) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
+                if self.character.check(self.game, chw.BigSpencer):
+                    self.expected_response = []
                 if self.can_escape(card_name, with_mancato=False):
                     self.expected_response.append(tvosc.Fuga(0, 0).name)
                 if not no_dmg:
@@ -1536,6 +1599,9 @@ class Player:
                 for i in range(len(self.equipment)):
                     self.game.deck.scrap(self.equipment.pop(), True)
             self.is_my_turn = False
+            if self.played_cards < 3 and self.game.check_event(cew.MissSusanna):
+                self.lives -= 1
+            self.played_cards = 0
             self.can_play_again_don_bell = True
             self.committed_suit_manette = None
             self.pending_action = PendingAction.WAIT

@@ -22,3 +22,8 @@ class TheValleyOfShadows():
     def get_cards():
         from bang.expansions.the_valley_of_shadows import cards
         return cards.get_starting_deck()
+
+class WildWestShow():
+    def get_characters():
+        from bang.expansions.wild_west_show import characters
+        return characters.all_characters()
