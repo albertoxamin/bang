@@ -1,11 +1,11 @@
 export const expansionsMap = {
-	'dodge_city' : {
+	'dodge_city': {
 		name: 'Dodge City',
 		icon: '🐄',
 		back: true,
 		expansion: 'dodge-city',
 	},
-	'fistful_of_cards' : {
+	'fistful_of_cards': {
 		name: 'Fistful of Cards',
 		icon: '🎴',
 		back: true,
@@ -28,11 +28,13 @@ export const expansionsMap = {
 		icon: '👻',
 		back: true,
 		expansion: 'the-valley-of-shadows',
+		status: 'beta',
 	},
 	'wild_west_show': {
 		name: 'Wild West Show',
 		icon: '🎪',
 		back: true,
-		expansion: 'wild-west-show'
+		expansion: 'wild-west-show',
+		status: 'alpha',
 	}
 }
