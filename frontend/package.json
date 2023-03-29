@@ -8,7 +8,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
-    "@datadog/browser-rum": "^4.36.0",
+    "@datadog/browser-rum": "^4.37.0",
     "bang-vue-socket.io": "^4.0.0",
     "caniuse-lite": "^1.0.30001470",
     "pretty-checkbox-vue": "^1.1.9",
