@@ -85,4 +85,5 @@ def all_characters() -> List[Character]:
     ]
     for c in cards:
         c.expansion_icon = '👻️'
+        c.expansion = 'the_valley_of_shadows'
     return cards

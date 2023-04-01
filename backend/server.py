@@ -745,7 +745,7 @@ def get_cards(sid):
 @bang_handler
 def get_characters(sid):
     import bang.characters as ch
-    cards = ch.all_characters(['dodge_city', 'gold_rush', 'the_valley_of_shadows'])
+    cards = ch.all_characters(['dodge_city', 'gold_rush', 'the_valley_of_shadows', 'wild_west_show'])
     sio.emit('characters_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
 
 @sio.event
@@ -789,6 +789,15 @@ def get_valleyofshadowscards(sid):
             cards_dict[ca.name] = ca
     cards = [cards_dict[i] for i in cards_dict]
     sio.emit('valleyofshadows_info', room=sid, data=json.dumps(cards, default=lambda o: o.__dict__))
+
+@sio.event
+@bang_handler
+def get_wildwestshowcards(sid):
+    import bang.expansions.wild_west_show.card_events as wwce
+    chs = []
+    chs.extend(wwce.get_all_events())
+    chs.append(wwce.get_endgame_card())
+    sio.emit('wwscards_info', room=sid, data=json.dumps(chs, default=lambda o: o.__dict__))
 
 @sio.event
 @bang_handler
