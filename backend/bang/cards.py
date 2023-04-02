@@ -93,9 +93,9 @@ class Card(ABC):
                 return False
             if self.is_weapon:
                 has_weapon = False
-                for i in range(len(player.equipment)):
-                    if player.equipment[i].is_weapon:
-                        player.game.deck.scrap(player.equipment[i])
+                for i, card in enumerate(player.equipment):
+                    if card.is_weapon:
+                        player.game.deck.scrap(card, player=player)
                         player.equipment[i] = self
                         has_weapon = True
                         break
