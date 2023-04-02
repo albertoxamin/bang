@@ -321,24 +321,27 @@ class Game:
     def notify_character_selection(self):
         self.notify_room()
         if not any((p.character is None for p in self.players)):
-            for i in range(len(self.players)):
-                print(self.name, self.players[i].name, self.players[i].character)
+            for i, player in enumerate(self.players):
+                print(self.name, player.name, player.character)
+                if player.is_bot and "AI" in player.name:
+                    player.name = f"{player.character.name} AI"
                 G.sio.emit(
                     "chat_message",
                     room=self.name,
-                    data=f"_choose_character|{self.players[i].name}|{self.players[i].character.name}",
+                    data=f"_choose_character|{player.name}|{player.character.name}",
                 )
-                self.players[i].prepare()
-                for k in range(self.players[i].max_lives):
-                    self.deck.draw(player=self.players[i])
-                self.players[i].notify_self()
-            current_roles = [x.role.name for x in self.players]
+                player.prepare()
+                for _ in range(player.max_lives):
+                    self.deck.draw(player=player)
+                player.notify_self()
+            self.players_map = {c.name: i for i, c in enumerate(self.players)}
+            current_roles = [p.role.name for p in self.players]
             self.rng.shuffle(current_roles)
-            cr = ""
-            for x in current_roles:
-                if x not in cr:
-                    cr += "|" + x + "|" + str(current_roles.count(x))
-            G.sio.emit("chat_message", room=self.name, data=f"_allroles{cr}")
+            roles_str = ""
+            for role in current_roles:
+                if role not in roles_str:
+                    roles_str += f"|{role}|{str(current_roles.count(role))}"
+            G.sio.emit("chat_message", room=self.name, data=f"_allroles{roles_str}")
             self.play_turn()
 
     def choose_characters(self):
