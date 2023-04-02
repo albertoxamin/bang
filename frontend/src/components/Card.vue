@@ -176,8 +176,24 @@ export default {
     rgb(78 68 65) 5px,
     rgb(78 68 65) 10px
   );
-  box-shadow: 0 0 0 3pt rgb(98 88 85), 0 0 0 6pt var(--bg-color),
-    0 0 5pt 6pt #aaa;
+  border: 2pt solid rgb(98 88 85);
+  box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
+}
+.card.back.wild-west-show {
+  color: white;
+  background: repeating-linear-gradient(
+    90deg,
+    #816b45,
+    #816b45 3px,
+    #987e51 3px,
+    #987e51 6px
+  );
+  border: 2pt solid #987e51;
+}
+.card.back.dodge-city {
+  color: white;
+  border: 2pt solid #987e51;
+  box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
 }
 .card.back.cant-play {
   transform: scale(0.9);
@@ -234,6 +250,8 @@ export default {
   border: 2pt dotted #000;
 }
 .card.back.gold-rush {
+  border: 2pt solid #987e51;
+  box-shadow: 0 0 0pt 4pt var(--bg-color), 0 0 5pt 4pt #aaa;
   background: repeating-linear-gradient(347deg, #ffb32f, #987e51);
 }
 .card h4 {
