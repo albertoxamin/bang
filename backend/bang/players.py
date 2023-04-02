@@ -1385,6 +1385,8 @@ class Player:
                 self.target_p = ""
                 self.choose_action = ""
                 self.pending_action = PendingAction.PLAY
+                if target.character.check(self.game, tvosch.HenryBlock):
+                    self.game.attack(target, self.name, card_name="Henry Block")
             else:
                 self.target_p = self.rissa_targets.pop(0).name
                 print(f"rissa targets: {self.rissa_targets}")

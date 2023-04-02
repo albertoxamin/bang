@@ -530,7 +530,7 @@ class Game:
             attacker.pending_action = pl.PendingAction.WAIT
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
-        elif not attacker.is_my_turn:
+        elif not attacker.is_my_turn or len(self.attack_queue) == 0:
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
 
     def steal_discard(self, attacker: pl.Player, target_username: str, card: cs.Card):
