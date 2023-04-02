@@ -104,6 +104,7 @@ class Player:
         self.discord_id = None
         self.played_cards = 0
         self.avatar = ""
+        self.last_played_card: cs.Card = None
         if self.is_bot:
             self.avatar = robot_pictures[randrange(len(robot_pictures))]
         if self.discord_token:
@@ -118,6 +119,7 @@ class Player:
         self.character: chars.Character = None
         self.real_character: chars.Character = None
         self.is_using_checchino = False
+        self.last_played_card = None
         self.lives = 0
         self.max_lives = 0
         self.is_my_turn = False
@@ -728,6 +730,7 @@ class Player:
         self.played_cards = 0
         self.can_play_ranch = True
         self.is_playing_ranch = False
+        self.last_played_card = None
         self.can_play_vendetta = can_play_vendetta
         if not again:
             G.sio.emit("chat_message", room=self.game.name, data=f"_turn|{self.name}")
@@ -1306,6 +1309,7 @@ class Player:
         ):
             if did_play_card:
                 self.game.deck.scrap(card, True)
+                self.last_played_card = card
             else:
                 self.hand.insert(hand_index, card)
                 if withCard:
