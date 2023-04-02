@@ -14,7 +14,12 @@
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
-				<card :card="eventCard" :key="eventCard.name" :class="eventClasses" @click.native="event"/>
+				<card :card="eventCard" :key="eventCard.name" :class="eventClasses" @click.native="() => event('event')"/>
+			</div>
+			<div v-if="eventCardWildWestShow" style="position:relative">
+				<div class="card wild-west-show back" style="position:relative; bottom:-3pt;right:-3pt;"/>
+				<div class="card wild-west-show back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
+				<card :card="eventCardWildWestShow" :key="eventCardWildWestShow.name" :class="eventWwsClasses" @click.native="() => event('event_wildwestshow')"/>
 			</div>
 			<div style="position:relative" class="deck">
 				<div style="position:relative" id="actual-deck">
@@ -33,6 +38,9 @@
 		</div>
 		<transition name="list">
 			<p v-if="eventCard" class="center-stuff"><b>{{eventDesc}}</b></p>
+		</transition>
+		<transition name="list">
+			<p v-if="eventCardWildWestShow && !eventCardWildWestShow.back" class="center-stuff">🎪 <b>{{eventDescWildWestShow}}</b> 🎪</p>
 		</transition>
 		<transition name="list">
 			<div v-if="goldRushDesc">
@@ -71,6 +79,7 @@ export default {
 		},
 		lastScrap: null,
 		eventCard: null,
+		eventCardWildWestShow: null,
 		previousScrap: null,
 		pending_action: false,
 		isPlaying: true,
@@ -102,6 +111,14 @@ export default {
 				expansion: 'fistful-of-cards',
 			} : card
 		},
+		event_card_wildwestshow(card) {
+			this.eventCardWildWestShow = card == false ? {
+				name: 'Wild West Show',
+				icon: '🎪',
+				back: true,
+				expansion: 'wild-west-show',
+			} : card
+		},
 		gold_rush_shop(cards) {
 			console.log('GOLD RUSH:'+ cards)
 			this.goldRushCards = JSON.parse(cards)
@@ -122,13 +139,28 @@ export default {
 			classes[this.eventCard.expansion] = true
 			return classes
 		},
+		eventWwsClasses() {
+			let classes = {
+				'last-event':true,
+				'back':this.eventCardWildWestShow.back,
+				'wild-west-show':true,
+			}
+			return classes
+		},
 		eventDesc() {
 			this.eventCard;
 			if (this.eventCard.name !== 'PewPew!'){
 				return this.$t(`cards.${this.eventCard.name}.desc`)
 			}
 			return ""
-		}
+		},
+		eventDescWildWestShow() {
+			this.eventCardWildWestShow;
+			if (this.eventCardWildWestShow.name !== 'PewPew!'){
+				return this.$t(`cards.${this.eventCardWildWestShow.name}.desc`)
+			}
+			return ""
+		},
 	},
 	methods: {
 		action(pile) {
@@ -143,9 +175,9 @@ export default {
 		buy_gold_rush_card(index) {
 			this.$socket.emit('buy_gold_rush_card', index)
 		},
-		event() {
+		event(pile='event') {
 			if (this.pending_action !== false) {
-				this.$socket.emit('draw', 'event')
+				this.$socket.emit('draw', pile)
 			}
 		},
 		setdesc() {

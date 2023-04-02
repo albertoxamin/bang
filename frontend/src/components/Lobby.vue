@@ -66,6 +66,7 @@
             :donotlocalize="true"
             :card="startGameCard"
             @click.native="startGame"
+            style="margin-top: 36pt;"
           />
           <div
             v-for="p in playersTable"
@@ -126,7 +127,7 @@
               @click.native="drawFromPlayer(p.name)"
               :ismyturn="p.pending_action === 2"
             />
-            <span style="position: absolute; top: 10pt" class="center-stuff">{{
+            <span style="position: absolute; top: 3pt" class="center-stuff">{{
               getActionEmoji(p)
             }}</span>
             <div class="tiny-equipment">
@@ -186,6 +187,7 @@
             :donotlocalize="true"
             :card="shufflePlayersCard"
             @click.native="shufflePlayers"
+            style="margin-top: 36pt;"
             class="fistful-of-cards"
           />
         </transition-group>
@@ -803,13 +805,18 @@ export default {
   right: -35pt;
   transform: scale(0.45);
   transform-origin: 50% 0%;
-  top: 10pt;
+  top: 4pt;
 }
 .tiny-health {
   display: flex;
   justify-content: space-evenly;
   transform: scale(0.8);
-  margin-bottom: -4pt;
+  margin-top: -16pt;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 .tiny-equipment .card {
   transform: rotate(2deg);
@@ -823,7 +830,7 @@ export default {
 }
 .tiny-character {
   position: absolute;
-  transform: scale(0.5) translate(-80px, -40px);
+  transform: translate(-30pt, -30pt) scale(0.5);
   top: 0;
 }
 .players-table {
@@ -888,6 +895,7 @@ export default {
   }
   .player-in-table {
     transition: all 0.2s ease-in-out;
+    margin-top: 26pt;
   }
   .player-in-table:hover {
     transform: translateY(-5px) scale(1.05);
