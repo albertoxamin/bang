@@ -80,7 +80,7 @@ class Card(ABC):
             self.must_be_used = False
 
     def play_card(
-        self, player: Player, against: str = None, _with: int = None
+        self, player: Player, against: str = None, _with: Card = None
     ):  # self --> carta
         if (
             (player.game.check_event(ce.IlGiudice))

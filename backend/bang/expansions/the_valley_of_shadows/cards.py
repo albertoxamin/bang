@@ -220,7 +220,7 @@ class Mira(Card):
         self.need_with = True
 
     def play_card(self, player, against, _with=None):
-        if against is not None and _with is not None:
+        if against is not None and _with is not None and _with.name == "Bang!":
             super().play_card(player, against=against, _with=_with)
             player.game.attack(player, against, card_name=self.name)
             return True
