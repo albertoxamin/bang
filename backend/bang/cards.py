@@ -218,8 +218,10 @@ class Prigione(Card):
     ) -> bool:
         if player.game.check_event(ce.IlGiudice):
             return False
-        if against is not None and not isinstance(
-            player.game.get_player_named(against).role, r.Sheriff
+        if (
+            against is not None
+            and not isinstance(player.game.get_player_named(against).role, r.Sheriff)
+            and not self.is_duplicate_card(player.game.get_player_named(against))
         ):
             self.can_be_used_now = False
             G.sio.emit(
