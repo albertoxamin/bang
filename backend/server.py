@@ -180,6 +180,32 @@ def get_online_players(sid):
 
 
 @sio.event
+def mouse_position(sid, data):
+    ses: Player = sio.get_session(sid)
+    if ses.game is not None:
+        if not data or (data["x"] == 0 and data["y"] == 0):
+            print("Mouse position is 0,0, ignoring")
+        else:
+            data["color"] = sid.encode("utf-8").hex()[0:6]
+            ses.game.mouse_positions[ses.name] = data
+        sio.emit(
+            "mouse_positions_update",
+            room=ses.game.name,
+            data=[
+                {
+                    "name": x,
+                    "data": {
+                        "x": data["x"],
+                        "y": data["y"],
+                        "color": data["color"],
+                    },
+                }
+                for x, data in ses.game.mouse_positions.items()
+            ],
+        )
+
+
+@sio.event
 @bang_handler
 def report(sid, text):
     print(f"New report from {sid}: {text}")

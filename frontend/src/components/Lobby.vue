@@ -287,6 +287,12 @@
       </div>
     </div>
     <chat :username="username" />
+    <div id="cursors" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+      <div v-for="x, i in mouse_positions" :key="x.name" :style="{position:'absolute', top: x.data.y + 'px', left: x.data.x + 'px', transition: 'all 0.1s linear'}">
+        <div :style="`width: 0;height: 0;border-left: 10px solid transparent;border-right: 10px solid transparent;border-bottom: 20px solid #${x.data.color};transform: rotate(-30deg);`"/>
+        <span>{{ x.name }}</span>
+      </div>
+    </div>
     <Chooser
       v-if="selectedInfo"
       :text="$t('details')"
@@ -372,6 +378,7 @@ const cumulativeOffset = function (element) {
     left: left - Math.floor(Math.random() * 20) + 10,
   };
 };
+import { useMouse } from '@vueuse/core'
 
 export default {
   name: "Lobby",
@@ -416,6 +423,8 @@ export default {
     turn: -1,
     deadRoleData: null,
     cardsToAnimate: [],
+    mouse_positions: {},
+    my_mouse_pos: {},
   }),
   sockets: {
     room(data) {
@@ -448,6 +457,19 @@ export default {
       setTimeout(() => {
         this.deadRoleData = null;
       }, 4000);
+    },
+    mouse_positions_update(data) {
+      let newData = data.filter((x) => x.name !== this.username).map((x) => {
+        return {
+          name: x.name,
+          data: {
+            x: x.data.x * window.innerWidth,
+            y: x.data.y * window.innerHeight,
+            color: x.data.color,
+          }
+        };
+      });
+      this.mouse_positions = newData;
     },
     debug(data) {
       this.debug_mode = data;
@@ -648,6 +670,26 @@ export default {
       if (!this.isRoomOwner) return;
       this.$socket.emit("toggle_expansion", name);
     },
+    // updateMousePosition() {
+    //   this.my_mouse_pos = {
+    //     x, y
+    //   }
+    //   this.$socket.emit("mouse_position", this.my_mouse_pos);
+    // },
+    startSendingMousePositions() {
+      // this.$el.addEventListener('mousemove', this.updateMousePosition());
+      const { x, y } =  useMouse()
+      this.sendInterval = setInterval(() => {
+        if (x == 0 && y == 0) return;
+        if (this.my_mouse_pos.x == x && this.my_mouse_pos.y == y) return;
+        if (this.my_mouse_pos.x == 0 || this.my_mouse_pos.y == 0) return;
+
+        // normalize to page size
+        this.my_mouse_pos = Object.assign({}, { x: x.value / window.innerWidth, y: y.value/ window.innerHeight });
+        console.log(this.my_mouse_pos);
+        this.$socket.emit("mouse_position", this.my_mouse_pos);
+      }, 100);
+    },
     toggleCompetitive() {
       if (!this.isRoomOwner) return;
       this.$socket.emit("toggle_comp");
@@ -773,6 +815,7 @@ export default {
       replay: this.$route.query.replay,
       ffw: this.$route.query.ffw,
     });
+    this.startSendingMousePositions();
   },
 };
 </script>

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^4.36.0",
+    "@vueuse/core": "^9.13.0",
     "bang-vue-socket.io": "^4.0.0",
     "caniuse-lite": "^1.0.30001470",
     "pretty-checkbox-vue": "^1.1.9",

@@ -110,6 +110,7 @@ class Game:
         self.characters_to_distribute = 2  # personaggi da dare a inizio partita
         self.debug = self.name == "debug"
         self.dead_roles: List[roles.Role] = []
+        self.mouse_positions = {}
         self.is_changing_pwd = False
         self.is_hidden = False
         self.rng = random.Random()
@@ -906,6 +907,7 @@ class Game:
 
     def handle_disconnect(self, player: pl.Player):
         print(f"{self.name}: player {player.name} left the game")
+        self.mouse_positions.pop(player.name, None)
         if player in self.spectators:
             self.spectators.remove(player)
             G.sio.emit("spectators", room=self.name, data=len(self.spectators))
