@@ -124,7 +124,7 @@
     "spilled_beer": ";{0}; spilled a ;{1};.",
     "diligenza": ";{0}; played ;{1}; and draws 2 cards.",
     "wellsfargo": ";{0}; played ;{1}; and draws 3 cards.",
-    "saloon": ";{0}; player ;{1}; and heals 1 HP to everyone alive.",
+    "saloon": ";{0}; played ;{1}; and heals 1 HP to everyone alive.",
     "special_bart_cassidy": ";{0}; received a compensation because he was injured.",
     "special_el_gringo": ";{0}; stole a card from ;{1}; when he was was injured.",
     "special_calamity": ";{0}; played ;{1}; as Bang! against ;{2};.",

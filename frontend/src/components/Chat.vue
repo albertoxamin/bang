@@ -77,13 +77,19 @@ export default {
 					msg = msg.text
 				}
 				let desc = undefined
+				let desc_pos = -1
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
 				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity", "won", "choose_emporio", "died_role"].indexOf(type) !== -1) {
 					desc = this.$t(`cards.${params[1]}.desc`)
+					desc_pos = 3
 					params[1] = this.$t(`cards.${params[1]}.name`)
 				} else if (type === "choose_character"){
 					params.push(this.$t(`cards.${params[1]}.desc`))
+				} else if (type === "flip_event"){
+					desc = this.$t(`cards.${params[0]}.desc`)
+					params[0] = this.$t(`cards.${params[0]}.name`);
+					desc_pos = 1
 				} else if (type === "allroles") {
 					params.forEach((p,i)=>{
 						if (i%2 === 0) {
@@ -96,10 +102,11 @@ export default {
 						type += "4"
 					}
 				}
+				let parts = this.$t(`chat.${type}`, params).split(';').map((x, i)=>({text:x, desc:(i===desc_pos&&desc?desc:null)}))
 				if (t_color != null) {
-					this.messages.push({color:t_color, bgcolor: bg_color, text:false, parts:this.$t(`chat.${type}`, params).split(';').map(x=>({text:x}))});
+					this.messages.push({color:t_color, bgcolor: bg_color, text:false, parts: parts})
 				} else {
-					this.messages.push({text:false, parts: this.$t(`chat.${type}`, params).split(';').map((x, i)=>({text:x, desc:(i===3&&desc?desc:null)}))});
+					this.messages.push({text:false, parts: parts});
 				}
 				if (type == 'turn' && params[0] == this.username) {
 					this.playEffects(turn_sfx);
