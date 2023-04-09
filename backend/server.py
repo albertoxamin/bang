@@ -262,15 +262,18 @@ def get_me(sid, data):
         if sio.get_session(sid).game:
             sio.get_session(sid).game.notify_room()
     else:
-        dt = data["discord_token"] if "discord_token" in data else None
-        sio.save_session(sid, Player("player", sid, discord_token=dt))
+        dt = data.get("discord_token", None)
+        username = data.get("username", "player")
+        sio.save_session(sid, Player(username, sid, discord_token=dt))
         if "replay" in data and data["replay"] is not None:
             create_room(sid, data["replay"])
             sid = sio.get_session(sid)
             sid.game.is_hidden = True
             eventlet.sleep(0.5)
             response = requests.get(
-                f"https://hastebin.com/raw/{data['replay']}", headers=HASTEBIN_HEADERS
+                f"https://hastebin.com/raw/{data['replay']}",
+                headers=HASTEBIN_HEADERS,
+                timeout=3,
             )
             if response.status_code != 200:
                 sio.emit(
@@ -291,9 +294,9 @@ def get_me(sid, data):
                 join_room(sid, data)
             elif room.started:
                 print("room exists")
-                if data["username"] is not None and any(
+                if username != "player" and any(
                     (
-                        p.name == data["username"]
+                        p.name == username
                         for p in room.players
                         if (
                             p.is_bot
@@ -311,7 +314,7 @@ def get_me(sid, data):
                             or (dt is not None and p.discord_token == dt)
                             or p.sid is None
                         )
-                        and p.name == data["username"]
+                        and p.name == username
                     ][0]
                     bot.sid = sid
                     bot.is_bot = False
@@ -344,25 +347,28 @@ def get_me(sid, data):
                 room.notify_event_card_wildwestshow(sid)
         else:
             create_room(sid, data["name"])
-        if (p := sio.get_session(sid)).game is None:
+        p: Player = sio.get_session(sid)
+        if p.game is None:
             sio.emit("me", data={"error": "Wrong password/Cannot connect"}, room=sid)
         else:
             sio.emit("me", data=p.name, room=sid)
-            if data["username"] is None or any(
+            if username == "player" or any(
                 (
-                    pl.name == data["username"]
+                    pl.name == username
                     for pl in p.game.players
                     if not (
-                        (dt is not None and pl.discord_token == dt) or pl.sid is None
+                        (dt is not None and pl.discord_token == dt)
+                        or pl.sid is None
+                        or pl == p
                     )
                 )
             ):
                 sio.emit("change_username", room=sid)
-            else:
+            elif p.name != username:
                 sio.emit(
                     "chat_message",
                     room=p.game.name,
-                    data=f"_change_username|{p.name}|{data['username']}",
+                    data=f"_change_username|{p.name}|{username}",
                 )
                 p.name = data["username"]
                 sio.emit("me", data=p.name, room=sid)
