@@ -47,12 +47,6 @@
           :value="$t('copy')"
         />
       </div>
-
-      <!-- <div class="players-table"> -->
-      <!-- <div style="position: relative;width:260pt;height:400pt;"> -->
-      <!-- :style="p.style"/> -->
-      <!-- </div> -->
-      <!-- </div> -->
       <div style="position: relative">
         <div
           v-if="showTurnFlow"
@@ -672,6 +666,7 @@ export default {
       let icon = "";
       let nonBots = this.players.filter((x) => !x.is_bot);
       let isOwner = nonBots.length > 0 && nonBots[0].name == player.name;
+      let isMe = this.username == player.name;
       if (!this.started) icon = "🤠";
       else
         icon =
@@ -685,11 +680,12 @@ export default {
       return {
         name: player.name,
         number:
-          (this.username == player.name
+          (isMe
             ? this.$t("you")
             : isOwner
             ? this.$t("owner")
             : "") + (player.dist ? `${player.dist}⛰` : ""),
+        isMe: isMe,
         icon: icon,
         is_character: true,
         avatar: player.avatar,
@@ -900,6 +896,11 @@ export default {
   }
   .player-in-table:hover {
     transform: translateY(-5px) scale(1.05);
+  }
+}
+@media only screen and (max-width: 500pt) {
+  .players-table {
+    border-bottom: dashed #ccc2;
   }
 }
 </style>
