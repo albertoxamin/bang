@@ -201,6 +201,7 @@
           <card
             v-for="ex in expansionsStatus"
             v-bind:key="ex.id"
+            :id="ex.id"
             :card="ex.card"
             :class="{
               'cant-play': !ex.enabled,
@@ -308,6 +309,12 @@
         :midPosition="c.midPosition"
         :endPosition="c.endPosition"
       />
+      <AnimatedEffect
+        v-for="c in fullScreenEffects"
+        v-bind:key="c.key"
+        :text="c.text"
+        :startPosition="c.startPosition"
+      />
       <div v-if="started">
         <deck
           :endTurnAction="
@@ -404,6 +411,7 @@ import DeadRoleNotification from "./DeadRoleNotification.vue";
 import AnimatedCard from "./AnimatedCard.vue";
 import { emojiMap } from "@/utils/emoji-map.js";
 import { expansionsMap } from "@/utils/expansions-map.js";
+import AnimatedEffect from './AnimatedEffect.vue';
 
 const cumulativeOffset = function (element) {
   var top = 0,
@@ -433,6 +441,7 @@ export default {
     Status,
     DeadRoleNotification,
     AnimatedCard,
+    AnimatedEffect,
     Card,
   },
   data: () => ({
@@ -463,6 +472,7 @@ export default {
     deadRoleData: null,
     cardsToAnimate: [],
     characters_to_distribute: 2,
+    fullScreenEffects: [],
   }),
   sockets: {
     room(data) {
@@ -559,6 +569,27 @@ export default {
       setTimeout(() => {
         this.cardsToAnimate = this.cardsToAnimate.filter((x) => x.key !== key);
       }, 1800);
+    },
+    suggest_expansion(expansionName) {
+      if (this.expansions.includes(expansionName)) return;
+      let key = Math.random();
+      let decel = document.getElementById(expansionName);
+      if (!decel) return;
+      let decelOffset = cumulativeOffset(decel);
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => {
+          this.fullScreenEffects.push({
+            key: key,
+            text: i == 0 ? '🤠' : i == 5 ? '💭' : emojiMap[expansionName],
+            startPosition: decelOffset,
+          });
+        }, 50 * i);
+      }
+      setTimeout(() => {
+        this.fullScreenEffects = this.fullScreenEffects.filter(
+          (x) => x.key !== key
+        );
+      }, 3000);
     },
     card_scrapped(data) {
       let decel = document.getElementById("actual-scrap");
@@ -693,7 +724,7 @@ export default {
       document.title = "PewPew!";
     },
     toggleExpansions(name) {
-      if (!this.isRoomOwner) return;
+      if (!this.isRoomOwner) return this.$socket.emit("toggle_expansion", `suggest;${name}`);
       this.$socket.emit("toggle_expansion", name);
     },
     toggleCompetitive() {

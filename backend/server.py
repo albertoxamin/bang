@@ -422,8 +422,11 @@ def private(sid):
 @sio.event
 @bang_handler
 def toggle_expansion(sid, expansion_name):
-    g = sio.get_session(sid).game
-    g.toggle_expansion(expansion_name)
+    game = sio.get_session(sid).game
+    if "suggest" in expansion_name:
+        sio.emit("suggest_expansion", room=game.name, data=expansion_name.split(";")[1])
+        return
+    game.toggle_expansion(expansion_name)
     advertise_lobbies()
 
 
