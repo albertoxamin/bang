@@ -90,7 +90,8 @@
               tag="div"
               class="tiny-health"
             >
-              <span v-for="(n, i) in p.lives" v-bind:key="i" :alt="i">❤️</span>
+              <span v-for="(n, i) in p.lives" v-bind:key="i" :alt="i">
+                {{(!p.is_sheriff || i !== (p.max_lives-1))?'❤️':'💛'}}</span>
               <span
                 v-for="(n, i) in p.max_lives - p.lives"
                 v-bind:key="`${i}-sk`"
