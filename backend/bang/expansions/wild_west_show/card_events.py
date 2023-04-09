@@ -108,17 +108,20 @@ class RegolamentoDiConti(CardEvent):
 
     def on_clicked(self, game, player):
         super().on_clicked(game, player)
-        if len(player.hand) > 0:
-            if not player.has_played_bang and any(
+        if (
+            len(player.hand) > 0
+            and not player.has_played_bang
+            and any(
                 (
                     player.get_sight() >= p["dist"]
                     for p in game.get_visible_players(player)
                 )
-            ):
-                player.available_cards = player.hand.copy()
-                player.pending_action = players.PendingAction.CHOOSE
-                player.choose_text = "choose_play_as_bang"
-                player.notify_self()
+            )
+        ):
+            player.available_cards = player.hand.copy()
+            player.pending_action = players.PendingAction.CHOOSE
+            player.choose_text = "choose_play_as_bang"
+            player.notify_self()
 
 
 class Sacagaway(CardEvent):

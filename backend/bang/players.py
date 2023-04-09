@@ -2075,8 +2075,8 @@ class Player:
                     )
                 if (
                     self.character.check(self.game, chars.CalamityJanet)
-                    and cs.Bang(0, 0).name not in self.expected_response
-                ):
+                    or self.game.check_event(cew.RegolamentoDiConti)
+                ) and cs.Bang(0, 0).name not in self.expected_response:
                     self.expected_response.append(cs.Bang(0, 0).name)
                 if self.character.check(self.game, chw.BigSpencer):
                     self.expected_response = []
