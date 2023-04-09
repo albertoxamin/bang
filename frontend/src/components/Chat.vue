@@ -80,7 +80,7 @@ export default {
 				let desc_pos = -1
 				let params = msg.split('|')
 				let type = params.shift().substring(1)
-				if (["flipped", "respond", "play_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity", "won", "choose_emporio", "died_role"].indexOf(type) !== -1) {
+				if (["flipped", "respond", "play_card", "purchase_card", "play_card_against", "play_card_for", "spilled_beer", "diligenza", "wellsfargo", "saloon", "special_calamity", "won", "choose_emporio", "died_role"].indexOf(type) !== -1) {
 					desc = this.$t(`cards.${params[1]}.desc`)
 					desc_pos = 3
 					params[1] = this.$t(`cards.${params[1]}.name`)

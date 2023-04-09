@@ -65,6 +65,7 @@
           <div
             v-for="p in playersTable"
             v-bind:key="p.card.name"
+            :id="p.card.name"
             style="position: relative"
             class="player-in-table"
           >
@@ -569,6 +570,38 @@ export default {
       setTimeout(() => {
         this.cardsToAnimate = this.cardsToAnimate.filter((x) => x.key !== key);
       }, 1800);
+    },
+    chat_message(msg) {
+      let params = msg.split('|')
+      let type = params.shift().substring(1)
+      let messageMap = {
+        prison_turn: '⛓️',
+        explode: '💥',
+        purchase_card: '🛒',
+        prison_free: '🆓',
+        snake_bit: '🐍',
+        beer_save: '🍺😇',
+        sheriff: '⭐',
+        spilled_beer: '🍺😭',
+        use_special: '🔝',
+      }
+      if (messageMap[type]) {
+        let key = Math.random();
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            this.fullScreenEffects.push({
+              key,
+              text: messageMap[type],
+              startPosition: cumulativeOffset(document.getElementById(params[0])),
+            });
+          }, 50 * i);
+        }
+        setTimeout(() => {
+        this.fullScreenEffects = this.fullScreenEffects.filter(
+            (x) => x.key !== key
+          );
+        }, 3000);
+      }
     },
     suggest_expansion(expansionName) {
       if (this.expansions.includes(expansionName)) return;
