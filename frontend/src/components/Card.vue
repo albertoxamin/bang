@@ -20,7 +20,7 @@
       :style="`background-image: url(${card.avatar});`"
     ></div>
     <div :class="{ emoji: true, bottomed: card.avatar }">{{ emoji }}</div>
-    <div v-if="card.isMe" :class="{ emoji: true, bottomed: card.avatar, isMe: true }">🫵</div>
+    <div v-if="card.isMe" :class="{ emoji: true, bottomed: card.avatar, isMe: true }"></div>
     <div class="alt_text">{{ card.alt_text }}</div>
     <div class="suit">
       {{ number
@@ -279,6 +279,26 @@ export default {
   font-size: 16pt;
   top: 52%;
   right: 12pt;
+}
+.emoji.isMe::after {
+  content: "🫵";
+  display: block;
+}
+.card:HOVER .isMe::after {
+  content: "👋";
+  animation: wave 0.5s infinite;
+  will-change: transform;
+}
+@keyframes wave {
+  0% {
+    transform: translate(-5px, 0px) rotate(0deg);
+  }
+  50% {
+    transform: translate(-5px, -5px) rotate(25deg);
+  }
+  100% {
+    transform: translate(-5px, 0) rotate(0deg);
+  }
 }
 .emoji.bottomed {
   top: 45%;

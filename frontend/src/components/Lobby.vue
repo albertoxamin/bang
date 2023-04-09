@@ -390,6 +390,7 @@
     <transition name="bounce">
       <DeadRoleNotification
         v-if="deadRoleData"
+        :key="deadRoleData.name"
         :playerCard="deadRoleData"
         :playerRole="deadRoleData.role"
       />
@@ -470,7 +471,7 @@ export default {
     displayAdminStatus: false,
     is_replay: false,
     turn: -1,
-    deadRoleData: null,
+    deadRoleData: false,
     cardsToAnimate: [],
     characters_to_distribute: 2,
     fullScreenEffects: [],
@@ -505,7 +506,7 @@ export default {
     notify_dead_role(data) {
       this.deadRoleData = data;
       setTimeout(() => {
-        this.deadRoleData = null;
+        this.deadRoleData = false;
       }, 4000);
     },
     debug(data) {
@@ -575,32 +576,35 @@ export default {
       let params = msg.split('|')
       let type = params.shift().substring(1)
       let messageMap = {
-        prison_turn: '⛓️',
-        explode: '💥',
-        purchase_card: '🛒',
-        prison_free: '🆓',
-        snake_bit: '🐍',
-        beer_save: '🍺😇',
+        prison_turn: '⛓️;🔒;⏭️',
+        explode: '💥;🧨',
+        purchase_card: '🛒;💸',
+        prison_free: '🆓;🔑',
+        snake_bit: '🐍;🩸',
+        beer_save: '🍺;😇',
         sheriff: '⭐',
-        spilled_beer: '🍺😭',
-        use_special: '🔝',
+        spilled_beer: '🍺;😭',
+        use_special: '🔝;✨',
+        died: '💀;👻;😭;☠️;🪦;F',
+        died_role: '💀;👻;😭;☠️;🪦;F',
       }
       if (messageMap[type]) {
         let key = Math.random();
+        let avail = messageMap[type].split(';');
         for (let i = 0; i < 5; i++) {
           setTimeout(() => {
             this.fullScreenEffects.push({
-              key,
-              text: messageMap[type],
+              key: key+i,
+              text: avail[Math.floor(Math.random() * avail.length)],
               startPosition: cumulativeOffset(document.getElementById(params[0])),
             });
           }, 50 * i);
+          setTimeout(() => {
+            this.fullScreenEffects = this.fullScreenEffects.filter(
+                (x) => x.key !== key+i
+            );
+          }, 3000);
         }
-        setTimeout(() => {
-        this.fullScreenEffects = this.fullScreenEffects.filter(
-            (x) => x.key !== key
-          );
-        }, 3000);
       }
     },
     suggest_expansion(expansionName) {
@@ -612,17 +616,17 @@ export default {
       for (let i = 0; i < 6; i++) {
         setTimeout(() => {
           this.fullScreenEffects.push({
-            key: key,
+            key: key+i,
             text: i == 0 ? '🤠' : i == 5 ? '💭' : emojiMap[expansionName],
             startPosition: decelOffset,
           });
         }, 50 * i);
+        setTimeout(() => {
+          this.fullScreenEffects = this.fullScreenEffects.filter(
+            (x) => x.key !== key+i
+          );
+        }, 3000);
       }
-      setTimeout(() => {
-        this.fullScreenEffects = this.fullScreenEffects.filter(
-          (x) => x.key !== key
-        );
-      }, 3000);
     },
     card_scrapped(data) {
       let decel = document.getElementById("actual-scrap");
