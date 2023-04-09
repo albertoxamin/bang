@@ -246,6 +246,7 @@ class Game:
                     "expansions": self.expansions,
                     "available_expansions": self.available_expansions,
                     "is_replay": self.is_replay,
+                    "characters_to_distribute": self.characters_to_distribute,
                 },
             )
         G.sio.emit("debug", room=self.name, data=self.debug)
@@ -293,14 +294,14 @@ class Game:
             return
         if player in self.players or len(self.players) >= 10:
             return
-        if len(self.players) > 7:
-            if "dodge_city" not in self.expansions:
-                self.expansions.append("dodge_city")
         player.join_game(self)
         if player.is_admin():
             self.feature_flags()
         self.players.append(player)
-        print(f"{self.name}: Added player {player.name} to game")
+        if len(self.players) > 7:
+            if "dodge_city" not in self.expansions:
+                self.expansions.append("dodge_city")
+        print(f"{self.name}: Added player {player.name} to game; {len(self.players)=}")
         self.notify_room()
         G.sio.emit("chat_message", room=self.name, data=f"_joined|{player.name}")
 
@@ -346,9 +347,10 @@ class Game:
 
     def choose_characters(self):
         n = self.characters_to_distribute
-        char_cards = self.rng.sample(
-            characters.all_characters(self.expansions), len(self.players) * n
-        )
+        all_chars = characters.all_characters(self.expansions)
+        if len(all_chars) // len(self.players) < n:
+            n = len(all_chars) // len(self.players)
+        char_cards = self.rng.sample(all_chars, len(self.players) * n)
         for i, player in enumerate(self.players):
             player.set_available_character(char_cards[i * n : i * n + n])
 

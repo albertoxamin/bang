@@ -220,6 +220,57 @@
           style="margin-top: 5px; margin-bottom: 3px"
           >{{ $t("mod_comp") }}</PrettyCheck
         >
+        <br/>
+        <br/>
+        <span>{{$t("characters_to_distribute")}}</span>
+        <input
+          type="button"
+          :class="{btn:true, 'small-btn':true, active: characters_to_distribute === 1}"
+          :value="1"
+          :disabled="!isRoomOwner"
+          @click="
+            (e) => {
+              this.$socket.emit('chat_message', '/set_chars 1');
+              e.preventDefault();
+            }
+          "
+        />
+        <input
+          type="button"
+          :class="{btn:true, 'small-btn':true, active: characters_to_distribute === 2}"
+          :value="2"
+          :disabled="!isRoomOwner"
+          @click="
+            (e) => {
+              this.$socket.emit('chat_message', '/set_chars 2');
+              e.preventDefault();
+            }
+          "
+        />
+        <input
+          type="button"
+          :class="{btn:true, 'small-btn':true, active: characters_to_distribute === 3}"
+          :value="3"
+          :disabled="!isRoomOwner"
+          @click="
+            (e) => {
+              this.$socket.emit('chat_message', '/set_chars 3');
+              e.preventDefault();
+            }
+          "
+        />
+        <input
+          type="button"
+          :class="{btn:true, 'small-btn':true, active: characters_to_distribute === 4}"
+          :value="4"
+          :disabled="!isRoomOwner"
+          @click="
+            (e) => {
+              this.$socket.emit('chat_message', '/set_chars 4');
+              e.preventDefault();
+            }
+          "
+        />
         <h3>{{ $t("bots") }}</h3>
         <input
           type="button"
@@ -411,6 +462,7 @@ export default {
     turn: -1,
     deadRoleData: null,
     cardsToAnimate: [],
+    characters_to_distribute: 2,
   }),
   sockets: {
     room(data) {
@@ -428,6 +480,7 @@ export default {
       this.togglable_expansions = data.available_expansions;
       this.expansions = data.expansions;
       this.is_replay = data.is_replay;
+      this.characters_to_distribute = data.characters_to_distribute;
       this.players = data.players.map((x) => {
         return {
           name: x.name,
@@ -835,6 +888,13 @@ export default {
   flex-wrap: wrap;
   justify-content: space-evenly;
   margin-bottom: 12pt;
+}
+.small-btn {
+  min-width: 28pt;
+}
+.small-btn.active {
+  color: var(--bg-color);
+  background: var(--font-color);
 }
 #admin-status {
   position: absolute;

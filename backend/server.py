@@ -742,6 +742,12 @@ def chat_message(sid, msg, pl=None):
                 if "/togglecomp" in msg and ses.game:
                     ses.game.toggle_competitive()
                     return
+                elif "/set_chars" in msg and not ses.game.started:
+                    cmd = msg.split()
+                    if len(cmd) == 2 and int(cmd[1]) > 0:
+                        ses.game.characters_to_distribute = int(cmd[1])
+                        ses.game.notify_room()
+                    return
                 if "/debug" in msg:
                     cmd = msg.split()
                     if (
@@ -775,10 +781,6 @@ def chat_message(sid, msg, pl=None):
                             "text": "debug mode is not active, only the owner of the room can enable it with /debug",
                         },
                     )
-                elif "/set_chars" in msg and not ses.game.started:
-                    cmd = msg.split()
-                    if len(cmd) == 2 and int(cmd[1]) > 0:
-                        ses.game.characters_to_distribute = int(cmd[1])
                 elif "/suicide" in msg and ses.game.started and ses.lives > 0:
                     ses.lives = 0
                     ses.notify_self()
