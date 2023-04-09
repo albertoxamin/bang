@@ -189,6 +189,7 @@ export default {
 			trackResources: true, //non so cosa faccia, proviamo
 			trackLongTasks: true, //non so cosa faccia, proviamo
 			defaultPrivacyLevel: 'allow',
+			enableExperimentalFeatures: ['clickmap'],
 			proxyUrl: (Vue.config.devtools ? `http://${window.location.hostname}:5001` : window.location.origin) + '/ddproxy',
 		});
 		datadogRum.setUser({name: localStorage.getItem('username')})
