@@ -2465,7 +2465,21 @@ class Player:
                 self.game.deck.draw(True, player=self)
                 self.game.deck.draw(True, player=self)
                 self.special_use_count += 1
-            self.game.deck.scrap(card, player=self)
+            gary_looter = None
+            for p in self.game.players:
+                if p.character.check(self.game, chw.GaryLooter):
+                    gary_looter = p
+                    break
+            if gary_looter is not None:
+                G.sio.emit(
+                    "card_drawn",
+                    room=self.game.name,
+                    data={"player": gary_looter.name, "pile": self.name},
+                )
+                gary_looter.hand.append(card)
+                gary_looter.notify_self()
+            else:
+                self.game.deck.scrap(card, player=self)
             self.notify_self()
 
     def special(self, data):

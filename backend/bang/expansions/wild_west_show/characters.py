@@ -123,17 +123,22 @@ class YoulGrinner(Character):
 
 
 def all_characters() -> List[Character]:
+    """
+    Returns a list of all characters in this expansion.
+    """
     cards = [
         BigSpencer(),
         FlintWestwood(),
-        # GaryLooter(),
+        GaryLooter(),
         # GreygoryDeckard(),
         JohnPain(),
         LeeVanKliff(),
         TerenKill(),
         YoulGrinner(),
     ]
-    for c in cards:
-        c.expansion_icon = "🎪"
-        c.expansion = "wild_west_show"
+    for card in cards:
+        card.expansion_icon = "🎪"  # pylint: disable=attribute-defined-outside-init
+        card.expansion = (  # pylint: disable=attribute-defined-outside-init
+            "wild_west_show"
+        )
     return cards
