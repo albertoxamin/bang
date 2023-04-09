@@ -263,12 +263,15 @@ def get_me(sid, data):
             sio.get_session(sid).game.notify_room()
     else:
         dt = data.get("discord_token", None)
-        username = data.get("username", "player")
+        username = data.get("username", None)
+        if username is None:
+            username = f"player_{random.randint(0,100)}"
         sio.save_session(sid, Player(username, sid, discord_token=dt))
+        p = sio.get_session(sid)
+        print(f"{sid} is now {username}")
         if "replay" in data and data["replay"] is not None:
             create_room(sid, data["replay"])
-            sid = sio.get_session(sid)
-            sid.game.is_hidden = True
+            p.game.is_hidden = True
             eventlet.sleep(0.5)
             response = requests.get(
                 f"https://hastebin.com/raw/{data['replay']}",
@@ -283,11 +286,11 @@ def get_me(sid, data):
                 )
                 return
             log = response.text.splitlines()
-            sid.game.spectators.append(sid)
+            p.game.spectators.append(p)
             if "ffw" not in data:
-                sid.game.replay(log)
+                p.game.replay(log)
             else:
-                sid.game.replay(log, speed=0, fast_forward=int(data["ffw"]))
+                p.game.replay(log, speed=0, fast_forward=int(data["ffw"]))
             return
         if data["name"] in games and (room := games[data["name"]]) is not None:
             if not room.started:
@@ -440,29 +443,27 @@ def toggle_replace_with_bot(sid):
 @bang_handler
 def join_room(sid, room):
     room_name = room["name"]
-    if (
-        games[room_name].password != ""
-        and games[room_name].password != room.get("password", "").upper()
-    ):
+    pwd = room.get("password", "")
+    if pwd is None:
+        pwd = ""
+    if games[room_name].password != "" and games[room_name].password != pwd.upper():
         return
+    player = sio.get_session(sid)
     if not games[room_name].started:
         print(f"{sid} joined a room named {room_name}")
         sio.leave_room(sid, "lobby")
         sio.enter_room(sid, room_name)
         while any(
-            (
-                p.name == sio.get_session(sid).name and not p.is_bot
-                for p in games[room_name].players
-            )
+            (p.name == player.name and not p.is_bot for p in games[room_name].players)
         ):
-            sio.get_session(sid).name += f"_{random.randint(0,100)}"
-        sio.emit("me", data=sio.get_session(sid).name, room=sid)
-        games[room_name].add_player(sio.get_session(sid))
+            player.name += f"_{random.randint(0,100)}"
+        sio.emit("me", data=player.name, room=sid)
+        games[room_name].add_player(player)
         advertise_lobbies()
     else:
-        games[room_name].spectators.append(sio.get_session(sid))
-        sio.get_session(sid).game = games[room_name]
-        sio.get_session(sid).pending_action = PendingAction.WAIT
+        games[room_name].spectators.append(player)
+        player.game = games[room_name]
+        player.pending_action = PendingAction.WAIT
         sio.enter_room(sid, games[room_name].name)
         games[room_name].notify_room(sid)
         eventlet.sleep(0.5)

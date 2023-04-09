@@ -310,7 +310,7 @@ class Game:
             self.is_changing_pwd = True
             if self.password == "":
                 self.password = "".join(
-                    random.choice("AEIOUJKZT123456789") for x in range(6)
+                    random.choice("AEOUJKZT123456789") for x in range(6)
                 )
                 print(self.name, "is now private pwd", self.password)
             else:
