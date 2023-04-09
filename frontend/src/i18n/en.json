@@ -816,7 +816,7 @@
       "desc": "Before drawing, players with more cards in their hand than Youl must give him a card of their choice."
     },
     "Camposanto": {
-      "name": "Camposanto",
+      "name": "Bone Orchard",
       "desc": "At the beginning of their turn, each eliminated player comes back to the game with 1 health point. Draw a role card at random from the eliminated players."
     },
     "Darling Valentine": {
@@ -832,7 +832,7 @@
       "desc": "When Helena enters the game, \"draw!\": if Hearts or Diamonds are drawn, shuffle the active role cards except for the Sheriff, and redistribute them at random."
     },
     "Lady Rosa del Texas": {
-      "name": "Lady Rosa del Texas",
+      "name": "Lady Rose of Texas",
       "desc": "During their turn, each player can switch places with the player on their right, who skips their next turn. (Click the card)"
     },
     "Miss Susanna": {
@@ -840,7 +840,7 @@
       "desc": "During their turn, each player must play at least 3 cards. If they don't, they lose 1 health point."
     },
     "Regolamento di Conti": {
-      "name": "Regolamento di Conti",
+      "name": "Showdown",
       "desc": "All cards can be played as if they were BANG!. BANG! cards can be played as if they were Missed!  (Click the card)"
     },
     "Sacagaway": {
