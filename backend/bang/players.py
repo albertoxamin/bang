@@ -1263,6 +1263,7 @@ class Player:
                 (
                     self.game.check_event(ceh.Manette)
                     and card.suit != self.committed_suit_manette
+                    and card.number != 42
                 )
             )
         )
