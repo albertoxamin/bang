@@ -1584,7 +1584,7 @@ class Player:
                         "icon": p.role.icon
                         if (self.game.initial_players == 3)
                         else "⭐️"
-                        if p["is_sheriff"]
+                        if isinstance(p.role, r.Sheriff)
                         else "🤠",
                         "avatar": p.avatar,
                         "is_character": True,
