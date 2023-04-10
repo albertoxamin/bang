@@ -2481,6 +2481,11 @@ class Player:
                 gary_looter.notify_self()
             else:
                 self.game.deck.scrap(card, player=self)
+            G.sio.emit(
+                "chat_message",
+                room=self.game.name,
+                data=f"_scrapped|{self.name}|{card.name}|{card.num_suit()}",
+            )
             self.notify_self()
 
     def special(self, data):

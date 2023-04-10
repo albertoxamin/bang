@@ -124,13 +124,13 @@ class Card(ABC):
             G.sio.emit(
                 "chat_message",
                 room=player.game.name,
-                data=f"_play_card_against|{player.name}|{self.name}|{against}",
+                data=f"_play_card_against{'_with' if _with else ''}|{player.name}|{self.name}|{against}|{_with.name if _with else ''}",
             )
         else:
             G.sio.emit(
                 "chat_message",
                 room=player.game.name,
-                data=f"_play_card|{player.name}|{self.name}",
+                data=f"_play_card{'_with' if _with else ''}|{player.name}|{self.name}|{_with.name if _with else ''}",
             )
         return True
 
