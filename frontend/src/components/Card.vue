@@ -115,7 +115,7 @@ export default {
     #816b45 10px
   );
 }
-.card:not(.back, .fistful-of-cards, .high-noon, .gold-rush):before {
+.card:not(.back, .fistful-of-cards, .high-noon, .gold-rush, .train-piece):before {
   content: "";
   background-image: radial-gradient(var(--bg-color) 13%, #0000 5%),
     radial-gradient(var(--bg-color) 14%, transparent 5%),
@@ -346,5 +346,22 @@ export default {
   background: var(--bg-color);
   border-radius: 100%;
   transform: scale(0.8);
+}
+.train-piece {
+  background: linear-gradient(180deg, rgba(218,101,64,1) 0%, rgba(217,197,184,1) 13%, rgba(217,197,184,1) 53%, rgba(235,169,95,1) 61%, rgba(158,81,55,1) 91%, rgba(158,81,55,1) 100%);
+    box-shadow: 0 0 0pt 2pt var(--font-color), 0 0 5pt 2pt #aaa;
+}
+.train-piece .emoji {
+  transform: scaleX(-1);
+  /* filter: grayscale(1); */
+}
+.train-piece h4 {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: -10pt;
+  top: unset;
+  font-size: 11pt;
+  color: #FFE27E;
 }
 </style>

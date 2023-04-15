@@ -11,6 +11,21 @@
 					<card :card="goldRushCardBack" :donotlocalize="true" class="gold-rush back last-event" @click.native="goldRushShopOpen = !goldRushShopOpen"/>
 				</div>
 			</div>
+			<div class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;`" >
+				<station-card v-for="i in 8" :key="i" :card="{
+					name: 'station' + i,
+				}" :price="lastScrap" :trainPiece="
+					i == 6 ? {
+						name: 'Iron House',
+						icon: '🚂',
+						back: true,
+					} : i > 6 ? {
+						name: 'Passenger Car',
+						icon: '🚃',
+						back: true,
+					} : undefined
+				"/>
+			</div>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
 				<div class="card fistful-of-cards" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
@@ -59,6 +74,7 @@
 
 <script>
 import Card from '@/components/Card.vue'
+import StationCard from '@/components/StationCard.vue'
 
 export default {
 	name: 'Deck',
@@ -67,6 +83,7 @@ export default {
 	},
 	components: {
 		Card,
+		StationCard
 	},
 	data: () => ({
 		card: {
