@@ -224,6 +224,7 @@ class Game:
             self.reset()
 
     def notify_room(self, sid=None):
+        """Notify all players in the room of the room's state."""
         if any((p.character is None for p in self.players)) or sid:
             G.sio.emit(
                 "room",
@@ -265,6 +266,7 @@ class Game:
         G.sio.emit("spectators", room=self.name, data=len(self.spectators))
 
     def toggle_expansion(self, expansion_name):
+        """Toggles an expansion on or off."""
         if not self.started:
             print(f"{self.name}: toggling", expansion_name)
             if expansion_name in self.expansions:
@@ -274,10 +276,12 @@ class Game:
             self.notify_room()
 
     def toggle_competitive(self):
+        """Toggles the competitive mode on or off."""
         self.is_competitive = not self.is_competitive
         self.notify_room()
 
     def toggle_disconnect_bot(self):
+        """Toggles the disconnect bot on or off."""
         self.disconnect_bot = not self.disconnect_bot
         self.notify_room()
 
@@ -605,7 +609,7 @@ class Game:
         player.pending_action = pl.PendingAction.WAIT
         player.notify_self()
         pls = self.get_alive_players()
-        nextPlayer = pls[
+        next_player = pls[
             (
                 pls.index(self.players[self.turn])
                 + (len(pls) - len(self.available_cards))
@@ -613,28 +617,33 @@ class Game:
             % len(pls)
         ]
         if len(self.available_cards) == 1:
-            nextPlayer.hand.append(self.available_cards.pop())
-            nextPlayer.notify_self()
+            G.sio.emit(
+                "chat_message",
+                room=self.name,
+                data=f"_choose_emporio|{next_player.name}|{self.available_cards[0].name}",
+            )
+            next_player.hand.append(self.available_cards.pop())
+            next_player.notify_self()
             G.sio.emit("emporio", room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
-        elif nextPlayer == self.players[self.turn]:
+        elif next_player == self.players[self.turn]:
             G.sio.emit("emporio", room=self.name, data='{"name":"","cards":[]}')
             self.players[self.turn].pending_action = pl.PendingAction.PLAY
             self.players[self.turn].notify_self()
         else:
-            nextPlayer.pending_action = pl.PendingAction.CHOOSE
-            nextPlayer.choose_text = "choose_card_to_get"
-            nextPlayer.available_cards = self.available_cards
+            next_player.pending_action = pl.PendingAction.CHOOSE
+            next_player.choose_text = "choose_card_to_get"
+            next_player.available_cards = self.available_cards
             G.sio.emit(
                 "emporio",
                 room=self.name,
                 data=json.dumps(
-                    {"name": nextPlayer.name, "cards": self.available_cards},
+                    {"name": next_player.name, "cards": self.available_cards},
                     default=lambda o: o.__dict__,
                 ),
             )
-            nextPlayer.notify_self()
+            next_player.notify_self()
 
     def get_player_named(self, name: str, next=False) -> pl.Player:
         if next:
@@ -642,6 +651,7 @@ class Game:
         return self.players[self.players_map[name]]
 
     def responders_did_respond_resume_turn(self, did_lose=False):
+        """Called when all Players have responded to an event/attack."""
         print(f"{self.name}: did_lose", did_lose)
         if self.player_bangs > 0 and self.check_event(ce.PerUnPugnoDiCarte):
             self.player_bangs -= 1
@@ -727,6 +737,7 @@ class Game:
                 self.players[self.turn].notify_self()
 
     def announces_winners(self, winners=None):
+        """Announces the winners of the game in the chat"""
         if winners is None:
             print(f"{self.name}: WE HAVE A WINNER - pending winners")
         else:
@@ -760,10 +771,12 @@ class Game:
         return self.reset()
 
     def next_player(self):
+        """Returns the next player in turn order"""
         pls = self.get_alive_players()
         return pls[(pls.index(self.players[self.turn]) + 1) % len(pls)]
 
     def play_turn(self):
+        """Starts the turn of the current player"""
         self.incremental_turn += 1
         if not self.is_replay:
             Metrics.send_metric(

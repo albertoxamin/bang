@@ -312,9 +312,9 @@ class Player:
             if self.gold_nuggets >= 2 and any(
                 (isinstance(c, grc.Zaino) for c in self.gold_rush_equipment)
             ):
-                for i in range(len(self.gold_rush_equipment)):
-                    if isinstance(self.gold_rush_equipment[i], grc.Zaino):
-                        self.gold_rush_equipment[i].play_card(self, None)
+                for card in self.gold_rush_equipment:
+                    if isinstance(card, grc.Zaino):
+                        card.play_card(self, None)
                         return  # play card will notify the player
             if self.character.check(self.game, chw.TerenKill):
                 picked: cs.Card = self.game.deck.pick_and_scrap()
@@ -523,8 +523,8 @@ class Player:
             if self.gold_nuggets > 0 and any(
                 (c.number <= self.gold_nuggets for c in self.game.deck.shop_cards)
             ):
-                for i in range(len(self.game.deck.shop_cards)):
-                    if self.game.deck.shop_cards[i].number <= self.gold_nuggets:
+                for i, card in enumerate(self.game.deck.shop_cards):
+                    if card.number <= self.gold_nuggets:
                         self.game.rpc_log.append(f"{self.name};buy_gold_rush_card;{i}")
                         self.buy_gold_rush_card(i)
                         return
@@ -676,19 +676,19 @@ class Player:
                 self.end_turn()
         elif self.pending_action == PendingAction.RESPOND:
             did_respond = False
-            for i in range(len(self.hand)):
-                if self.hand[i].can_be_used_now and (
-                    self.hand[i].name in self.expected_response
+            for i, card in enumerate(self.hand):
+                if card.can_be_used_now and (
+                    card.name in self.expected_response
                     or self.character.check(self.game, chd.ElenaFuente)
                 ):
                     self.game.rpc_log.append(f"{self.name};respond;{i}")
                     self.respond(i)
                     did_respond = True
                     break
-            for i in range(len(self.equipment)):
+            for i, card in enumerate(self.equipment):
                 if (
                     not self.game.check_event(ce.Lazo)
-                    and self.equipment[i].name in self.expected_response
+                    and card.name in self.expected_response
                 ):
                     self.game.rpc_log.append(f"{self.name};respond;{len(self.hand)+i}")
                     self.respond(len(self.hand) + i)
@@ -1012,10 +1012,8 @@ class Player:
         if any((isinstance(c, grc.FerroDiCavallo) for c in self.gold_rush_equipment)):
             pickable_cards += 1
         if self.is_my_turn and self.attacker is None:
-            for i in range(len(self.equipment)):
-                if i < len(self.equipment) and isinstance(
-                    self.equipment[i], cs.Dinamite
-                ):
+            for i, card in enumerate(self.equipment):
+                if i < len(self.equipment) and isinstance(card, cs.Dinamite):
                     while pickable_cards > 0:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
@@ -1088,8 +1086,8 @@ class Player:
                     ):
                         self.notify_self()
                         return
-            for i in range(len(self.equipment)):
-                if isinstance(self.equipment[i], cs.Prigione):
+            for i, card in enumerate(self.equipment):
+                if isinstance(card, cs.Prigione):
                     while pickable_cards > 0:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
@@ -1124,8 +1122,8 @@ class Player:
                             )
                             break
                     break
-            for i in range(len(self.equipment)):
-                if isinstance(self.equipment[i], tvosc.SerpenteASonagli):
+            for i, card in enumerate(self.equipment):
+                if isinstance(card, tvosc.SerpenteASonagli):
                     while pickable_cards > 0:
                         pickable_cards -= 1
                         picked: cs.Card = self.game.deck.pick_and_scrap()
@@ -1184,8 +1182,7 @@ class Player:
 
     def get_playable_cards(self):
         playable_cards = []
-        for i in range(len(self.hand)):
-            card = self.hand[i]
+        for i, card in enumerate(self.hand):
             if (
                 isinstance(card, cs.Bang)
                 and self.has_played_bang
