@@ -11,11 +11,8 @@
 				<span v-for="(n, i) in (max_lives-lives)" v-bind:key="`${i}-sk`" :alt="i">💀</span>
 				<span v-for="(n, i) in lives" v-bind:key="i" :alt="i">❤️</span>
 			</transition-group>
-			<div v-if="gold_nuggets > 0" style="display: flex;align-items: center;margin-left: 12pt;margin-right: -10pt;justify-content: space-evenly;width: 25pt;">
-				<transition name="list">
-					<span :key="gold_nuggets">{{gold_nuggets}}</span>
-				</transition>
-				<span>💵️</span>
+			<div v-if="gold_nuggets > 0" style="position:relative;left:-90pt;top:65pt;justify-content: space-evenly;width: 25pt;">
+				<h3 style="background:gold;border-radius:15pt;padding:2pt 2pt;color:black;text-align:center"> 💵️ {{ gold_nuggets }} </h3>
 			</div>
 			<transition-group v-if="lives > 0 || is_ghost" name="list" id="equipment" tag="div" style="margin: 0 0 0 10pt; display:flex;">
 				<Card v-for="card in equipmentComputed" v-bind:key="card.name+card.number" :card="card" 
@@ -503,7 +500,7 @@ export default {
 	padding: 10pt 40pt 0pt 40pt;
 	overflow:auto;
 	border-radius: 4pt;
-	min-height: 40pt;
+	min-height: 122pt;
 }
 @media not all and (min-resolution:.001dpcm)
 { @supports (-webkit-appearance:none) and (stroke-color:transparent) {

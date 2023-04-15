@@ -70,16 +70,6 @@
             class="player-in-table"
           >
             <transition-group
-              v-if="p.gold_nuggets && p.gold_nuggets > 0"
-              name="list"
-              tag="div"
-              style="position: absolute; top: -10pt; font-size: 9pt"
-            >
-              <span v-for="(n, i) in p.gold_nuggets" v-bind:key="i" :alt="i"
-                >💵️</span
-              >
-            </transition-group>
-            <transition-group
               v-if="p.max_lives && !p.is_ghost"
               name="list"
               tag="div"
@@ -116,6 +106,12 @@
               class="character tiny-character"
               @click.native="selectedInfo = [p.character]"
             />
+            <div
+              v-if="p.gold_nuggets && p.gold_nuggets > 0"
+              style="position: absolute; top: 45pt; left: -5pt; font-size: 9pt;"
+            >
+              <h3 style="background:gold;border-radius:15pt;padding:0pt 2pt;color:black"> 💵️ {{ p.gold_nuggets }} </h3>
+            </div>
             <tiny-hand
               :id="p.name + '-hand'"
               :ncards="p.ncards"
@@ -444,7 +440,6 @@ export default {
     DeadRoleNotification,
     AnimatedCard,
     AnimatedEffect,
-    Card,
   },
   data: () => ({
     username: "",
@@ -573,6 +568,23 @@ export default {
       }, 1800);
     },
     chat_message(msg) {
+      if (typeof msg !== "string") {
+        let key = Math.random();
+        let username = msg.text.substring(1, msg.text.indexOf(":")-1);
+        setTimeout(() => {
+            this.fullScreenEffects.push({
+              key: key,
+              text: '💬',
+              startPosition: cumulativeOffset(document.getElementById(username)),
+            });
+          }, 50);
+          setTimeout(() => {
+            this.fullScreenEffects = this.fullScreenEffects.filter(
+                (x) => x.key !== key
+            );
+          }, 3000);
+        return;
+      }
       let params = msg.split('|')
       let type = params.shift().substring(1)
       let messageMap = {
