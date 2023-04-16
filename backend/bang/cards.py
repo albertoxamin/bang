@@ -20,6 +20,7 @@ class Suit(IntEnum):
     HEARTS = 2  # ♥
     SPADES = 3  # ♠
     GOLD = 4  # 🤑
+    TRAIN = 5  # 🚂
 
 
 class Card(ABC):

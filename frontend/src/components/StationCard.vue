@@ -4,7 +4,9 @@
       <h4>{{ cardName }}</h4>
       <div :class="{ emoji: true, bottomed: card.avatar }">{{ emoji }}</div>
       <div class="alt_text">{{ card.alt_text }}</div>
-      <card :card="price" />
+      <div class="price">
+        <card v-for="c, i in price" :key="i" :card="c"/>
+      </div>
     </div>
     <card v-if="trainPiece" class="train-piece" :card="trainPiece" />
   </div>
@@ -17,7 +19,7 @@ export default {
   name: "StationCard",
   props: {
     card: Object,
-    price: Object,
+    price: Array,
     trainPiece: Object,
     donotlocalize: Boolean,
   },
@@ -89,8 +91,8 @@ export default {
   position: absolute;
   text-align: center;
   width: 100%;
-  top: -10pt;
-  font-size: 12pt;
+  top: -15pt;
+  font-size: 10pt;
 }
 .alt_text {
   right: 3pt;
@@ -100,11 +102,17 @@ export default {
   bottom: 20pt;
   left: 3pt;
 }
-.stationcard .card {
-  position: absolute;
-  transform: scale(0.3) rotate(14deg);
-  left: -12pt;
-  top: -22pt;
+.stationcard .price {
+  justify-content: center;
+  /* left: -12pt; */
+  margin-top: -20pt;
+  /* left: 0; */
+  display: flex;
+  width: 60pt;
+  transform: scale(0.3);
+}
+.price .card {
+  transform:  rotate(14deg);
 }
 .train-piece {
   margin: 6pt;

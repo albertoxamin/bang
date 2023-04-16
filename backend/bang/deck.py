@@ -1,11 +1,11 @@
 from typing import List, Set, Dict, Tuple, Optional, TYPE_CHECKING
-import random
 import bang.cards as cs
 import bang.expansions.fistful_of_cards.card_events as ce
 import bang.expansions.high_noon.card_events as ceh
 import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.wild_west_show.characters as chw
 import bang.expansions.gold_rush.shop_cards as grc
+import bang.expansions.train_robbery.stations as trs
 from globals import G
 
 if TYPE_CHECKING:
@@ -35,6 +35,7 @@ class Deck:
         self.game = game
         self.event_cards: List[ce.CardEvent] = []
         self.event_cards_wildwestshow: List[ce.CardEvent] = []
+        self.stations: List[trs.StationCard] = []
         endgame_cards: List[ce.CardEvent] = []
         if "fistful_of_cards" in game.expansions:
             self.event_cards.extend(ce.get_all_events(game.rng))
@@ -47,6 +48,8 @@ class Deck:
             game.rng.shuffle(self.event_cards_wildwestshow)
             self.event_cards_wildwestshow.insert(0, None)
             self.event_cards_wildwestshow.append(cew.get_endgame_card())
+        if "train_robbery" in game.expansions:
+            self.stations = game.rng.sample(trs.get_all_stations(), len(game.players))
         if len(self.event_cards) > 0:
             game.rng.shuffle(self.event_cards)
             self.event_cards = self.event_cards[:12]

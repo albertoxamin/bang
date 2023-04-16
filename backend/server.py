@@ -346,6 +346,7 @@ def get_me(sid, data):
                     room.notify_scrap_pile(sid)
                     room.notify_all()
                 room.notify_gold_rush_shop()
+                room.notify_stations()
                 room.notify_event_card()
                 room.notify_event_card_wildwestshow(sid)
         else:

@@ -11,15 +11,13 @@
 					<card :card="goldRushCardBack" :donotlocalize="true" class="gold-rush back last-event" @click.native="goldRushShopOpen = !goldRushShopOpen"/>
 				</div>
 			</div>
-			<div class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;`" >
-				<station-card v-for="i in 8" :key="i" :card="{
-					name: 'station' + i,
-				}" :price="lastScrap" :trainPiece="
-					i == 6 ? {
+			<div v-if="current_stations.length > 0" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;`" >
+				<station-card v-for="station, i in current_stations" :key="station.name" :card="station" :price="station.price" :trainPiece="
+					i == 2 ? {
 						name: 'Iron House',
 						icon: '🚂',
 						back: true,
-					} : i > 6 ? {
+					} : i > 2 ? {
 						name: 'Passenger Car',
 						icon: '🚃',
 						back: true,
@@ -107,6 +105,7 @@ export default {
 		goldRushDesc: null,
 		can_gold_rush_discard: false,
 		gold_rush_discount: 0,
+		current_stations: [],
 	}),
 	sockets: {
 		self(self){
@@ -139,6 +138,9 @@ export default {
 		gold_rush_shop(cards) {
 			console.log('GOLD RUSH:'+ cards)
 			this.goldRushCards = JSON.parse(cards)
+		},
+		stations(stations) {
+			this.current_stations = JSON.parse(stations)
 		},
 	},
 	computed: {

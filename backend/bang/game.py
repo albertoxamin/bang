@@ -93,6 +93,7 @@ class Game:
             "gold_rush",
             "the_valley_of_shadows",
             "wild_west_show",
+            "train_robbery",
         ]
         self.shutting_down = False
         self.is_competitive = False
@@ -354,6 +355,7 @@ class Game:
                     roles_str += f"|{role}|{str(current_roles.count(role))}"
             G.sio.emit("chat_message", room=self.name, data=f"_allroles{roles_str}")
             self.play_turn()
+            self.notify_stations()
 
     def choose_characters(self):
         n = self.characters_to_distribute
@@ -915,6 +917,15 @@ class Game:
                 "gold_rush_shop",
                 room=room,
                 data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__),
+            )
+
+    def notify_stations(self, sid=None):
+        if "train_robbery" in self.expansions:
+            room = self.name if sid is None else sid
+            G.sio.emit(
+                "stations",
+                room=room,
+                data=json.dumps(self.deck.stations, default=lambda o: o.__dict__),
             )
 
     def notify_scrap_pile(self, sid=None):

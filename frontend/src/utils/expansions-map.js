@@ -36,5 +36,12 @@ export const expansionsMap = {
 		back: true,
 		expansion: 'wild-west-show',
 		status: 'alpha',
+	},
+	'train_robbery': {
+		name: 'The Great Train Robbery',
+		icon: '🚂',
+		back: true,
+		expansion: 'train-roobbery',
+		status: 'alpha',
 	}
 }
