@@ -2465,7 +2465,7 @@ class Player:
                 self.special_use_count += 1
             gary_looter = None
             for p in self.game.players:
-                if p.character.check(self.game, chw.GaryLooter):
+                if p != self and p.character.check(self.game, chw.GaryLooter):
                     gary_looter = p
                     break
             if gary_looter is not None:

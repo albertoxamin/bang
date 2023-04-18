@@ -8,6 +8,7 @@ import bang.players as pl
 import bang.cards as cs
 import bang.characters as characters
 import bang.expansions.dodge_city.characters as chd
+import bang.expansions.wild_west_show.characters as chwws
 from bang.deck import Deck
 import bang.roles as roles
 import bang.expansions.fistful_of_cards.card_events as ce
@@ -336,7 +337,12 @@ class Game:
                     data=f"_choose_character|{player.name}|{player.character.name}",
                 )
                 player.prepare()
-                for _ in range(player.max_lives):
+                cards_to_draw = (
+                    player.max_lives
+                    if not player.character.check(self, chwws.BigSpencer)
+                    else 5
+                )
+                for _ in range(cards_to_draw):
                     self.deck.draw(player=player)
                 player.notify_self()
             self.players_map = {c.name: i for i, c in enumerate(self.players)}
