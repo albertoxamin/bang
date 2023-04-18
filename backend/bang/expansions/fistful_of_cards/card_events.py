@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 import random
 import bang.players as players
@@ -5,6 +6,9 @@ import bang.roles as r
 import bang.cards as cs
 
 from globals import G
+
+if TYPE_CHECKING:
+    from bang.game import Game
 
 
 class CardEvent(ABC):
@@ -14,7 +18,7 @@ class CardEvent(ABC):
         self.name = name
         self.icon = icon
 
-    def on_flipped(self, game):
+    def on_flipped(self, game: "Game"):
         """Default on flipped event
 
         Args:

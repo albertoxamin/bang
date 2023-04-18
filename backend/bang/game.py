@@ -804,7 +804,7 @@ class Game:
                 elif self.check_event(cew.Camposanto):
                     pl.lives = 1
                     pl.set_role = self.dead_roles.pop(
-                        random.randint(0, len(self.dead_roles) - 1)
+                        self.rng.randint(0, len(self.dead_roles) - 1)
                     )
                 pl.is_dead = False
                 pl.is_ghost = False
