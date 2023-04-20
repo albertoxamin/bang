@@ -1,9 +1,10 @@
+import random
 from bang.cards import Card
 
 
 class TrainCard(Card):
     def __init__(self, name: str, is_locomotive: bool = False):
-        super().__init__(suit=5, number="", name=name)
+        super().__init__(suit=5, number=0, name=name)
         self.expansion_icon = "🚂"
         self.is_equipment = True
         self.is_locomotive = is_locomotive
@@ -92,10 +93,212 @@ class Leland(TrainCard):
         return True
 
 
+class BaggageCar(TrainCard):
+    """Scartalo: ottieni l'effetto di un Mancato!, Panico!, Cat Balou o di un BANG! extra.
+    Discard this for a Missed!Panic!, Cat Balou, or an extra BANG!"""
+
+    def __init__(self):
+        super().__init__("Baggage Car")
+        self.icon = "🚋🛄"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class Caboose(TrainCard):
+    """Pro scartare un aura tua carta bordo bin incuso un vagone come se fosse un Mancato!"""
+
+    def __init__(self):
+        super().__init__("Caboose")
+        self.icon = "🚋"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class CattleTruck(TrainCard):
+    """Scartalo: guarda le 3 carte in cima agli scarti e pescane I"""
+
+    def __init__(self):
+        super().__init__("Cattle Truck")
+        self.icon = "🚋🐄"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
 class CircusWagon(TrainCard):
+    """Scartalo: ogni altro giocatore deve scartare una carta che ha in gioco."""
+
     def __init__(self):
         super().__init__("Circus Wagon", is_locomotive=True)
         self.icon = "🚋🎪"
 
     def play_card(self, player, against=None, _with=None) -> bool:
         return True
+
+
+class CoalHopper(TrainCard):
+    """Scartalo: pesca una carta e scarta un vagone in gioco davanti a un giocatore a ma scelta."""
+
+    def __init__(self):
+        super().__init__("Coal Hopper")
+        self.icon = "🚋🔥"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class DiningCar(TrainCard):
+    """A inizio turno, "estrai!": se è Cnori, recuperi I punto vita."""
+
+    def __init__(self):
+        super().__init__("Dining Car")
+        self.icon = "🚋🍽"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class ExpressCar(TrainCard):
+    """Scarta tutte le carte in mano, poi gioca un altro turno"""
+
+    def __init__(self):
+        super().__init__("Express Car")
+        self.icon = "🚋⚡"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class GhostCar(TrainCard):
+    """Giocalo su chiunque tranne lo Sceritfo. Se vieni eliminato, invece resti in gioco, ma non puol guada nare ne perdere punk vita."""
+
+    def __init__(self):
+        super().__init__("Ghost Car")
+        self.icon = "🚋👻"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class LoungeCar(TrainCard):
+    """Scartalo: pesca 2 vagoni dal mazzo, mettine I in gioco di fronte a te e 1 di fronte a un altro giocatore."""
+
+    def __init__(self):
+        super().__init__("Lounge Car")
+        self.icon = "🚋🛋"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class LumberFlatcar(TrainCard):
+    """Giocalo su un qualsiasi giocatore (compreso te). Finché questa carta è in gioco, quel giocatore vede gli altri giocatori a distanza aumentata di 1."""
+
+    def __init__(self):
+        super().__init__("Lumber Flatcar")
+        self.icon = "🚋🪵"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class MailCar(TrainCard):
+    """Scartalo: pesca 3 carte e dai 1 di esse a un altro giocatore a tua scelta."""
+
+    def __init__(self):
+        super().__init__("Mail Car")
+        self.icon = "🚋📮"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class ObservationCar(TrainCard):
+    """Tu vedi gli altri a distanza -1. Gli altri a vedono a distanza +1."""
+
+    def __init__(self):
+        super().__init__("Observation Car")
+        self.icon = "🚋👀"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class PassengerCar(TrainCard):
+    """Scartalo: pesca una carta (in mano o in gioco) da un altro giocatore"""
+
+    def __init__(self):
+        super().__init__("Passenger Car")
+        self.icon = "🚋🚶"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class PrisonerCar(TrainCard):
+    """Le carte Duello e Indiani! giocate dagli altri giocatori non hanno effetto su di te."""
+
+    def __init__(self):
+        super().__init__("Prisoner Car")
+        self.icon = "🚋👮🏻‍♂️"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class PrivateCar(TrainCard):
+    """se non hai carte in mano. non puoi essere bersaelio di carte BANG"""
+
+    def __init__(self):
+        super().__init__("Private Car")
+        self.icon = "🚋💁🏻"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+class SleeperCar(TrainCard):
+    """Una volta per turno, puoi scartare un'altra tua carta a bordo blu incluso."""
+
+    def __init__(self):
+        super().__init__("Sleeper Car")
+        self.icon = "🚋🛌"
+
+    def play_card(self, player, against=None, _with=None) -> bool:
+        return True
+
+
+def get_all_cards(rng=random):
+    """Return a list of all train cards in the expansion"""
+    cars = [
+        BaggageCar(),
+        Caboose(),
+        CattleTruck(),
+        CircusWagon(),
+        CoalHopper(),
+        DiningCar(),
+        ExpressCar(),
+        GhostCar(),
+        LoungeCar(),
+        LumberFlatcar(),
+        MailCar(),
+        ObservationCar(),
+        PassengerCar(),
+        PrisonerCar(),
+        PrivateCar(),
+        SleeperCar(),
+    ]
+    rng.shuffle(cars)
+    return cars
+
+
+def get_locomotives(rng=random):
+    """Return a list of all locomotive cards in the expansion"""
+    locs = [
+        Ironhorse(),
+        Leland(),
+    ]
+    rng.shuffle(locs)
+    return locs

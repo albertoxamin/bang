@@ -11,18 +11,8 @@
 					<card :card="goldRushCardBack" :donotlocalize="true" class="gold-rush back last-event" @click.native="goldRushShopOpen = !goldRushShopOpen"/>
 				</div>
 			</div>
-			<div v-if="current_stations.length > 0" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;`" >
-				<station-card v-for="station, i in current_stations" :key="station.name" :card="station" :price="station.price" :trainPiece="
-					i == 2 ? {
-						name: 'Iron House',
-						icon: '🚂',
-						back: true,
-					} : i > 2 ? {
-						name: 'Passenger Car',
-						icon: '🚃',
-						back: true,
-					} : undefined
-				"/>
+			<div v-if="currentStations.length > 0" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;flex-direction:row;`" >
+				<station-card v-for="station, i in currentStations" :key="station.name" :card="{name:i}" :price="station.price" :trainPiece="trainPieceForStation(i)"/>
 			</div>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
@@ -105,7 +95,8 @@ export default {
 		goldRushDesc: null,
 		can_gold_rush_discard: false,
 		gold_rush_discount: 0,
-		current_stations: [],
+		currentStations: [],
+		currentTrain: [],
 	}),
 	sockets: {
 		self(self){
@@ -140,7 +131,9 @@ export default {
 			this.goldRushCards = JSON.parse(cards)
 		},
 		stations(stations) {
-			this.current_stations = JSON.parse(stations)
+			let msg = JSON.parse(stations)
+			this.currentStations = msg.stations
+			this.currentTrain = msg.current_train
 		},
 	},
 	computed: {
@@ -182,6 +175,12 @@ export default {
 		},
 	},
 	methods: {
+		trainPieceForStation(i) {
+			let index = this.currentTrain.length-5-i;
+			if (index < 0 || index >= this.currentTrain.length)
+				return null;
+			return this.currentTrain[index];
+		},
 		action(pile) {
 			if (this.pending_action !== false && this.pending_action < 2) {
 				// console.log('action')

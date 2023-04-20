@@ -59,6 +59,8 @@ debug_commands = [
     {"cmd": "/getcard", "help": "Get a brand new card - sample /getcard Birra"},
     {"cmd": "/meinfo", "help": "Get player data"},
     {"cmd": "/gameinfo", "help": "Get game data"},
+    {"cmd": "/deckinfo", "help": "Get deck data"},
+    {"cmd": "/trainfw", "help": "move train forward"},
     {"cmd": "/playerinfo", "help": "Get player data - sample /playerinfo player"},
     {"cmd": "/cardinfo", "help": "Get card data - sample /cardinfo handindex"},
     {"cmd": "/mebot", "help": "Toggles bot mode"},
@@ -844,6 +846,7 @@ class Game:
             )
         ):
             self.deck.flip_event()
+            self.deck.move_train_forward()
             if self.check_event(ce.RouletteRussa):
                 self.is_russian_roulette_on = True
                 if self.players[self.turn].get_banged(self.deck.event_cards[0]):
@@ -925,7 +928,13 @@ class Game:
             G.sio.emit(
                 "stations",
                 room=room,
-                data=json.dumps(self.deck.stations, default=lambda o: o.__dict__),
+                data=json.dumps(
+                    {
+                        "stations": self.deck.stations,
+                        "current_train": self.deck.current_train,
+                    },
+                    default=lambda o: o.__dict__,
+                ),
             )
 
     def notify_scrap_pile(self, sid=None):

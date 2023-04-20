@@ -1089,6 +1089,21 @@ def chat_message(sid, msg, pl=None):
                             "type": "json",
                         },
                     )
+                elif "/deckinfo" in msg:
+                    sio.emit(
+                        "chat_message",
+                        room=sid,
+                        data={
+                            "color": "",
+                            "text": json.dumps(
+                                ses.game.deck.__dict__,
+                                default=lambda o: f"<{o.__class__.__name__}() not serializable>",
+                            ),
+                            "type": "json",
+                        },
+                    )
+                elif "/trainfw" in msg:
+                    ses.game.deck.move_train_forward()
                 elif "/status" in msg and ses.is_admin():
                     sio.emit("mount_status", room=sid)
                 elif "/meinfo" in msg:

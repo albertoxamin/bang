@@ -355,6 +355,9 @@ export default {
   transform: scaleX(-1);
   /* filter: grayscale(1); */
 }
+.train-piece .suit, .train-piece .expansion {
+  display: none;
+}
 .train-piece h4 {
   position: absolute;
   text-align: center;

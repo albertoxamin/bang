@@ -6,6 +6,7 @@ import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.wild_west_show.characters as chw
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.train_robbery.stations as trs
+import bang.expansions.train_robbery.trains as trt
 from globals import G
 
 if TYPE_CHECKING:
@@ -36,6 +37,8 @@ class Deck:
         self.event_cards: List[ce.CardEvent] = []
         self.event_cards_wildwestshow: List[ce.CardEvent] = []
         self.stations: List[trs.StationCard] = []
+        self.train_pile: List[trt.TrainCard] = []
+        self.current_train: List[trt.TrainCard] = []
         endgame_cards: List[ce.CardEvent] = []
         if "fistful_of_cards" in game.expansions:
             self.event_cards.extend(ce.get_all_events(game.rng))
@@ -50,6 +53,10 @@ class Deck:
             self.event_cards_wildwestshow.append(cew.get_endgame_card())
         if "train_robbery" in game.expansions:
             self.stations = game.rng.sample(trs.get_all_stations(), len(game.players))
+            self.train_pile = trt.get_all_cards(game.rng)
+            self.current_train = [trt.get_locomotives(game.rng)[0]] + self.train_pile[
+                :3
+            ]
         if len(self.event_cards) > 0:
             game.rng.shuffle(self.event_cards)
             self.event_cards = self.event_cards[:12]
@@ -108,6 +115,15 @@ class Deck:
                 self.shop_cards[i] = self.shop_deck.pop(0)
                 self.shop_cards[i].reset_card()
         self.game.notify_gold_rush_shop()
+
+    def move_train_forward(self):
+        if len(self.stations) == 0:
+            return
+        if len(self.current_train) == len(self.stations) + 4:
+            return
+        if len(self.current_train) > 0:
+            self.current_train.append(None)
+        self.game.notify_stations()
 
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
