@@ -1,4 +1,8 @@
+from typing import TYPE_CHECKING
 import bang.cards as cs
+
+if TYPE_CHECKING:
+    from bang.players import Player
 
 
 class StationCard:
@@ -7,8 +11,9 @@ class StationCard:
         self.expansion = "train_robbery"
         self.price: list[dict] = []
 
-    def card_check(self, card: cs.Card):
+    def check_price(self, player: "Player") -> bool:
         """Check if the card can be used to rob the train"""
+        return len(player.hand) > 0
 
 
 class BoomTown(StationCard):
@@ -18,8 +23,11 @@ class BoomTown(StationCard):
         super().__init__("Boom Town")
         self.price = [cs.Bang(0, 0).__dict__]
 
-    def card_check(self, card: cs.Card):
-        return isinstance(card, cs.Bang)
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            not isinstance(c, cs.Bang) for c in player.hand
+        ):
+            return False
 
 
 class Caticor(StationCard):
@@ -29,8 +37,12 @@ class Caticor(StationCard):
         super().__init__("Caticor")
         self.price = [cs.CatBalou(0, 0).__dict__, cs.Panico(0, 0).__dict__]
 
-    def card_check(self, card: cs.Card):
-        return isinstance(card, cs.CatBalou) or isinstance(card, cs.Panico)
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            not (isinstance(card, cs.CatBalou) or isinstance(card, cs.Panico))
+            for card in player.hand
+        ):
+            return False
 
 
 class CreepyCreek(StationCard):
@@ -40,8 +52,11 @@ class CreepyCreek(StationCard):
         super().__init__("Creepy Creek")
         self.price = [{"icon": "♠️"}]
 
-    def card_check(self, card: cs.Card):
-        return card.suit == cs.Suit.SPADES
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            card.suit != cs.Suit.SPADES for card in player.hand
+        ):
+            return False
 
 
 class CrownsHole(StationCard):
@@ -51,8 +66,11 @@ class CrownsHole(StationCard):
         super().__init__("Crown's Hole")
         self.price = [cs.Birra(0, 0).__dict__]
 
-    def card_check(self, card: cs.Card):
-        return isinstance(card, cs.Birra)
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            not isinstance(card, cs.Birra) for card in player.hand
+        ):
+            return False
 
 
 class Deadwood(StationCard):
@@ -62,8 +80,11 @@ class Deadwood(StationCard):
         super().__init__("Deadwood")
         self.price = [{"is_equipment": True}]
 
-    def card_check(self, card: cs.Card):
-        return card.is_equipment
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            not card.is_equipment for card in player.hand
+        ):
+            return False
 
 
 class Dodgeville(StationCard):
@@ -73,8 +94,11 @@ class Dodgeville(StationCard):
         super().__init__("Dodgeville")
         self.price = [cs.Mancato(0, 0).__dict__]
 
-    def card_check(self, card: cs.Card):
-        return isinstance(card, cs.Mancato)
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            not isinstance(card, cs.Mancato) for card in player.hand
+        ):
+            return False
 
 
 class FortWorth(StationCard):
@@ -84,8 +108,11 @@ class FortWorth(StationCard):
         super().__init__("Fort Worth")
         self.price = [{"icon": "10\nJ\nQ\nK\nA"}]
 
-    def card_check(self, card: cs.Card):
-        return card.number in {1, 10, 11, 12, 13}
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            card.number not in {1, 10, 11, 12, 13} for card in player.hand
+        ):
+            return False
 
 
 class Frisco(StationCard):
@@ -95,8 +122,11 @@ class Frisco(StationCard):
         super().__init__("Frisco")
         self.price = [{"icon": "♣️"}]
 
-    def card_check(self, card: cs.Card):
-        return card.suit == cs.Suit.CLUBS
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            card.suit != cs.Suit.CLUBS for card in player.hand
+        ):
+            return False
 
 
 class MinersOath(StationCard):
@@ -106,8 +136,11 @@ class MinersOath(StationCard):
         super().__init__("Miner's Oath")
         self.price = [{"icon": "♦️"}]
 
-    def card_check(self, card: cs.Card):
-        return card.suit == cs.Suit.DIAMONDS
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            card.suit != cs.Suit.DIAMONDS for card in player.hand
+        ):
+            return False
 
 
 class SanTafe(StationCard):
@@ -117,8 +150,11 @@ class SanTafe(StationCard):
         super().__init__("San Tafe")
         self.price = [{"icon": "♥️"}]
 
-    def card_check(self, card: cs.Card):
-        return card.suit == cs.Suit.HEARTS
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            card.suit != cs.Suit.HEARTS for card in player.hand
+        ):
+            return False
 
 
 class Tombrock(StationCard):
@@ -128,8 +164,9 @@ class Tombrock(StationCard):
         super().__init__("Tombrock")
         self.price = [{"icon": "💔"}]
 
-    def card_check(self, card: cs.Card):
-        return True
+    def check_price(self, player: "Player"):
+        if player.lives <= 1:
+            return False
 
 
 class Yooma(StationCard):
@@ -139,8 +176,11 @@ class Yooma(StationCard):
         super().__init__("Yooma")
         self.price = [{"icon": "2-9"}]
 
-    def card_check(self, card: cs.Card):
-        return 2 <= card.number <= 9
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and all(
+            not (2 <= card.number <= 9) for card in player.hand
+        ):
+            return False
 
 
 class VirginiaTown(StationCard):
@@ -150,8 +190,9 @@ class VirginiaTown(StationCard):
         super().__init__("Virginia Town")
         self.price = [{}, {}]
 
-    def card_check(self, card: cs.Card):
-        return True
+    def check_price(self, player: "Player"):
+        if super().check_price(player) and len(player.hand < 2):
+            return False
 
 
 def get_all_stations():

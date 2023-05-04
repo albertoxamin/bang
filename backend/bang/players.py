@@ -17,6 +17,8 @@ import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
 import bang.expansions.the_valley_of_shadows.characters as tvosch
+import bang.expansions.train_robbery.stations as trs
+import bang.expansions.train_robbery.trains as trt
 from typing import List, TYPE_CHECKING
 from metrics import Metrics
 from globals import G
@@ -280,25 +282,25 @@ class Player:
         if self.pending_action == PendingAction.DRAW and self.game.check_event(
             ce.Peyote
         ):
-            self.available_cards = [
-                {"icon": "🔴", "noDesc": True},
-                {"icon": "⚫", "noDesc": True},
-            ]
             self.is_drawing = True
-            self.choose_text = "choose_guess"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_guess",
+                [
+                    {"icon": "🔴", "noDesc": True},
+                    {"icon": "⚫", "noDesc": True},
+                ],
+            )
         elif (
             self.can_play_ranch
             and self.pending_action == PendingAction.PLAY
             and self.game.check_event(ce.Ranch)
         ):
             self.can_play_ranch = False
-            self.available_cards = [c for c in self.hand]
             self.discarded_cards = []
-            self.available_cards.append({"icon": "✅", "noDesc": True})
             self.is_playing_ranch = True
-            self.choose_text = "choose_ranch"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_ranch", [c for c in self.hand] + [{"icon": "✅", "noDesc": True}]
+            )
         elif (
             self.character
             and self.character.check(self.game, chars.SuzyLafayette)
@@ -338,9 +340,7 @@ class Player:
                     self.game.players[self.game.turn].notify_self()
                 self.scrapped_cards = 0
                 self.previous_pending_action = self.pending_action
-                self.pending_action = PendingAction.CHOOSE
-                self.choose_text = "choose_sid_scrap"
-                self.available_cards = self.hand
+                self.set_choose_action("choose_sid_scrap", self.hand)
                 self.lives += 1
 
         ser = self.__dict__.copy()
@@ -782,35 +782,36 @@ class Player:
                 for p in self.game.get_alive_players()
             )
         ):
-            self.available_cards = [
-                {
-                    "name": p.name,
-                    "icon": p.role.icon
-                    if (self.game.initial_players == 3)
-                    else "⭐️"
-                    if isinstance(p.role, r.Sheriff)
-                    else "🤠",
-                    "alt_text": "".join(["❤️"] * p.lives)
-                    + "".join(["💀"] * (p.max_lives - p.lives)),
-                    "avatar": p.avatar,
-                    "is_character": True,
-                    "is_player": True,
-                }
-                for p in self.game.get_alive_players()
-                if p != self and p.lives < p.max_lives
-            ]
-            self.available_cards.append({"icon": "❌", "noDesc": True})
-            self.choose_text = "choose_fratelli_di_sangue"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_fratelli_di_sangue",
+                [
+                    {
+                        "name": p.name,
+                        "icon": p.role.icon
+                        if (self.game.initial_players == 3)
+                        else "⭐️"
+                        if isinstance(p.role, r.Sheriff)
+                        else "🤠",
+                        "alt_text": "".join(["❤️"] * p.lives)
+                        + "".join(["💀"] * (p.max_lives - p.lives)),
+                        "avatar": p.avatar,
+                        "is_character": True,
+                        "is_player": True,
+                    }
+                    for p in self.game.get_alive_players()
+                    if p != self and p.lives < p.max_lives
+                ]
+                + [{"icon": "❌", "noDesc": True}],
+            )
             self.is_giving_life = True
         elif (
             self.game.check_event(ceh.NuovaIdentita)
             and self.not_chosen_character is not None
             and not again
         ):
-            self.available_cards = [self.character, self.not_chosen_character]
-            self.choose_text = "choose_nuova_identita"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_nuova_identita", [self.character, self.not_chosen_character]
+            )
         elif not self.game.check_event(ce.Lazo) and any(
             (
                 isinstance(c, cs.Dinamite)
@@ -840,25 +841,26 @@ class Player:
             and sum((c.name == cs.Bang(0, 0).name for c in self.hand)) >= 2
         ):
             self.is_using_checchino = True
-            self.available_cards = [
-                {
-                    "name": p["name"],
-                    "icon": p["role"].icon
-                    if (self.game.initial_players == 3)
-                    else "⭐️"
-                    if p["is_sheriff"]
-                    else "🤠",
-                    "alt_text": "".join(["❤️"] * p["lives"])
-                    + "".join(["💀"] * (p["max_lives"] - p["lives"])),
-                    "is_character": True,
-                    "is_player": True,
-                }
-                for p in self.game.get_visible_players(self)
-                if p["dist"] <= self.get_sight()
-            ]
-            self.available_cards.append({"icon": "❌", "noDesc": True})
-            self.choose_text = "choose_cecchino"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_cecchino",
+                [
+                    {
+                        "name": p["name"],
+                        "icon": p["role"].icon
+                        if (self.game.initial_players == 3)
+                        else "⭐️"
+                        if p["is_sheriff"]
+                        else "🤠",
+                        "alt_text": "".join(["❤️"] * p["lives"])
+                        + "".join(["💀"] * (p["max_lives"] - p["lives"])),
+                        "is_character": True,
+                        "is_player": True,
+                    }
+                    for p in self.game.get_visible_players(self)
+                    if p["dist"] <= self.get_sight()
+                ]
+                + [{"icon": "❌", "noDesc": True}],
+            )
             self.notify_self()
         if (
             self.is_my_turn
@@ -884,15 +886,15 @@ class Player:
             self.notify_self()
         elif self.character.check(self.game, chars.KitCarlson) and not self.is_ghost:
             self.is_drawing = True
-            self.available_cards = [self.game.deck.draw() for i in range(3)]
-            self.choose_text = "choose_card_to_get"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_card_to_get", [self.game.deck.draw() for i in range(3)]
+            )
             self.notify_self()
         elif self.character.check(self.game, grch.DutchWill) and not self.is_ghost:
             self.is_drawing = True
-            self.available_cards = [self.game.deck.draw() for i in range(2)]
-            self.choose_text = "choose_card_to_get"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_card_to_get", [self.game.deck.draw() for i in range(2)]
+            )
             self.notify_self()
         elif (
             self.character.check(self.game, chd.PatBrennan)
@@ -902,10 +904,10 @@ class Player:
             and len(self.game.get_player_named(pile).equipment) > 0
         ):
             self.is_drawing = True
-            self.available_cards = self.game.get_player_named(pile).equipment
             self.pat_target = pile
-            self.choose_text = "choose_card_to_get"
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_card_to_get", self.game.get_player_named(pile).equipment
+            )
             self.notify_self()
         else:
             self.pending_action = PendingAction.PLAY
@@ -1004,12 +1006,13 @@ class Player:
 
     def manette(self):
         if self.game.check_event(ceh.Manette):
-            self.choose_text = "choose_manette"
-            self.available_cards = [
-                {"name": "", "icon": "♦♣♥♠"[s], "alt_text": "", "noDesc": True}
-                for s in [0, 1, 2, 3]
-            ]
-            self.pending_action = PendingAction.CHOOSE
+            self.set_choose_action(
+                "choose_manette",
+                [
+                    {"name": "", "icon": "♦♣♥♠"[s], "alt_text": "", "noDesc": True}
+                    for s in [0, 1, 2, 3]
+                ],
+            )
 
     def pick(self):
         if self.pending_action != PendingAction.PICK:
@@ -2100,9 +2103,7 @@ class Player:
         if len(equipments) == 0:
             return False
         else:
-            self.choose_text = "choose_dalton"
-            self.pending_action = PendingAction.CHOOSE
-            self.available_cards = equipments
+            self.set_choose_action("choose_dalton", equipments)
             return True
 
     def get_indians(self, attacker):
@@ -2501,26 +2502,29 @@ class Player:
         self.character.special(self, data)
 
     def gold_rush_discard(self):
-        self.available_cards = [
-            {
-                "name": p.name,
-                "icon": p.role.icon
-                if (self.game.initial_players == 3)
-                else "⭐️"
-                if isinstance(p.role, r.Sheriff)
-                else "🤠",
-                "is_character": True,
-                "avatar": p.avatar,
-                "alt_text": "".join(["🎴️"] * len(p.gold_rush_equipment)),
-                "is_player": True,
-            }
-            for p in self.game.get_alive_players()
-            if p != self
-            and any((e.number + 1 <= self.gold_nuggets for e in p.gold_rush_equipment))
-        ]
-        self.available_cards.append({"icon": "❌", "noDesc": True})
-        self.choose_text = "gold_rush_discard"
-        self.pending_action = PendingAction.CHOOSE
+        self.set_choose_action(
+            "gold_rush_discard",
+            [
+                {
+                    "name": p.name,
+                    "icon": p.role.icon
+                    if (self.game.initial_players == 3)
+                    else "⭐️"
+                    if isinstance(p.role, r.Sheriff)
+                    else "🤠",
+                    "is_character": True,
+                    "avatar": p.avatar,
+                    "alt_text": "".join(["🎴️"] * len(p.gold_rush_equipment)),
+                    "is_player": True,
+                }
+                for p in self.game.get_alive_players()
+                if p != self
+                and any(
+                    (e.number + 1 <= self.gold_nuggets for e in p.gold_rush_equipment)
+                )
+            ]
+            + [{"icon": "❌", "noDesc": True}],
+        )
         self.notify_self()
 
     def buy_gold_rush_card(self, index):
@@ -2549,6 +2553,28 @@ class Player:
             self.game.deck.shop_cards[index] = None
             self.game.deck.fill_gold_rush_shop()
             self.notify_self()
+
+    def buy_train(self, index):
+        if self.pending_action != PendingAction.PLAY:
+            return
+        print(
+            f"{self.name} wants to buy train card on station index {index} in room {self.game.name}"
+        )
+        station: trs.StationCard = self.game.deck.stations[index]
+        train_index = len(self.game.deck.current_train) - 5 - index
+        if train_index < 0 or train_index >= len(self.game.deck.current_train):
+            return
+
+        train: trt.TrainCard = self.game.deck.current_train[train_index]
+        if train is not None and not train.is_locomotive:
+            if station.check_price(self):
+                print(f"{station=} {train=}")
+        self.notify_self()
+
+    def set_choose_action(self, choose_text: str, available_cards: List):
+        self.pending_action = PendingAction.CHOOSE
+        self.choose_text = choose_text
+        self.available_cards = available_cards
 
     def check_can_end_turn(self):
         must_be_used_cards = [c for c in self.hand if c.must_be_used]

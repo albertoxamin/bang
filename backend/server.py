@@ -681,6 +681,14 @@ def buy_gold_rush_card(sid, data: int):
 
 @sio.event
 @bang_handler
+def buy_train(sid, data: int):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f"{ses.name};buy_train;{data}")
+    ses.buy_train(data)
+
+
+@sio.event
+@bang_handler
 def chat_message(sid, msg, pl=None):
     ses: Player = sio.get_session(sid) if pl is None else pl
     ses.game.rpc_log.append(f"{ses.name};chat_message;{msg}")

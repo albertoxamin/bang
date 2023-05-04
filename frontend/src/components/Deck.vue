@@ -12,7 +12,7 @@
 				</div>
 			</div>
 			<div v-if="currentStations.length > 0" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;flex-direction:row;`" >
-				<station-card v-for="station, i in currentStations" :key="station.name" :card="{name:i}" :price="station.price" :trainPiece="trainPieceForStation(i)"/>
+				<station-card @click.native="()=>{buyTrain(i)}" v-for="station, i in currentStations" :key="station.name" :card="station" :price="station.price" :trainPiece="trainPieceForStation(i)"/>
 			</div>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
@@ -180,6 +180,9 @@ export default {
 			if (index < 0 || index >= this.currentTrain.length)
 				return null;
 			return this.currentTrain[index];
+		},
+		buyTrain(i) {
+			this.$socket.emit('buy_train', i)
 		},
 		action(pile) {
 			if (this.pending_action !== false && this.pending_action < 2) {

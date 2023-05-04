@@ -60,11 +60,7 @@ class Lemat(Card):
                 for p in player.game.get_visible_players(player)
             )
         ):
-            from bang.players import PendingAction
-
-            player.available_cards = player.hand.copy()
-            player.pending_action = PendingAction.CHOOSE
-            player.choose_text = "choose_play_as_bang"
+            player.set_choose_action("choose_play_as_bang", player.hand.copy())
             player.notify_self()
         return False
 

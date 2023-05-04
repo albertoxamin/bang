@@ -371,14 +371,18 @@ class Birra(Card):
                 player.game.deck.draw(True, player=p)
                 p.notify_self()
             if "gold_rush" in player.game.expansions and self.number != 42:
-                from bang.players import PendingAction
-
-                player.available_cards = [
-                    {"name": "Pepita", "icon": "💵️", "alt_text": "1", "noDesc": True},
-                    self,
-                ]
-                player.choose_text = "choose_birra_function"
-                player.pending_action = PendingAction.CHOOSE
+                player.set_choose_action(
+                    "choose_birra_function",
+                    [
+                        {
+                            "name": "Pepita",
+                            "icon": "💵️",
+                            "alt_text": "1",
+                            "noDesc": True,
+                        },
+                        self,
+                    ],
+                )
                 player.notify_self()
                 return True
         if (
