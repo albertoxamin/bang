@@ -67,7 +67,7 @@ class Card(ABC):
 
     def __str__(self) -> str:
         if str(self.suit).isnumeric():
-            char = ["♦️", "♣️", "♥️", "♠️", "🤑"][int(self.suit)]
+            char = ["♦️", "♣️", "♥️", "♠️", "🤑", "🚋"][int(self.suit)]
         else:
             char = self.suit
         return f"{self.name} {char}{self.number}"

@@ -19,7 +19,7 @@ import bang.expansions.the_valley_of_shadows.cards as tvosc
 import bang.expansions.the_valley_of_shadows.characters as tvosch
 import bang.expansions.train_robbery.stations as trs
 import bang.expansions.train_robbery.trains as trt
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Callable
 from metrics import Metrics
 from globals import G
 import sys
@@ -104,6 +104,7 @@ class Player:
         self.is_bot = bot
         self.discord_token = discord_token
         self.discord_id = None
+        self.did_choose_callback = None
         self.played_cards = 0
         self.avatar = ""
         self.last_played_card: cs.Card = None
@@ -1402,6 +1403,9 @@ class Player:
                 self.target_p = self.rissa_targets.pop(0).name
                 print(f"rissa targets: {self.rissa_targets}")
             self.notify_self()
+        elif self.did_choose_callback is not None:
+            self.did_choose_callback(self, card_index)
+            self.notify_self()
         elif self.choose_text == "choose_ricercato":
             player = self.game.get_player_named(
                 self.available_cards[card_index]["name"]
@@ -2569,12 +2573,26 @@ class Player:
         if train is not None and not train.is_locomotive:
             if station.check_price(self):
                 print(f"{station=} {train=}")
+                station.attached_train = train
+                # shift train forward
+                for i in range(train_index, len(self.game.deck.current_train) - 1):
+                    self.game.deck.current_train[i] = self.game.deck.current_train[
+                        i + 1
+                    ]
+                self.game.notify_stations()
+                # self.game.deck.current_train[train_index] = None
         self.notify_self()
 
-    def set_choose_action(self, choose_text: str, available_cards: List):
+    def set_choose_action(
+        self,
+        choose_text: str,
+        available_cards: List,
+        did_choose_callback: Callable(Player, int) = None,
+    ):
         self.pending_action = PendingAction.CHOOSE
         self.choose_text = choose_text
         self.available_cards = available_cards
+        self.did_choose_callback = did_choose_callback
 
     def check_can_end_turn(self):
         must_be_used_cards = [c for c in self.hand if c.must_be_used]

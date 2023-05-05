@@ -11,6 +11,7 @@
       'gold-rush': card.expansion === 'gold_rush',
       brown: card.kind === 0,
       black: card.kind === 1,
+      'train-piece': card.type && card.type === 'train',
     }"
   >
     <h4>{{ cardName }}</h4>

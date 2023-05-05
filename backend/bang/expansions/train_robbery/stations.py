@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import bang.cards as cs
+import bang.players as pl
 
 if TYPE_CHECKING:
     from bang.players import Player
@@ -10,6 +11,22 @@ class StationCard:
         self.name = name
         self.expansion = "train_robbery"
         self.price: list[dict] = []
+        self.attached_train = None
+
+    def discard_and_buy_train(self, player: "Player", card_index: int):
+        """Discard the card and buy the train"""
+        card = player.available_cards.pop(card_index)
+        for i, card in enumerate(player.hand):
+            if card == self:
+                player.hand.pop(i)
+                break
+        else:
+            player.lives -= 1
+        card = player.hand.pop(card_index)
+        player.game.deck.scrap(card, True, player=player)
+        player.hand.append(self.attached_train)
+        self.attached_train = None
+        player.pending_action = pl.PendingAction.PLAY
 
     def check_price(self, player: "Player") -> bool:
         """Check if the card can be used to rob the train"""
@@ -28,6 +45,12 @@ class BoomTown(StationCard):
             not isinstance(c, cs.Bang) for c in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if isinstance(c, cs.Bang)],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class Caticor(StationCard):
@@ -43,6 +66,16 @@ class Caticor(StationCard):
             for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [
+                c
+                for c in player.hand
+                if isinstance(c, cs.CatBalou) or isinstance(c, cs.Panico)
+            ],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class CreepyCreek(StationCard):
@@ -57,6 +90,12 @@ class CreepyCreek(StationCard):
             card.suit != cs.Suit.SPADES for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if c.suit == cs.Suit.SPADES],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class CrownsHole(StationCard):
@@ -71,6 +110,12 @@ class CrownsHole(StationCard):
             not isinstance(card, cs.Birra) for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if isinstance(c, cs.Birra)],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class Deadwood(StationCard):
@@ -85,6 +130,12 @@ class Deadwood(StationCard):
             not card.is_equipment for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if c.is_equipment],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class Dodgeville(StationCard):
@@ -99,6 +150,12 @@ class Dodgeville(StationCard):
             not isinstance(card, cs.Mancato) for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if isinstance(c, cs.Mancato)],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class FortWorth(StationCard):
@@ -113,6 +170,12 @@ class FortWorth(StationCard):
             card.number not in {1, 10, 11, 12, 13} for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if c.number in {1, 10, 11, 12, 13}],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class Frisco(StationCard):
@@ -127,6 +190,12 @@ class Frisco(StationCard):
             card.suit != cs.Suit.CLUBS for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if c.suit == cs.Suit.CLUBS],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class MinersOath(StationCard):
@@ -141,6 +210,12 @@ class MinersOath(StationCard):
             card.suit != cs.Suit.DIAMONDS for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if c.suit == cs.Suit.DIAMONDS],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class SanTafe(StationCard):
@@ -155,6 +230,12 @@ class SanTafe(StationCard):
             card.suit != cs.Suit.HEARTS for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if c.suit == cs.Suit.HEARTS],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class Tombrock(StationCard):
@@ -167,6 +248,12 @@ class Tombrock(StationCard):
     def check_price(self, player: "Player"):
         if player.lives <= 1:
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [{"icon": "💔"}],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class Yooma(StationCard):
@@ -181,6 +268,12 @@ class Yooma(StationCard):
             not (2 <= card.number <= 9) for card in player.hand
         ):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            [c for c in player.hand if 2 <= c.number <= 9],
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 class VirginiaTown(StationCard):
@@ -193,6 +286,12 @@ class VirginiaTown(StationCard):
     def check_price(self, player: "Player"):
         if super().check_price(player) and len(player.hand < 2):
             return False
+        player.set_choose_action(
+            "choose_buy_train",
+            player.hand.copy(),
+            self.discard_and_buy_train,
+        )
+        return True
 
 
 def get_all_stations():

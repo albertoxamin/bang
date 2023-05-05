@@ -9,6 +9,7 @@ class TrainCard(Card):
         self.is_equipment = True
         self.is_locomotive = is_locomotive
         self.expansion = "train_robbery"
+        self.type = "train"
 
 
 # Circus Wagon: gli altri giocatori
