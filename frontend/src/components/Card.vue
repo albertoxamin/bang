@@ -339,6 +339,7 @@ export default {
 }
 .cant-play {
   filter: brightness(0.5);
+  cursor: not-allowed;
 }
 .expansion {
   position: absolute;

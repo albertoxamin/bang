@@ -12,7 +12,8 @@
 				</div>
 			</div>
 			<div v-if="currentStations.length > 0" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;flex-direction:row;`" >
-				<station-card @click.native="()=>{buyTrain(i)}" v-for="station, i in currentStations" :key="station.name" :card="station" :price="station.price" :trainPiece="trainPieceForStation(i)"/>
+				<station-card @click.native="()=>{buyTrain(i)}" v-for="station, i in currentStations" :key="station.name" :card="station" :price="station.price" :trainPiece="trainPieceForStation(i)"
+						@pointerenter.native="()=>{setStationDesc(i)}" @pointerleave.native="stationDesc = null"/>
 			</div>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
@@ -41,14 +42,13 @@
 		</div>
 		<transition name="list">
 			<p v-if="eventCard" class="center-stuff"><b>{{eventDesc}}</b></p>
-		</transition>
-		<transition name="list">
 			<p v-if="eventCardWildWestShow && !eventCardWildWestShow.back" class="center-stuff">🎪 <b>{{eventDescWildWestShow}}</b> 🎪</p>
-		</transition>
-		<transition name="list">
 			<div v-if="goldRushDesc">
 				<p class="center-stuff">🤑️ <i>{{$t(`cards.${goldRushDesc.name}.desc`)}}</i> 🤑️</p>
 				<p class="center-stuff">🤑️ <b>{{goldRushDesc.number - gold_rush_discount}} 💵️</b> 🤑️</p>
+			</div>
+			<div v-if="stationDesc">
+				<p class="center-stuff"><i>{{stationDesc}}</i></p>
 			</div>
 		</transition>
 		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
@@ -93,6 +93,7 @@ export default {
 		goldRushCards: [],
 		gold_nuggets: 0,
 		goldRushDesc: null,
+		stationDesc: null,
 		can_gold_rush_discard: false,
 		gold_rush_discount: 0,
 		currentStations: [],
@@ -209,6 +210,14 @@ export default {
 		},
 		setGoldRushDesc(card) {
 			this.goldRushDesc = card
+		},
+		setStationDesc(index) {
+			console.log('setStationDesc', index)
+			this.stationDesc = this.$t(`cards.${this.currentStations[index].name}.desc`)
+			const trainPiece = this.trainPieceForStation(index)
+			if (trainPiece) {
+				this.stationDesc += '\n\n🚂' + this.$t(`cards.${trainPiece.name}.desc`)
+			}
 		},
 	},
 	mounted() {

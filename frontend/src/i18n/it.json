@@ -855,6 +855,130 @@
     "Wild West Show": {
       "name": "Wild West Show",
       "desc": "L'obiettivo di ogni giocatore diventa: \"Rimani l'ultimo in gioco!\""
+    },
+    "Boom Town": {
+      "name": "Boom Town",
+      "desc": "Scarta una Bang! per derubare il treno"
+    },
+    "Caticor": {
+      "name": "Caticor",
+      "desc": "Scarta una Cat Balou o un Panico per derubare il treno"
+    },
+    "Creepy Creek": {
+      "name": "Creepy Creek",
+      "desc": "Scarta una carta di picche per derubare il treno"
+    },
+    "Crowns Hole": {
+      "name": "Crown's Hole",
+      "desc": "Scarta una birra per derubare il treno"
+    },
+    "Deadwood": {
+      "name": "Deadwood",
+      "desc": "Scarta una carta equipaggiamento per derubare il treno"
+    },
+    "Dodgeville": {
+      "name": "Dodgeville",
+      "desc": "Scarta un Mancato! per derubare il treno"
+    },
+    "Fort Worth": {
+      "name": "Fort Worth",
+      "desc": "Scarta una carta con il numero 10, J, Q, K, A per derubare il treno"
+    },
+    "Frisco": {
+      "name": "Frisco",
+      "desc": "Scarta una carta di fiori per derubare il treno"
+    },
+    "Miners Oath": {
+      "name": "Miner's Oath",
+      "desc": "Scarta una carta di quadri per derubare il treno"
+    },
+    "San Tafe": {
+      "name": "San Tafe",
+      "desc": "Scarta una carta di cuori per derubare il treno"
+    },
+    "Tombrock": {
+      "name": "Tombrock",
+      "desc": "Per derubare il treno, perdi 1 punto vita"
+    },
+    "Yooma": {
+      "name": "Yooma",
+      "desc": "Scarta una carta con un numero compreso tra 2 e 9 per derubare il treno"
+    },
+    "Virginia Town": {
+      "name": "Virginia Town",
+      "desc": "Scarta due carte per derubare il treno"
+    },
+    "Ironhorse": {
+      "name": "Ironhorse",
+      "desc": "LOCOMOTIVA: Ogni giocatore, incluso colui che ha attivato l'effetto, è bersaglio di un BANG!\nNessun giocatore è responsabile dell'eventuale perdita di punti vita.\nSe tutti i giocatori vengono eliminati allo stesso tempo, i Fuorilegge vincono."
+    },
+    "Leland": {
+      "name": "Leland",
+      "desc": "LOCOMOTIVA: svolgi l'effetto dell'Emporio, cominciando dal giocatore di turno e procedendo in senso orario."
+    },
+    "Baggage Car": {
+      "name": "Baggage Car",
+      "desc": "Scartalo: ottieni l'effetto di un Mancato!, Panico!, Cat Balou o di un BANG! extra.\nDiscard this for a Missed!Panic!, Cat Balou, or an extra BANG!"
+    },
+    "Caboose": {
+      "name": "Caboose",
+      "desc": "Pro scartare un aura tua carta bordo bin incuso un vagone come se fosse un Mancato!"
+    },
+    "Cattle Truck": {
+      "name": "Cattle Truck",
+      "desc": "Scartalo: guarda le 3 carte in cima agli scarti e pescane I"
+    },
+    "Circus Wagon": {
+      "name": "Circus Wagon",
+      "desc": "Scartalo: ogni altro giocatore deve scartare una carta che ha in gioco."
+    },
+    "Coal Hopper": {
+      "name": "Coal Hopper",
+      "desc": "Scartalo: pesca una carta e scarta un vagone in gioco davanti a un giocatore a ma scelta."
+    },
+    "Dining Car": {
+      "name": "Dining Car",
+      "desc": "A inizio turno, \"estrai!\": se è Cnori, recuperi I punto vita."
+    },
+    "Express Car": {
+      "name": "Express Car",
+      "desc": "Scarta tutte le carte in mano, poi gioca un altro turno"
+    },
+    "Ghost Car": {
+      "name": "Ghost Car",
+      "desc": "Giocalo su chiunque tranne lo Sceritfo. Se vieni eliminato, invece resti in gioco, ma non puol guada nare ne perdere punk vita."
+    },
+    "Lounge Car": {
+      "name": "Lounge Car",
+      "desc": "Scartalo: pesca 2 vagoni dal mazzo, mettine I in gioco di fronte a te e 1 di fronte a un altro giocatore."
+    },
+    "Lumber Flatcar": {
+      "name": "Lumber Flatcar",
+      "desc": "Giocalo su un qualsiasi giocatore (compreso te). Finché questa carta è in gioco, quel giocatore vede gli altri giocatori a distanza aumentata di 1."
+    },
+    "Mail Car": {
+      "name": "Mail Car",
+      "desc": "Scartalo: pesca 3 carte e dai 1 di esse a un altro giocatore a tua scelta."
+    },
+    "Observation Car": {
+      "name": "Observation Car",
+      "desc": "Tu vedi gli altri a distanza -1. Gli altri a vedono a distanza +1."
+    },
+    "Passenger Car": {
+      "name": "Passenger Car",
+      "desc": "Scartalo: pesca una carta (in mano o in gioco) da un altro giocatore"
+    },
+    "Prisoner Car": {
+      "name": "Prisoner Car",
+      "desc": "Le carte Duello e Indiani! giocate dagli altri giocatori non hanno effetto su di te."
+    },
+    "Private Car": {
+      "name": "Private Car",
+      "desc": "se non hai carte in mano. non puoi essere bersaelio di carte BANG"
+    },
+    "Sleeper Car": {
+      "name": "Sleeper Car",
+      "desc": "Una volta per turno, puoi scartare un'altra tua carta a bordo blu incluso."
     }
   },
   "help": {

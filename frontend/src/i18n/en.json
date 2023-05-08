@@ -855,6 +855,130 @@
     "Wild West Show": {
       "name": "Wild West Show",
       "desc": "The goal for each player becomes: \"Be the last one standing!\""
+    },
+    "Boom Town": {
+      "name": "Boom Town",
+      "desc": "Discard a Bang! to rob the train"
+    },
+    "Caticor": {
+      "name": "Caticor",
+      "desc": "Discard a Cat Balou or Panico to rob the train"
+    },
+    "Creepy Creek": {
+      "name": "Creepy Creek",
+      "desc": "Discard a card of spades to rob the train"
+    },
+    "Crowns Hole": {
+      "name": "Crown's Hole",
+      "desc": "Discard a beer to rob the train"
+    },
+    "Deadwood": {
+      "name": "Deadwood",
+      "desc": "Discard an equipment card to rob the train"
+    },
+    "Dodgeville": {
+      "name": "Dodgeville",
+      "desc": "Discard a Missed! to rob the train"
+    },
+    "Fort Worth": {
+      "name": "Fort Worth",
+      "desc": "Discard a card with number 10, J, Q, K, A to rob the train"
+    },
+    "Frisco": {
+      "name": "Frisco",
+      "desc": "Discard a card of clubs to rob the train"
+    },
+    "Miners Oath": {
+      "name": "Miner's Oath",
+      "desc": "Discard a card of diamonds to rob the train"
+    },
+    "San Tafe": {
+      "name": "San Tafe",
+      "desc": "Discard a card of hearts to rob the train"
+    },
+    "Tombrock": {
+      "name": "Tombrock",
+      "desc": "Lose 1 life point to rob the train"
+    },
+    "Yooma": {
+      "name": "Yooma",
+      "desc": "Discard a card with number between 2 and 9 to rob the train"
+    },
+    "Virginia Town": {
+      "name": "Virginia Town",
+      "desc": "Discard two cards to rob the train"
+    },
+    "Ironhorse": {
+      "name": "Ironhorse",
+      "desc": "Each player, including the one who activated the effect, is targeted by a BANG!\nNo player is responsible for any loss of life points.\nIf all players are eliminated at the same time, the Outlaws win."
+    },
+    "Leland": {
+      "name": "Leland",
+      "desc": "LOCOMOTIVE: perform the effect of the Emporium, starting with the current player and proceeding clockwise."
+    },
+    "Baggage Car": {
+      "name": "Baggage Car",
+      "desc": "Discard this card to gain the effect of a Missed!, Panic!, Cat Balou, or an extra BANG! card."
+    },
+    "Caboose": {
+      "name": "Caboose",
+      "desc": "To discard one of your blue-bordered cards, include a car as if it were a Missed!"
+    },
+    "Cattle Truck": {
+      "name": "Cattle Truck",
+      "desc": "Discard this card to look at the top 3 cards of the discard pile and choose 1 to add to your hand."
+    },
+    "Circus Wagon": {
+      "name": "Circus Wagon",
+      "desc": "Discard this card. Each other player must discard a card that he has in play."
+    },
+    "Coal Hopper": {
+      "name": "Coal Hopper",
+      "desc": "Discard this card to draw a card and discard a car in play in front of any player of your choice."
+    },
+    "Dining Car": {
+      "name": "Dining Car",
+      "desc": "At the beginning of your turn, \"draw!\": if it's Hearts, regain 1 life point."
+    },
+    "Express Car": {
+      "name": "Express Car",
+      "desc": "Discard all your hand cards and take another turn."
+    },
+    "Ghost Car": {
+      "name": "Ghost Car",
+      "desc": "Play it on any player except the Sheriff. If you are eliminated, you remain in play, but cannot look at or lose any life points."
+    },
+    "Lounge Car": {
+      "name": "Lounge Car",
+      "desc": "Discard this card to draw 2 cards from the deck and put 1 of them in play in front of you and 1 in front of another player."
+    },
+    "Lumber Flatcar": {
+      "name": "Lumber Flatcar",
+      "desc": "Play this card on any player (including yourself). While this card is in play, that player sees all other players at a distance increased by 1."
+    },
+    "Mail Car": {
+      "name": "Mail Car",
+      "desc": "Discard this card to draw 3 cards and give 1 of them to another player of your choice."
+    },
+    "Observation Car": {
+      "name": "Observation Car",
+      "desc": "You see other players at a distance reduced by 1. Other players see you at a distance increased by 1."
+    },
+    "Passenger Car": {
+      "name": "Passenger Car",
+      "desc": "Discard this card to draw a card (from hand or in play) from another player."
+    },
+    "Prisoner Car": {
+      "name": "Prisoner Car",
+      "desc": "Duel and Indians! cards played by other players have no effect on you."
+    },
+    "Private Car": {
+      "name": "Private Car",
+      "desc": "If you have no cards in hand, you cannot be targeted by BANG! cards."
+    },
+    "Sleeper Car": {
+      "name": "Sleeper Car",
+      "desc": "Once per turn, you may discard another of your blue-bordered cards in play."
     }
   },
   "help": {

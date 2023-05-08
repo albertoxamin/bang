@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="stationcard">
+    <div :class="{stationcard:true, 'cant-play':!trainPiece || trainPiece.is_locomotive}">
       <h4>{{ cardName }}</h4>
       <div :class="{ emoji: true, bottomed: card.avatar }">{{ emoji }}</div>
       <div class="alt_text">{{ card.alt_text }}</div>
@@ -8,7 +8,7 @@
         <card v-for="c, i in price" :key="i" :card="c"/>
       </div>
     </div>
-    <card v-if="trainPiece" class="train-piece" :card="trainPiece" />
+    <card v-if="trainPiece" :card="trainPiece" :class="{'cant-play':trainPiece.is_locomotive}"/>
   </div>
 </template>
 
@@ -116,5 +116,11 @@ export default {
 }
 .train-piece {
   margin: 6pt;
+}
+.cant-play {
+  cursor: not-allowed;
+}
+.stationcard .card {
+  cursor: unset;
 }
 </style>

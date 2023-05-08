@@ -24,7 +24,7 @@ class StationCard:
             player.lives -= 1
         card = player.hand.pop(card_index)
         player.game.deck.scrap(card, True, player=player)
-        player.hand.append(self.attached_train)
+        player.equipment.append(self.attached_train)
         self.attached_train = None
         player.pending_action = pl.PendingAction.PLAY
 
@@ -284,7 +284,7 @@ class VirginiaTown(StationCard):
         self.price = [{}, {}]
 
     def check_price(self, player: "Player"):
-        if super().check_price(player) and len(player.hand < 2):
+        if super().check_price(player) and len(player.hand) < 2:
             return False
         player.set_choose_action(
             "choose_buy_train",
