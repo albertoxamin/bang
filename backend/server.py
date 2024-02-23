@@ -58,7 +58,7 @@ for file in [f for f in os.listdir(".") if ".js" in f or ".map" in f or ".html" 
     static_files[f"/{file}"] = f"./{file}"
 
 HASTEBIN_HEADERS = {
-    "Authorization": "Bearer 2cf615e88992970f3396663c5bfb2f599151192bcef5fa99f5569c2e29617ba7cdcfa5df14f90afc61bcf0fe6e475ae49cba98ebded3e0b7b3fdf0c648c76496",
+    "Authorization": "Bearer " + os.getenv("HASTEBIN_TOKEN", ""),
     "content-type": "text/plain",
 }
 
@@ -1290,7 +1290,7 @@ def discord_auth(sid, data):
         "https://discord.com/api/oauth2/token",
         data={
             "client_id": "1059452581027532880",
-            "client_secret": "Mc8ZlMQhayzi1eOqWFtGHs3L0iXCzaEu",
+            "client_secret": os.getenv("DISCORD_SECRET", ""),
             "grant_type": "authorization_code",
             "redirect_uri": data["origin"],
             "code": data["code"],
