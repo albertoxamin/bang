@@ -1,5 +1,6 @@
 import random
-from bang.cards import Card
+import bang.players as pl
+from bang.cards import Card, Bang, Panico, CatBalou, Mancato
 
 
 class TrainCard(Card):
@@ -102,19 +103,28 @@ class BaggageCar(TrainCard):
         super().__init__("Baggage Car")
         self.icon = "🚋🛄"
 
+    def choose_callback(self, player: pl.Player, card_index):
+        player.hand.append(player.available_cards[card_index])
+        player.pending_action = pl.PendingAction.PLAY
+
     def play_card(self, player, against=None, _with=None) -> bool:
+        player.set_choose_action(
+            "choose_baggage_car",
+            [Bang(4, 42), Mancato(4, 42), CatBalou(4, 42), Panico(4, 42)],
+            self.choose_callback,
+        )
         return True
 
 
 class Caboose(TrainCard):
-    """Pro scartare un aura tua carta bordo bin incuso un vagone come se fosse un Mancato!"""
+    """Pro scartare un altra tua carta bordo blu incuso un vagone come se fosse un Mancato!"""
 
     def __init__(self):
         super().__init__("Caboose")
         self.icon = "🚋"
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class CattleTruck(TrainCard):
@@ -158,7 +168,7 @@ class DiningCar(TrainCard):
         self.icon = "🚋🍽"
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class ExpressCar(TrainCard):
@@ -173,7 +183,7 @@ class ExpressCar(TrainCard):
 
 
 class GhostCar(TrainCard):
-    """Giocalo su chiunque tranne lo Sceritfo. Se vieni eliminato, invece resti in gioco, ma non puol guada nare ne perdere punk vita."""
+    """Giocalo su chiunque tranne lo Sceritfo. Se vieni eliminato, invece resti in gioco, ma non puo guadagnare ne perdere punti vita."""
 
     def __init__(self):
         super().__init__("Ghost Car")
