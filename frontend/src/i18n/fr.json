@@ -1,0 +1,918 @@
+{
+  "trademark": "Bang! est une marque déposée détenue par DVGiochi",
+  "tip_1": "C'est mieux avec des amis !",
+  "tip_2": "L'icône 🤖️ signifie qu'un joueur est un bot !",
+  "tip_3": "Vous pouvez cliquer sur les cartes des personnages et des équipements des autres joueurs si vous souhaitez en savoir plus !",
+  "tip_4": "Dodge City, High Noon, Fistful Of Cards inclus !",
+  "tip_5": "Trouvé un bug ? Envoyez-nous un message sur Discord !",
+  "tip_6": "Maintenant avec un serveur Discord !",
+  "tip_7": "Si vous voulez nous aider à traduire le jeu dans votre langue, contactez-nous sur Discord !",
+  "tip_8": "Si vous vous déconnectez pendant une partie en cours, vous serez remplacé par un bot (pendant votre absence) !",
+  "tip_9": "Si vous êtes sur mobile, maintenez une carte pour lire la description !",
+  "tip_10": "En cas de doute, tirez sur tous les autres joueurs !",
+  "online_players": "Joueurs en ligne : ",
+  "shuffle_players": "Mélanger les joueurs",
+  "choose_username": "Choisissez un nom d'utilisateur :",
+  "report_bug": "Décrivez le bug",
+  "report": "Signaler un bug",
+  "available_lobbies": "Salles disponibles :",
+  "spectate_lobbies": "Observer les parties en cours :",
+  "no_lobby_available": "Aucune salle disponible",
+  "create_lobby": "Ouvrir une salle :",
+  "characters_to_distribute": "Personnages à distribuer : ",
+  "lobby_name": "Nom :",
+  "leave_room": "Quitter la salle",
+  "warning": "Attention !",
+  "connection_error": "Impossible de se connecter au serveur.",
+  "end_turn": "Terminer le tour !",
+  "start_game": "Commencer !",
+  "expansions": "Extensions",
+  "click_to_toggle": "Cliquez pour basculer",
+  "details": "Détails",
+  "ok": "OK",
+  "you": "VOUS",
+  "owner": "PROPRIÉTAIRE",
+  "cancel": "ANNULER",
+  "send": "ENVOYER",
+  "password": "Mot de passe : ",
+  "room_password_prompt": "Mot de passe de la salle : ",
+  "private_room": "Salle privée",
+  "room": "Salle : ",
+  "room_players": "Joueurs (vous êtes {username})",
+  "choose_character": "Choisissez votre personnage",
+  "choose_card": "Choisissez une carte",
+  "choose_card_from": " de ",
+  "flip_card": "↙️ Retourner une carte",
+  "draw_cards": "⏬ Piochez vos cartes du paquet",
+  "play_cards": "▶️ Jouez vos cartes",
+  "respond_card": "↩️ Répondez à la carte",
+  "wait": "⏸ Attendre",
+  "choose_cards": "🔽 Choisissez une carte",
+  "take_dmg": "Subir des dégâts",
+  "choose_response": "Choisissez votre réponse ",
+  "choose_response_to": "à ",
+  "choose_response_needed": "NÉCESSAIRE ",
+  "choose_manette": "Choisissez une couleur, vous ne pourrez jouer que des cartes de cette couleur ce tour.",
+  "hand": "MAIN",
+  "card_against": "Contre qui jouez-vous votre carte ?",
+  "choose_sid_scrap": "Défaussez 2 cartes pour ne pas mourir",
+  "choose_card_to_get": "Choisissez une carte",
+  "choose_guess": "Devinez la couleur de la carte",
+  "choose_ranch": "Choisissez les cartes à remplacer",
+  "choose_dalton": "Choisissez quel équipement défausser",
+  "choose_fratelli_di_sangue": "Choisissez à qui donner une de vos vies",
+  "choose_fantasma": "Choisissez qui ramener à la vie",
+  "choose_sventagliata": "Choisissez une autre cible pour le tir",
+  "choose_tornado": "Choisissez une carte à défausser pour le tornade",
+  "choose_bandidos": "Choisissez entre défausser 2 cartes ou perdre une vie (1 carte si vous n'avez qu'une)",
+  "choose_poker": "Tout le monde défausse 1 carte (s'il n'y a pas d'As, le joueur ayant joué le poker choisit 2 cartes)",
+  "choose_from_poker;2": "Choisissez quelles cartes récupérer (max 2)",
+  "choose_from_poker;1": "Choisissez quelle carte récupérer",
+  "choose_cecchino": "Choisissez qui tirer",
+  "choose_rimbalzo_player": "Choisissez la cible du rebond",
+  "choose_rimbalzo_card": "Choisissez la carte à défausser pour le rebond",
+  "choose_nuova_identita": "Choisissez si vous voulez garder votre personnage actuel ou en changer et repartir de 2 PV",
+  "choose_bicchierino": "Un joueur de votre choix regagne 1 PV",
+  "choose_bottiglia": "Choisissez comment jouer la Bouteille !",
+  "choose_complice": "Choisissez comment jouer Complice !",
+  "choose_ricercato": "Choisissez contre qui jouer Recherché.",
+  "choose_birra_function": "Choisissez entre obtenir 1 pépite d'or en défaussant la bière ou jouer la bière.",
+  "choose_play_as_bang": "Choisissez quelle carte jouer comme Bang !",
+  "choose_flint_special": "Choisissez quelle carte échanger.",
+  "emporio_others": "{0} choisit quelle carte récupérer du Magasin général",
+  "you_died": "VOUS ÊTES MORT",
+  "spectate": "SPECTATEUR",
+  "you_win": "VOUS AVEZ GAGNÉ",
+  "you_lose": "VOUS AVEZ PERDU",
+  "special_ability": "CAPACITÉ SPÉCIALE",
+  "gold_rush_discard": "Défaussez l'équipement de ruée vers l'or d'un autre joueur (en payant le prix + 1)",
+  "gold_rush_discard_2": "Défaussez l'équipement de ruée vers l'or d'un autre joueur (en payant le prix + 1)",
+  "discard": "DÉFAUSSER",
+  "to_regain_1_hp": "POUR REGAINER 1 PV",
+  "play_your_turn": "JOUEZ VOTRE TOUR",
+  "you_are": "Vous êtes",
+  "did_pick_as": "a choisi cette carte comme deuxième",
+  "blackjack_special": "Si la carte est un carreau ou un cœur, il pioche une autre carte.",
+  "choose_scarp_card_to": "CHOISISSEZ QUELLE CARTE DÉFAUSSER POUR UTILISER",
+  "pick_a_card": "RETIRER UNE CARTE",
+  "to_defend_from": "POUR VOUS DÉFENDRE DE",
+  "submit": "Soumettre",
+  "copy": "Copier l'invitation",
+  "no_players_in_range": "Vous ne voyez pas les autres joueurs, équipez une arme ou une lunette !",
+  "cantplaycard": "Vous ne pouvez pas jouer cette carte de cette façon !",
+  "chat": {
+    "spectators": " | Un spectateur regarde la partie | {n} spectateurs regardent la partie",
+    "chat": "Chat",
+    "joined": "👋 ;{0}; a rejoint la salle",
+    "died": "☠️ ;{0}; est mort",
+    "died_role": "☠️ ;{0}; était un ;{1}; !",
+    "won": "🏆 ;{0}; a gagné ! Leur rôle était ;{1};",
+    "choose_character": ";{0}; a ;{1}; comme personnage, sa capacité spéciale est : ;{2}; !",
+    "starting": "La partie commence !",
+    "sheriff": "⭐ ;{0}; est le shérif !",
+    "did_choose_character": ";{0}; a choisi le personnage.",
+    "turn": "⏩ C'est le tour de ;{0};.",
+    "draw_from_scrap": ";{0}; a pioché la première carte de la pile de défausse.",
+    "draw_from_player": ";{0}; a pioché la première carte de la main de ;{1};.",
+    "flipped": ";{0}; a retourné un ;{1}; ;{2};.",
+    "scrapped": ";{0}; a défaussé un ;{1}; ;{2};.",
+    "explode": "💥 ;{0}; a fait exploser la dynamite.",
+    "beer_save": ";{0}; a utilisé une bière pour sauver sa vie.",
+    "get_nugget": ";{0}; a obtenu une pépite d'or en utilisant une bière.",
+    "play_card": ";{0}; a joué ;{1};.",
+    "play_card_green": ";{0}; a mis en jeu ;{1};.",
+    "play_card_with": ";{0}; a joué ;{1};, en défaussant ;{2};.",
+    "purchase_card": ";{0}; a acheté ;{1};.",
+    "play_card_against": ";{0}; a joué ;{1}; contre ;{2};.",
+    "play_card_against_with": ";{0}; a joué ;{1}; contre ;{2};, en défaussant ;{3};.",
+    "play_card_for": ";{0}; a joué ;{1}; pour ;{2};.",
+    "spilled_beer": ";{0}; a renversé une ;{1};.",
+    "diligenza": ";{0}; a joué ;{1}; et pioche 2 cartes.",
+    "wellsfargo": ";{0}; a joué ;{1}; et pioche 3 cartes.",
+    "saloon": "🍻 ;{0}; a joué ;{1}; et soigne 1 PV à tous les vivants.",
+    "special_bart_cassidy": ";{0}; a reçu une compensation car il a été blessé.",
+    "special_el_gringo": ";{0}; a volé une carte à ;{1}; lorsqu'il a été blessé.",
+    "special_calamity": ";{0}; a joué ;{1}; comme Bang ! contre ;{2};.",
+    "allroles3": "Dans le jeu il y a : ;{1}; ;{0};, ;{3}; ;{2};, ;{5}; ;{4};.",
+    "allroles4": "Dans le jeu il y a : ;{1}; ;{0};, ;{3}; ;{2};, ;{5}; ;{4};, ;{7}; ;{6};.",
+    "guess": "🤔 ;{0}; devine ;{1};.",
+    "guess_right": ";{0}; avait raison.",
+    "guess_wrong": ";{0}; avait tort.",
+    "fratelli_sangue": ";{0}; a donné une de ses vies à ;{1};.",
+    "doctor_heal": ";{0}; a été soigné par le docteur.",
+    "respond": "↩️ ;{0}; a répondu avec ;{1};.",
+    "change_username": "✏️ ;{0}; est maintenant ;{1};.",
+    "lobby_reset": "Retour à la salle dans ;{0}; secondes...",
+    "prison_free": "🆓 ;{0}; est sorti de prison",
+    "prison_turn": "🔐 ;{0}; est resté en prison ce tour",
+    "flip_event": "🎴 ÉVÉNEMENT : ;{0}; 🎴",
+    "choose_manette": ";{0}; s'est engagé à ne jouer que des cartes de couleur ;{1}; ce tour.",
+    "UnionPacific": ";{0}; a joué Union Pacific et pioche 4 cartes du paquet",
+    "use_special": ";{0}; a utilisé la capacité spéciale de son personnage (;{1};)",
+    "gold_rush_pay_discard": ";{0}; a défaussé ;{2}; de ;{1};.",
+    "choose_emporio": ";{0}; a choisi ;{1}; du Magasin général.",
+    "shotgun_scrap": "Lorsque le fusil a touché ;{0}; une carte a volé de sa main (;{1};)",
+    "taglia_reward": "💰 ;{1}; a obtenu une carte de la prime sur ;{0};",
+    "snake_bit": "🐍 ;{0}; a été mordu par le serpent à sonnettes."
+  },
+  "foc": {
+    "leggedelwest": "Il doit jouer cette carte ce tour si possible."
+  },
+  "mods": "Modificateurs",
+  "bots": "Bots",
+  "add_bot": "Ajouter un bot",
+  "remove_bot": "Supprimer un bot",
+  "minimum_players": "Le jeu nécessite au moins 3 joueurs pour commencer",
+  "mod_comp": "Mode compétitif (désactive la prise de dégâts automatique)",
+  "disconnect_bot": "Remplacer les joueurs qui se déconnectent par des bots",
+  "your_turn": "Jouez votre tour !",
+  "your_response": "Répondez !",
+  "your_choose": "Choisissez une carte !",
+  "cards": {
+    "Barile": {
+      "name": "Baril",
+      "desc": "Quand quelqu'un joue un Bang contre vous. Vous pouvez retourner la première carte du paquet, si la couleur est Cœur alors elle compte comme une carte Raté"
+    },
+    "Dinamite": {
+      "name": "Dynamite",
+      "desc": "Lorsque vous jouez la Dynamite, placez-la devant vous, elle restera inoffensive pendant un tour complet. Au début du prochain tour avant de piocher et avant tout retournement de carte (par exemple Prison), retournez une carte du dessus du paquet. Si une carte est entre 2 et 9 de pique (inclus), la dynamite explose : vous perdez 3 vies et défaussez la carte, sinon passez la dynamite au joueur suivant, qui piochera à son tour après avoir terminé son tour"
+    },
+    "Mirino": {
+      "name": "Lunette",
+      "desc": "Vous voyez les autres joueurs à une distance de -1"
+    },
+    "Mustang": {
+      "name": "Mustang",
+      "desc": "Les autres joueurs vous voient à une distance de +1"
+    },
+    "Prigione": {
+      "name": "Prison",
+      "desc": "Équipez cette carte à un autre joueur, sauf le Shérif. Le joueur choisi au début de son tour, doit retourner une carte avant de piocher : si c'est Cœur, défaussez cette carte et jouez le tour normalement, sinon défaussez cette carte et passez le tour"
+    },
+    "Remington": {
+      "name": "Remington",
+      "desc": "Vous pouvez tirer sur un autre joueur à une distance de 3 ou moins"
+    },
+    "Rev Carabine": {
+      "name": "Rev. Carabine",
+      "desc": "Vous pouvez tirer sur un autre joueur à une distance de 4 ou moins"
+    },
+    "Schofield": {
+      "name": "Schofield",
+      "desc": "Vous pouvez tirer sur un autre joueur à une distance de 2 ou moins"
+    },
+    "Volcanic": {
+      "name": "Volcanic",
+      "desc": "Vous pouvez tirer sur un autre joueur à une distance de 1 ou moins, cependant vous n'avez plus la limite d'un Bang"
+    },
+    "Winchester": {
+      "name": "Winchester",
+      "desc": "Vous pouvez tirer sur un autre joueur à une distance de 5 ou moins"
+    },
+    "Bang!": {
+      "name": "Bang!",
+      "desc": "Tirez sur un joueur en vue. Si vous n'avez pas d'armes, votre vue est de 1"
+    },
+    "Birra": {
+      "name": "Bière",
+      "desc": "Jouez cette carte pour regagner un point de vie. Vous ne pouvez pas soigner plus que la limite maximale de votre personnage. Si vous êtes sur le point de perdre votre dernier point de vie, vous pouvez également jouer cette carte pendant le tour de votre adversaire. La bière ne fait plus effet s'il ne reste que deux joueurs"
+    },
+    "Cat Balou": {
+      "name": "Cat Balou",
+      "desc": "Choisissez et défaussez une carte d'un autre joueur."
+    },
+    "Diligenza": {
+      "name": "Diligence",
+      "desc": "Piochez 2 cartes du paquet."
+    },
+    "Duello": {
+      "name": "Duel",
+      "desc": "Jouez cette carte contre n'importe quel joueur. À tour de rôle, en commençant par votre adversaire, vous pouvez défausser une carte Bang!, le premier joueur qui ne le fait pas perd 1 vie."
+    },
+    "Emporio": {
+      "name": "Magasin Général",
+      "desc": "Mettez sur la table N cartes du paquet, où N est le nombre de joueurs vivants, à tour de rôle, en commençant par vous, choisissez une carte et ajoutez-la à votre main"
+    },
+    "Gatling": {
+      "name": "Gatling",
+      "desc": "Tirez sur tous les autres joueurs"
+    },
+    "Indiani!": {
+      "name": "Indiens !",
+      "desc": "Tous les autres joueurs doivent défausser une carte Bang! ou perdre 1 point de vie"
+    },
+    "Mancato!": {
+      "name": "Raté !",
+      "desc": "Utilisez cette carte pour annuler l'effet d'un Bang"
+    },
+    "Panico!": {
+      "name": "Panique !",
+      "desc": "Volez une carte à un joueur à une distance de 1"
+    },
+    "Saloon": {
+      "name": "Saloon",
+      "desc": "Tout le monde regagne 1 point de vie"
+    },
+    "WellsFargo": {
+      "name": "Wells Fargo",
+      "desc": "Piochez 3 cartes du paquet"
+    },
+    "Binocolo": {
+      "name": "Jumelles",
+      "desc": "Vous voyez les autres joueurs à une distance de -1"
+    },
+    "Riparo": {
+      "name": "Cachette",
+      "desc": "Les autres joueurs vous voient à une distance de +1"
+    },
+    "Pugno!": {
+      "name": "Coup de Poing !",
+      "desc": "Tirez sur un joueur à une distance de 1"
+    },
+    "Rag Time": {
+      "name": "Rag Time",
+      "desc": "Volez une carte à un autre joueur à n'importe quelle distance"
+    },
+    "Rissa": {
+      "name": "Bagarre",
+      "desc": "Choisissez une carte à défausser de la main/équipement de tous les autres joueurs"
+    },
+    "Schivata": {
+      "name": "Esquive",
+      "desc": "Utilisez cette carte pour annuler l'effet d'un Bang et ensuite piochez une carte."
+    },
+    "Springfield": {
+      "name": "Springfield",
+      "desc": "Tirez sur un joueur à n'importe quelle distance"
+    },
+    "Tequila": {
+      "name": "Tequila",
+      "desc": "Soignez 1 PV à un joueur de votre choix (cela peut être vous)"
+    },
+    "Whisky": {
+      "name": "Whisky",
+      "desc": "Soignez 2 PV"
+    },
+    "Bibbia": {
+      "name": "Bible",
+      "desc": "Utilisez cette carte pour annuler l'effet d'un Bang et ensuite piochez une carte."
+    },
+    "Cappello": {
+      "name": "Chapeau de Dix Gallons",
+      "desc": "Utilisez cette carte pour annuler l'effet d'un Bang"
+    },
+    "Placca Di Ferro": {
+      "name": "Plaque de Fer",
+      "desc": "Utilisez cette carte pour annuler l'effet d'un Bang"
+    },
+    "Sombrero": {
+      "name": "Sombrero",
+      "desc": "Utilisez cette carte pour annuler l'effet d'un Bang"
+    },
+    "Pugnale": {
+      "name": "Couteau",
+      "desc": "Tirez sur un joueur à une distance de 1"
+    },
+    "Derringer": {
+      "name": "Derringer",
+      "desc": "Tirez sur un joueur à une distance de 1 et ensuite piochez une carte."
+    },
+    "Borraccia": {
+      "name": "Gourde",
+      "desc": "Regagnez 1 PV"
+    },
+    "Can Can": {
+      "name": "Can Can",
+      "desc": "Choisissez et défaussez une carte d'un autre joueur."
+    },
+    "Conestoga": {
+      "name": "Conestoga",
+      "desc": "Volez une carte à un autre joueur à n'importe quelle distance"
+    },
+    "Fucile Da Caccia": {
+      "name": "Fusil de Buffle",
+      "desc": "Tirez sur un joueur à n'importe quelle distance"
+    },
+    "Pony Express": {
+      "name": "Pony Express",
+      "desc": "Piochez 3 cartes du paquet"
+    },
+    "Pepperbox": {
+      "name": "Pepperbox",
+      "desc": "Tirez sur un joueur en vue. Si vous n'avez pas d'armes, votre vue est de 1"
+    },
+    "Howitzer": {
+      "name": "Howitzer",
+      "desc": "Tirez sur tous les autres joueurs"
+    },
+    "Bart Cassidy": {
+      "name": "Bart Cassidy",
+      "desc": "Chaque fois qu'il est blessé, il pioche une carte."
+    },
+    "Black Jack": {
+      "name": "Black Jack",
+      "desc": "Au début de son tour, lorsqu'il doit piocher, il montre à tout le monde la deuxième carte, si c'est un Cœur ou un Carreau, il pioche une troisième carte sans la montrer."
+    },
+    "Calamity Janet": {
+      "name": "Calamity Janet",
+      "desc": "Elle peut utiliser les cartes Raté ! comme Bang ! et vice versa."
+    },
+    "El Gringo": {
+      "name": "El Gringo",
+      "desc": "Chaque fois qu'il est blessé, il vole une carte de la main du joueur attaquant."
+    },
+    "Jesse Jones": {
+      "name": "Jesse Jones",
+      "desc": "Lorsqu'il doit piocher ses cartes, il peut piocher la première carte de la main d'un autre joueur. (cliquez sur les cartes des joueurs ennemis si vous voulez utiliser la capacité)"
+    },
+    "Jourdonnais": {
+      "name": "Jourdonnais",
+      "desc": "Il joue comme s'il avait un Baril toujours actif, s'il équipe un autre Baril, il peut retourner 2 cartes."
+    },
+    "Kit Carlson": {
+      "name": "Kit Carlson",
+      "desc": "Lorsqu'il doit piocher, il regarde 3 cartes et en choisit 2, mettant l'autre carte sur le dessus du paquet."
+    },
+    "Lucky Duke": {
+      "name": "Lucky Duke",
+      "desc": "Chaque fois qu'il doit retourner une carte, il peut retourner 2 fois."
+    },
+    "Paul Regret": {
+      "name": "Paul Regret",
+      "desc": "Les autres joueurs le voient à une distance de +1."
+    },
+    "Pedro Ramirez": {
+      "name": "Pedro Ramirez",
+      "desc": "Lorsqu'il doit piocher, il peut prendre la première carte de la pile de défausse. (cliquez sur les cartes défaussées pour utiliser la capacité)"
+    },
+    "Rose Doolan": {
+      "name": "Rose Doolan",
+      "desc": "Elle voit les autres joueurs à une distance de -1."
+    },
+    "Sid Ketchum": {
+      "name": "Sid Ketchum",
+      "desc": "Il peut défausser 2 cartes pour regagner 1 PV."
+    },
+    "Slab The Killer": {
+      "name": "Slab The Killer",
+      "desc": "Pour esquiver ses cartes Bang !, les autres joueurs ont besoin de 2 cartes Raté !"
+    },
+    "Suzy Lafayette": {
+      "name": "Suzy Lafayette",
+      "desc": "Chaque fois qu'elle a une main vide, elle pioche une carte."
+    },
+    "Vulture Sam": {
+      "name": "Vulture Sam",
+      "desc": "Lorsqu'un joueur meurt, il obtient toutes les cartes dans la main et les équipements du mort."
+    },
+    "Willy The Kid": {
+      "name": "Willy The Kid",
+      "desc": "Il n'a pas de limite au nombre de Bang qu'il peut utiliser."
+    },
+    "Pixie Pete": {
+      "name": "Pixie Pete",
+      "desc": "Il pioche 3 cartes au lieu de 2."
+    },
+    "Tequila Joe": {
+      "name": "Tequila Joe",
+      "desc": "Lorsqu'il joue une Bière, il regagne 2 PV."
+    },
+    "Greg Digger": {
+      "name": "Greg Digger",
+      "desc": "Chaque fois qu'un joueur meurt, il regagne jusqu'à 2 vies."
+    },
+    "Herb Hunter": {
+      "name": "Herb Hunter",
+      "desc": "Chaque fois qu'un joueur meurt, il pioche 2 cartes."
+    },
+    "Elena Fuente": {
+      "name": "Elena Fuente",
+      "desc": "Elle peut utiliser n'importe quelle carte de sa main comme Raté."
+    },
+    "Bill Noface": {
+      "name": "Bill Noface",
+      "desc": "Pioche 1 carte + 1 carte pour chaque blessure qu'il a."
+    },
+    "Molly Stark": {
+      "name": "Molly Stark",
+      "desc": "Lorsqu'elle utilise une carte de sa main en dehors de son tour, elle pioche une carte."
+    },
+    "Apache Kid": {
+      "name": "Apache Kid",
+      "desc": "Les cartes de carreaux ♦️ jouées contre lui n'ont aucun effet (ne fonctionne pas en duel)."
+    },
+    "Sean Mallory": {
+      "name": "Sean Mallory",
+      "desc": "Il peut garder jusqu'à 10 cartes dans sa main lorsqu'il termine le tour."
+    },
+    "Belle Star": {
+      "name": "Belle Star",
+      "desc": "Pendant son tour, les cartes vertes et bleues des autres joueurs ne fonctionnent pas."
+    },
+    "Vera Custer": {
+      "name": "Vera Custer",
+      "desc": "Avant de piocher, elle peut choisir la capacité spéciale d'un autre joueur vivant. Cette capacité est utilisée jusqu'au prochain tour."
+    },
+    "Chuck Wengam": {
+      "name": "Chuck Wengam",
+      "desc": "Lors de son tour, il peut décider de perdre 1 PV pour piocher 2 cartes du paquet."
+    },
+    "Pat Brennan": {
+      "name": "Pat Brennan",
+      "desc": "Au lieu de piocher, il peut voler une carte de l'équipement d'un autre joueur. (cliquez sur le joueur ennemi si vous voulez utiliser la capacité)"
+    },
+    "José Delgado": {
+      "name": "José Delgado",
+      "desc": "Lors de son tour, il peut défausser une carte bleue pour piocher 2 cartes, jusqu'à deux fois par tour."
+    },
+    "Doc Holyday": {
+      "name": "Doc Holyday",
+      "desc": "Il peut défausser 2 cartes pour jouer un Bang."
+    },
+    "Fuorilegge": {
+      "name": "Hors-la-loi"
+    },
+    "Rinnegato": {
+      "name": "Renégat"
+    },
+    "Sceriffo": {
+      "name": "Shérif"
+    },
+    "Vice": {
+      "name": "Adjoint"
+    },
+    "Miniera Abbandonata": {
+      "name": "Mine Abandonnée",
+      "desc": "Les joueurs piochent dans la pile de défausse pendant leur phase 1 et défaussent sur le dessus du paquet pendant la phase 3 (si la pile de défausse est épuisée, ils doivent piocher et défausser sur le dessus du paquet)"
+    },
+    "Il Giudice": {
+      "name": "Le Juge",
+      "desc": "Vous ne pouvez pas équiper des cartes sur vous-même ou sur d'autres joueurs"
+    },
+    "Agguato": {
+      "name": "Embuscade",
+      "desc": "La distance de base entre deux joueurs est de 1"
+    },
+    "Rimbalzo": {
+      "name": "Rebond",
+      "desc": "Le joueur peut jouer Bang contre les cartes équipées par les autres joueurs, s'ils ne jouent pas Raté, elles sont défaussées (cliquez sur la carte d'événement)"
+    },
+    "Cecchino": {
+      "name": "Sniper",
+      "desc": "Pendant leur tour, les joueurs peuvent défausser 2 Bang! pour tirer un Bang! qui nécessite 2 Raté (cliquez sur la carte)"
+    },
+    "Lazo": {
+      "name": "Lasso",
+      "desc": "Les cartes dans la fente d'équipement ne fonctionnent pas"
+    },
+    "Ranch": {
+      "name": "Ranch",
+      "desc": "Après avoir pioché, le joueur peut défausser autant de cartes qu'il veut de sa main et en piocher autant du paquet"
+    },
+    "Dead Man": {
+      "name": "Mort",
+      "desc": "Le premier joueur qui est mort revient à la vie avec 2 PV et 2 cartes"
+    },
+    "Liquore Forte": {
+      "name": "Liqueur Forte",
+      "desc": "Les joueurs peuvent sauter la pioche pour regagner 1 PV (cliquez sur la carte d'événement pour utiliser)"
+    },
+    "Vendetta": {
+      "name": "Vengeance",
+      "desc": "Lorsqu'il termine son tour, le joueur retourne une carte du paquet, si c'est un ❤️, il joue un autre tour (mais il ne retourne pas une autre carte)"
+    },
+    "Roulette Russa": {
+      "name": "Roulette Russe",
+      "desc": "En commençant par le shérif, chaque joueur défausse un Raté, le premier qui ne le fait pas perd 2 PV"
+    },
+    "Legge Del West": {
+      "name": "La Loi de l'Ouest",
+      "desc": "Chaque joueur montre la deuxième carte qu'il pioche et doit l'utiliser dans ce tour (si c'est possible)"
+    },
+    "Peyote": {
+      "name": "Peyote",
+      "desc": "Au lieu de piocher, le joueur essaie de deviner la couleur de la carte, s'il a raison, il ajoute la carte à sa main et continue d'essayer de deviner la carte suivante"
+    },
+    "Fratelli Di Sangue": {
+      "name": "Frères de Sang",
+      "desc": "Au début de leur tour, les joueurs peuvent perdre 1 PV (sauf le dernier) pour le donner à un autre joueur"
+    },
+    "I Dalton": {
+      "name": "Les Dalton",
+      "desc": "Les joueurs ayant des cartes bleues équipées, en défaussent une de leur choix"
+    },
+    "Sermone": {
+      "name": "Le Sermon",
+      "desc": "Les joueurs ne peuvent pas jouer Bang! pendant leur tour"
+    },
+    "Città Fantasma": {
+      "name": "Ville Fantôme",
+      "desc": "Tous les joueurs morts reviennent à la vie à leur tour, ils ne peuvent pas mourir et piochent 3 cartes au lieu de 2. Lorsqu'ils terminent leur tour, ils meurent."
+    },
+    "Il Reverendo": {
+      "name": "Le Révérend",
+      "desc": "Les bières ne peuvent pas être jouées"
+    },
+    "Sbornia": {
+      "name": "Gueule de Bois",
+      "desc": "Les personnages perdent leurs capacités spéciales"
+    },
+    "Il Dottore": {
+      "name": "Le Docteur",
+      "desc": "Le joueur avec le moins de PV récupère 1 PV"
+    },
+    "Corsa All Oro": {
+      "name": "Ruée vers l'Or",
+      "desc": "Les tours sont joués dans le sens inverse des aiguilles d'une montre"
+    },
+    "Maledizione": {
+      "name": "Malédiction",
+      "desc": "Toutes les cartes sont des ♠️"
+    },
+    "Sparatoria": {
+      "name": "Fusillade",
+      "desc": "La limite de Bang! du tour est de 2"
+    },
+    "Benedizione": {
+      "name": "Bénédiction",
+      "desc": "Toutes les cartes sont des ❤️"
+    },
+    "Il Treno": {
+      "name": "Arrivée du Train",
+      "desc": "Les joueurs piochent 1 carte supplémentaire"
+    },
+    "Sete": {
+      "name": "Soif",
+      "desc": "Les joueurs ne piochent qu'une seule carte au début de leur tour"
+    },
+    "Nuova Identita": {
+      "name": "Nouvelle Identité",
+      "desc": "Au début de leur tour, chaque joueur peut choisir de changer de personnage avec celui montré au début du jeu. S'il le fait, il repart avec 2 PV"
+    },
+    "Manette": {
+      "name": "Menottes",
+      "desc": "Après avoir pioché en phase 1, le joueur déclare une couleur. Il ne pourra utiliser que des cartes de cette couleur pour ce tour"
+    },
+    "Mezzogiorno di Fuoco": {
+      "name": "Midi de Feu",
+      "desc": "Chaque joueur perd 1 PV lorsqu'il commence son tour"
+    },
+    "Per Un Pugno Di Carte": {
+      "name": "Pour une Poignée de Cartes",
+      "desc": "Au début de son tour, le joueur est la cible de Bang aussi nombreux que le nombre de cartes qu'il a en main"
+    },
+    "Pepita": {
+      "name": "Pépite d'Or"
+    },
+    "Bicchierino": {
+      "name": "Verre",
+      "desc": "Vous pouvez choisir un joueur qui regagne 1 PV (même vous)"
+    },
+    "Bottiglia": {
+      "name": "Bouteille",
+      "desc": "Peut être jouée comme Panique !, Bière ou Bang !"
+    },
+    "Complice": {
+      "name": "Complice",
+      "desc": "Peut être joué comme Magasin Général, Duel ou Cat Balou."
+    },
+    "Corsa All Oro_gr": {
+      "name": "Ruée vers l'Or",
+      "desc": "Vous terminez votre tour, regagnez tous vos PV et commencez un nouveau tour."
+    },
+    "Rum": {
+      "name": "Rhum",
+      "desc": "Retournez 4 cartes, pour chaque couleur différente, vous gagnez 1 PV."
+    },
+    "Union Pacific": {
+      "name": "Union Pacific",
+      "desc": "Piochez 4 cartes du paquet."
+    },
+    "Calumet": {
+      "name": "Calumet",
+      "desc": "Les cartes de carreaux jouées par les autres joueurs n'ont aucun effet sur vous."
+    },
+    "Cinturone": {
+      "name": "Ceinture",
+      "desc": "Vous pouvez garder jusqu'à 8 cartes lorsque vous terminez votre tour."
+    },
+    "Ferro di Cavallo": {
+      "name": "Fer à Cheval",
+      "desc": "Chaque fois que vous devez retourner une carte, vous retournez deux fois !"
+    },
+    "Piccone": {
+      "name": "Pioche",
+      "desc": "Vous obtenez 1 carte supplémentaire lorsque vous piochez au début du tour."
+    },
+    "Ricercato": {
+      "name": "Recherché",
+      "desc": "Jouez-le sur un autre joueur, qui tue la cible obtient 2 cartes supplémentaires et 1 pépite d'or."
+    },
+    "Setaccio": {
+      "name": "Pan d'Or",
+      "desc": "Payez 1 pépite d'or pour piocher 1 carte du paquet, jusqu'à deux fois par tour. (Cliquez sur la carte équipée pour utiliser)"
+    },
+    "Stivali": {
+      "name": "Bottes",
+      "desc": "Chaque fois que vous perdez 1 PV, vous piochez 1 carte du paquet."
+    },
+    "Talismano": {
+      "name": "Porte-Bonheur",
+      "desc": "Chaque fois que vous perdez 1 PV, vous obtenez 1 pépite d'or."
+    },
+    "Zaino": {
+      "name": "Sac à Dos",
+      "desc": "Payez 2 pépites d'or pour soigner 1 PV. (Cliquez sur la carte équipée pour utiliser)"
+    },
+    "Don Bell": {
+      "name": "Don Bell",
+      "desc": "Lorsqu'il termine son tour, il retourne une carte, si elle retourne Cœur ❤️ ou Carreau ♦️, il joue à nouveau."
+    },
+    "Dutch Will": {
+      "name": "Dutch Will",
+      "desc": "Il pioche 2 cartes, en défausse 1 et prend 1 pépite d'or."
+    },
+    "Jacky Murieta": {
+      "name": "Jacky Murieta",
+      "desc": "Pendant son tour, il peut payer 2 pépites d'or pour avoir la capacité de tirer un autre Bang !"
+    },
+    "Josh McCloud": {
+      "name": "Josh McCloud",
+      "desc": "Il peut payer 2 pépites d'or pour obtenir la première carte du paquet de ruée vers l'or."
+    },
+    "Madam Yto": {
+      "name": "Madam Yto",
+      "desc": "Elle pioche 1 carte du paquet chaque fois qu'une bière est jouée."
+    },
+    "Pretty Luzena": {
+      "name": "Pretty Luzena",
+      "desc": "Une fois par tour, elle peut bénéficier d'une réduction de 1 sur la boutique des cartes ruée vers l'or."
+    },
+    "Raddie Snake": {
+      "name": "Raddie Snake",
+      "desc": "Il peut jeter 1 pépite d'or pour piocher 1 carte du paquet pendant son tour (2 fois max par tour)."
+    },
+    "Simeon Picos": {
+      "name": "Simeon Picos",
+      "desc": "Il obtient 1 pépite d'or chaque fois qu'il perd 1 PV."
+    },
+    "Fantasma": {
+      "name": "Fantôme",
+      "desc": "Jouez sur un joueur éliminé : Ce joueur revient dans le jeu, mais ne peut ni gagner ni perdre des points de vie."
+    },
+    "Lemat": {
+      "name": "Lemat",
+      "desc": "Pendant votre tour, vous pouvez utiliser n'importe quelle carte comme Bang ! (Cliquez sur la carte une fois équipée)."
+    },
+    "SerpenteASonagli": {
+      "name": "Serpent à Sonnettes",
+      "desc": "Jouez sur n'importe quel joueur. Au début de son tour. si ce joueur pioche sur Piques, il perd 1 point de vie."
+    },
+    "Shotgun": {
+      "name": "Fusil",
+      "desc": "Chaque fois que vous blessez un joueur, il doit défausser une carte de sa main."
+    },
+    "Taglia": {
+      "name": "Prime",
+      "desc": "Jouez sur n'importe qui. Si ce joueur est touché par Bang !, la personne qui a tiré obtient une carte du paquet."
+    },
+    "Mira": {
+      "name": "Viser",
+      "desc": "Jouez cette carte avec une carte Bang!. Si la cible est touchée, elle perd 2 points de vie."
+    },
+    "RitornoDiFiamma": {
+      "name": "Retour de Flamme",
+      "desc": "Compte comme une carte Raté!. Le joueur qui a tiré est la cible d'un Bang!."
+    },
+    "Bandidos": {
+      "name": "Bandidos",
+      "desc": "Chaque joueur choisit de défausser 2 cartes de sa main (ou 1 s'il n'en a qu'une) ou de perdre 1 point de vie."
+    },
+    "Fuga": {
+      "name": "Fuite",
+      "desc": "Peut être jouée hors tour. Évite l'effet d'une carte brune (pas Bang!) dont vous êtes la cible."
+    },
+    "Sventagliata": {
+      "name": "Ventilateur",
+      "desc": "Compte comme le seul Bang! du tour. Un joueur de votre choix à une distance de 1 de la cible (s'il y en a un, à l'exclusion de vous-même) est également une cible d'un Bang."
+    },
+    "UltimoGiro": {
+      "name": "Dernière Tournée",
+      "desc": "Récupère 1 point de vie"
+    },
+    "Poker": {
+      "name": "Poker",
+      "desc": "Tous les autres joueurs défaussent une carte de leur main, en même temps. S'il n'y a pas d'As, piochez jusqu'à 2 de ces cartes."
+    },
+    "Salvo": {
+      "name": "Sauvé !",
+      "desc": "Peut être jouée hors tour. Empêche un autre joueur de perdre 1 point de vie. S'il survit, il pioche 2 cartes de sa main ou du paquet (votre choix)."
+    },
+    "Tomahawk": {
+      "name": "Tomahawk",
+      "desc": "Attaque un joueur jusqu'à une distance de 2."
+    },
+    "Tornado": {
+      "name": "Tornade",
+      "desc": "Tout le monde défausse une carte de leur main (si possible), puis pioche 2 cartes du paquet."
+    },
+    "Black Flower": {
+      "name": "Fleur Noire",
+      "desc": "Une fois par tour, vous pouvez utiliser une carte de Pique pour tirer un Bang ! supplémentaire"
+    },
+    "Colorado Bill": {
+      "name": "Colorado Bill",
+      "desc": "Chaque fois que vous jouez une carte Bang!, si vous piochez un Pique, le tir ne peut pas être évité."
+    },
+    "Der Spot Burst Ringer": {
+      "name": "Der Spot Burst Ringer",
+      "desc": "Une fois par tour, vous pouvez utiliser une carte Bang! comme une Gatling."
+    },
+    "Evelyn Shebang": {
+      "name": "Evelyn Shebang",
+      "desc": "Vous pouvez choisir de ne pas piocher de cartes pendant votre phase de pioche. Pour chaque carte non piochée, vous tirez un Bang! sur une cible atteignable, sur une cible différente."
+    },
+    "Henry Block": {
+      "name": "Henry Block",
+      "desc": "Quiconque pioche ou défausse une de vos cartes en jeu ou en main est la cible d'un Bang!."
+    },
+    "Lemonade Jim": {
+      "name": "Lemonade Jim",
+      "desc": "Chaque fois qu'un autre joueur joue une Bière, vous pouvez défausser une carte de votre main pour regagner également 1 point de vie."
+    },
+    "Mick Defender": {
+      "name": "Mick Defender",
+      "desc": "Si vous êtes la cible d'une carte brune (pas Bang!), vous pouvez utiliser une carte Raté! pour éviter un effet."
+    },
+    "Tuco Franziskaner": {
+      "name": "Tuco Franziskaner",
+      "desc": "Si vous n'avez pas de cartes bleues équipées, vous piochez 2 cartes supplémentaires."
+    },
+    "Big Spencer": {
+      "name": "Big Spencer",
+      "desc": "Commence avec 5 cartes. Ne peut pas jouer Raté!"
+    },
+    "Flint Westwood": {
+      "name": "Flint Westwood",
+      "desc": "Peut échanger une carte de sa main avec 2 cartes aléatoires de la main d'un autre joueur pendant son tour."
+    },
+    "Gary Looter": {
+      "name": "Gary Looter",
+      "desc": "Pioche toutes les cartes excédentaires défaussées par les autres joueurs à la fin de chaque tour."
+    },
+    "Greygory Deckard": {
+      "name": "Greygory Deckard",
+      "desc": "Au début de son tour, peut piocher 2 personnages aléatoires et gagne toutes leurs capacités."
+    },
+    "John Pain": {
+      "name": "John Pain",
+      "desc": "S'il a moins de 6 cartes en main, lorsqu'un joueur « pioche! », John ajoute la carte piochée à sa main."
+    },
+    "Lee Van Kliff": {
+      "name": "Lee Van Kliff",
+      "desc": "Pendant son tour, peut défausser une carte Bang! pour répéter l'effet d'une carte à bordure brune qu'il vient de jouer."
+    },
+    "Teren Kill": {
+      "name": "Teren Kill",
+      "desc": "Chaque fois qu'il serait éliminé, « piochez! » : si ce n'est pas une carte de Pique, Teren reste à 1 point de vie et pioche 1 carte."
+    },
+    "Youl Grinner": {
+      "name": "Youl Grinner",
+      "desc": "Avant de piocher, les joueurs ayant plus de cartes en main que Youl doivent lui donner une carte de leur choix."
+    },
+    "Camposanto": {
+      "name": "Cimetière",
+      "desc": "Au début de leur tour, chaque joueur éliminé revient dans le jeu avec 1 point de vie. Piochez une carte de rôle au hasard parmi les joueurs éliminés."
+    },
+    "Darling Valentine": {
+      "name": "Darling Valentine",
+      "desc": "Au début de leur tour, chaque joueur défausse sa main et pioche le même nombre de cartes du paquet."
+    },
+    "Dorothy Rage": {
+      "name": "Dorothy Rage",
+      "desc": "Pendant leur tour, chaque joueur peut forcer un autre joueur à jouer une carte."
+    },
+    "Helena Zontero": {
+      "name": "Helena Zontero",
+      "desc": "Quand Helena entre dans le jeu, « pioche! » : si un Cœur ou un Carreau est pioché, mélangez les cartes de rôle actives sauf le Shérif, et redistribuez-les au hasard."
+    },
+    "Lady Rosa del Texas": {
+      "name": "Lady Rose of Texas",
+      "desc": "Pendant leur tour, chaque joueur peut échanger sa place avec le joueur à sa droite, qui passe son prochain tour. (Cliquez sur la carte)"
+    },
+    "Miss Susanna": {
+      "name": "Miss Susanna",
+      "desc": "Pendant leur tour, chaque joueur doit jouer au moins 3 cartes. S'ils ne le font pas, ils perdent 1 point de vie."
+    },
+    "Regolamento di Conti": {
+      "name": "Règlement de Comptes",
+      "desc": "Toutes les cartes peuvent être jouées comme si elles étaient Bang!. Les cartes Bang! peuvent être jouées comme si elles étaient Raté! (Cliquez sur la carte)"
+    },
+    "Sacagaway": {
+      "name": "Sacagaway",
+      "desc": "Tous les joueurs jouent avec leurs cartes face visible (sauf leur carte de rôle!)."
+    },
+    "Wild West Show": {
+      "name": "Wild West Show",
+      "desc": "Le but de chaque joueur devient : « Soyez le dernier debout ! »"
+    }
+  },
+  "help": {
+    "character": "Personnages",
+    "characters_special": "Chaque personnage a des capacités spéciales et un nombre de vies qui les rendent uniques. \nLes vies sont le nombre de points de vie que vous pouvez perdre avant de mourir et indiquent également le nombre maximum de cartes que vous pouvez garder en main.",
+    "deathnobeer": "Lorsque vous perdez votre dernier point de vie et que vous n'avez pas de bière 🍺️ en main, vous mourrez. \nVos cartes sont défaussées et votre rôle est révélé à tout le monde.",
+    "discard": "Défausser",
+    "distance": "Distance",
+    "distancecalc": "La distance est automatiquement calculée par le jeu et correspond à la distance minimale entre les joueurs à gauche et à droite.",
+    "drawinstructions": "Pour piocher des cartes, vous devez cliquer sur le paquet lorsque vous voyez cette animation.",
+    "drawthecards": "Piochez les cartes",
+    "endgame": "Fin du jeu",
+    "endgameconditions": "Le jeu se termine lorsque l'une des conditions suivantes est remplie :",
+    "endgamesheriffwin": "Tous les hors-la-loi 🐺️ et les renégats 🦅️ sont morts. \nDans ce cas, le shérif ⭐️ et les adjoints 🎖️ gagnent.",
+    "endgameshriffdeath": "Le shérif ⭐️ meurt. \nSi le renégat 🦅️ est le dernier joueur en vie, il gagne, sinon les hors-la-loi gagnent.",
+    "endingturn": "Lorsque vous avez fini de jouer vos cartes, c'est-à-dire lorsque vous ne voulez plus ou ne pouvez plus jouer de cartes, vous devez défausser les cartes qui dépassent votre nombre actuel de vies.\n\nEnsuite, vous passez le tour au joueur suivant en cliquant sur terminer le tour.",
+    "equipment": "ÉQUIPEMENT",
+    "justoneweapon": "Vous ne pouvez avoir qu'une seule arme équipée.",
+    "maxtwocardsequip": "Vous ne pouvez pas avoir 2 cartes avec le même nom équipées.",
+    "outlawreward": "Quiconque tue un hors-la-loi 🐺️ pioche 3 cartes du paquet (les autres hors-la-loi aussi 🐺️).",
+    "playerdeath": "La mort d'un joueur",
+    "playingcards": "Jouer les cartes",
+    "playingdmg": "Vous pouvez jouer vos cartes pour vous-même ou pour nuire à d'autres joueurs en essayant de les éliminer.",
+    "playingduringturn": "Vous ne pouvez jouer les cartes que pendant votre tour. Pour jouer des cartes, cliquez sur les cartes de votre main.\nÀ l'exception des cartes utilisées en réponse, comme Raté 😅️.",
+    "playingifyouwant": "Vous n'êtes pas obligé de jouer des cartes.",
+    "playlimit": "Il n'y a que 3 limitations :",
+    "playonlyonebang": "Vous ne pouvez jouer qu'un seul Bang! \npar tour (se réfère uniquement aux cartes nommées Bang!)",
+    "rewardspen": "Pénalités et récompenses",
+    "roles": "Rôles",
+    "sheriffkillsvice": "Si le shérif ⭐️ tue un adjoint, il perd toutes les cartes de sa main et en jeu devant lui.",
+    "thecards": "Cartes",
+    "title": "Comment jouer",
+    "turndiscard": "Défaussez toutes les cartes excédentaires",
+    "turndraw": "Piochez 2 cartes",
+    "turnplay": "Jouez autant de cartes que vous le souhaitez",
+    "turns": "Tours",
+    "turnstart": "Cela commence toujours par le Shérif ⭐️, et le jeu continue dans le sens des aiguilles d'une montre, les tours sont divisés en 3 phases.",
+    "weapon": "ARME",
+    "renegade": "Renégat",
+    "vice": "Adjoint",
+    "outlaw": "Hors-la-loi",
+    "sheriff": "Shérif",
+    "allcharacters": "Tous les personnages",
+    "gotoallcharacters": "Aller à tous les personnages",
+    "gotocards": "Aller aux cartes",
+    "gotohighnoon": "Aller à Midi",
+    "gotofoc": "Aller à Une Poignée de Cartes",
+    "gotogoldrush": "Aller à Ruée vers l'Or",
+    "highnooncards": "Midi - Cartes Événements",
+    "foccards": "Une Poignée de Cartes - Cartes Événements",
+    "goldrushcards": "Cartes Ruée vers l'Or",
+    "valleyofshadowscards": "Cartes Vallée des Ombres"
+  },
+  "theme": {
+    "sepia": "Sépia",
+    "light": "Clair",
+    "dark": "Sombre",
+    "grayscale": "Gris",
+    "black": "Noir"
+  }
+}
