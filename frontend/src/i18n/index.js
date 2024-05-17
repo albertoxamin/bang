@@ -3,6 +3,7 @@ import en from './en.json'
 import cs from './cs.json'
 import fr from './fr.json'
 import es from './es.json'
+import ru from './ru.json'
 
 export const defaultLocale = 'it'
 
@@ -14,4 +15,5 @@ export const languages = {
 	cs: cs,
 	fr: fr,
 	es: es,
+	ru: ru,
 }
