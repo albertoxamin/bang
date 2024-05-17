@@ -1,0 +1,918 @@
+{
+  "trademark": "¡Bang! es una marca registrada propiedad de DVGiochi",
+  "tip_1": "¡Mejor con amigos!",
+  "tip_2": "¡El icono 🤖️ significa que un jugador es un bot!",
+  "tip_3": "¡Puedes hacer clic en las cartas de personajes y equipos de otros jugadores si deseas saber más!",
+  "tip_4": "¡Incluye Dodge City, High Noon, Fistful Of Cards!",
+  "tip_5": "¿Encontraste un error? ¡Envíanos un mensaje en Discord!",
+  "tip_6": "¡Ahora con un servidor de Discord!",
+  "tip_7": "¡Si quieres ayudarnos a traducir el juego a tu idioma, contáctanos en Discord!",
+  "tip_8": "¡Si te desconectas durante una partida en curso, serás reemplazado por un bot (mientras estás ausente)!",
+  "tip_9": "¡Si estás en el móvil, mantén pulsada una carta para leer la descripción!",
+  "tip_10": "¡En caso de duda, dispara a todos los demás jugadores!",
+  "online_players": "Jugadores en línea: ",
+  "shuffle_players": "Mezclar jugadores",
+  "choose_username": "Elige un nombre de usuario:",
+  "report_bug": "Escribe en qué consiste el error",
+  "report": "Reportar un error",
+  "available_lobbies": "Salas disponibles:",
+  "spectate_lobbies": "Ver partidas en curso:",
+  "no_lobby_available": "No hay salas disponibles",
+  "create_lobby": "Abrir una sala:",
+  "characters_to_distribute": "Personajes a distribuir: ",
+  "lobby_name": "Nombre:",
+  "leave_room": "Salir de la sala",
+  "warning": "¡Advertencia!",
+  "connection_error": "No se puede conectar al servidor.",
+  "end_turn": "¡Terminar turno!",
+  "start_game": "¡Empezar!",
+  "expansions": "Expansiones",
+  "click_to_toggle": "Haz clic para alternar",
+  "details": "Detalles",
+  "ok": "OK",
+  "you": "TÚ",
+  "owner": "PROPIETARIO",
+  "cancel": "CANCELAR",
+  "send": "ENVIAR",
+  "password": "Contraseña: ",
+  "room_password_prompt": "Contraseña de la sala: ",
+  "private_room": "Sala privada",
+  "room": "Sala: ",
+  "room_players": "Jugadores (tú eres {username})",
+  "choose_character": "Elige tu personaje",
+  "choose_card": "Elige una carta",
+  "choose_card_from": " de ",
+  "flip_card": "↙️ Voltear una carta",
+  "draw_cards": "⏬ Roba tus cartas del mazo",
+  "play_cards": "▶️ Juega tus cartas",
+  "respond_card": "↩️ Responder a la carta",
+  "wait": "⏸ Espera",
+  "choose_cards": "🔽 Elige una carta",
+  "take_dmg": "Recibir daño",
+  "choose_response": "Elige tu respuesta ",
+  "choose_response_to": "a ",
+  "choose_response_needed": "NECESARIA ",
+  "choose_manette": "Elige un palo, solo podrás jugar cartas con ese palo en este turno.",
+  "hand": "MANO",
+  "card_against": "¿Contra quién jugarás tu carta?",
+  "choose_sid_scrap": "Descarta 2 cartas para no morir",
+  "choose_card_to_get": "Elige una carta",
+  "choose_guess": "Adivina el color del palo",
+  "choose_ranch": "Elige las cartas para reemplazar",
+  "choose_dalton": "Elige qué equipo descartar",
+  "choose_fratelli_di_sangue": "Elige a quién quieres donar una de tus vidas",
+  "choose_fantasma": "Elige a quién resucitar",
+  "choose_sventagliata": "Elige otro objetivo para golpear con Fanning",
+  "choose_tornado": "Elige una carta para descartar por el tornado",
+  "choose_bandidos": "Elige entre descartar 2 cartas o perder una vida (1 carta si solo tienes 1)",
+  "choose_poker": "Todos descartan 1 carta (si no hay As, el jugador que jugó poker elige 2 cartas)",
+  "choose_from_poker;2": "Elige qué cartas obtener (máx. 2)",
+  "choose_from_poker;1": "Elige qué carta obtener",
+  "choose_cecchino": "Elige a quién disparar",
+  "choose_rimbalzo_player": "Elige el objetivo del rebote",
+  "choose_rimbalzo_card": "Elige la carta para descartar el rebote",
+  "choose_nuova_identita": "Elige si quieres mantener tu personaje actual o si quieres cambiarlo y empezar con 2 PV",
+  "choose_bicchierino": "Un jugador de tu elección recupera 1 PV",
+  "choose_bottiglia": "¡Elige cómo jugar la Botella!",
+  "choose_complice": "¡Elige cómo jugar el Cómplice!",
+  "choose_ricercato": "Elige contra quién jugar Se Busca.",
+  "choose_birra_function": "Elige entre obtener 1 pepita de oro descartando la cerveza o si quieres jugar la cerveza.",
+  "choose_play_as_bang": "Elige qué carta jugar como Bang!",
+  "choose_flint_special": "Elige qué carta intercambiar.",
+  "emporio_others": "{0} está eligiendo qué carta obtener de la Tienda General",
+  "you_died": "ESTÁS MUERTO",
+  "spectate": "ESPECTAR",
+  "you_win": "HAS GANADO",
+  "you_lose": "HAS PERDIDO",
+  "special_ability": "HABILIDAD ESPECIAL",
+  "gold_rush_discard": "Descarta el equipo de la fiebre del oro de otro jugador (pagando el precio + 1)",
+  "gold_rush_discard_2": "Descarta el equipo de la fiebre del oro de otro jugador (pagando el precio + 1)",
+  "discard": "DESCARTAR",
+  "to_regain_1_hp": "PARA RECUPERAR 1 PV",
+  "play_your_turn": "JUEGA TU TURNO",
+  "you_are": "Eres",
+  "did_pick_as": "eligió esto como segunda carta",
+  "blackjack_special": "Si la carta es de diamantes o corazones, roba otra carta.",
+  "choose_scarp_card_to": "ELIGE QUÉ CARTA DESCARTAR PARA USAR",
+  "pick_a_card": "VOLTEAR UNA CARTA",
+  "to_defend_from": "PARA DEFENDERTE DE",
+  "submit": "Enviar",
+  "copy": "Copiar invitación",
+  "no_players_in_range": "No puedes ver a los otros jugadores, equipa un arma o un visor!",
+  "cantplaycard": "¡No puedes jugar esta carta así!",
+  "chat": {
+    "spectators": " | Un espectador está viendo la partida | {n} espectadores están viendo la partida",
+    "chat": "Chat",
+    "joined": "👋 ;{0}; se unió a la sala",
+    "died": "☠️ ;{0}; murió",
+    "died_role": "☠️ ;{0}; era un ;{1};!",
+    "won": "🏆 ;{0}; ganó! Su rol era ;{1};",
+    "choose_character": ";{0}; tiene ;{1}; como personaje, su habilidad especial es: ;{2};!",
+    "starting": "¡El juego está comenzando!",
+    "sheriff": "⭐ ;{0}; es el sheriff!",
+    "did_choose_character": ";{0}; eligió el personaje.",
+    "turn": "⏩ Es el turno de ;{0};.",
+    "draw_from_scrap": ";{0}; robó la primera carta del montón de descartes.",
+    "draw_from_player": ";{0}; robó la primera carta de la mano de ;{1};.",
+    "flipped": ";{0}; volteó un ;{1}; ;{2};.",
+    "scrapped": ";{0}; descartó un ;{1}; ;{2};.",
+    "explode": "💥 ;{0}; hizo explotar la dinamita.",
+    "beer_save": ";{0}; usó una cerveza para salvar su vida.",
+    "get_nugget": ";{0}; obtuvo una pepita de oro usando una Cerveza.",
+    "play_card": ";{0}; jugó ;{1};.",
+    "play_card_green": ";{0}; puso en juego ;{1};.",
+    "play_card_with": ";{0}; jugó ;{1};, descartando ;{2};.",
+    "purchase_card": ";{0}; compró ;{1};.",
+    "play_card_against": ";{0}; jugó ;{1}; contra ;{2};.",
+    "play_card_against_with": ";{0}; jugó ;{1}; contra ;{2};, descartando ;{3};.",
+    "play_card_for": ";{0}; jugó ;{1}; para ;{2};.",
+    "spilled_beer": ";{0}; derramó una ;{1};.",
+    "diligenza": ";{0}; jugó ;{1}; y roba 2 cartas.",
+    "wellsfargo": ";{0}; jugó ;{1}; y roba 3 cartas.",
+    "saloon": "🍻 ;{0}; jugó ;{1}; y cura 1 PV a todos los vivos.",
+    "special_bart_cassidy": ";{0}; recibió una compensación porque fue herido.",
+    "special_el_gringo": ";{0}; robó una carta de ;{1}; cuando fue herido.",
+    "special_calamity": ";{0}; jugó ;{1}; como Bang! contra ;{2};.",
+    "allroles3": "En el juego hay: ;{1}; ;{0};, ;{3}; ;{2};, ;{5}; ;{4};.",
+    "allroles4": "En el juego hay: ;{1}; ;{0};, ;{3}; ;{2};, ;{5}; ;{4};, ;{7}; ;{6};.",
+    "guess": "🤔 ;{0}; adivina ;{1};.",
+    "guess_right": ";{0}; tenía razón.",
+    "guess_wrong": ";{0}; estaba equivocado.",
+    "fratelli_sangue": ";{0}; dio una de sus vidas a ;{1};.",
+    "doctor_heal": ";{0}; fue curado por el doctor.",
+    "respond": "↩️ ;{0}; respondió con ;{1};.",
+    "change_username": "✏️ ;{0}; ahora es ;{1};.",
+    "lobby_reset": "Volviendo a la sala en ;{0}; segundos...",
+    "prison_free": "🆓 ;{0}; salió de la prisión",
+    "prison_turn": "🔐 ;{0}; se quedó en prisión este turno",
+    "flip_event": "🎴 EVENTO: ;{0}; 🎴",
+    "choose_manette": ";{0}; se comprometió a jugar solo cartas del palo ;{1}; en este turno.",
+    "UnionPacific": ";{0}; jugó Union Pacific y roba 4 cartas del mazo",
+    "use_special": ";{0}; usó la habilidad especial de su personaje (;{1};)",
+    "gold_rush_pay_discard": ";{0}; descartó ;{2}; de ;{1};.",
+    "choose_emporio": ";{0}; eligió ;{1}; de la Tienda General.",
+    "shotgun_scrap": "Cuando la escopeta golpeó a ;{0};, una carta voló de su mano (;{1};)",
+    "taglia_reward": "💰 ;{1}; obtuvo una carta de la recompensa por ;{0};",
+    "snake_bit": "🐍 ;{0}; fue mordido por la serpiente de cascabel."
+  },
+  "foc": {
+    "leggedelwest": "Debe jugar esta carta en este turno si es posible."
+  },
+  "mods": "Modificadores",
+  "bots": "Bots",
+  "add_bot": "Añadir un bot",
+  "remove_bot": "Eliminar un bot",
+  "minimum_players": "El juego necesita al menos 3 jugadores para empezar",
+  "mod_comp": "Modo competitivo (desactiva recibir daño automáticamente)",
+  "disconnect_bot": "Reemplazar jugadores que se desconecten por bots",
+  "your_turn": "¡Juega tu turno!",
+  "your_response": "¡Responde!",
+  "your_choose": "¡Elige una carta!",
+  "cards": {
+    "Barile": {
+      "name": "Barril",
+      "desc": "Cuando alguien juega un Bang contra ti. Puedes voltear la primera carta del mazo, si el palo es corazones, cuenta como una carta Fallaste"
+    },
+    "Dinamite": {
+      "name": "Dinamita",
+      "desc": "Al jugar la dinamita, colócala frente a ti, permanecerá inofensiva durante toda una ronda. Al comienzo del siguiente turno antes de robar y antes de cualquier volteo de carta (ej. Prisión), voltea una carta de la parte superior del mazo. Si una carta está entre 2 y 9 de picas (inclusive), la dinamita explota: pierdes 3 vidas y descartas la carta, de lo contrario, pasa la dinamita al siguiente jugador, quien robará a su vez después de haber terminado su turno"
+    },
+    "Mirino": {
+      "name": "Mira",
+      "desc": "Ves a los otros jugadores a una distancia de -1"
+    },
+    "Mustang": {
+      "name": "Mustang",
+      "desc": "Los otros jugadores te ven a una distancia de +1"
+    },
+    "Prigione": {
+      "name": "Prisión",
+      "desc": "Equipa esta carta a otro jugador, excepto el Sheriff. El jugador elegido al comienzo de su turno, debe voltear una carta antes de robar: si es corazones, descarta esta carta y juega el turno normalmente, de lo contrario, descarta esta carta y salta el turno"
+    },
+    "Remington": {
+      "name": "Remington",
+      "desc": "Puedes disparar a otro jugador a una distancia de 3 o menos"
+    },
+    "Rev Carabine": {
+      "name": "Rev. Carabina",
+      "desc": "Puedes disparar a otro jugador a una distancia de 4 o menos"
+    },
+    "Schofield": {
+      "name": "Schofield",
+      "desc": "Puedes disparar a otro jugador a una distancia de 2 o menos"
+    },
+    "Volcanic": {
+      "name": "Volcánica",
+      "desc": "Puedes disparar a otro jugador a una distancia de 1 o menos, sin embargo, ya no tienes el límite de 1 Bang"
+    },
+    "Winchester": {
+      "name": "Winchester",
+      "desc": "Puedes disparar a otro jugador a una distancia de 5 o menos"
+    },
+    "Bang!": {
+      "name": "Bang!",
+      "desc": "Dispara a un jugador a la vista. Si no tienes armas, tu vista es de 1"
+    },
+    "Birra": {
+      "name": "Cerveza",
+      "desc": "Juega esta carta para recuperar un punto de vida. No puedes curarte más allá del límite máximo de tu personaje. Si estás a punto de perder tu último punto de vida, también puedes jugar esta carta en el turno de tu oponente. La cerveza ya no tiene efecto si solo quedan dos jugadores"
+    },
+    "Cat Balou": {
+      "name": "Cat Balou",
+      "desc": "Elige y descarta una carta de otro jugador."
+    },
+    "Diligenza": {
+      "name": "Diligencia",
+      "desc": "Roba 2 cartas del mazo."
+    },
+    "Duello": {
+      "name": "Duelo",
+      "desc": "Juega esta carta contra cualquier jugador. Por turnos, comenzando con tu oponente, puedes descartar una carta Bang!, el primer jugador que no lo haga pierde 1 vida."
+    },
+    "Emporio": {
+      "name": "Tienda General",
+      "desc": "Pon sobre la mesa N cartas del mazo, donde N es el número de jugadores vivos, por turnos, comenzando contigo, elige una carta y agrégala a tu mano"
+    },
+    "Gatling": {
+      "name": "Gatling",
+      "desc": "Dispara a todos los otros jugadores"
+    },
+    "Indiani!": {
+      "name": "¡Indios!",
+      "desc": "Todos los demás jugadores deben descartar una carta Bang! o perder 1 punto de vida"
+    },
+    "Mancato!": {
+      "name": "¡Fallaste!",
+      "desc": "Usa esta carta para cancelar el efecto de un Bang"
+    },
+    "Panico!": {
+      "name": "¡Pánico!",
+      "desc": "Roba una carta a un jugador a una distancia de 1"
+    },
+    "Saloon": {
+      "name": "Saloon",
+      "desc": "Todos recuperan 1 punto de vida"
+    },
+    "WellsFargo": {
+      "name": "Wells Fargo",
+      "desc": "Roba 3 cartas del mazo"
+    },
+    "Binocolo": {
+      "name": "Binoculares",
+      "desc": "Ves a los otros jugadores a una distancia de -1"
+    },
+    "Riparo": {
+      "name": "Escondite",
+      "desc": "Los otros jugadores te ven a una distancia de +1"
+    },
+    "Pugno!": {
+      "name": "¡Puñetazo!",
+      "desc": "Dispara a un jugador a una distancia de 1"
+    },
+    "Rag Time": {
+      "name": "Rag Time",
+      "desc": "Roba una carta de otro jugador a cualquier distancia"
+    },
+    "Rissa": {
+      "name": "Pelea",
+      "desc": "Elige una carta para descartar de la mano/equipo de todos los demás jugadores"
+    },
+    "Schivata": {
+      "name": "Esquiva",
+      "desc": "Usa esta carta para cancelar el efecto de un Bang y luego roba una carta."
+    },
+    "Springfield": {
+      "name": "Springfield",
+      "desc": "Dispara a un jugador a cualquier distancia"
+    },
+    "Tequila": {
+      "name": "Tequila",
+      "desc": "Cura 1 PV a un jugador de tu elección (puede ser tú)"
+    },
+    "Whisky": {
+      "name": "Whisky",
+      "desc": "Cura 2 PV"
+    },
+    "Bibbia": {
+      "name": "Biblia",
+      "desc": "Usa esta carta para cancelar el efecto de un Bang y luego roba una carta."
+    },
+    "Cappello": {
+      "name": "Sombrero de Diez Galones",
+      "desc": "Usa esta carta para cancelar el efecto de un Bang"
+    },
+    "Placca Di Ferro": {
+      "name": "Placa de Hierro",
+      "desc": "Usa esta carta para cancelar el efecto de un Bang"
+    },
+    "Sombrero": {
+      "name": "Sombrero",
+      "desc": "Usa esta carta para cancelar el efecto de un Bang"
+    },
+    "Pugnale": {
+      "name": "Cuchillo",
+      "desc": "Dispara a un jugador a una distancia de 1"
+    },
+    "Derringer": {
+      "name": "Derringer",
+      "desc": "Dispara a un jugador a una distancia de 1 y luego roba una carta."
+    },
+    "Borraccia": {
+      "name": "Cantimplora",
+      "desc": "Recupera 1 PV"
+    },
+    "Can Can": {
+      "name": "Can Can",
+      "desc": "Elige y descarta una carta de otro jugador."
+    },
+    "Conestoga": {
+      "name": "Conestoga",
+      "desc": "Roba una carta de otro jugador a cualquier distancia"
+    },
+    "Fucile Da Caccia": {
+      "name": "Rifle de Búfalo",
+      "desc": "Dispara a un jugador a cualquier distancia"
+    },
+    "Pony Express": {
+      "name": "Pony Express",
+      "desc": "Roba 3 cartas del mazo"
+    },
+    "Pepperbox": {
+      "name": "Pepperbox",
+      "desc": "Dispara a un jugador a la vista. Si no tienes armas, tu vista es de 1"
+    },
+    "Howitzer": {
+      "name": "Howitzer",
+      "desc": "Dispara a todos los otros jugadores"
+    },
+    "Bart Cassidy": {
+      "name": "Bart Cassidy",
+      "desc": "Cada vez que es herido, roba una carta."
+    },
+    "Black Jack": {
+      "name": "Black Jack",
+      "desc": "Al comienzo de su turno, cuando tiene que robar, muestra a todos la segunda carta, si es corazones o diamantes, roba una tercera carta sin mostrarla."
+    },
+    "Calamity Janet": {
+      "name": "Calamity Janet",
+      "desc": "Puede usar las cartas Fallaste! como Bang! y viceversa."
+    },
+    "El Gringo": {
+      "name": "El Gringo",
+      "desc": "Cada vez que es herido, roba una carta de la mano del jugador atacante."
+    },
+    "Jesse Jones": {
+      "name": "Jesse Jones",
+      "desc": "Cuando tiene que robar sus cartas, puede robar la primera carta de la mano de otro jugador. (haz clic en las cartas del jugador enemigo si deseas usar la habilidad)"
+    },
+    "Jourdonnais": {
+      "name": "Jourdonnais",
+      "desc": "Juega como si tuviera un Barril siempre activo, si equipa otro Barril, puede voltear 2 cartas."
+    },
+    "Kit Carlson": {
+      "name": "Kit Carlson",
+      "desc": "Cuando tiene que robar, mira 3 cartas y elige 2, colocando la otra carta en la parte superior del mazo."
+    },
+    "Lucky Duke": {
+      "name": "Lucky Duke",
+      "desc": "Cada vez que tiene que voltear una carta, puede voltear 2 veces."
+    },
+    "Paul Regret": {
+      "name": "Paul Regret",
+      "desc": "Los otros jugadores lo ven a una distancia de +1."
+    },
+    "Pedro Ramirez": {
+      "name": "Pedro Ramirez",
+      "desc": "Cuando tiene que robar, puede tomar la primera carta del montón de descartes. (haz clic en las cartas descartadas para usar la habilidad)"
+    },
+    "Rose Doolan": {
+      "name": "Rose Doolan",
+      "desc": "Ve a los otros jugadores a una distancia de -1."
+    },
+    "Sid Ketchum": {
+      "name": "Sid Ketchum",
+      "desc": "Puede descartar 2 cartas para recuperar 1 PV."
+    },
+    "Slab The Killer": {
+      "name": "Slab The Killer",
+      "desc": "Para esquivar sus cartas Bang!, los otros jugadores necesitan 2 cartas Fallaste!"
+    },
+    "Suzy Lafayette": {
+      "name": "Suzy Lafayette",
+      "desc": "Siempre que tiene la mano vacía, roba una carta."
+    },
+    "Vulture Sam": {
+      "name": "Vulture Sam",
+      "desc": "Cuando un jugador muere, obtiene todas las cartas en la mano y los equipos del muerto."
+    },
+    "Willy The Kid": {
+      "name": "Willy The Kid",
+      "desc": "No tiene límites en la cantidad de Bang que puede usar."
+    },
+    "Pixie Pete": {
+      "name": "Pixie Pete",
+      "desc": "Roba 3 cartas en lugar de 2."
+    },
+    "Tequila Joe": {
+      "name": "Tequila Joe",
+      "desc": "Cuando juega una Cerveza, recupera 2 PV."
+    },
+    "Greg Digger": {
+      "name": "Greg Digger",
+      "desc": "Siempre que un jugador muere, recupera hasta 2 vidas."
+    },
+    "Herb Hunter": {
+      "name": "Herb Hunter",
+      "desc": "Siempre que un jugador muere, roba 2 cartas."
+    },
+    "Elena Fuente": {
+      "name": "Elena Fuente",
+      "desc": "Puede usar cualquier carta de su mano como Fallaste."
+    },
+    "Bill Noface": {
+      "name": "Bill Noface",
+      "desc": "Roba 1 carta + 1 carta por cada herida que tiene."
+    },
+    "Molly Stark": {
+      "name": "Molly Stark",
+      "desc": "Cuando usa una carta de su mano fuera de su turno, roba una carta."
+    },
+    "Apache Kid": {
+      "name": "Apache Kid",
+      "desc": "Las cartas de diamantes ♦️ jugadas contra él no tienen efecto (no funciona en duelos)."
+    },
+    "Sean Mallory": {
+      "name": "Sean Mallory",
+      "desc": "Puede mantener hasta 10 cartas en su mano al terminar el turno."
+    },
+    "Belle Star": {
+      "name": "Belle Star",
+      "desc": "Durante su turno, las cartas verdes y azules de los otros jugadores no funcionan."
+    },
+    "Vera Custer": {
+      "name": "Vera Custer",
+      "desc": "Antes de robar, puede elegir la habilidad especial de otro jugador vivo. Esta habilidad se usa hasta el próximo turno."
+    },
+    "Chuck Wengam": {
+      "name": "Chuck Wengam",
+      "desc": "En su turno, puede decidir perder 1 PV para robar 2 cartas del mazo."
+    },
+    "Pat Brennan": {
+      "name": "Pat Brennan",
+      "desc": "En lugar de robar, puede robar una carta del equipo de otro jugador. (haz clic en el jugador enemigo si deseas usar la habilidad)"
+    },
+    "José Delgado": {
+      "name": "José Delgado",
+      "desc": "En su turno, puede descartar una carta azul para robar 2 cartas, hasta dos veces por turno."
+    },
+    "Doc Holyday": {
+      "name": "Doc Holyday",
+      "desc": "Puede descartar 2 cartas para jugar un Bang."
+    },
+    "Fuorilegge": {
+      "name": "Forajido"
+    },
+    "Rinnegato": {
+      "name": "Renegado"
+    },
+    "Sceriffo": {
+      "name": "Sheriff"
+    },
+    "Vice": {
+      "name": "Ayudante"
+    },
+    "Miniera Abbandonata": {
+      "name": "Mina Abandonada",
+      "desc": "Los jugadores roban del montón de descartes en su fase 1 y descartan en la parte superior del mazo durante la fase 3 (si el montón de descartes se agota, deben robar y descartar en la parte superior del mazo)"
+    },
+    "Il Giudice": {
+      "name": "El Juez",
+      "desc": "No puedes equipar cartas a ti mismo ni a otros jugadores"
+    },
+    "Agguato": {
+      "name": "Emboscada",
+      "desc": "La distancia base entre dos jugadores es de 1"
+    },
+    "Rimbalzo": {
+      "name": "Rebote",
+      "desc": "El jugador puede jugar Bang contra las cartas equipadas por los otros jugadores, si no juegan Fallaste, se descartan (haz clic en la carta de evento)"
+    },
+    "Cecchino": {
+      "name": "Francotirador",
+      "desc": "Durante su turno, los jugadores pueden descartar 2 Bang! para disparar un Bang! que requiere 2 Fallaste (haz clic en la carta)"
+    },
+    "Lazo": {
+      "name": "Lazo",
+      "desc": "Las cartas en la ranura de equipo no funcionan"
+    },
+    "Ranch": {
+      "name": "Rancho",
+      "desc": "Después de robar, el jugador puede descartar tantas cartas como quiera de su mano y robar tantas del mazo"
+    },
+    "Dead Man": {
+      "name": "Hombre Muerto",
+      "desc": "El primer jugador que muera vuelve a la vida con 2 PV y 2 cartas"
+    },
+    "Liquore Forte": {
+      "name": "Licor Fuerte",
+      "desc": "Los jugadores pueden saltar el robo para recuperar 1 PV (haz clic en la carta de evento para usar)"
+    },
+    "Vendetta": {
+      "name": "Venganza",
+      "desc": "Al terminar el turno, el jugador voltea una carta del mazo, si es un ❤️ juega otro turno (pero no voltea otra carta)"
+    },
+    "Roulette Russa": {
+      "name": "Ruleta Rusa",
+      "desc": "Comenzando por el sheriff, cada jugador descarta 1 Fallaste, el primero que no lo haga pierde 2 PV"
+    },
+    "Legge Del West": {
+      "name": "Ley del Oeste",
+      "desc": "Cada jugador muestra la segunda carta que roba y debe usarla en esa ronda (si es posible)"
+    },
+    "Peyote": {
+      "name": "Peyote",
+      "desc": "En lugar de robar, el jugador intenta adivinar el color del palo, si acierta, agrega la carta a su mano y continúa intentando adivinar la siguiente carta"
+    },
+    "Fratelli Di Sangue": {
+      "name": "Hermanos de Sangre",
+      "desc": "Al comienzo de su turno, los jugadores pueden perder 1 PV (excepto el último) para dárselo a otro jugador"
+    },
+    "I Dalton": {
+      "name": "Los Dalton",
+      "desc": "Los jugadores que tengan cartas azules equipadas, descartan una de esas cartas a su elección"
+    },
+    "Sermone": {
+      "name": "El Sermón",
+      "desc": "Los jugadores no pueden jugar Bang! durante su turno"
+    },
+    "Città Fantasma": {
+      "name": "Ciudad Fantasma",
+      "desc": "Todos los jugadores muertos vuelven a la vida en su turno, no pueden morir y roban 3 cartas en lugar de 2. Cuando terminan su turno, mueren."
+    },
+    "Il Reverendo": {
+      "name": "El Reverendo",
+      "desc": "Las cervezas no se pueden jugar"
+    },
+    "Sbornia": {
+      "name": "Resaca",
+      "desc": "Los personajes pierden sus habilidades especiales"
+    },
+    "Il Dottore": {
+      "name": "El Doctor",
+      "desc": "El jugador con la menor cantidad de PV recupera 1 PV"
+    },
+    "Corsa All Oro": {
+      "name": "Fiebre del Oro",
+      "desc": "Los turnos se juegan en sentido antihorario"
+    },
+    "Maledizione": {
+      "name": "Maldición",
+      "desc": "Todas las cartas son de picas ♠️"
+    },
+    "Sparatoria": {
+      "name": "Tiroteo",
+      "desc": "El límite de Bang! del turno es de 2"
+    },
+    "Benedizione": {
+      "name": "Bendición",
+      "desc": "Todas las cartas son de corazones ❤️"
+    },
+    "Il Treno": {
+      "name": "Llegada del Tren",
+      "desc": "Los jugadores roban 1 carta extra"
+    },
+    "Sete": {
+      "name": "Sed",
+      "desc": "Los jugadores solo roban 1 carta al comienzo de su turno"
+    },
+    "Nuova Identita": {
+      "name": "Nueva Identidad",
+      "desc": "Al comienzo de su turno, cada jugador puede elegir cambiar su personaje con el otro mostrado al comienzo del juego. Si lo hace, comienza con 2 PV"
+    },
+    "Manette": {
+      "name": "Esposas",
+      "desc": "Después de robar en la fase 1, el jugador declara un palo. Solo podrá usar cartas de ese palo durante ese turno"
+    },
+    "Mezzogiorno di Fuoco": {
+      "name": "Mediodía de Fuego",
+      "desc": "Cada jugador pierde 1 PV al comenzar su turno"
+    },
+    "Per Un Pugno Di Carte": {
+      "name": "Por un Puñado de Cartas",
+      "desc": "Al comienzo de su turno, el jugador es objetivo de tantos Bang como cartas tenga en su mano"
+    },
+    "Pepita": {
+      "name": "Pepita de Oro"
+    },
+    "Bicchierino": {
+      "name": "Chupito",
+      "desc": "Puedes elegir a un jugador que recupere 1 PV (incluso tú)"
+    },
+    "Bottiglia": {
+      "name": "Botella",
+      "desc": "Se puede jugar como Pánico!, Cerveza o Bang!"
+    },
+    "Complice": {
+      "name": "Cómplice",
+      "desc": "Se puede jugar como Tienda General, Duelo o Cat Balou."
+    },
+    "Corsa All Oro_gr": {
+      "name": "Fiebre del Oro",
+      "desc": "Terminas tu turno, recuperas todos tus PV y comienzas un nuevo turno."
+    },
+    "Rum": {
+      "name": "Ron",
+      "desc": "Voltea 4 cartas, por cada palo diferente, ganas 1 PV."
+    },
+    "Union Pacific": {
+      "name": "Union Pacific",
+      "desc": "Roba 4 cartas del mazo."
+    },
+    "Calumet": {
+      "name": "Calumet",
+      "desc": "Las cartas de diamantes jugadas por otros jugadores no tienen efecto sobre ti."
+    },
+    "Cinturone": {
+      "name": "Cinturón",
+      "desc": "Puedes mantener hasta 8 cartas cuando terminas tu turno."
+    },
+    "Ferro di Cavallo": {
+      "name": "Herradura",
+      "desc": "Cada vez que tienes que voltear una carta, ¡volteas dos veces!"
+    },
+    "Piccone": {
+      "name": "Pico",
+      "desc": "Obtienes 1 carta más cuando robas al comienzo del turno."
+    },
+    "Ricercato": {
+      "name": "Se Busca",
+      "desc": "Juega sobre otro jugador, quien mate al objetivo obtiene 2 cartas extra y 1 pepita de oro."
+    },
+    "Setaccio": {
+      "name": "Cazador de Oro",
+      "desc": "Paga 1 pepita de oro para robar 1 carta del mazo, hasta dos veces por turno. (Haz clic en la carta equipada para usar)"
+    },
+    "Stivali": {
+      "name": "Botas",
+      "desc": "Cada vez que pierdes 1 PV, robas 1 carta del mazo."
+    },
+    "Talismano": {
+      "name": "Amuleto de la Suerte",
+      "desc": "Cada vez que pierdes 1 PV, obtienes 1 pepita de oro."
+    },
+    "Zaino": {
+      "name": "Mochila",
+      "desc": "Paga 2 pepitas de oro para curar 1 PV. (Haz clic en la carta equipada para usar)"
+    },
+    "Don Bell": {
+      "name": "Don Bell",
+      "desc": "Cuando termina su turno, voltea una carta, si es Corazones ❤️ o Diamantes ♦️, juega nuevamente."
+    },
+    "Dutch Will": {
+      "name": "Dutch Will",
+      "desc": "Roba 2 cartas, descarta 1 y toma 1 pepita de oro."
+    },
+    "Jacky Murieta": {
+      "name": "Jacky Murieta",
+      "desc": "Durante su turno puede pagar 2 pepitas de oro para tener la capacidad de disparar otro Bang!"
+    },
+    "Josh McCloud": {
+      "name": "Josh McCloud",
+      "desc": "Puede pagar 2 pepitas de oro para obtener la primera carta del mazo de fiebre del oro."
+    },
+    "Madam Yto": {
+      "name": "Madam Yto",
+      "desc": "Roba 1 carta del mazo cada vez que se juega una cerveza."
+    },
+    "Pretty Luzena": {
+      "name": "Pretty Luzena",
+      "desc": "Una vez por turno, puede tener un descuento de 1 en la tienda de cartas de fiebre del oro."
+    },
+    "Raddie Snake": {
+      "name": "Raddie Snake",
+      "desc": "Puede descartar 1 pepita de oro para robar 1 carta del mazo durante su turno (máximo 2 veces por turno)."
+    },
+    "Simeon Picos": {
+      "name": "Simeon Picos",
+      "desc": "Obtiene 1 pepita de oro cada vez que pierde 1 PV."
+    },
+    "Fantasma": {
+      "name": "Fantasma",
+      "desc": "Juega sobre cualquier jugador eliminado: ese jugador vuelve al juego, pero no puede ganar ni perder puntos de vida."
+    },
+    "Lemat": {
+      "name": "Lemat",
+      "desc": "Durante tu turno puedes usar cualquier carta como Bang! (Haz clic en la carta una vez equipada)."
+    },
+    "SerpenteASonagli": {
+      "name": "Serpiente de Cascabel",
+      "desc": "Juega sobre cualquier jugador. Al comienzo de su turno, si ese jugador roba en Picas, pierde 1 punto de vida."
+    },
+    "Shotgun": {
+      "name": "Escopeta",
+      "desc": "Cada vez que hieres a un jugador, debe descartar una carta de su mano."
+    },
+    "Taglia": {
+      "name": "Recompensa",
+      "desc": "Juega sobre cualquier jugador. Si ese jugador es golpeado por Bang!, la persona que disparó obtiene una carta del mazo."
+    },
+    "Mira": {
+      "name": "Apuntar",
+      "desc": "Juega esta carta junto con una carta Bang!. Si el objetivo es golpeado, pierde 2 puntos de vida."
+    },
+    "RitornoDiFiamma": {
+      "name": "Retroceso",
+      "desc": "Cuenta como una carta Fallaste!. El jugador que disparó es el objetivo de un Bang!."
+    },
+    "Bandidos": {
+      "name": "Bandidos",
+      "desc": "Cada jugador elige entre descartar 2 cartas de su mano (o 1 si solo tiene 1) o perder 1 punto de vida."
+    },
+    "Fuga": {
+      "name": "Fuga",
+      "desc": "Puede jugarse fuera de turno. Evita el efecto de una carta marrón (no Bang!) de la que eres objetivo."
+    },
+    "Sventagliata": {
+      "name": "Acribillar",
+      "desc": "Cuenta como el único Bang! del turno. Un jugador de tu elección a una distancia de 1 del objetivo (si lo hay, excluyéndote a ti mismo) también es objetivo de un Bang."
+    },
+    "UltimoGiro": {
+      "name": "Última Ronda",
+      "desc": "Recupera 1 punto de vida"
+    },
+    "Poker": {
+      "name": "Póker",
+      "desc": "Todos los demás jugadores descartan una carta de su mano, al mismo tiempo. Si no hay Ases, roba hasta 2 de esas cartas."
+    },
+    "Salvo": {
+      "name": "¡Salvado!",
+      "desc": "Puede jugarse fuera de turno. Evita que otro jugador pierda 1 punto de vida. Si sobrevive, roba 2 cartas de su mano o del mazo (a tu elección)."
+    },
+    "Tomahawk": {
+      "name": "Tomahawk",
+      "desc": "Ataca a un jugador hasta una distancia de 2."
+    },
+    "Tornado": {
+      "name": "Tornado",
+      "desc": "Todos descartan una carta de su mano (si es posible), luego roban 2 cartas del mazo."
+    },
+    "Black Flower": {
+      "name": "Flor Negra",
+      "desc": "Una vez por turno, puedes usar una carta de Picas para disparar un Bang! extra"
+    },
+    "Colorado Bill": {
+      "name": "Colorado Bill",
+      "desc": "Cada vez que juegas una carta Bang!, si robas una Picas, el disparo no puede ser evitado."
+    },
+    "Der Spot Burst Ringer": {
+      "name": "Der Spot Burst Ringer",
+      "desc": "Una vez por turno, puedes usar una carta Bang! como una Gatling."
+    },
+    "Evelyn Shebang": {
+      "name": "Evelyn Shebang",
+      "desc": "Puedes elegir no robar cartas durante tu fase de robo. Por cada carta no robada, disparas un Bang! a un objetivo alcanzable, a un objetivo diferente."
+    },
+    "Henry Block": {
+      "name": "Henry Block",
+      "desc": "Cualquiera que robe o descarte una de tus cartas en juego o en mano es objetivo de un Bang!."
+    },
+    "Lemonade Jim": {
+      "name": "Lemonade Jim",
+      "desc": "Cada vez que otro jugador juega una Cerveza, puedes descartar una carta de tu mano para recuperar también 1 punto de vida."
+    },
+    "Mick Defender": {
+      "name": "Mick Defender",
+      "desc": "Si eres objetivo de una carta marrón (no Bang!), puedes usar una carta Fallaste! para evitar 1 efecto."
+    },
+    "Tuco Franziskaner": {
+      "name": "Tuco Franziskaner",
+      "desc": "Si no tienes cartas azules equipadas, robas 2 cartas adicionales."
+    },
+    "Big Spencer": {
+      "name": "Big Spencer",
+      "desc": "Comienza con 5 cartas. No puede jugar Fallaste!"
+    },
+    "Flint Westwood": {
+      "name": "Flint Westwood",
+      "desc": "Puede intercambiar una carta de su mano con 2 cartas aleatorias de la mano de otro jugador durante su turno."
+    },
+    "Gary Looter": {
+      "name": "Gary Looter",
+      "desc": "Roba todas las cartas sobrantes descartadas por otros jugadores al final de cada turno."
+    },
+    "Greygory Deckard": {
+      "name": "Greygory Deckard",
+      "desc": "Al comienzo de su turno, puede robar 2 personajes aleatorios y gana todas sus habilidades."
+    },
+    "John Pain": {
+      "name": "John Pain",
+      "desc": "Si tiene menos de 6 cartas en su mano, cuando un jugador \"¡roba!\", John agrega la carta robada a su mano."
+    },
+    "Lee Van Kliff": {
+      "name": "Lee Van Kliff",
+      "desc": "Durante su turno, puede descartar una carta Bang! para repetir el efecto de una carta marrón que acaba de jugar."
+    },
+    "Teren Kill": {
+      "name": "Teren Kill",
+      "desc": "Cada vez que va a ser eliminado, \"¡roba!\": si no es una carta de Picas, Teren se queda en 1 punto de vida y roba 1 carta."
+    },
+    "Youl Grinner": {
+      "name": "Youl Grinner",
+      "desc": "Antes de robar, los jugadores con más cartas en su mano que Youl deben darle una carta de su elección."
+    },
+    "Camposanto": {
+      "name": "Cementerio",
+      "desc": "Al comienzo de su turno, cada jugador eliminado vuelve al juego con 1 punto de vida. Roba una carta de rol al azar de los jugadores eliminados."
+    },
+    "Darling Valentine": {
+      "name": "Darling Valentine",
+      "desc": "Al comienzo de su turno, cada jugador descarta su mano y roba el mismo número de cartas del mazo."
+    },
+    "Dorothy Rage": {
+      "name": "Dorothy Rage",
+      "desc": "Durante su turno, cada jugador puede forzar a otro jugador a jugar una carta."
+    },
+    "Helena Zontero": {
+      "name": "Helena Zontero",
+      "desc": "Cuando Helena entra en el juego, \"¡roba!\": si se roba un Corazón o un Diamante, baraja las cartas de rol activas excepto el Sheriff y redistribúyelas al azar."
+    },
+    "Lady Rosa del Texas": {
+      "name": "Lady Rose of Texas",
+      "desc": "Durante su turno, cada jugador puede cambiar de lugar con el jugador a su derecha, quien se salta su próximo turno. (Haz clic en la carta)"
+    },
+    "Miss Susanna": {
+      "name": "Miss Susanna",
+      "desc": "Durante su turno, cada jugador debe jugar al menos 3 cartas. Si no lo hacen, pierden 1 punto de vida."
+    },
+    "Regolamento di Conti": {
+      "name": "Rendición de Cuentas",
+      "desc": "Todas las cartas pueden jugarse como si fueran Bang!. Las cartas Bang! pueden jugarse como si fueran Fallaste! (Haz clic en la carta)"
+    },
+    "Sacagaway": {
+      "name": "Sacagaway",
+      "desc": "Todos los jugadores juegan con sus cartas boca arriba (excepto su carta de rol!)."
+    },
+    "Wild West Show": {
+      "name": "Wild West Show",
+      "desc": "El objetivo de cada jugador se convierte en: \"¡Sé el último en pie!\""
+    }
+  },
+  "help": {
+    "character": "Personajes",
+    "characters_special": "Cada personaje tiene habilidades especiales y una cantidad de vidas que los hacen únicos. \nLas vidas son el número de puntos de vida que puedes perder antes de morir e indican también el número máximo de cartas que puedes mantener en tu mano.",
+    "deathnobeer": "Cuando pierdes tu último punto de vida y no tienes una cerveza 🍺️ en tu mano, mueres. \nTus cartas se descartan y tu rol se revela a todos.",
+    "discard": "Descartar",
+    "distance": "Distancia",
+    "distancecalc": "La distancia se calcula automáticamente por el juego y corresponde a la distancia mínima entre los jugadores a la izquierda y a la derecha.",
+    "drawinstructions": "Para robar cartas, debes hacer clic en el mazo cuando veas esta animación.",
+    "drawthecards": "Roba las cartas",
+    "endgame": "Fin del juego",
+    "endgameconditions": "El juego termina cuando se cumple una de las siguientes condiciones:",
+    "endgamesheriffwin": "Todos los forajidos 🐺️ y renegados 🦅️ están muertos. \nEn este caso, el sheriff ⭐️ y los ayudantes 🎖️ ganan.",
+    "endgameshriffdeath": "El sheriff ⭐️ muere. \nSi el renegado 🦅️ es el último jugador en pie, gana, de lo contrario, los forajidos ganan.",
+    "endingturn": "Cuando hayas terminado de jugar tus cartas, es decir, cuando no quieras o no puedas jugar más cartas, debes descartar las cartas que excedan tu número actual de vidas.\n\nLuego pasas el turno al siguiente jugador haciendo clic en terminar turno.",
+    "equipment": "EQUIPO",
+    "justoneweapon": "Solo puedes tener 1 arma equipada.",
+    "maxtwocardsequip": "No puedes tener 2 cartas con el mismo nombre equipadas.",
+    "outlawreward": "Cualquiera que mate a un forajido 🐺️ roba 3 cartas del mazo (otros forajidos también 🐺️).",
+    "playerdeath": "La muerte de un jugador",
+    "playingcards": "Jugar las cartas",
+    "playingdmg": "Puedes jugar tus cartas para ti mismo o para dañar a otros jugadores intentando eliminarlos.",
+    "playingduringturn": "Solo puedes jugar las cartas en tu turno. Para jugar cartas, haz clic en las cartas de tu mano.\nCon la excepción de cartas usadas como respuesta, como Fallaste 😅️.",
+    "playingifyouwant": "No estás obligado a jugar cartas.",
+    "playlimit": "Solo hay 3 limitaciones:",
+    "playonlyonebang": "Solo puedes jugar 1 Bang! \npor turno (se refiere solo a cartas llamadas Bang!)",
+    "rewardspen": "Penalidades y recompensas",
+    "roles": "Roles",
+    "sheriffkillsvice": "Si el sheriff ⭐️ mata a un ayudante, pierde todas las cartas en su mano y en juego frente a él.",
+    "thecards": "Cartas",
+    "title": "Cómo jugar",
+    "turndiscard": "Descarta las cartas sobrantes",
+    "turndraw": "Roba 2 cartas",
+    "turnplay": "Juega cualquier cantidad de cartas",
+    "turns": "Turnos",
+    "turnstart": "Siempre comienza con el Sheriff ⭐️, y el juego continúa en el sentido de las agujas del reloj, los turnos se dividen en 3 fases.",
+    "weapon": "ARMA",
+    "renegade": "Renegado",
+    "vice": "Ayudante",
+    "outlaw": "Forajido",
+    "sheriff": "Sheriff",
+    "allcharacters": "Todos los personajes",
+    "gotoallcharacters": "Ir a todos los personajes",
+    "gotocards": "Ir a las cartas",
+    "gotohighnoon": "Ir al Mediodía",
+    "gotofoc": "Ir a Un Puñado de Cartas",
+    "gotogoldrush": "Ir a Fiebre del Oro",
+    "highnooncards": "Mediodía - Cartas de Evento",
+    "foccards": "Un Puñado de Cartas - Cartas de Evento",
+    "goldrushcards": "Cartas de Fiebre del Oro",
+    "valleyofshadowscards": "Cartas del Valle de las Sombras"
+  },
+  "theme": {
+    "sepia": "Sepia",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "grayscale": "Escala de Grises",
+    "black": "Negro"
+  }
+}
