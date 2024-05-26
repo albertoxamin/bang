@@ -277,3 +277,51 @@ def test_tornado():
     assert p.pending_action == PendingAction.PLAY
     assert len(p.hand) == 2
     assert len(p1.hand) == 2
+
+
+def test_sventagliata():
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+
+    p = g.players[g.turn]
+    p1 = g.players[(g.turn + 1) % 3]
+    p2 = g.players[(g.turn + 2) % 3]
+    
+    p.draw('')
+    p.hand = [Sventagliata('Hearts', 10), Bang('Hearts', 10)]
+    p1.hand = [Mancato('Spades', 2)]
+    p2.hand = [Mancato('Clubs', 5)]
+
+    # Play Sventagliata
+    p.play_card(0, against=p1.name)
+    assert p.pending_action == PendingAction.CHOOSE
+    assert len(p.available_cards) > 0  # Ensure there are available targets
+
+    # Simulate choosing a secondary target
+    secondary_target = p.available_cards[0]['name']
+    assert secondary_target != p.name and secondary_target != p1.name  # Ensure the secondary target is correct
+    p.choose(0)  # Choose the first available target
+
+    assert p.pending_action == PendingAction.WAIT
+    assert p1.pending_action == PendingAction.RESPOND
+
+    # Simulate p1 responding to the Bang
+    p1.respond(0)  # Assuming p1 plays a Mancato card in response
+    assert p1.pending_action == PendingAction.WAIT
+    assert p.pending_action == PendingAction.WAIT
+    
+    p2.respond(0)  # Assuming p2 plays a Mancato card in response
+    assert p2.pending_action == PendingAction.WAIT
+    assert p.pending_action == PendingAction.PLAY
+
+    # check bang cannot be played
+    assert len(p.hand) == 1
+    p.play_card(0, against=p2.name)
+    assert p.pending_action == PendingAction.PLAY
+    assert len(p.hand) == 1

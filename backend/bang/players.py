@@ -1528,7 +1528,10 @@ class Player:
                     room=player.game.name,
                     data=f"_play_card_against|{self.name}|Sventagliata|{player.name}",
                 )
-            self.pending_action = PendingAction.PLAY
+                self.bang_used += 1
+                self.has_played_bang = True
+            if self.pending_action == PendingAction.CHOOSE:
+                self.pending_action = PendingAction.PLAY
             self.notify_self()
         elif "choose_play_as_bang" in self.choose_text:
             if card_index <= len(self.available_cards):
