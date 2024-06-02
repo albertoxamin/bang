@@ -2333,7 +2333,7 @@ class Player:
             self.game.deck.scrap(card, True, player=self)
             self.notify_self()
             self.mancato_needed -= 1
-            if isinstance(card, tvosc.RitornoDiFiamma):
+            if isinstance(card, tvosc.RitornoDiFiamma) and self.attacker != "Roulette Russa":
                 self.game.attack(self, self.attacker.name, card_name=card.name)
             if self.mancato_needed <= 0:
                 if self.event_type == "duel":
