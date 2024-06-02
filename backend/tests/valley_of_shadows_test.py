@@ -6,6 +6,9 @@ from bang.game import Game
 from bang.players import Player, PendingAction
 import bang.cards as cs
 
+from tests import started_game, set_events, current_player, next_player, current_player_with_cards
+
+
 # test UltimoGiro
 def test_ultimo_giro():
     g = Game('test')
@@ -325,3 +328,15 @@ def test_sventagliata():
     p.play_card(0, against=p2.name)
     assert p.pending_action == PendingAction.PLAY
     assert len(p.hand) == 1
+
+
+def test_mira():
+    g = started_game(['the_valley_of_shadows'])
+    p = current_player(g)
+    p.draw('')
+    p.hand = [Mira(0, 0), Bang(0, 0)]
+    target = next_player(g)
+    target.hand = []
+    target_health = target.lives
+    p.play_card(0, against=target.name, _with=1)
+    assert target.lives == target_health - 2

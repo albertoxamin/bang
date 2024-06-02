@@ -1195,7 +1195,7 @@ class Player:
                 playable_cards.append(i)
         return playable_cards
 
-    def play_card(self, hand_index: int, against=None, _with=None):
+    def play_card(self, hand_index: int, against:str=None, _with:int=None):
         if self.is_bot:
             data = {"index": hand_index, "against": against, "with": _with}
             self.game.rpc_log.append(f"{self.name};play_card;{json.dumps(data)}")
@@ -2033,10 +2033,12 @@ class Player:
                 )
             )
             and not self.can_escape(card_name)
-        ) or card_name == "Mira":
+        ):
             print("Cant defend")
             if not no_dmg:
                 self.take_damage_response()
+                if card_name == "Mira":
+                    self.take_damage_response()
             else:
                 self.take_no_damage_response()
             return False
