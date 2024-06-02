@@ -141,7 +141,15 @@ class Deck:
             and len(self.scrap_pile) > 0
             and not ignore_event
         ):
-            return self.draw_from_scrap_pile()
+            card = self.draw_from_scrap_pile()
+            if player is not None and self.game.replay_speed > 0:
+                G.sio.emit(
+                    "card_drawn",
+                    room=self.game.name,
+                    data={"player": player.name, "pile": "scrap"},
+                )
+                player.hand.append(card)
+            return card
         card = self.cards.pop(0)
         if len(self.cards) == 0:
             self.reshuffle()
