@@ -2585,7 +2585,7 @@ class Player:
         self,
         choose_text: str,
         available_cards: List,
-        did_choose_callback: Callable(Player, int) = None,
+        did_choose_callback: Callable[['Player', int], None] = None,
     ):
         self.pending_action = PendingAction.CHOOSE
         self.choose_text = choose_text
