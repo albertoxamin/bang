@@ -273,7 +273,7 @@ export default {
 					is_character: true,
 					is_player: true
 				}})
-			if (this.card_against && this.card_against.can_target_self && this.equipment.length > 0) {
+			if (this.card_against && this.card_against.can_target_self && (this.equipment.length > 0 || this.card_against.name === 'Tequila')) {
 				vis.push({
 					name: this.name,
 					number: '0⛰',
