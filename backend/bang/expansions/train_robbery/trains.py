@@ -1,7 +1,6 @@
 import random
-import bang.players as pl
 from bang.cards import Card, Bang, Panico, CatBalou, Mancato
-
+from bang.players import Player, PendingAction
 
 class TrainCard(Card):
     def __init__(self, name: str, is_locomotive: bool = False):
@@ -103,9 +102,9 @@ class BaggageCar(TrainCard):
         super().__init__("Baggage Car")
         self.icon = "🚋🛄"
 
-    def choose_callback(self, player: pl.Player, card_index):
+    def choose_callback(self, player: Player, card_index):
         player.hand.append(player.available_cards[card_index])
-        player.pending_action = pl.PendingAction.PLAY
+        player.pending_action = PendingAction.PLAY
 
     def play_card(self, player, against=None, _with=None) -> bool:
         player.set_choose_action(

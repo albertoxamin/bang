@@ -1,9 +1,7 @@
 from __future__ import annotations
 from enum import IntEnum
 import json
-from random import random, randrange, sample, uniform, randint
-import socketio
-import bang.deck as deck
+from random import randrange, sample, uniform, randint
 import bang.roles as r
 import bang.cards as cs
 import bang.expansions.dodge_city.cards as csd
@@ -18,7 +16,6 @@ import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
 import bang.expansions.the_valley_of_shadows.characters as tvosch
 import bang.expansions.train_robbery.stations as trs
-import bang.expansions.train_robbery.trains as trt
 from typing import List, TYPE_CHECKING, Callable
 from metrics import Metrics
 from globals import G
@@ -2559,6 +2556,7 @@ class Player:
             self.notify_self()
 
     def buy_train(self, index):
+        import bang.expansions.train_robbery.trains as trt
         if self.pending_action != PendingAction.PLAY:
             return
         print(
