@@ -424,6 +424,12 @@ class Player:
             self.game.rpc_log.append(f"{self.name};draw;")
             self.draw("")
         elif self.pending_action == PendingAction.PLAY:
+            must_play_cards = [
+                c
+                for c in self.hand
+                if c.must_be_used and c.can_be_used_now
+                and self.game.check_event(ce.LeggeDelWest)
+            ]
             non_blocked_cards = [
                 card
                 for card in self.hand
@@ -2037,8 +2043,6 @@ class Player:
             print("Cant defend")
             if not no_dmg:
                 self.take_damage_response()
-                if card_name == "Mira":
-                    self.take_damage_response()
             else:
                 self.take_no_damage_response()
             return False
@@ -2198,7 +2202,10 @@ class Player:
                     break
 
     def take_damage_response(self):
-        self.lives -= 1
+        if self.attacking_card == "Mira":
+            self.lives -= 2
+        else:
+            self.lives -= 1
         G.sio.emit("hurt", room=self.sid, data=f"")
         if self.lives > 0:
             if self.character.check(self.game, chars.BartCassidy):
