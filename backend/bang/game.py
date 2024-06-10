@@ -57,6 +57,7 @@ debug_commands = [
         "help": "Remove a card from hand/equip - sample /removecard 0",
     },
     {"cmd": "/getcard", "help": "Get a brand new card - sample /getcard Birra"},
+    {"cmd": "/equipcard", "help": "Equip a brand new card - sample /getcard Barile"},
     {"cmd": "/meinfo", "help": "Get player data"},
     {"cmd": "/gameinfo", "help": "Get game data"},
     {"cmd": "/deckinfo", "help": "Get deck data"},
@@ -1239,6 +1240,29 @@ class Game:
 
     def get_alive_players(self):
         return [p for p in self.players if not p.is_dead or p.is_ghost]
+
+    def get_other_players(self, player:pl.Player):
+        return [{
+            "name": p.name,
+            "dist": 0,
+            "lives": p.lives,
+            "max_lives": p.max_lives,
+            "is_sheriff": isinstance(p.role, roles.Sheriff),
+            "cards": len(p.hand) + len(p.equipment),
+            "is_ghost": p.is_ghost,
+            "is_bot": p.is_bot,
+            "icon": p.role.icon
+            if (
+                p.role is not None
+                and (
+                    self.initial_players == 3
+                    or isinstance(p.role, roles.Sheriff)
+                )
+            )
+            else "🤠",
+            "avatar": p.avatar,
+            "role": p.role,
+        } for p in self.get_alive_players() if p != player]
 
     def get_dead_players(self, include_ghosts=True):
         return [

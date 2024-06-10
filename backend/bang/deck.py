@@ -11,6 +11,7 @@ from globals import G
 
 if TYPE_CHECKING:
     from bang.game import Game
+    from bang.players import Player
 
 
 class Deck:
@@ -195,7 +196,7 @@ class Deck:
         else:
             return self.draw()
 
-    def scrap(self, card: cs.Card, ignore_event=False, player=None):
+    def scrap(self, card: cs.Card, ignore_event:bool=False, player:'Player'=None):
         if card.number == 42:
             return
         card.reset_card()

@@ -1038,7 +1038,9 @@ def chat_message(sid, msg, pl=None):
 
                     cmd = msg.split()
                     if len(cmd) >= 2:
+                        import bang.expansions.train_robbery.trains as trt
                         cards = cs.get_starting_deck(ses.game.expansions)
+                        cards.extend(trt.get_all_cards())
                         card_names = " ".join(cmd[1:]).split(",")
                         for cn in card_names:
                             ses.equipment.append(

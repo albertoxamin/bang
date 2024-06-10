@@ -28,14 +28,13 @@ export const expansionsMap = {
 		icon: '👻',
 		back: true,
 		expansion: 'the-valley-of-shadows',
-		status: 'beta',
 	},
 	'wild_west_show': {
 		name: 'Wild West Show',
 		icon: '🎪',
 		back: true,
 		expansion: 'wild-west-show',
-		status: 'alpha',
+		status: 'beta',
 	},
 	'train_robbery': {
 		name: 'The Great Train Robbery',

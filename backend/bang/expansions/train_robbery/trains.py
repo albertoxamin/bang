@@ -1,6 +1,7 @@
 import random
 from bang.cards import Card, Bang, Panico, CatBalou, Mancato
 from bang.players import Player, PendingAction
+from globals import G
 
 class TrainCard(Card):
     def __init__(self, name: str, is_locomotive: bool = False):
@@ -82,7 +83,7 @@ class Ironhorse(TrainCard):
 
 class Leland(TrainCard):
     """
-    LOCOMOTIVA: svolgi l’effetto dell’Emporio, cominciando dal giocatore di turno e procedendo in senso orario.
+    LOCOMOTIVA: svolgi l'effetto dell'Emporio, cominciando dal giocatore di turno e procedendo in senso orario.
     """
 
     def __init__(self):
@@ -96,7 +97,7 @@ class Leland(TrainCard):
 
 class BaggageCar(TrainCard):
     """Scartalo: ottieni l'effetto di un Mancato!, Panico!, Cat Balou o di un BANG! extra.
-    Discard this for a Missed!Panic!, Cat Balou, or an extra BANG!"""
+    Discard this for a Missed! Panic!, Cat Balou, or an extra BANG!"""
 
     def __init__(self):
         super().__init__("Baggage Car")
@@ -178,6 +179,10 @@ class ExpressCar(TrainCard):
         self.icon = "🚋⚡"
 
     def play_card(self, player, against=None, _with=None) -> bool:
+        while len(player.hand) > 0:
+            player.game.deck.scrap(player.hand.pop(0), player=player)
+            player.notify_self()
+        player.play_turn()
         return True
 
 
@@ -209,9 +214,10 @@ class LumberFlatcar(TrainCard):
     def __init__(self):
         super().__init__("Lumber Flatcar")
         self.icon = "🚋🪵"
+        self.sight_mod = -1
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class MailCar(TrainCard):
@@ -221,7 +227,34 @@ class MailCar(TrainCard):
         super().__init__("Mail Car")
         self.icon = "🚋📮"
 
+    def choose_card_callback(self, player: Player, card_index):
+        chosen_card = player.available_cards.pop(card_index)
+        player.hand.extend(player.available_cards)
+        player.set_choose_action(
+            "choose_other_player",
+            player.game.get_other_players(player),
+            lambda p, other_player_index: self.choose_player_callback(p, other_player_index, chosen_card)
+        )
+
+    def choose_player_callback(self, player: Player, other_player_index, chosen_card):
+        pl_name = player.game.get_other_players(player)[other_player_index]["name"]
+        other_player = player.game.get_player_named(pl_name)
+        other_player.hand.append(chosen_card)
+        G.sio.emit(
+            "card_drawn",
+            room=player.game.name,
+            data={"player": pl_name, "pile": player.name},
+        )
+        other_player.notify_self()
+        player.pending_action = PendingAction.PLAY
+
     def play_card(self, player, against=None, _with=None) -> bool:
+        drawn_cards = [player.game.deck.draw(player=player) for _ in range(3)]
+        player.set_choose_action(
+            "choose_mail_car",
+            drawn_cards,
+            self.choose_card_callback,
+        )
         return True
 
 
@@ -257,7 +290,7 @@ class PrisonerCar(TrainCard):
         self.icon = "🚋👮🏻‍♂️"
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class PrivateCar(TrainCard):
@@ -268,7 +301,7 @@ class PrivateCar(TrainCard):
         self.icon = "🚋💁🏻"
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class SleeperCar(TrainCard):
