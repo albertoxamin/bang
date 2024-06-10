@@ -231,9 +231,11 @@ class ObservationCar(TrainCard):
     def __init__(self):
         super().__init__("Observation Car")
         self.icon = "🚋👀"
+        self.sight_mod = 1
+        self.vis_mod = 1
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class PassengerCar(TrainCard):

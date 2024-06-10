@@ -127,15 +127,32 @@
 				</div>
 			</div>
 		</div>
+		<h2 id="trainrobberycards">{{$t('help.trainrobberycards')}}</h2>
+		<div class="flexy-cards-wrapper">
+			<div v-for="(c, i) in trainrobberycards" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
+				<Card :card="c" class="train-robbery" @pointerenter.native="''" @pointerleave.native="''"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+				</div>
+			</div>
+			<div v-for="(c, i) in trainrobberystations" v-bind:key="c.name ? (c.name+c.number) : i" class="flexy-cards">
+				<StationCard :card="c" class="train-robbery" @pointerenter.native="''" @pointerleave.native="''" :price="c.price"/>
+				<div style="margin-left:6pt;">
+					<p>{{$t(`cards.${c.name}.desc`)}}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 <script>
 import Card from '@/components/Card.vue'
+import StationCard from './StationCard.vue'
 
 export default {
 	name: 'Help',
 	components: {
 		Card,
+		StationCard,
 	},
 	props: {
 		inGame: Boolean
@@ -152,6 +169,8 @@ export default {
 		goldrushcards: [],
 		valleyofshadowscards: [],
 		wildwestshowcards: [],
+		trainrobberycards: [],
+		trainrobberystations: [],
 	}),
 	computed: {
 		endTurnCard() {
@@ -196,6 +215,14 @@ export default {
 				...x,
 			}))
 		},
+		trainrobberycards_info(cardsJson) {
+			this.trainrobberycards = JSON.parse(cardsJson).cards.map(x=>({
+				...x,
+			}))
+			this.trainrobberystations = JSON.parse(cardsJson).stations.map(x=>({
+				...x,
+			}))
+		},
 	},
 	mounted() {
 		this.$socket.emit('get_cards')
@@ -205,6 +232,7 @@ export default {
 		this.$socket.emit('get_goldrushcards')
 		this.$socket.emit('get_valleyofshadowscards')
 		this.$socket.emit('get_wildwestshowcards')
+		this.$socket.emit('get_trainrobberycards')
 		document.getElementById('help').scrollIntoView();
 	}
 }

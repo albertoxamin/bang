@@ -104,7 +104,7 @@ class CrownsHole(StationCard):
     """Discard a beer to rob the train"""
 
     def __init__(self):
-        super().__init__("Crown's Hole")
+        super().__init__("Crowns Hole")
         self.price = [cs.Birra(0, 0).__dict__]
 
     def check_price(self, player: "Player"):
@@ -204,7 +204,7 @@ class MinersOath(StationCard):
     """Discard a card of diamonds to rob the train"""
 
     def __init__(self):
-        super().__init__("Miner's Oath")
+        super().__init__("Miners Oath")
         self.price = [{"icon": "♦️"}]
 
     def check_price(self, player: "Player"):

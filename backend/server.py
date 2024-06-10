@@ -1306,6 +1306,24 @@ def get_wildwestshowcards(sid):
         "wwscards_info", room=sid, data=json.dumps(chs, default=lambda o: o.__dict__)
     )
 
+@sio.event
+@bang_handler
+def get_trainrobberycards(sid):
+    print("get_trainrobberycards")
+    import bang.expansions.train_robbery.cards as trc
+    import bang.expansions.train_robbery.stations as trs
+    import bang.expansions.train_robbery.trains as trt
+
+    chs = []
+    chs.extend(trs.get_all_stations())
+    chs.extend(trt.get_locomotives())
+    chs.extend(trt.get_all_cards())
+    sio.emit(
+        "trainrobberycards_info", room=sid, data=json.dumps({
+            "cards": chs,
+            "stations": trs.get_all_stations()
+        }, default=lambda o: o.__dict__)
+    )
 
 @sio.event
 @bang_handler
