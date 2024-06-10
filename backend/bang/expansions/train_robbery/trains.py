@@ -2,10 +2,10 @@ import random
 from bang.cards import Card, Bang, Panico, CatBalou, Mancato
 from typing import TYPE_CHECKING
 
-from globals import G
+from globals import G, PendingAction
 
 if TYPE_CHECKING:
-    from bang.players import Player, PendingAction
+    from bang.players import Player
 
 
 class TrainCard(Card):
