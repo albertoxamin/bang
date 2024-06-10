@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 import bang.cards as cs
-import bang.players as pl
+from globals import PendingAction
 
 if TYPE_CHECKING:
     from bang.players import Player
@@ -28,7 +28,7 @@ class StationCard:
         player.game.deck.scrap(card, True, player=player)
         player.equipment.append(self.attached_train)
         self.attached_train = None
-        player.pending_action = pl.PendingAction.PLAY
+        player.pending_action = PendingAction.PLAY
 
     def check_price(self, player: "Player") -> bool:
         """Check if the card can be used to rob the train"""

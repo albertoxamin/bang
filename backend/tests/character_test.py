@@ -2,7 +2,8 @@ from random import randint
 from bang.characters import *
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
+from globals import PendingAction
 from bang.cards import *
 
 def test_bartcassidy():

@@ -1,8 +1,9 @@
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
 from bang.roles import *
 from bang.cards import *
+from globals import PendingAction
 from tests import started_game
 
 

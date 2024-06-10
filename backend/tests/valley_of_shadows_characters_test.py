@@ -3,8 +3,9 @@ from bang.characters import Character
 from bang.expansions.the_valley_of_shadows.characters import *
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
 import bang.cards as cs
+from globals import PendingAction
 
 # test TucoFranziskaner
 def test_TucoFranziskaner():

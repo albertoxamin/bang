@@ -4,7 +4,7 @@ from tests import started_game, set_events, current_player, next_player, current
 from bang.expansions.wild_west_show.characters import *
 from bang.cards import Card, Suit
 import bang.roles as roles
-from bang.players import PendingAction
+from globals import PendingAction
 
 
 # test TerenKill

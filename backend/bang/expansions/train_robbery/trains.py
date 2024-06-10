@@ -1,7 +1,12 @@
 import random
 from bang.cards import Card, Bang, Panico, CatBalou, Mancato
-from bang.players import Player, PendingAction
+from typing import TYPE_CHECKING
+
 from globals import G
+
+if TYPE_CHECKING:
+    from bang.players import Player, PendingAction
+
 
 class TrainCard(Card):
     def __init__(self, name: str, is_locomotive: bool = False):
@@ -103,7 +108,7 @@ class BaggageCar(TrainCard):
         super().__init__("Baggage Car")
         self.icon = "🚋🛄"
 
-    def choose_callback(self, player: Player, card_index):
+    def choose_callback(self, player: 'Player', card_index):
         player.hand.append(player.available_cards[card_index])
         player.pending_action = PendingAction.PLAY
 
@@ -227,7 +232,7 @@ class MailCar(TrainCard):
         super().__init__("Mail Car")
         self.icon = "🚋📮"
 
-    def choose_card_callback(self, player: Player, card_index):
+    def choose_card_callback(self, player: 'Player', card_index):
         chosen_card = player.available_cards.pop(card_index)
         player.hand.extend(player.available_cards)
         player.set_choose_action(
@@ -236,7 +241,7 @@ class MailCar(TrainCard):
             lambda p, other_player_index: self.choose_player_callback(p, other_player_index, chosen_card)
         )
 
-    def choose_player_callback(self, player: Player, other_player_index, chosen_card):
+    def choose_player_callback(self, player: 'Player', other_player_index, chosen_card):
         pl_name = player.game.get_other_players(player)[other_player_index]["name"]
         other_player = player.game.get_player_named(pl_name)
         other_player.hand.append(chosen_card)
@@ -311,8 +316,22 @@ class SleeperCar(TrainCard):
         super().__init__("Sleeper Car")
         self.icon = "🚋🛌"
 
+    def choose_card_callback(self, player: 'Player', card_index):
+        player.game.deck.scrap(player.equipment.pop(card_index), player=player)
+        player.pending_action = PendingAction.PLAY
+        self.usable_next_turn = True
+        self.can_be_used_now = False
+        player.notify_self()
+
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        if not self.can_be_used_now:
+            return False
+        player.set_choose_action(
+            "choose_sleeper_car",
+            player.equipment,
+            self.choose_card_callback,
+        )
+        return False
 
 
 def get_all_cards(rng=random):

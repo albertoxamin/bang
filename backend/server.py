@@ -16,8 +16,8 @@ import socketio
 from discord_webhook import DiscordWebhook
 
 from bang.game import Game
-from bang.players import PendingAction, Player
-from globals import G
+from bang.players import Player
+from globals import G, PendingAction
 from metrics import Metrics
 
 sys.setrecursionlimit(10**6)  # this should prevents bots from stopping

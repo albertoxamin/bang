@@ -3,7 +3,7 @@ from bang.characters import Character
 from bang.expansions.dodge_city.cards import *
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
 import bang.cards as cs
 
 # test Borraccia

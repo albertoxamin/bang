@@ -1,5 +1,6 @@
 from typing import List
 from bang.characters import Character
+from globals import PendingAction
 
 
 class PixiePete(Character):
@@ -165,8 +166,6 @@ class DocHolyday(Character):
 
     def special(self, player, data):
         if super().special(player, data):
-            from bang.players import PendingAction
-
             if (
                 player.special_use_count < 1
                 and player.pending_action == PendingAction.PLAY

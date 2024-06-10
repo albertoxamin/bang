@@ -1,5 +1,4 @@
 from __future__ import annotations
-from enum import IntEnum
 import json
 from random import randrange, sample, uniform, randint
 import bang.roles as r
@@ -16,9 +15,10 @@ import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
 import bang.expansions.the_valley_of_shadows.characters as tvosch
 import bang.expansions.train_robbery.stations as trs
+import bang.expansions.train_robbery.trains as trt
 from typing import List, TYPE_CHECKING, Callable
 from metrics import Metrics
-from globals import G
+from globals import G, PendingAction
 import sys
 
 if TYPE_CHECKING:
@@ -42,15 +42,6 @@ robot_pictures = [
     "https://i.imgur.com/q0CrH2c.png",
     "https://i.imgur.com/Z5vXgd4.png",
 ]
-
-
-class PendingAction(IntEnum):
-    PICK = 0
-    DRAW = 1
-    PLAY = 2
-    RESPOND = 3
-    WAIT = 4
-    CHOOSE = 5
 
 
 class Player:
@@ -2556,7 +2547,6 @@ class Player:
             self.notify_self()
 
     def buy_train(self, index):
-        import bang.expansions.train_robbery.trains as trt
         if self.pending_action != PendingAction.PLAY:
             return
         print(
@@ -2701,6 +2691,8 @@ class Player:
                     and not self.equipment[i].can_be_used_now
                 ):
                     self.equipment[i].can_be_used_now = True
+                    if isinstance(self.equipment[i], trt.TrainCard):
+                        self.equipment[i].usable_next_turn = False
             for i in range(len(self.hand)):
                 if self.hand[i].must_be_used:
                     self.hand[i].must_be_used = False

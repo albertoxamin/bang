@@ -3,8 +3,9 @@ from bang.characters import Character
 from bang.expansions.the_valley_of_shadows.cards import *
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
 import bang.cards as cs
+from globals import PendingAction
 
 from tests import started_game, set_events, current_player, next_player, current_player_with_cards
 
