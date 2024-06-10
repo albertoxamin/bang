@@ -15,6 +15,8 @@ class StationCard:
 
     def discard_and_buy_train(self, player: "Player", card_index: int):
         """Discard the card and buy the train"""
+        if self.attached_train is None:
+            return
         card = player.available_cards.pop(card_index)
         for i, card in enumerate(player.hand):
             if card == self:
