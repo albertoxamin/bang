@@ -129,9 +129,9 @@ class Deck:
     def peek(self, n_cards: int) -> list:
         return self.cards[:n_cards]
 
-    def peek_scrap_pile(self) -> cs.Card:
+    def peek_scrap_pile(self, n_cards: int=1) -> List[cs.Card]:
         if len(self.scrap_pile) > 0:
-            return self.scrap_pile[-1]
+            return self.scrap_pile[-n_cards:]
         else:
             return None
 

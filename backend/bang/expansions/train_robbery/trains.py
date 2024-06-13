@@ -139,7 +139,20 @@ class CattleTruck(TrainCard):
         super().__init__("Cattle Truck")
         self.icon = "🚋🐄"
 
+    def choose_card_callback(self, player: 'Player', card_index):
+        chosen_card = player.available_cards.pop(card_index)
+        player.game.deck.scrap_pile.pop(-card_index)
+        player.hand.append(chosen_card)
+        player.pending_action = PendingAction.PLAY
+        player.notify_self()
+
     def play_card(self, player, against=None, _with=None) -> bool:
+        drawn_cards = player.game.deck.peek_scrap_pile(n_cards=3)
+        player.set_choose_action(
+            "choose_cattle_truck",
+            drawn_cards,
+            self.choose_card_callback,
+        )
         return True
 
 

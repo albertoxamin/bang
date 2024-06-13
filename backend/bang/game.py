@@ -942,7 +942,7 @@ class Game:
         print(f"{self.name}: scrap")
         room = self.name if sid is None else sid
         if self.deck.peek_scrap_pile():
-            G.sio.emit("scrap", room=room, data=self.deck.peek_scrap_pile().__dict__)
+            G.sio.emit("scrap", room=room, data=self.deck.peek_scrap_pile()[0].__dict__)
         else:
             G.sio.emit("scrap", room=room, data=None)
 
