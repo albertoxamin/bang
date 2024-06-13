@@ -100,6 +100,10 @@
   "copy": "Copy invite",
   "no_players_in_range": "You can't see the other players, equip a weapon or a scope!",
   "cantplaycard": "You can't play this card like that!",
+  "choose_baggage_car": "Discard this for a Missed! Panic!, Cat Balou, or an extra BANG!",
+  "choose_mail_car": "Choose which card to give to another player",
+  "choose_other_player": "Choose the player to give the card to",
+  "choose_sleeper_car": "Choose a card to discard for Sleeper Car",
   "chat": {
     "spectators": " | A spectator is watching the game | {n} spectators are watching the game",
     "chat": "Chat",
