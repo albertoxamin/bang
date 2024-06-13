@@ -1928,7 +1928,7 @@ class Player:
             self.notify_self()
 
     def get_discarded(self, attacker=None, card_name=None, action=None):
-        if card_name in {"Tornado", "Poker", "Bandidos"}:
+        if card_name in {"Tornado", "Poker", "Bandidos", "Circus Wagon"}:
             self.pending_action = PendingAction.CHOOSE
             self.available_cards = self.hand.copy()
             if card_name == "Tornado":
@@ -1940,6 +1940,13 @@ class Player:
                 self.mancato_needed = min(2, len(self.hand))
                 self.available_cards.append(
                     {"name": "-1hp", "icon": "💔", "noDesc": True}
+                )
+            if card_name == "Circus Wagon":
+                from bang.expansions.train_robbery.trains import CircusWagon
+                self.set_choose_action(
+                    "choose_circus_wagon",
+                    self.hand.copy(),
+                    CircusWagon.choose_circus_wagon,
                 )
             return True
         else:

@@ -164,7 +164,16 @@ class CircusWagon(TrainCard):
         self.icon = "🚋🎪"
 
     def play_card(self, player, against=None, _with=None) -> bool:
+        player.game.discard_others(player, card_name=self.name)
         return True
+
+    @classmethod
+    def choose_circus_wagon(cls, player: 'Player', card_index):
+        player.game.deck.scrap(player.hand.pop(card_index), player=player)
+        player.pending_action = PendingAction.WAIT
+        player.game.responders_did_respond_resume_turn()
+        player.notify_self()
+
 
 
 class CoalHopper(TrainCard):
