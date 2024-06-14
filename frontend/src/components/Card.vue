@@ -65,7 +65,7 @@ export default {
     },
     suit() {
       if (this.card && !isNaN(this.card.suit)) {
-        let x = ["♦️", "♣️", "♥️", "♠️", "🤑"];
+        let x = ["♦️", "♣️", "♥️", "♠️", "🤑", "🚂"];
         return x[this.card.suit];
       } else if (this.card.suit) {
         return this.card.suit;
@@ -222,6 +222,18 @@ export default {
 }
 .alpha::after {
   content: "Alpha";
+  position: absolute;
+  bottom: -12pt;
+  right: -12pt;
+  background: red;
+  font-size: 10pt;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  padding: 4pt;
+  border-radius: 12pt;
+}
+.wip::after {
+  content: "WIP";
   position: absolute;
   bottom: -12pt;
   right: -12pt;

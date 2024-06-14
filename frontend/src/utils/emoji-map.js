@@ -5,4 +5,5 @@ export const emojiMap = {
 	'fistful_of_cards': '🎴',
 	'the_valley_of_shadows': '👻',
 	'wild_west_show': '🎪',
+	'train_robbery': '🚂',
 }

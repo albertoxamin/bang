@@ -1317,7 +1317,6 @@ def get_trainrobberycards(sid):
     import bang.expansions.train_robbery.trains as trt
 
     chs = []
-    chs.extend(trs.get_all_stations())
     chs.extend(trt.get_locomotives())
     chs.extend(trt.get_all_cards())
     sio.emit(

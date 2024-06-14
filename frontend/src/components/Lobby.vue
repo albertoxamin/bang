@@ -646,8 +646,15 @@ export default {
         console.log("card_scrapped no deck");
         return;
       }
-      let decelOffset = cumulativeOffset(decel);
       let phand = document.getElementById(`${data.player}-hand`);
+      if (data.pile == "train_robbery") {
+        decel = phand
+        phand = document.getElementById("train-robbery-deck");
+      } else if (data.pile == "gold_rush") {
+        decel = phand
+        phand = document.getElementById("gold-rush-deck");
+      }
+      let decelOffset = cumulativeOffset(decel);
       if (!phand) {
         console.log("card_scrapped no phand");
         return;

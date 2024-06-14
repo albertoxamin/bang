@@ -1,7 +1,7 @@
 <template>
 	<div >
 		<div class="deck">
-			<div class="deck" :style="`position:relative;${goldRushShopOpen?'border: 2px dashed #6a6a6a42;border-radius:8pt':''}`" v-if="goldRushCards.length > 0" >
+			<div class="deck" id="gold-rush-deck" :style="`position:relative;${goldRushShopOpen?'border: 2px dashed #6a6a6a42;border-radius:8pt':''}`" v-if="goldRushCards.length > 0" >
 				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[0])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(95deg) translate(30px, -40px) scale(0.6)`" v-if="goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(0)}"/>
 				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[1])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(90deg)  translate(0, -40px) scale(0.6)`" v-if="goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(1)}"/>
 				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[2])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(85deg) translate(-30px, -40px) scale(0.6)`" v-if="goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(2)}"/>
@@ -11,7 +11,7 @@
 					<card :card="goldRushCardBack" :donotlocalize="true" class="gold-rush back last-event" @click.native="goldRushShopOpen = !goldRushShopOpen"/>
 				</div>
 			</div>
-			<div v-if="currentStations.length > 0" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;flex-direction:row;`" >
+			<div v-if="currentStations.length > 0" id="train-robbery-deck" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;flex-direction:row;`" >
 				<station-card @click.native="()=>{buyTrain(i)}" v-for="station, i in currentStations" :key="station.name" :card="station" :price="station.price" :trainPiece="trainPieceForStation(i)"
 						@pointerenter.native="()=>{setStationDesc(i)}" @pointerleave.native="stationDesc = null"/>
 			</div>

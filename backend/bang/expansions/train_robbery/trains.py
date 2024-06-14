@@ -16,6 +16,7 @@ class TrainCard(Card):
         self.is_locomotive = is_locomotive
         self.expansion = "train_robbery"
         self.type = "train"
+        self.implemented = True
 
 
 # Circus Wagon: gli altri giocatori
@@ -122,7 +123,7 @@ class BaggageCar(TrainCard):
 
 
 class Caboose(TrainCard):
-    """Pro scartare un altra tua carta bordo blu incuso un vagone come se fosse un Mancato!"""
+    """Puoi scartare un altra tua carta bordo blu incuso un vagone come se fosse un Mancato!"""
 
     def __init__(self):
         super().__init__("Caboose")
@@ -177,18 +178,21 @@ class CircusWagon(TrainCard):
 
 
 class CoalHopper(TrainCard):
-    """Scartalo: pesca una carta e scarta un vagone in gioco davanti a un giocatore a ma scelta."""
+    """Scartalo: pesca una carta e scarta un vagone in gioco davanti a un giocatore a tua scelta."""
 
     def __init__(self):
         super().__init__("Coal Hopper")
         self.icon = "🚋🔥"
+        self.need_target = True
 
     def play_card(self, player, against=None, _with=None) -> bool:
+        if against is not None and len(player.game.get_player_named(against).equipment) > 0:
+            player.game.steal_discard(player, against, self)
         return True
 
 
 class DiningCar(TrainCard):
-    """A inizio turno, "estrai!": se è Cnori, recuperi I punto vita."""
+    """A inizio turno, "estrai!": se è Cuori, recuperi I punto vita."""
 
     def __init__(self):
         super().__init__("Dining Car")
@@ -214,14 +218,15 @@ class ExpressCar(TrainCard):
 
 
 class GhostCar(TrainCard):
-    """Giocalo su chiunque tranne lo Sceritfo. Se vieni eliminato, invece resti in gioco, ma non puo guadagnare ne perdere punti vita."""
+    """Giocalo su chiunque tranne lo Sceritfo. Se vieni eliminato, invece resta in gioco, ma non puo guadagnare ne perdere punti vita."""
 
     def __init__(self):
         super().__init__("Ghost Car")
         self.icon = "🚋👻"
+        self.implemented = False
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        return False
 
 
 class LoungeCar(TrainCard):
@@ -230,6 +235,7 @@ class LoungeCar(TrainCard):
     def __init__(self):
         super().__init__("Lounge Car")
         self.icon = "🚋🛋"
+        self.implemented = False
 
     def play_card(self, player, against=None, _with=None) -> bool:
         return True
@@ -299,14 +305,23 @@ class ObservationCar(TrainCard):
 
 
 class PassengerCar(TrainCard):
-    """Scartalo: pesca una carta (in mano o in gioco) da un altro giocatore"""
+    """Scartalo: pesca una carta (o in mano o in gioco) da un altro giocatore"""
 
     def __init__(self):
         super().__init__("Passenger Car")
         self.icon = "🚋🚶"
+        self.range = 99
+        self.need_target = True
+
 
     def play_card(self, player, against=None, _with=None) -> bool:
-        return True
+        if (
+            against is not None
+            and (len(player.equipment) > 0 or len(player.equipment) > 0)
+        ):
+            player.game.steal_discard(player, against, self)
+            return True
+        return False
 
 
 class PrisonerCar(TrainCard):
@@ -321,7 +336,7 @@ class PrisonerCar(TrainCard):
 
 
 class PrivateCar(TrainCard):
-    """se non hai carte in mano. non puoi essere bersaelio di carte BANG"""
+    """Se non hai carte in mano, non puoi essere bersaglio di carte BANG"""
 
     def __init__(self):
         super().__init__("Private Car")
@@ -376,6 +391,7 @@ def get_all_cards(rng=random):
         PrivateCar(),
         SleeperCar(),
     ]
+    cars = [c for c in cars if c.implemented]
     rng.shuffle(cars)
     return cars
 

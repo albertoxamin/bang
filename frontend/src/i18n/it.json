@@ -153,7 +153,8 @@
     "choose_emporio": ";{0}; ha scelto ;{1}; da Emporio.",
     "shotgun_scrap": "Quando lo shotgun ha colpito ;{0}; gli ha tolto una carta (;{1};)",
     "taglia_reward": "💰 ;{1}; ha ottenuto ricompensa dalla taglia su ;{0};",
-    "snake_bit": "🐍 ;{0}; è stato morso dal Serpente a Sonagli."
+    "snake_bit": "🐍 ;{0}; è stato morso dal Serpente a Sonagli.",
+    "in_private_car": "🚋💁🏻 ;{0}; è in una carrozza privata e non è stato attaccato da ;{1};"
   },
   "foc": {
     "leggedelwest": "Ed è obbligato a usarla nel suo turno, se possibile"
@@ -938,7 +939,7 @@
     },
     "Dining Car": {
       "name": "Dining Car",
-      "desc": "A inizio turno, \"estrai!\": se è Cnori, recuperi I punto vita."
+      "desc": "A inizio turno, \"estrai!\": se è Cuori, recuperi I punto vita."
     },
     "Express Car": {
       "name": "Express Car",

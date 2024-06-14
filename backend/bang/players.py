@@ -737,6 +737,9 @@ class Player:
         self.has_played_bang = False
         self.special_use_count = 0
         self.bang_used = 0
+        if any((isinstance(c, trt.DiningCar) for c in self.equipment)):
+            if self.game.deck.pick_and_scrap().suit == cs.Suit.HEARTS:
+                self.lives = min(self.lives + 1, self.max_lives)
         if self.game.check_event(cew.DarlingValentine):
             hand = len(self.hand)
             for _ in range(hand):
@@ -1866,6 +1869,8 @@ class Player:
                 self.expected_response.append(cs.Bang(0, 0).name)
             if self.character.check(self.game, chw.BigSpencer):
                 self.expected_response = []
+            if any((isinstance(c, trt.Caboose) for c in self.equipment)):
+                self.expected_response.append([c.name for c in self.equipment if not c.usable_next_turn])
             self.on_failed_response_cb = self.take_damage_response
             self.notify_self()
 
@@ -1997,6 +2002,17 @@ class Player:
         self.attacker = attacker
         self.attacking_card = card_name
         print(f"attacker -> {attacker}")
+        # check for trt.PrivateCar
+        if (card_name == "Bang!" and any(
+            (isinstance(c, trt.PrivateCar) for c in self.equipment)
+        ) and len(self.hand) == 0):
+            self.take_no_damage_response()
+            G.sio.emit(
+                "chat_message",
+                room=self.game.name,
+                data=f"_in_private_car|{self.name}|{attacker.name}",
+            )
+            return False
         if (
             isinstance(attacker, Player)
             and attacker.character.check(self.game, tvosch.ColoradoBill)
@@ -2112,6 +2128,11 @@ class Player:
             (isinstance(c, grc.Calumet) for c in self.gold_rush_equipment)
         ):
             return False
+        # check for trt.PrisonerCar
+        if any(
+            (isinstance(c, trt.PrisonerCar) for c in self.equipment)
+        ):
+            return False
         if (
             not self.game.is_competitive
             and not any(
@@ -2145,6 +2166,12 @@ class Player:
     def get_dueled(self, attacker):
         self.attacker = attacker
         self.attacking_card = "Duello"
+        if any(
+            not self.is_my_turn and
+            (isinstance(c, trt.PrisonerCar) for c in self.equipment)
+        ):
+            self.take_no_damage_response()
+            return False
         if (self.game.check_event(ceh.Sermone) and self.is_my_turn) or (
             not self.game.is_competitive
             and not any(
@@ -2551,6 +2578,11 @@ class Player:
                 self.game.deck.shop_deck.append(card)
             self.game.deck.shop_cards[index] = None
             self.game.deck.fill_gold_rush_shop()
+            G.sio.emit(
+                "card_scrapped",
+                room=self.game.name,
+                data={"player": self.name, "pile": "gold_rush", "card": card.__dict__},
+            )
             self.notify_self()
 
     def buy_train(self, index):
@@ -2569,6 +2601,16 @@ class Player:
             if station.check_price(self):
                 print(f"{station=} {train=}")
                 station.attached_train = train
+                G.sio.emit(
+                    "chat_message",
+                    room=self.game.name,
+                    data=f"_bought_train|{self.name}|{station.name}|{train.name}",
+                )
+                G.sio.emit(
+                    "card_scrapped",
+                    room=self.game.name,
+                    data={"player": self.name, "pile": "train_robbery", "card": train.__dict__},
+                )
                 # shift train forward
                 for i in range(train_index, len(self.game.deck.current_train) - 1):
                     self.game.deck.current_train[i] = self.game.deck.current_train[

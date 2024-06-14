@@ -104,6 +104,7 @@
   "choose_mail_car": "Choose which card to give to another player",
   "choose_other_player": "Choose the player to give the card to",
   "choose_sleeper_car": "Choose a card to discard for Sleeper Car",
+  "choose_buy_train": "Discard a card to rob the train, and get the carriage",
   "chat": {
     "spectators": " | A spectator is watching the game | {n} spectators are watching the game",
     "chat": "Chat",
@@ -157,7 +158,9 @@
     "choose_emporio": ";{0}; has chosen ;{1}; from General Store.",
     "shotgun_scrap": "When the shotgun hit ;{0}; a card flew away from his hand (;{1};)",
     "taglia_reward": "💰 ;{1}; got a card from the bounty on ;{0};",
-    "snake_bit": "🐍 ;{0}; was bitten by the Rattle Snake."
+    "snake_bit": "🐍 ;{0}; was bitten by the Rattle Snake.",
+    "in_private_car": "🚋💁🏻 ;{0}; is in a private car and couldn't get Bang!ed by ;{1};",
+    "bought_train": "🚂 ;{0}; robbed the train at ;{1}; and got the ;{2};"
   },
   "foc": {
     "leggedelwest": "He must play this card on this turn if possible."
@@ -942,7 +945,7 @@
     },
     "Dining Car": {
       "name": "Dining Car",
-      "desc": "At the beginning of your turn, \"draw!\": if it's Hearts, regain 1 life point."
+      "desc": "At the beginning of your turn, \"pick!\": if it's Hearts, regain 1 life point."
     },
     "Express Car": {
       "name": "Express Car",
@@ -1034,7 +1037,9 @@
     "highnooncards": "High Noon - Event Cards",
     "foccards": "Fistful of Cards - Event Cards",
     "goldrushcards": "Gold Rush Cards",
-    "valleyofshadowscards": "The Valley of Shadows Cards"
+    "valleyofshadowscards": "The Valley of Shadows Cards",
+    "wildwestshowcards": "Wild West Show Cards",
+    "trainrobberycards": "Train Robbery Cards"
   },
   "theme": {
     "sepia": "Sepia",

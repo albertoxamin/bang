@@ -17,6 +17,7 @@ import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
+import bang.expansions.train_robbery.trains as trt
 from metrics import Metrics
 from globals import G, PendingAction
 
@@ -558,7 +559,7 @@ class Game:
         if p != attacker and p.get_discarded(
             attacker,
             card_name=card.name,
-            action="steal" if isinstance(card, cs.Panico) else "discard",
+            action="steal" if (isinstance(card, cs.Panico) or isinstance(card, trt.PassengerCar)) else "discard",
         ):
             self.ready_count = 0
             self.waiting_for = 1

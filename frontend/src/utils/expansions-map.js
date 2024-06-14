@@ -41,6 +41,6 @@ export const expansionsMap = {
 		icon: '🚂',
 		back: true,
 		expansion: 'train-roobbery',
-		status: 'alpha',
+		status: 'wip',
 	}
 }
