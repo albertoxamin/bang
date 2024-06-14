@@ -2166,8 +2166,7 @@ class Player:
     def get_dueled(self, attacker):
         self.attacker = attacker
         self.attacking_card = "Duello"
-        if any(
-            not self.is_my_turn and
+        if not self.is_my_turn and any(
             (isinstance(c, trt.PrisonerCar) for c in self.equipment)
         ):
             self.take_no_damage_response()
