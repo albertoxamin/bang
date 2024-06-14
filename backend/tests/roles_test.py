@@ -1,7 +1,8 @@
 from bang.characters import Character
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
+from globals import PendingAction
 from bang.roles import *
 from bang.cards import *
 

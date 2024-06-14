@@ -21,7 +21,8 @@
 						@click="fillCmd(msg.cmd)">{{msg.cmd}} <i class="std-text" style="font-size:8pt;">{{msg.help}}</i></p>
 			</div>
 			<form @submit="sendChatMessage" id="msg-form">
-				<input id="my-msg" autocomplete="off" v-model="text" style="flex-grow:2;"/>
+				<input id="my-msg" autocomplete="off" v-model="text" style="flex-grow:2;"
+				@keydown.tab.prevent="tabComplete($event.target.value)"/>
 				<input id="submit-message" type="submit" class="btn" :value="$t('submit')"/>
 			</form>
 		</div>
@@ -163,6 +164,12 @@ export default {
 		fillCmd(cmd) {
 			this.text = cmd;
 			document.getElementById('my-msg').focus();
+		},
+		tabComplete() {
+			if (this.commandSuggestion.length > 0) {
+				let cmd = this.commandSuggestion[0].cmd;
+				this.text = cmd + ' ';
+			}
 		},
 		playEffects(path) {
 			const promise = (new Audio(path)).play();

@@ -1,3 +1,4 @@
+from typing import Any, List
 import pytest
 from bang.characters import Character
 from bang.game import Game
@@ -8,7 +9,7 @@ from globals import G
 G.sio = DummySocket()
 
 
-def started_game(expansions, players=4, character=Character("test_char", 4)):
+def started_game(expansions=[], players=4, character=Character("test_char", 4)) -> Game:
     g = Game("test")
     g.expansions = expansions
     ps = [Player(f"p{i}", f"p{i}") for i in range(players)]
@@ -23,19 +24,19 @@ def started_game(expansions, players=4, character=Character("test_char", 4)):
     return g
 
 
-def set_events(g: Game, event_cards):
+def set_events(g: Game, event_cards) -> None:
     g.deck.event_cards = event_cards
 
 
-def current_player(g: Game):
+def current_player(g: Game) -> Player:
     return g.players[g.turn]
 
 
-def next_player(g: Game):
+def next_player(g: Game) -> Player:
     return g.players[(g.turn + 1) % len(g.players)]
 
 
-def current_player_with_cards(g: Game, cards):
+def current_player_with_cards(g: Game, cards: List[Any]) -> Player:
     p = current_player(g)
     p.draw("")
     p.hand = cards

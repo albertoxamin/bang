@@ -3,7 +3,7 @@ import bang.roles as r
 import bang.players as pl
 from bang.cards import Card, Suit, Bang, Mancato
 import bang.expansions.fistful_of_cards.card_events as ce
-from globals import G
+from globals import G, PendingAction
 
 
 class Fantasma(Card):
@@ -15,7 +15,7 @@ class Fantasma(Card):
         if (player.game.check_event(ce.IlGiudice)) or not self.can_be_used_now:
             return False
         if len(player.game.get_dead_players(include_ghosts=False)) > 0:
-            player.pending_action = pl.PendingAction.CHOOSE
+            player.pending_action = PendingAction.CHOOSE
             player.choose_text = "choose_fantasma"
             player.available_cards = [
                 {
@@ -60,11 +60,7 @@ class Lemat(Card):
                 for p in player.game.get_visible_players(player)
             )
         ):
-            from bang.players import PendingAction
-
-            player.available_cards = player.hand.copy()
-            player.pending_action = PendingAction.CHOOSE
-            player.choose_text = "choose_play_as_bang"
+            player.set_choose_action("choose_play_as_bang", player.hand.copy())
             player.notify_self()
         return False
 
@@ -185,7 +181,7 @@ class Sventagliata(
                 if p["name"] != player.name and p["name"] != t.name and p["dist"]
             ]
             if len(player.available_cards) > 0:
-                player.pending_action = pl.PendingAction.CHOOSE
+                player.pending_action = PendingAction.CHOOSE
                 player.choose_text = "choose_sventagliata"
             else:
                 player.available_cards = []

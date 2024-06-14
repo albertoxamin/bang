@@ -1,7 +1,7 @@
 from bang.cards import *
 import bang.roles as r
 import bang.players as pl
-from globals import G
+from globals import G, PendingAction
 
 class ShopCardKind(IntEnum):
     BROWN = 0  # Se l’equipaggiamento ha il bordo marrone, applicane subito l’effetto e poi scartalo.
@@ -47,7 +47,7 @@ class Bicchierino(ShopCard):
             'is_player': True
         } for p in player.game.get_alive_players()]
         player.choose_text = 'choose_bicchierino'
-        player.pending_action = pl.PendingAction.CHOOSE
+        player.pending_action = PendingAction.CHOOSE
         player.notify_self()
         return super().play_card(player, against, _with)
 
@@ -64,7 +64,7 @@ class Bottiglia(ShopCard):
         for i in range(len(player.available_cards)):
             player.available_cards[i].must_be_used = True
         player.choose_text = 'choose_bottiglia'
-        player.pending_action = pl.PendingAction.CHOOSE
+        player.pending_action = PendingAction.CHOOSE
         player.notify_self()
         return super().play_card(player, against, _with)
 
@@ -79,7 +79,7 @@ class Complice(ShopCard):
         for i in range(len(player.available_cards)):
             player.available_cards[i].must_be_used = True
         player.choose_text = 'choose_complice'
-        player.pending_action = pl.PendingAction.CHOOSE
+        player.pending_action = PendingAction.CHOOSE
         player.notify_self()
         return super().play_card(player, against, _with)
 
@@ -175,7 +175,7 @@ class Ricercato(ShopCard):
         } for p in player.game.get_alive_players() if p != player and not isinstance(p.role, r.Sheriff)]
         player.available_cards.append({'name': player.name, 'number':0,'icon': 'you', 'is_character': True})
         player.choose_text = 'choose_ricercato'
-        player.pending_action = pl.PendingAction.CHOOSE
+        player.pending_action = PendingAction.CHOOSE
         player.notify_self()
         return True
         # la giochi su un altro giocatore, ricompensa di 2 carte e 1 pepita a chi lo uccide

@@ -16,8 +16,8 @@ import socketio
 from discord_webhook import DiscordWebhook
 
 from bang.game import Game
-from bang.players import PendingAction, Player
-from globals import G
+from bang.players import Player
+from globals import G, PendingAction
 from metrics import Metrics
 
 sys.setrecursionlimit(10**6)  # this should prevents bots from stopping
@@ -346,6 +346,7 @@ def get_me(sid, data):
                     room.notify_scrap_pile(sid)
                     room.notify_all()
                 room.notify_gold_rush_shop()
+                room.notify_stations()
                 room.notify_event_card()
                 room.notify_event_card_wildwestshow(sid)
         else:
@@ -676,6 +677,14 @@ def buy_gold_rush_card(sid, data: int):
     ses: Player = sio.get_session(sid)
     ses.game.rpc_log.append(f"{ses.name};buy_gold_rush_card;{data}")
     ses.buy_gold_rush_card(data)
+
+
+@sio.event
+@bang_handler
+def buy_train(sid, data: int):
+    ses: Player = sio.get_session(sid)
+    ses.game.rpc_log.append(f"{ses.name};buy_train;{data}")
+    ses.buy_train(data)
 
 
 @sio.event
@@ -1029,7 +1038,9 @@ def chat_message(sid, msg, pl=None):
 
                     cmd = msg.split()
                     if len(cmd) >= 2:
+                        import bang.expansions.train_robbery.trains as trt
                         cards = cs.get_starting_deck(ses.game.expansions)
+                        cards.extend(trt.get_all_cards())
                         card_names = " ".join(cmd[1:]).split(",")
                         for cn in card_names:
                             ses.equipment.append(
@@ -1088,6 +1099,21 @@ def chat_message(sid, msg, pl=None):
                             "type": "json",
                         },
                     )
+                elif "/deckinfo" in msg:
+                    sio.emit(
+                        "chat_message",
+                        room=sid,
+                        data={
+                            "color": "",
+                            "text": json.dumps(
+                                ses.game.deck.__dict__,
+                                default=lambda o: f"<{o.__class__.__name__}() not serializable>",
+                            ),
+                            "type": "json",
+                        },
+                    )
+                elif "/trainfw" in msg:
+                    ses.game.deck.move_train_forward()
                 elif "/status" in msg and ses.is_admin():
                     sio.emit("mount_status", room=sid)
                 elif "/meinfo" in msg:
@@ -1282,6 +1308,23 @@ def get_wildwestshowcards(sid):
         "wwscards_info", room=sid, data=json.dumps(chs, default=lambda o: o.__dict__)
     )
 
+@sio.event
+@bang_handler
+def get_trainrobberycards(sid):
+    print("get_trainrobberycards")
+    import bang.expansions.train_robbery.cards as trc
+    import bang.expansions.train_robbery.stations as trs
+    import bang.expansions.train_robbery.trains as trt
+
+    chs = []
+    chs.extend(trt.get_locomotives())
+    chs.extend(trt.get_all_cards())
+    sio.emit(
+        "trainrobberycards_info", room=sid, data=json.dumps({
+            "cards": chs,
+            "stations": trs.get_all_stations()
+        }, default=lambda o: o.__dict__)
+    )
 
 @sio.event
 @bang_handler

@@ -21,12 +21,11 @@ class BlackFlower(Character):
                 for p in player.game.get_visible_players(player)
             )
         ) and super().special(player, data):
-            from bang.players import PendingAction
-
-            player.available_cards = [c for c in player.hand if c.suit == cs.Suit.CLUBS]
             player.special_use_count += 1
-            player.pending_action = PendingAction.CHOOSE
-            player.choose_text = "choose_play_as_bang"
+            player.set_choose_action(
+                "choose_play_as_bang",
+                [c for c in player.hand if c.suit == cs.Suit.CLUBS],
+            )
             player.notify_self()
 
 

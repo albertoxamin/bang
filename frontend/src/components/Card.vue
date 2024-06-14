@@ -11,6 +11,7 @@
       'gold-rush': card.expansion === 'gold_rush',
       brown: card.kind === 0,
       black: card.kind === 1,
+      'train-piece': card.type && card.type === 'train',
     }"
   >
     <h4>{{ cardName }}</h4>
@@ -64,7 +65,7 @@ export default {
     },
     suit() {
       if (this.card && !isNaN(this.card.suit)) {
-        let x = ["♦️", "♣️", "♥️", "♠️", "🤑"];
+        let x = ["♦️", "♣️", "♥️", "♠️", "🤑", "🚂"];
         return x[this.card.suit];
       } else if (this.card.suit) {
         return this.card.suit;
@@ -115,7 +116,7 @@ export default {
     #816b45 10px
   );
 }
-.card:not(.back, .fistful-of-cards, .high-noon, .gold-rush):before {
+.card:not(.back, .fistful-of-cards, .high-noon, .gold-rush, .train-piece):before {
   content: "";
   background-image: radial-gradient(var(--bg-color) 13%, #0000 5%),
     radial-gradient(var(--bg-color) 14%, transparent 5%),
@@ -221,6 +222,18 @@ export default {
 }
 .alpha::after {
   content: "Alpha";
+  position: absolute;
+  bottom: -12pt;
+  right: -12pt;
+  background: red;
+  font-size: 10pt;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  padding: 4pt;
+  border-radius: 12pt;
+}
+.wip::after {
+  content: "WIP";
   position: absolute;
   bottom: -12pt;
   right: -12pt;
@@ -338,6 +351,7 @@ export default {
 }
 .cant-play {
   filter: brightness(0.5);
+  cursor: not-allowed;
 }
 .expansion {
   position: absolute;
@@ -346,5 +360,25 @@ export default {
   background: var(--bg-color);
   border-radius: 100%;
   transform: scale(0.8);
+}
+.train-piece {
+  background: linear-gradient(180deg, rgba(218,101,64,1) 0%, rgba(217,197,184,1) 13%, rgba(217,197,184,1) 53%, rgba(235,169,95,1) 61%, rgba(158,81,55,1) 91%, rgba(158,81,55,1) 100%);
+    box-shadow: 0 0 0pt 2pt var(--font-color), 0 0 5pt 2pt #aaa;
+}
+.train-piece .emoji {
+  transform: scaleX(-1);
+  /* filter: grayscale(1); */
+}
+.train-piece .suit, .train-piece .expansion {
+  display: none;
+}
+.train-piece h4 {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: -10pt;
+  top: unset;
+  font-size: 11pt;
+  color: #FFE27E;
 }
 </style>

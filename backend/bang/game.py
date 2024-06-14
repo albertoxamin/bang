@@ -17,8 +17,9 @@ import bang.expansions.wild_west_show.card_events as cew
 import bang.expansions.gold_rush.shop_cards as grc
 import bang.expansions.gold_rush.characters as grch
 import bang.expansions.the_valley_of_shadows.cards as tvosc
+import bang.expansions.train_robbery.trains as trt
 from metrics import Metrics
-from globals import G
+from globals import G, PendingAction
 
 
 debug_commands = [
@@ -57,8 +58,11 @@ debug_commands = [
         "help": "Remove a card from hand/equip - sample /removecard 0",
     },
     {"cmd": "/getcard", "help": "Get a brand new card - sample /getcard Birra"},
+    {"cmd": "/equipcard", "help": "Equip a brand new card - sample /getcard Barile"},
     {"cmd": "/meinfo", "help": "Get player data"},
     {"cmd": "/gameinfo", "help": "Get game data"},
+    {"cmd": "/deckinfo", "help": "Get deck data"},
+    {"cmd": "/trainfw", "help": "move train forward"},
     {"cmd": "/playerinfo", "help": "Get player data - sample /playerinfo player"},
     {"cmd": "/cardinfo", "help": "Get card data - sample /cardinfo handindex"},
     {"cmd": "/mebot", "help": "Toggles bot mode"},
@@ -93,6 +97,7 @@ class Game:
             "gold_rush",
             "the_valley_of_shadows",
             "wild_west_show",
+            "train_robbery",
         ]
         self.shutting_down = False
         self.is_competitive = False
@@ -354,6 +359,7 @@ class Game:
                     roles_str += f"|{role}|{str(current_roles.count(role))}"
             G.sio.emit("chat_message", room=self.name, data=f"_allroles{roles_str}")
             self.play_turn()
+            self.notify_stations()
 
     def choose_characters(self):
         n = self.characters_to_distribute
@@ -459,7 +465,7 @@ class Game:
 
     def discard_others(self, attacker: pl.Player, card_name: str = None):
         self.attack_in_progress = True
-        attacker.pending_action = pl.PendingAction.WAIT
+        attacker.pending_action = PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
         self.ready_count = 0
@@ -469,7 +475,7 @@ class Game:
                     self.waiting_for += 1
                     p.notify_self()
         if self.waiting_for == 0:
-            attacker.pending_action = pl.PendingAction.PLAY
+            attacker.pending_action = PendingAction.PLAY
             attacker.notify_self()
             self.attack_in_progress = False
         elif card_name == "Poker":
@@ -477,7 +483,7 @@ class Game:
 
     def attack_others(self, attacker: pl.Player, card_name: str = None):
         self.attack_in_progress = True
-        attacker.pending_action = pl.PendingAction.WAIT
+        attacker.pending_action = PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
         self.ready_count = 0
@@ -487,7 +493,7 @@ class Game:
                     self.waiting_for += 1
                     p.notify_self()
         if self.waiting_for == 0:
-            attacker.pending_action = pl.PendingAction.PLAY
+            attacker.pending_action = PendingAction.PLAY
             attacker.notify_self()
             self.attack_in_progress = False
         if self.pending_winners and not self.someone_won:
@@ -495,7 +501,7 @@ class Game:
 
     def indian_others(self, attacker: pl.Player):
         self.attack_in_progress = True
-        attacker.pending_action = pl.PendingAction.WAIT
+        attacker.pending_action = PendingAction.WAIT
         attacker.notify_self()
         self.waiting_for = 0
         self.ready_count = 0
@@ -505,7 +511,7 @@ class Game:
                     self.waiting_for += 1
                     p.notify_self()
         if self.waiting_for == 0:
-            attacker.pending_action = pl.PendingAction.PLAY
+            attacker.pending_action = PendingAction.PLAY
             attacker.notify_self()
             self.attack_in_progress = False
         if self.pending_winners and not self.someone_won:
@@ -542,26 +548,26 @@ class Game:
             self.attack_in_progress = True
             self.ready_count = 0
             self.waiting_for = 1
-            attacker.pending_action = pl.PendingAction.WAIT
+            attacker.pending_action = PendingAction.WAIT
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
         elif not attacker.is_my_turn or len(self.attack_queue) == 0:
-            self.players[self.turn].pending_action = pl.PendingAction.PLAY
+            self.players[self.turn].pending_action = PendingAction.PLAY
 
     def steal_discard(self, attacker: pl.Player, target_username: str, card: cs.Card):
         p = self.get_player_named(target_username)
         if p != attacker and p.get_discarded(
             attacker,
             card_name=card.name,
-            action="steal" if isinstance(card, cs.Panico) else "discard",
+            action="steal" if (isinstance(card, cs.Panico) or isinstance(card, trt.PassengerCar)) else "discard",
         ):
             self.ready_count = 0
             self.waiting_for = 1
-            attacker.pending_action = pl.PendingAction.WAIT
+            attacker.pending_action = PendingAction.WAIT
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
         else:
-            attacker.pending_action = pl.PendingAction.CHOOSE
+            attacker.pending_action = PendingAction.CHOOSE
             attacker.target_p = target_username
             if isinstance(card, cs.CatBalou):
                 attacker.choose_action = "discard"
@@ -575,7 +581,7 @@ class Game:
         ):
             self.ready_count = 0
             self.waiting_for = 1
-            attacker.pending_action = pl.PendingAction.WAIT
+            attacker.pending_action = PendingAction.WAIT
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
 
@@ -583,14 +589,14 @@ class Game:
         if self.get_player_named(target_username).get_dueled(attacker=attacker):
             self.ready_count = 0
             self.waiting_for = 1
-            attacker.pending_action = pl.PendingAction.WAIT
+            attacker.pending_action = PendingAction.WAIT
             attacker.notify_self()
             self.get_player_named(target_username).notify_self()
 
     def emporio(self):
         pls = self.get_alive_players()
         self.available_cards = [self.deck.draw(True) for i in range(len(pls))]
-        self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
+        self.players[self.turn].pending_action = PendingAction.CHOOSE
         self.players[self.turn].choose_text = "choose_card_to_get"
         self.players[self.turn].available_cards = self.available_cards
         G.sio.emit(
@@ -612,7 +618,7 @@ class Game:
         )
         player.hand.append(card)
         player.available_cards = []
-        player.pending_action = pl.PendingAction.WAIT
+        player.pending_action = PendingAction.WAIT
         player.notify_self()
         pls = self.get_alive_players()
         next_player = pls[
@@ -631,14 +637,14 @@ class Game:
             next_player.hand.append(self.available_cards.pop())
             next_player.notify_self()
             G.sio.emit("emporio", room=self.name, data='{"name":"","cards":[]}')
-            self.players[self.turn].pending_action = pl.PendingAction.PLAY
+            self.players[self.turn].pending_action = PendingAction.PLAY
             self.players[self.turn].notify_self()
         elif next_player == self.players[self.turn]:
             G.sio.emit("emporio", room=self.name, data='{"name":"","cards":[]}')
-            self.players[self.turn].pending_action = pl.PendingAction.PLAY
+            self.players[self.turn].pending_action = PendingAction.PLAY
             self.players[self.turn].notify_self()
         else:
-            next_player.pending_action = pl.PendingAction.CHOOSE
+            next_player.pending_action = PendingAction.CHOOSE
             next_player.choose_text = "choose_card_to_get"
             next_player.available_cards = self.available_cards
             G.sio.emit(
@@ -724,7 +730,7 @@ class Game:
                 elif self.poker_on and not any(
                     c.number == 1 for c in self.deck.scrap_pile[-tmp:]
                 ):
-                    self.players[self.turn].pending_action = pl.PendingAction.CHOOSE
+                    self.players[self.turn].pending_action = PendingAction.CHOOSE
                     self.players[
                         self.turn
                     ].choose_text = f"choose_from_poker;{min(2, tmp)}"
@@ -735,10 +741,10 @@ class Game:
                     print("attack completed, next attack")
                     atk = self.attack_queue.pop(0)
                     self.attack(atk[0], atk[1], atk[2], atk[3], skip_queue=True)
-                elif self.players[self.turn].pending_action == pl.PendingAction.CHOOSE:
+                elif self.players[self.turn].pending_action == PendingAction.CHOOSE:
                     self.players[self.turn].notify_self()
                 else:
-                    self.players[self.turn].pending_action = pl.PendingAction.PLAY
+                    self.players[self.turn].pending_action = PendingAction.PLAY
                 self.poker_on = False
                 self.players[self.turn].notify_self()
 
@@ -842,6 +848,7 @@ class Game:
             )
         ):
             self.deck.flip_event()
+            self.deck.move_train_forward()
             if self.check_event(ce.RouletteRussa):
                 self.is_russian_roulette_on = True
                 if self.players[self.turn].get_banged(self.deck.event_cards[0]):
@@ -917,11 +924,26 @@ class Game:
                 data=json.dumps(self.deck.shop_cards, default=lambda o: o.__dict__),
             )
 
+    def notify_stations(self, sid=None):
+        if "train_robbery" in self.expansions:
+            room = self.name if sid is None else sid
+            G.sio.emit(
+                "stations",
+                room=room,
+                data=json.dumps(
+                    {
+                        "stations": self.deck.stations,
+                        "current_train": self.deck.current_train,
+                    },
+                    default=lambda o: o.__dict__,
+                ),
+            )
+
     def notify_scrap_pile(self, sid=None):
         print(f"{self.name}: scrap")
         room = self.name if sid is None else sid
         if self.deck.peek_scrap_pile():
-            G.sio.emit("scrap", room=room, data=self.deck.peek_scrap_pile().__dict__)
+            G.sio.emit("scrap", room=room, data=self.deck.peek_scrap_pile()[0].__dict__)
         else:
             G.sio.emit("scrap", room=room, data=None)
 
@@ -1015,9 +1037,9 @@ class Game:
                 self.deck.draw(True, player=player.attacker)
             player.attacker.notify_self()
         print(f"{self.name}: player {player.name} died")
-        if self.waiting_for > 0 and player.pending_action == pl.PendingAction.RESPOND:
+        if self.waiting_for > 0 and player.pending_action == PendingAction.RESPOND:
             self.responders_did_respond_resume_turn()
-            player.pending_action = pl.PendingAction.WAIT
+            player.pending_action = PendingAction.WAIT
 
         if player.is_dead:
             return
@@ -1219,6 +1241,29 @@ class Game:
 
     def get_alive_players(self):
         return [p for p in self.players if not p.is_dead or p.is_ghost]
+
+    def get_other_players(self, player:pl.Player):
+        return [{
+            "name": p.name,
+            "dist": 0,
+            "lives": p.lives,
+            "max_lives": p.max_lives,
+            "is_sheriff": isinstance(p.role, roles.Sheriff),
+            "cards": len(p.hand) + len(p.equipment),
+            "is_ghost": p.is_ghost,
+            "is_bot": p.is_bot,
+            "icon": p.role.icon
+            if (
+                p.role is not None
+                and (
+                    self.initial_players == 3
+                    or isinstance(p.role, roles.Sheriff)
+                )
+            )
+            else "🤠",
+            "avatar": p.avatar,
+            "role": p.role,
+        } for p in self.get_alive_players() if p != player]
 
     def get_dead_players(self, include_ghosts=True):
         return [

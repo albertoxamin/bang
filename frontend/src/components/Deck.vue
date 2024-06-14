@@ -1,7 +1,7 @@
 <template>
 	<div >
 		<div class="deck">
-			<div class="deck" :style="`position:relative;${goldRushShopOpen?'border: 2px dashed #6a6a6a42;border-radius:8pt':''}`" v-if="goldRushCards.length > 0" >
+			<div class="deck" id="gold-rush-deck" :style="`position:relative;${goldRushShopOpen?'border: 2px dashed #6a6a6a42;border-radius:8pt':''}`" v-if="goldRushCards.length > 0" >
 				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[0])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(95deg) translate(30px, -40px) scale(0.6)`" v-if="goldRushCards.length > 0" :key="goldRushCards[0].name" :card="goldRushCards[0]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[0].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(0)}"/>
 				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[1])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(90deg)  translate(0, -40px) scale(0.6)`" v-if="goldRushCards.length > 1" :key="goldRushCards[1].name" :card="goldRushCards[1]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[1].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(1)}"/>
 				<card @pointerenter.native="()=>{setGoldRushDesc(goldRushCards[2])}" @pointerleave.native="goldRushDesc=null" :style="goldRushShopOpen?``:`position:absolute; top:0; right:0; transform: rotate(85deg) translate(-30px, -40px) scale(0.6)`" v-if="goldRushCards.length > 2" :key="goldRushCards[2].name" :card="goldRushCards[2]" :class="{'shop-open':goldRushShopOpen, 'cant-play': pending_action !==2 || gold_nuggets < goldRushCards[2].number - gold_rush_discount}" @click.native="() => {buy_gold_rush_card(2)}"/>
@@ -10,6 +10,10 @@
 					<div class="card gold-rush back" style="position:absolute; bottom:-1.5pt;right:-1.5pt;"/>
 					<card :card="goldRushCardBack" :donotlocalize="true" class="gold-rush back last-event" @click.native="goldRushShopOpen = !goldRushShopOpen"/>
 				</div>
+			</div>
+			<div v-if="currentStations.length > 0" id="train-robbery-deck" class="deck" :style="`position:relative;border: 2px dashed #6a6a6a42;border-radius:8pt;align-items: flex-end;flex-direction:row;`" >
+				<station-card @click.native="()=>{buyTrain(i)}" v-for="station, i in currentStations" :key="station.name" :card="station" :price="station.price" :trainPiece="trainPieceForStation(i)"
+						@pointerenter.native="()=>{setStationDesc(i)}" @pointerleave.native="stationDesc = null"/>
 			</div>
 			<div v-if="eventCard" style="position:relative">
 				<div class="card fistful-of-cards" style="position:relative; bottom:-3pt;right:-3pt;"/>
@@ -38,14 +42,13 @@
 		</div>
 		<transition name="list">
 			<p v-if="eventCard" class="center-stuff"><b>{{eventDesc}}</b></p>
-		</transition>
-		<transition name="list">
 			<p v-if="eventCardWildWestShow && !eventCardWildWestShow.back" class="center-stuff">🎪 <b>{{eventDescWildWestShow}}</b> 🎪</p>
-		</transition>
-		<transition name="list">
 			<div v-if="goldRushDesc">
 				<p class="center-stuff">🤑️ <i>{{$t(`cards.${goldRushDesc.name}.desc`)}}</i> 🤑️</p>
 				<p class="center-stuff">🤑️ <b>{{goldRushDesc.number - gold_rush_discount}} 💵️</b> 🤑️</p>
+			</div>
+			<div v-if="stationDesc">
+				<p class="center-stuff"><i>{{stationDesc}}</i></p>
 			</div>
 		</transition>
 		<div style="margin-bottom:6pt;margin-bottom: 6pt;display: flex;flex-direction: column;">
@@ -59,6 +62,7 @@
 
 <script>
 import Card from '@/components/Card.vue'
+import StationCard from '@/components/StationCard.vue'
 
 export default {
 	name: 'Deck',
@@ -67,6 +71,7 @@ export default {
 	},
 	components: {
 		Card,
+		StationCard
 	},
 	data: () => ({
 		card: {
@@ -88,8 +93,11 @@ export default {
 		goldRushCards: [],
 		gold_nuggets: 0,
 		goldRushDesc: null,
+		stationDesc: null,
 		can_gold_rush_discard: false,
 		gold_rush_discount: 0,
+		currentStations: [],
+		currentTrain: [],
 	}),
 	sockets: {
 		self(self){
@@ -122,6 +130,11 @@ export default {
 		gold_rush_shop(cards) {
 			console.log('GOLD RUSH:'+ cards)
 			this.goldRushCards = JSON.parse(cards)
+		},
+		stations(stations) {
+			let msg = JSON.parse(stations)
+			this.currentStations = msg.stations
+			this.currentTrain = msg.current_train
 		},
 	},
 	computed: {
@@ -163,6 +176,15 @@ export default {
 		},
 	},
 	methods: {
+		trainPieceForStation(i) {
+			let index = this.currentTrain.length-5-i;
+			if (index < 0 || index >= this.currentTrain.length)
+				return null;
+			return this.currentTrain[index];
+		},
+		buyTrain(i) {
+			this.$socket.emit('buy_train', i)
+		},
 		action(pile) {
 			if (this.pending_action !== false && this.pending_action < 2) {
 				// console.log('action')
@@ -188,6 +210,14 @@ export default {
 		},
 		setGoldRushDesc(card) {
 			this.goldRushDesc = card
+		},
+		setStationDesc(index) {
+			console.log('setStationDesc', index)
+			this.stationDesc = this.$t(`cards.${this.currentStations[index].name}.desc`)
+			const trainPiece = this.trainPieceForStation(index)
+			if (trainPiece) {
+				this.stationDesc += '\n\n🚂' + this.$t(`cards.${trainPiece.name}.desc`)
+			}
 		},
 	},
 	mounted() {

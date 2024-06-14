@@ -3,7 +3,8 @@ from bang.characters import Character
 from bang.cards import *
 from bang.deck import Deck
 from bang.game import Game
-from bang.players import Player, PendingAction
+from bang.players import Player
+from globals import PendingAction
 
 # test card Barile
 def test_barile():
