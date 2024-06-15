@@ -1328,6 +1328,12 @@ def get_trainrobberycards(sid):
 
 @sio.event
 @bang_handler
+def get_expansion_info(sid, id):
+    from bang.expansions import get_expansion_info
+    sio.emit("expansion_info", room=sid, data=json.dumps(get_expansion_info(id), default=lambda o: o.__dict__))
+
+@sio.event
+@bang_handler
 def discord_auth(sid, data):
     res = requests.post(
         "https://discord.com/api/oauth2/token",
