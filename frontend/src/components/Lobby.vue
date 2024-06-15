@@ -195,18 +195,19 @@
         <p v-else style="min-height: 19px"></p>
         <h3>{{ $t("expansions") }}</h3>
         <div class="players-table" style="justify-content: flex-start">
-          <card
-            v-for="ex in expansionsStatus"
-            v-bind:key="ex.id"
-            :id="ex.id"
-            :card="ex.card"
-            :class="{
-              'cant-play': !ex.enabled,
-              ...ex.card.classes,
-            }"
-            :donotlocalize="true"
-            @click.native="toggleExpansions(ex.id)"
-          />
+          <div v-for="ex in expansionsStatus" :key="ex.id" class="expansion-card" style="position: relative">
+            <card
+              :id="ex.id"
+              :card="ex.card"
+              :class="{
+                'cant-play': !ex.enabled,
+                ...ex.card.classes,
+              }"
+              :donotlocalize="true"
+              @click.native="toggleExpansions(ex.id)"
+            />
+            <button class="info-button" @click="showExpansionInfo(ex.id)">?</button>
+          </div>
         </div>
         <p v-if="isRoomOwner">{{ $t("click_to_toggle") }}</p>
         <h3>{{ $t("mods") }}</h3>
@@ -391,6 +392,13 @@
         :playerRole="deadRoleData.role"
       />
     </transition>
+    <transition name="bounce">
+      <ExpansionPopup
+        :show="showPopup"
+        :expansion="selectedExpansionInfo"
+        @close="closePopup"
+      />
+    </transition>
   </div>
 </template>
 
@@ -410,6 +418,7 @@ import AnimatedCard from "./AnimatedCard.vue";
 import { emojiMap } from "@/utils/emoji-map.js";
 import { expansionsMap } from "@/utils/expansions-map.js";
 import AnimatedEffect from './AnimatedEffect.vue';
+import ExpansionPopup from '@/components/ExpansionPopup.vue';
 
 const cumulativeOffset = function (element) {
   var top = 0,
@@ -440,6 +449,7 @@ export default {
     DeadRoleNotification,
     AnimatedCard,
     AnimatedEffect,
+    ExpansionPopup,
   },
   data: () => ({
     username: "",
@@ -470,8 +480,13 @@ export default {
     cardsToAnimate: [],
     characters_to_distribute: 2,
     fullScreenEffects: [],
+    showPopup: false,
+    selectedExpansionInfo: {},
   }),
   sockets: {
+    expansion_info(data) {
+      this.selectedExpansionInfo = JSON.parse(data);
+    },
     room(data) {
       this.lobbyName = data.name;
       if (!data.started) {
@@ -755,6 +770,14 @@ export default {
     },
   },
   methods: {
+    showExpansionInfo(id) {
+      this.showPopup = true;
+      this.$socket.emit("get_expansion_info", id);
+    },
+    closePopup() {
+      this.showPopup = false;
+      this.selectedExpansionCards = [];
+    },
     getExpansionCard(id) {
       let ex = expansionsMap[id];
       ex.classes = {
@@ -1049,5 +1072,25 @@ export default {
   .players-table {
     border-bottom: dashed #ccc2;
   }
+}
+.info-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.info-button:hover {
+  background-color: #0056b3;
 }
 </style>
