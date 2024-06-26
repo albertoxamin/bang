@@ -41,12 +41,18 @@
 			</div>
 		</div>
 		<transition name="list">
-			<p v-if="eventCard" class="center-stuff"><b>{{eventDesc}}</b></p>
+			<p v-if="eventCard" class="center-stuff">🔥 <b>{{eventDesc}}</b> 🎴</p>
+		</transition>
+		<transition name="list">
 			<p v-if="eventCardWildWestShow && !eventCardWildWestShow.back" class="center-stuff">🎪 <b>{{eventDescWildWestShow}}</b> 🎪</p>
+		</transition>
+		<transition name="list">
 			<div v-if="goldRushDesc">
 				<p class="center-stuff">🤑️ <i>{{$t(`cards.${goldRushDesc.name}.desc`)}}</i> 🤑️</p>
 				<p class="center-stuff">🤑️ <b>{{goldRushDesc.number - gold_rush_discount}} 💵️</b> 🤑️</p>
 			</div>
+		</transition>
+		<transition name="list">
 			<div v-if="stationDesc">
 				<p class="center-stuff"><i>{{stationDesc}}</i></p>
 			</div>
@@ -216,7 +222,7 @@ export default {
 			this.stationDesc = this.$t(`cards.${this.currentStations[index].name}.desc`)
 			const trainPiece = this.trainPieceForStation(index)
 			if (trainPiece) {
-				this.stationDesc += '\n\n🚂' + this.$t(`cards.${trainPiece.name}.desc`)
+				this.stationDesc += '\n\n🚂' + this.$t(`cards.${trainPiece.name}.desc`) + '🚋'
 			}
 		},
 	},
