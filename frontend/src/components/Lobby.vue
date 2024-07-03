@@ -203,6 +203,7 @@
                 'cant-play': !ex.enabled,
                 ...ex.card.classes,
               }"
+              style="cursor: pointer"
               :donotlocalize="true"
               @click.native="toggleExpansions(ex.id)"
             />
