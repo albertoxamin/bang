@@ -330,6 +330,12 @@ def test_sventagliata():
     assert p.pending_action == PendingAction.PLAY
     assert len(p.hand) == 1
 
+    # Ensure the secondary target is at a distance from the first target
+    assert any(
+        target["name"] == secondary_target and target["dist"] > 1
+        for target in g.get_visible_players(p1)
+    )
+
 
 def test_mira():
     g = started_game(['the_valley_of_shadows'])
