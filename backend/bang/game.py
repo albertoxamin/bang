@@ -474,6 +474,10 @@ class Game:
                 if p.get_discarded(attacker=attacker, card_name=card_name):
                     self.waiting_for += 1
                     p.notify_self()
+            elif card_name == "Tornado" and len(p.hand) == 0:
+                self.deck.draw(player=p)
+                self.deck.draw(player=p)
+                p.notify_self()
         if self.waiting_for == 0:
             attacker.pending_action = PendingAction.PLAY
             attacker.notify_self()
