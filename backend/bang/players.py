@@ -1872,7 +1872,8 @@ class Player:
             ):
                 self.expected_response.append(cs.Bang(0, 0).name)
             if self.character.check(self.game, chw.BigSpencer):
-                self.expected_response = []
+                self.expected_response = self.game.deck.mancato_cards.copy()
+                self.expected_response.remove(cs.Mancato(0, 0).name)
             if any((isinstance(c, trt.Caboose) for c in self.equipment)):
                 self.expected_response.append([c.name for c in self.equipment if not c.usable_next_turn])
             self.on_failed_response_cb = self.take_damage_response
