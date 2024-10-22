@@ -1574,6 +1574,10 @@ class Player:
                 self.game.deck.scrap(self.hand.pop(card_index), player=self)
                 self.mancato_needed -= 1
             else:
+                if self.attacker and "gold_rush" in self.game.expansions and not self.is_ghost:
+                    if isinstance(self.attacker, Player):
+                        self.attacker.gold_nuggets += 1
+                        self.attacker.notify_self()
                 self.lives -= 1
                 self.mancato_needed = 0
             if self.mancato_needed <= 0:
