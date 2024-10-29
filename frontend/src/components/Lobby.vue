@@ -483,6 +483,7 @@ export default {
     fullScreenEffects: [],
     showPopup: false,
     selectedExpansionInfo: {},
+    owner: undefined,
   }),
   sockets: {
     expansion_info(data) {
@@ -503,6 +504,7 @@ export default {
       this.togglable_expansions = data.available_expansions;
       this.expansions = data.expansions;
       this.is_replay = data.is_replay;
+      this.owner = data.owner;
       this.characters_to_distribute = data.characters_to_distribute;
       this.players = data.players.map((x) => {
         return {
@@ -729,11 +731,7 @@ export default {
       return "";
     },
     isRoomOwner() {
-      if (this.players.length > 0) {
-        let pls = this.players.filter((x) => !x.is_bot);
-        return pls.length > 0 && pls[0].name == this.username;
-      }
-      return false;
+      return this.owner === this.username;
     },
     startGameCard() {
       if (!this.started && this.players.length > 2 && this.isRoomOwner) {

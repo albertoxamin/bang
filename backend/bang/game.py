@@ -122,6 +122,7 @@ class Game:
         self.rpc_log = []
         self.is_replay = False
         self.replay_speed = 1
+        self.owner: str | None = None
 
     def shuffle_players(self):
         if not self.started:
@@ -254,6 +255,7 @@ class Game:
                     "available_expansions": self.available_expansions,
                     "is_replay": self.is_replay,
                     "characters_to_distribute": self.characters_to_distribute,
+                    "owner": self.owner,
                 },
             )
         G.sio.emit("debug", room=self.name, data=self.debug)
@@ -308,6 +310,8 @@ class Game:
         if player.is_admin():
             self.feature_flags()
         self.players.append(player)
+        if len(self.players) == 1:
+            self.owner = player.name
         if len(self.players) > 7:
             if "dodge_city" not in self.expansions:
                 self.expansions.append("dodge_city")
@@ -989,6 +993,8 @@ class Game:
             self.deck = None
             return True
         else:
+            self.owner = next((p.name for p in self.players if not p.is_bot), None)
+            self.notify_room()
             return False
 
     def player_death(self, player: pl.Player, disconnected=False):
