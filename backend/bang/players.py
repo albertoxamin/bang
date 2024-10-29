@@ -1947,6 +1947,7 @@ class Player:
                 self.choose_text = "choose_poker"
             if card_name == "Bandidos":
                 self.choose_text = "choose_bandidos"
+                self.attacker = attacker
                 self.mancato_needed = min(2, len(self.hand))
                 self.available_cards.append(
                     {"name": "-1hp", "icon": "💔", "noDesc": True}
