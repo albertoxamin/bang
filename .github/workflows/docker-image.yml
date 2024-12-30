@@ -35,14 +35,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Prepare Platform Tag
+        id: platform_tag
+        run: echo "TAG=${{ matrix.platform }}" | sed 's|/|-|g' > tag.txt
+
       - name: Build and push platform-specific image
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
           push: true
-          tags: albertoxamin/bang:${{ matrix.platform | replace('/', '-') }}
-          cache-from: type=registry,ref=albertoxamin/bang:${{ matrix.platform }}
+          tags: albertoxamin/bang:$(cat tag.txt)
+          cache-from: type=registry,ref=albertoxamin/bang:$(cat tag.txt)
           cache-to: type=inline
 
   create-manifest:
