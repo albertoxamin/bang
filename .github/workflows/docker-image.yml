@@ -37,7 +37,7 @@ jobs:
 
       - name: Prepare Platform Tag
         id: platform_tag
-        run: echo "TAG=${{ matrix.platform }}" | sed 's|/|-|g' > tag.txt
+        run: echo "platform_tag=$(echo ${{ matrix.platform }} | sed 's|/|-|g')" >> $GITHUB_ENV
 
       - name: Build and push platform-specific image
         uses: docker/build-push-action@v5
@@ -45,8 +45,8 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           push: true
-          tags: albertoxamin/bang:$(cat tag.txt)
-          cache-from: type=registry,ref=albertoxamin/bang:$(cat tag.txt)
+          tags: albertoxamin/bang:${{ env.platform_tag }}
+          cache-from: type=registry,ref=albertoxamin/bang:${{ env.platform_tag }}
           cache-to: type=inline
 
   create-manifest:
