@@ -110,17 +110,25 @@ class IDalton(CardEvent):
         # self.desc_eng = "Players that have blue cards equipped, discard 1 of those card of their choice"
 
     def on_flipped(self, game):
+        super().on_flipped(game)
         game.waiting_for = 0
         game.ready_count = 0
         game.dalton_on = True
+        
+        # Check each player in order
         for p in game.players:
-            if p.get_dalton():
+            if p.get_dalton():  # Only increment waiting_for if they actually have blue cards
                 game.waiting_for += 1
                 p.notify_self()
-        if game.waiting_for != 0:
+        
+        # If no one has blue cards, end the event immediately
+        if game.waiting_for == 0:
+            game.dalton_on = False
+            game.notify_all()
             return
-        game.dalton_on = False
-        return super().on_flipped(game)
+            
+        # Otherwise wait for players to make their choice
+        return
 
 
 class Manette(CardEvent):

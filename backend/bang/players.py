@@ -2120,12 +2120,15 @@ class Player:
             return True
 
     def get_dalton(self):
+        # Only consider blue cards (non-green equipment)
         equipments = [c for c in self.equipment if not c.usable_next_turn]
         if len(equipments) == 0:
             return False
-        else:
-            self.set_choose_action("choose_dalton", equipments)
-            return True
+        
+        # Set up the choice action for the player
+        self.pending_action = PendingAction.CHOOSE
+        self.set_choose_action("choose_dalton", equipments)
+        return True
 
     def get_indians(self, attacker):
         self.attacker = attacker
@@ -2148,8 +2151,8 @@ class Player:
                         self.character.check(self.game, chars.CalamityJanet)
                         and isinstance(c, cs.Mancato)
                     )
-                    for c in self.hand
                 )
+                for c in self.hand
             )
             and not self.can_escape()
         ):
@@ -2187,8 +2190,8 @@ class Player:
                         self.character.check(self.game, chars.CalamityJanet)
                         and isinstance(c, cs.Mancato)
                     )
-                    for c in self.hand
                 )
+                for c in self.hand
             )
         ):
             print("Cant defend")
