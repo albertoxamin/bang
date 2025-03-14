@@ -178,7 +178,7 @@ class Sventagliata(
             player.available_cards = [
                 dict(p, **{"original_target": against})
                 for p in player.game.get_visible_players(t)
-                if p["name"] != player.name and p["name"] != t.name and p["dist"]
+                if p["name"] != player.name and p["name"] != t.name and p["dist"] == 1
             ]
             if len(player.available_cards) > 0:
                 player.pending_action = PendingAction.CHOOSE
