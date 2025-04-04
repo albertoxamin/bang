@@ -308,7 +308,7 @@ def test_tornado():
 
 def test_sventagliata():
     g = Game('test')
-    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
     for p in ps:
         g.add_player(p)
     g.start_game()
@@ -317,8 +317,8 @@ def test_sventagliata():
         p.set_character(p.available_characters[0].name)
 
     p = g.players[g.turn]
-    p1 = g.players[(g.turn + 1) % 3]
-    p2 = g.players[(g.turn + 2) % 3]
+    p1 = g.players[(g.turn + 1) % 4]
+    p2 = g.players[(g.turn + 2) % 4]
     
     p.draw('')
     p.hand = [Sventagliata('Hearts', 10), Bang('Hearts', 10)]
@@ -353,6 +353,66 @@ def test_sventagliata():
     assert p.pending_action == PendingAction.PLAY
     assert len(p.hand) == 1
 
+def test_sventagliata_directional():
+    # Test with 4 players to better test directional behavior
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(4)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+
+    p = g.players[g.turn]  # Current player
+    p1 = g.players[(g.turn + 1) % 4]  # Next player clockwise
+    p2 = g.players[(g.turn + 2) % 4]  # Two players away
+    p3 = g.players[(g.turn + 3) % 4]  # Previous player counterclockwise
+    
+    p.draw('')
+    p.hand = [Sventagliata('Hearts', 10)]
+    
+    # Test targeting player 1 (next clockwise)
+    p.play_card(0, against=p1.name)
+    assert p.pending_action == PendingAction.CHOOSE
+    assert len(p.available_cards) == 1  # Should only have one target in the same direction
+    assert p.available_cards[0]['name'] == p2.name  # Should be able to target p2 (next in same direction)
+    
+    # Reset and test targeting player 3 (previous counterclockwise)
+    p.hand = [Sventagliata('Hearts', 10)]
+    p.play_card(0, against=p3.name)
+    assert p.pending_action == PendingAction.CHOOSE
+    assert len(p.available_cards) == 1  # Should only have one target in the same direction
+    assert p.available_cards[0]['name'] == p2.name  # Should be able to target p2 (next in same direction)
+    
+    # Test with no valid targets in the same direction
+    g = Game('test')
+    ps = [Player(f'p{i}', f'p{i}') for i in range(3)]
+    for p in ps:
+        g.add_player(p)
+    g.start_game()
+    for p in ps:
+        p.available_characters = [Character('test_char', 4)]
+        p.set_character(p.available_characters[0].name)
+
+    p = g.players[g.turn]
+    p1 = g.players[(g.turn + 1) % 3]
+    p2 = g.players[(g.turn + 2) % 3]
+    
+    p.draw('')
+    p.hand = [Sventagliata('Hearts', 10)]
+    p1.hand = [Mancato('Spades', 2)]
+    
+    # When targeting p1, p2 is the only other player but not in the same direction
+    # Should play as regular Bang since no valid targets
+    p.play_card(0, against=p1.name)
+    assert p.pending_action == PendingAction.WAIT  # Wait for target to respond
+    assert p1.pending_action == PendingAction.RESPOND  # Target should respond
+    
+    # Target responds with Mancato
+    p1.respond(0)
+    assert p1.pending_action == PendingAction.WAIT
+    assert p.pending_action == PendingAction.PLAY  # Now we should be back to PLAY state
 
 def test_mira():
     g = started_game(['the_valley_of_shadows'])

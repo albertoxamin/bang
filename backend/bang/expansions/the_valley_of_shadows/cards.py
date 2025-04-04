@@ -175,15 +175,52 @@ class Sventagliata(
             if player.has_played_bang:
                 return False
             t = player.game.get_player_named(against)
-            player.available_cards = [
-                dict(p, **{"original_target": against})
-                for p in player.game.get_visible_players(t)
-                if p["name"] != player.name and p["name"] != t.name and p["dist"]
-            ]
-            if len(player.available_cards) > 0:
+            
+            # Get the indices of players in the game for direction checking
+            alive_players = player.game.get_alive_players()
+            
+            # If there are less than 4 players, we can't have a valid direction
+            # because in a 3-player game, the third player can't be in the same direction
+            if len(alive_players) < 4:
+                player.available_cards = []
+                super().play_card(player, against=against)
+                return True
+            
+            player_index = alive_players.index(player)
+            target_index = alive_players.index(t)
+            
+            # Calculate the direction from player to target
+            player_to_target = (target_index - player_index) % len(alive_players)
+            
+            # Get all visible players at distance 1 from the target
+            visible_players = player.game.get_visible_players(t)
+            
+            # Filter out the player using the card and the first target
+            # and ensure the target is at distance 1
+            available_players = []
+            for p in visible_players:
+                if p["name"] != player.name and p["name"] != t.name and p["dist"] == 1:
+                    p_obj = player.game.get_player_named(p["name"])
+                    p_index = alive_players.index(p_obj)
+                    
+                    # Calculate the direction from target to potential second target
+                    target_to_p = (p_index - target_index) % len(alive_players)
+                    
+                    # Check if the potential target is in the same direction from the first target
+                    # as the first target is from the player
+                    if (player_to_target == 1 and target_to_p == 1) or \
+                       (player_to_target == len(alive_players) - 1 and target_to_p == len(alive_players) - 1):
+                        available_players.append(p)
+            
+            if available_players:
+                player.available_cards = [
+                    dict(p, **{"original_target": against})
+                    for p in available_players
+                ]
                 player.pending_action = PendingAction.CHOOSE
                 player.choose_text = "choose_sventagliata"
             else:
+                # No valid targets in the same direction, play as regular Bang
                 player.available_cards = []
                 super().play_card(player, against=against)
             return True
